@@ -45,6 +45,11 @@ git clone git://github.com/mistatapas/CBF.git cbf
 
   - Doxygen, for building the documentation
 
+- Installation
+
+See the INSTALL file for information on how to build and 
+install the software
+
 - Author
 
 Florian Paul Schmidt (mista.tapas@gmx.net)
