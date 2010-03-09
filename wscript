@@ -56,7 +56,7 @@ def set_options(opt):
 		'--debug-messages',
 		action='store_true',
 		default=False,
-		help="Add debugging symbols in library and executables",
+		help="Add debugging messages library and executables",
 		dest="debug_messages"
 	)
 
