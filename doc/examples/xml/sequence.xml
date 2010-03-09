@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ControllerSequenceType">
+ <Controller  xsi:type="PrimitiveControllerType">
+  <Potential xsi:type="SquarePotentialType">
+   <Dimension> 3 </Dimension>
+   <Coefficient> 1 </Coefficient>
+  </Potential>
+  <EffectorTransform xsi:type="IdentityEffectorTransformType">
+   <Dimension> 3 </Dimension>
+  </EffectorTransform>
+  <SensorTransform xsi:type="IdentitySensorTransformType">
+   <Dimension> 3 </Dimension>
+  </SensorTransform>
+ </Controller>
+ <Controller xsi:type="PrimitiveControllerType">
+  <Potential xsi:type="SquarePotentialType">
+   <Dimension> 3 </Dimension>
+   <Coefficient> 1 </Coefficient>
+  </Potential>
+  <EffectorTransform xsi:type="IdentityEffectorTransformType">
+   <Dimension> 3 </Dimension>
+  </EffectorTransform>
+  <SensorTransform xsi:type="IdentitySensorTransformType">
+   <Dimension> 3 </Dimension>
+  </SensorTransform>
+ </Controller>
+</Controller>
+
+

@@ -1,0 +1,25 @@
+# -*- mode: python -*-
+
+def set_options(opt):
+	pass
+
+def configure(conf):
+	pass
+
+def build(bld):
+	bld.use_the_magic()
+	if bld.env['CBF_HAVE_XSD'] == 1:
+		sources = bld.new_task_gen()
+		#sources.before = 'qxx_task'
+		sources.source = 'schemas.xsd'
+		sources.target = 'schemas.cxx schemas.hxx'
+		sources.rule = bld.env['XSD'] + ' cxx-tree --root-element-all --generate-ostream --generate-doxygen --generate-polymorphic ../../${SRC}'
+		sources.cwd = bld.bdir + '/default/schemas/'
+		
+		schemalib = bld.new_task_gen('cxx', 'staticlib')
+		schemalib.source = 'schemas.cxx'
+		schemalib.uselib = 'XERCESC XSD'
+		schemalib.cxxflags = '-fPIC'
+		schemalib.target = 'schemalib'	
+		#schemalib.before = 'cbfshlib'
+

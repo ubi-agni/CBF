@@ -1,0 +1,162 @@
+<Chain xsi:type = "ChainType">
+ <Name> SuperChain </Name>
+
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((1,0,0,0),(0,1,0,0.23),(0,0,1,0.5),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>None</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+
+ <!--<Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((0,0,-1,0),(0.707107,0.707107,0,0),(0.707107,-0.707107,0,0),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>None</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>-->
+
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((0,0,1,0),(0,1,0,0),(-1,0,0,0),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>None</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((1,0,0,0),(0,0.707107,0.707107,0),(0,-0.707107,0.707107,0),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>None</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.31),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>None</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((-1,0,0,0),(0,-1,0,0),(0,0,1,0),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>Rotational</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+ 
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.4),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>Rotational</Type>
+   <Axis>Y</Axis>
+  </Joint>
+ </Segment>
+ 
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((-1,0,0,0),(0,-1,0,0),(0,0,1,0),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>Rotational</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+ 
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.39),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>Rotational</Type>
+   <Axis>Y</Axis>
+  </Joint>
+ </Segment>
+ 
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((-1,0,0,0),(0,-1,0,0),(0,0,1,0),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>Rotational</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+ 
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>Rotational</Type>
+   <Axis>Y</Axis>
+  </Joint>
+ </Segment>
+ 
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.115),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>Rotational</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+
+<!--
+ <Segment>
+  <Frame xsi:type="MatrixFrameType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,115),(0,0,0,1)) </String>
+   </Matrix>
+  </Frame>
+  <Joint xsi:type="JointType">
+   <Type>None</Type>
+   <Axis>Z</Axis>
+  </Joint>
+ </Segment>
+-->
+</Chain>
+

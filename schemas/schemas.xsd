@@ -1,0 +1,607 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ <!--
+  The single element of the schema. It has to be a type extending
+  the basic ControllerType defined below.
+ -->
+ <xs:element name="Controller" type="ControllerType"/>
+
+
+ <!-- 
+  The basic definition of a primitive controller (one that is parametrized
+  by a potential function, sensor and effector transforms and bound to a
+  resource 
+ -->
+ <xs:complexType name="ControllerType" abstract="true">
+  <xs:annotation>
+   <xs:documentation>
+    This is an (abstract in C++) base type. You need to use one of the derived types like e.g. PrimitiveControllerType.
+   </xs:documentation>
+  </xs:annotation>
+ </xs:complexType>
+
+ <xs:complexType name="ControllerSequenceType">
+  <xs:complexContent>
+   <xs:extension base="ControllerType">
+    <xs:sequence>
+     <xs:element name="Controller" type="ControllerType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <!--
+  This type corresponds to the PrimitiveController c++ class.
+ -->
+ <xs:complexType name="PrimitiveControllerType" abstract="false">
+  <xs:complexContent>
+   <xs:extension base="ControllerType">
+    <xs:sequence>
+      <xs:element name="Coefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="SubordinateCoefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
+
+      <xs:element name="InitReferenceFromSensorTransform" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+
+      <xs:element name="Potential" type="PotentialType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="EffectorTransform" type="EffectorTransformType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Resource" type="ResourceType" minOccurs="0" maxOccurs="1"/>
+
+      <xs:element name="PrimitiveController" type="PrimitiveControllerType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="CombinationStrategy" type="CombinationStrategyType" minOccurs="0" maxOccurs="1"/>
+
+      <xs:element name="Reference" type="ReferenceType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="AvoidSingularitiesControllerType">
+  <xs:complexContent>
+   <xs:extension base="PrimitiveControllerType">
+    <xs:sequence>
+     <xs:element name="SamplingStep" type="xs:float" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+ <xs:complexType name="VectorType" abstract="true">
+ </xs:complexType>
+
+ <xs:complexType name="SimpleVectorType">
+  <xs:complexContent>
+   <xs:extension base="VectorType"> 
+    <xs:sequence>
+     <xs:element name="Coefficient" type="xs:float" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <!-- A type to allow specification of a translation vector from a boost string representation -->
+ <xs:complexType name="BoostVectorType">
+  <xs:complexContent>
+   <xs:extension base="VectorType"> 
+    <xs:sequence>
+     <xs:element name="String" type="xs:string"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="EulerToAxisAngleType">
+  <xs:complexContent>
+   <xs:extension base="VectorType"> 
+    <xs:sequence>
+     <xs:element name="String" type="xs:string"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+ <!-- 
+  The basic types that are extended by below types 
+ -->
+ <xs:complexType name="CombinationStrategyType"/>
+
+ <xs:complexType name="ReferenceType"/>
+
+ <xs:complexType name="AddingStrategyType">
+  <xs:complexContent>
+   <xs:extension base="CombinationStrategyType">
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="ResourceType" abstract="true">
+  <xs:sequence>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="EffectorTransformType" abstract="true">
+  <xs:sequence>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="SensorTransformType" abstract="true">
+  <xs:sequence>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="PotentialType" abstract="true">
+  <xs:sequence>
+   <!-- 
+    The ConvergenceCriterion can take on the values
+
+    - 1: See if current task position is less than DistanceThreshold away from the closest reference
+    - 2: See if gradient step is less than StepNormThreshold
+
+    or OR'ed combination of these (e.g. 3 = 1 OR 2)..
+   -->
+   <xs:element name="ConvergenceCriterion" type="xs:nonNegativeInteger" minOccurs="0" maxOccurs="unbounded"/>
+
+   <xs:element name="DistanceThreshold" type="xs:float" minOccurs="0" maxOccurs="1"/>
+   <xs:element name="StepNormThreshold" type="xs:float" minOccurs="0" maxOccurs="1"/>
+  </xs:sequence>
+ </xs:complexType>
+
+
+
+
+
+
+
+
+ <!-- 
+  Here come the types that one can use to parametrize a controller 
+ -->
+
+ <!--
+  Reference types
+ -->
+ <xs:complexType name="DummyReferenceType">
+  <xs:complexContent>
+   <xs:extension base="ReferenceType">
+    <xs:sequence>
+     <xs:element name="Vector" type="VectorType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="SpaceNaviReferenceType">
+  <xs:complexContent>
+   <xs:extension base="ReferenceType">
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="CartesianReferenceType">
+  <xs:complexContent>
+   <xs:extension base="ReferenceType">
+    <xs:sequence>
+     <xs:element name="Vector" type="VectorType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="CompositeReferenceType">
+  <xs:complexContent>
+   <xs:extension base="ReferenceType">
+    <xs:sequence>
+     <xs:element name="Reference" type="ReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <!--
+  Effector Transform types
+ -->
+ <xs:complexType name="GenericEffectorTransformType">
+  <xs:complexContent>
+   <xs:extension base="EffectorTransformType">
+    <xs:sequence>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="DampedWeightedGenericEffectorTransformType">
+  <xs:complexContent>
+   <xs:extension base="EffectorTransformType">
+    <xs:sequence>
+     <xs:element name="Weights" type="MatrixType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+<xs:complexType name="IdentityEffectorTransformType">
+  <xs:complexContent>
+   <xs:extension base="EffectorTransformType">
+    <xs:sequence>
+     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="EffectorTransformChainType">
+  <xs:complexContent>
+   <xs:extension base="EffectorTransformType">
+    <xs:sequence>
+     <xs:element name="EffectorTransform" type="EffectorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="LinearEffectorTransformType">
+   <xs:complexContent>
+   <xs:extension base="EffectorTransformType">
+    <xs:sequence>
+     <xs:element name="Matrix" type="MatrixType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+
+ <!-- 
+  Some auxillary types for the KDLChainEffectorTransform 
+ -->
+ <xs:complexType name="ChainBaseType" abstract="true">
+  <xs:sequence>
+   <xs:element name="Name" type="xs:string"/>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="ChainReferenceType">
+  <xs:complexContent>
+   <xs:extension base="ChainBaseType">
+    <xs:sequence>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="ChainType">
+  <xs:complexContent>
+   <xs:extension base="ChainBaseType">
+    <xs:sequence>
+     <xs:element name="Segment" type="ChainSegmentType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="ChainSegmentType">
+  <xs:sequence>
+   <xs:element name="Frame" type="FrameType"/>
+   <xs:element name="Joint" type="JointType"/>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="FrameType" abstract="true">
+  <xs:sequence>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="MatrixFrameType">
+  <xs:complexContent>
+   <xs:extension base="FrameType">
+    <xs:sequence>
+     <xs:element name="Matrix" type="MatrixType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="TranslationFrameType">
+  <xs:complexContent>
+   <xs:extension base="FrameType">
+    <xs:sequence>
+     <xs:element name="Vector" type="VectorType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+ <xs:complexType name="JointType">
+  <xs:sequence>
+   <!-- This can be either "Rotational", "Translational" or "None" -->
+   <xs:element name="Type" type="xs:string" minOccurs="1" maxOccurs="1"/>
+
+   <!-- This can be either "X", "Y" or "Z" -->
+   <xs:element name="Axis" type="xs:string" minOccurs="1" maxOccurs="1"/>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="MatrixType" abstract="true">
+  <xs:sequence>
+  </xs:sequence>
+ </xs:complexType>
+
+ <!--
+   The elements must be a boost matrix string representation, e.g.:
+   "[3,2]((1,0),(0,1),(0,0))"
+ -->
+ <xs:complexType name="BoostMatrixType">
+  <xs:complexContent>
+   <xs:extension base="MatrixType">
+    <xs:sequence>
+     <xs:element name="String" type="xs:string"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="BoostTranslationMatrixType">
+  <xs:complexContent>
+   <xs:extension base="MatrixType">
+    <xs:sequence>
+     <xs:element name="TranslationVector" type="BoostVectorType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+
+
+ <!--
+  Sensor Transform types
+ -->
+ <xs:complexType name="IdentitySensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="PythonSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="TaskDimension"  type="xs:nonNegativeInteger"/>
+     <xs:element name="ResourceDimension"  type="xs:nonNegativeInteger"/>
+     <xs:element name="InitScript" type="xs:string" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="ExecScript" type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="FiniScript" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+ <!--
+  A type to chain sensor transforms. All but the first sensor transforms
+  need to be constant (but not nessecarily linear)
+ -->
+ <xs:complexType name="SensorTransformChainType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <!--
+  A type that allows composition of sensor transforms. So if T1 and T2 are transforms
+  transforming to task space variables t1 and t2 respectively, then the composite of
+  these two transforms to (t1' t2')', i.e. the column vector containing t1 and t2.
+
+  This allows e.g. composing orientation and position transforms into a single transform.
+ -->
+ <xs:complexType name="CompositeSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="DifferenceSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="2" maxOccurs="2"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+ <xs:complexType name="WeightedSumSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+     <xs:element name="Weights" type="VectorType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+ <xs:complexType name="KDLChainPositionSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="Chain" type="ChainBaseType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="KDLChainOrientationQuatSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="Chain" type="ChainBaseType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="KDLChainAxisAngleSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="Chain" type="ChainBaseType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+ <xs:complexType name="LinearSensorTransformType">
+   <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="Matrix" type="MatrixType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+
+ <!-- 
+  Potential Functions
+ -->
+ <xs:complexType name="CompositePotentialType">
+  <xs:complexContent>
+   <xs:extension base="PotentialType">
+    <xs:sequence>
+     <xs:element name="Potential" type="PotentialType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="SquarePotentialType">
+  <xs:complexContent>
+   <xs:extension base="PotentialType">
+    <xs:sequence>
+     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
+     <xs:element name="Coefficient" type="xs:float"/>
+     <xs:element name="MaxGradientStepNorm" type="xs:float"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="PythonPotentialType">
+  <xs:complexContent>
+   <xs:extension base="PotentialType">
+    <xs:sequence>
+     <xs:element name="Dimension"  type="xs:nonNegativeInteger"/>
+     <xs:element name="InitScript" type="xs:string" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="ExecScript" type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="FiniScript" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="QuaternionPotentialType">
+  <xs:complexContent>
+   <xs:extension base="PotentialType">
+    <xs:sequence>
+     <xs:element name="Coefficient" type="xs:float"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="AxisAnglePotentialType">
+  <xs:complexContent>
+   <xs:extension base="PotentialType">
+    <xs:sequence>
+     <xs:element name="Coefficient" type="xs:float"/>
+     <xs:element name="MaxGradientStepNorm" type="xs:float"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="NavigationFunctionPotentialType">
+  <xs:complexContent>
+   <xs:extension base="PotentialType">
+    <xs:sequence>
+     <xs:element name="Coefficient" type="xs:float"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+ <!--
+  Resource types
+ -->
+
+ <xs:complexType name="DummyResourceType">
+  <xs:complexContent>
+   <xs:extension base = "ResourceType">
+    <xs:sequence>
+     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
+     <xs:element name="Vector" type="VectorType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <!--
+  This type represents a primitive controller as resource. 
+
+  The current
+  value of the resource is the controller's sensor transformed resource
+  value. An incremental resource update step is realized as setting
+  the controller's reference to the current sensor transformed resource
+  value plus the incremental resource update step.
+
+  The controller is then run until convergence.
+
+  This mechanism allows the stacking of controllers in such a way,
+  that the one's task space is the other's resource space.
+
+  A useful application of this scheme is e.g. stacking a visual servoing
+  controller "on top" of a robotic arm end effector position 
+  controller. In this application the robotic arm controller is acting as
+  resource to the visual servoing controller
+ -->
+ <xs:complexType name="PrimitiveControllerResourceType">
+  <xs:complexContent>
+   <xs:extension base = "ResourceType">
+    <xs:sequence>
+     <xs:element name="PrimitiveController" type="PrimitiveControllerType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="PA10JointResourceType">
+  <xs:complexContent>
+   <xs:extension base = "ResourceType">
+    <xs:sequence>
+     <xs:element name="Arm" type="xs:nonNegativeInteger"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+</xs:schema>

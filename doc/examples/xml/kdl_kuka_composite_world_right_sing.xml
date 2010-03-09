@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+
+<!-- 
+A "real life" controller for controlling a 7 DOF robotic arm
+making use of composite potentials and composite sensor
+transforms to control position and orientation simultaneously.
+-->
+
+<!DOCTYPE 
+  chain [
+   <!ENTITY KukaChain SYSTEM "kuka_chain_world_right.xml">
+  ]
+>
+
+<Controller 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:type="PrimitiveControllerType"
+ xmlns:xi="http://www.w3.org/2001/XInclude">
+ <Coefficient>1</Coefficient>
+
+
+ <Potential xsi:type="CompositePotentialType">
+  <Potential xsi:type="SquarePotentialType">
+   <Dimension> 3 </Dimension>
+   <Coefficient> 0.1 </Coefficient>
+   <MaxGradientStepNorm> 0.02 </MaxGradientStepNorm>
+	<DistanceThreshold> 0.01 </DistanceThreshold>
+  </Potential>
+  <Potential xsi:type="AxisAnglePotentialType">
+   <Coefficient> 0.025 </Coefficient>
+   <MaxGradientStepNorm> 0.04 </MaxGradientStepNorm>
+	<DistanceThreshold> 0.01 </DistanceThreshold>
+  </Potential>
+ </Potential>
+
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
+ <SensorTransform xsi:type="CompositeSensorTransformType">
+
+  <SensorTransform xsi:type="KDLChainPositionSensorTransformType">
+   &KukaChain;
+  </SensorTransform>
+
+  <SensorTransform xsi:type="KDLChainAxisAngleSensorTransformType">
+   &KukaChain;
+  </SensorTransform>
+ </SensorTransform> 
+
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 7 </Dimension>
+  <Vector xsi:type="BoostVectorType">
+   <String>[7](1.12163358,1.74562789,0.03026525,0.95642562,-0.04284181,2.35137672,1.08619065)</String>
+  </Vector>
+ </Resource>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="BoostVectorType">
+   <!-- <String> [6](-0.4,-0.3,0.6,1.5708,0.0,0.0) </String> -->
+   <String> [6](-0.10,-0.1,0.1,1.5,0.0,0)</String>
+  </Vector>
+ </Reference>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+ <PrimitiveController 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:type="AvoidSingularitiesControllerType"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+   <Coefficient>0.01</Coefficient>
+
+   <Potential xsi:type="SquarePotentialType">
+     <Dimension> 7 </Dimension>
+     <Coefficient> 0.050 </Coefficient>
+     <MaxGradientStepNorm> 0.02 </MaxGradientStepNorm>
+   </Potential>
+
+   <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
+   <SensorTransform xsi:type="IdentitySensorTransformType">
+     <Dimension>7</Dimension>
+   </SensorTransform>
+
+   <Resource xsi:type="DummyResourceType">
+     <Dimension> 7 </Dimension>
+   </Resource>
+
+   <Reference xsi:type="DummyReferenceType">
+     <Vector xsi:type="BoostVectorType">
+       <String>[7](0.01,0.01,0.01,0.01,0.01,1.57,0.01)</String>
+     </Vector>
+   </Reference>
+
+   <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+	<SamplingStep> 0.001 </SamplingStep>
+
+ </PrimitiveController>
+</Controller>
+
+

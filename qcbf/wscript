@@ -1,0 +1,20 @@
+# -*- mode: python -*-
+
+def set_options(opt):
+	pass
+
+def configure(conf):
+	pass
+
+def build(bld):
+	if bld.env['HAVE_PLUGIN_SUPPORT'] == 1:
+		qcbf = bld.new_task_gen(
+			features='qt4 cxx cprogram', 
+			source='qcbf_main.cc qcbf_main_window.cc', 
+			target='qcbf', 
+			includes='. ../libcbf/', 
+			uselib_local='cbf',
+			uselib = 'QTCORE QTGUI')
+
+
+

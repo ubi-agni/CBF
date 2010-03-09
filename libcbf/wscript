@@ -1,0 +1,87 @@
+# -*- mode: python -*-
+
+VERSION='0.1'
+APPNAME='libcbf'
+srcdir = '.'
+blddir = "build"
+
+def set_options(opt):
+	pass
+
+def configure(conf):
+	pass
+
+def build(bld): 
+	sources = """
+		controller.cc 
+		controller_sequence.cc
+		identity_transform.cc 
+		primitive_controller.cc 
+		resource.cc 
+		dummy_resource.cc 
+		sensor_transform.cc 
+		effector_transform.cc 
+		potential.cc 
+		utilities.cc
+		combination_strategy.cc
+		composite_transform.cc
+		orientation_potentials.cc
+		linear_transform.cc 
+		transform_chains.cc
+		composite_resource.cc
+		avoid_singularities.cc
+		reference.cc
+		dummy_reference.cc
+		gnuplot_i.cpp
+		quaternion.cc
+		difference_sensor_transform.cc
+		weighted_sum_transforms.cc
+		"""
+	
+	task = bld.new_task_gen()
+	task.features     = 'cxx cshlib'
+	task.source       = sources
+	task.target       = 'cbf'
+	task.includes     = ['.', bld.bdir + '/default/schemas/']
+	task.uselib       = ''
+	task.uselib_local = ''
+
+	if bld.env['CBF_HAVE_SPACEMOUSE'] == 1:
+		task.source += ' spacenavi_reference.cc'
+		task.uselib += ' SPACEMOUSE'
+
+	if bld.env['CBF_HAVE_PLUGIN_SUPPORT'] == 1:
+		task.source += ' plugin_pool.cc'
+	
+	if bld.env['CBF_HAVE_XSD'] == 1:
+		task.uselib_local += ' schemalib'
+		task.source += ' c_bindings.cc c_api.cc'
+		#task.uselib += ' XERCES'
+	
+
+	if bld.env['CBF_HAVE_BOOST_PYTHON'] == 1:
+		task.source += ' python_wrap.cc'
+		task.features += ' pyembed'
+		task.uselib  += ' PYEMBED BOOST_PYTHON'
+
+		task2 = bld.new_task_gen()
+		task2.features = 'cxx cshlib pyext pyembed'
+		task2.target = 'pycbf'
+		task2.source = 'python_bindings.cc'
+		task2.uselib = 'PYEMBED PYEXT BOOST_PYTHON'
+		task2.uselib_local = 'cbf'
+		task2.includes = ['.', '../libcbf', '../libcbf/cbf/']
+
+	if bld.env['CBF_HAVE_KDL'] == 1:
+		task.source += ' kdl_transforms.cc'
+		task.uselib += ' OROCOS-KDL'
+		#bld.env['defines']['HAVE_KDL'] = 1
+
+	if bld.env.CBF_HAVE_EIGEN2 == 1:
+		task.source += ' generic_transform.cc'
+		task.uselib += ' EIGEN2'
+
+	if bld.env['CBF_HAVE_PA10']:
+		task.source += ' pa10_joint_resource.cc'
+		task.uselib += ' PA10'
+	

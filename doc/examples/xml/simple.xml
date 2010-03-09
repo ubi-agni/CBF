@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+
+ <Potential xsi:type="SquarePotentialType">
+  <Dimension> 3 </Dimension>
+  <Coefficient> 0.1 </Coefficient>
+ </Potential>
+
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
+ <SensorTransform xsi:type="IdentitySensorTransformType">
+  <Dimension> 3 </Dimension>
+ </SensorTransform>
+
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 3 </Dimension>
+ </Resource>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 0 </Coefficient>
+   <Coefficient> 1 </Coefficient>
+   <Coefficient> 0 </Coefficient>
+  </Vector>
+ </Reference>
+
+</Controller>
+

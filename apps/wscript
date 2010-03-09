@@ -1,0 +1,92 @@
+# -*- mode: python -*-
+
+def set_options(opt):
+	pass
+
+def configure(conf):
+	pass
+
+def build(bld):
+	if bld.env['CBF_HAVE_KDL'] == 1 and bld.env['CBF_HAVE_EIGEN2'] == 1:
+		task1 = bld.new_task_gen(
+			features='cxx cprogram', 
+			source='cbf_test_kdl_transforms.cc', 
+			target='cbf_test_kdl_transforms', 
+			includes='. ../libcbf/', 
+			uselib_local='cbf')
+
+		bld.new_task_gen(
+			features='cxx cprogram', 
+			source='cbf_simple_test.cc', 
+			target='cbf_simple_test', 
+			includes='. ../libcbf/', 
+			uselib_local='cbf')
+
+		bld.new_task_gen(
+			features='cxx cprogram', 
+			source='cbf_test.cc', 
+			target='cbf_test', 
+			includes='. ../libcbf/', 
+			uselib_local='cbf')
+
+		bld.new_task_gen(
+			features='cxx cprogram', 
+			source='cbf_test_axis_potential.cc', 
+			target='cbf_test_axis_potential', 
+			includes='. ../libcbf/', 
+			uselib_local='cbf')
+
+		bld.new_task_gen(
+			features='cxx cprogram', 
+			source='cbf_test_axis_potential2.cc', 
+			target='cbf_test_axis_potential2', 
+			includes='. ../libcbf/', 
+			uselib_local='cbf')
+
+		if bld.env['CBF_HAVE_KDLCHAINVIZ'] == 1:
+			task2 = bld.new_task_gen(
+				features='cxx cprogram qt4', 
+				source='cbf_test_kdl_transforms_view.cc', 
+				target='cbf_test_kdl_transforms_view', 
+				includes='. ../libcbf/', 
+				uselib = 'KDLCHAINVIZ QKDLCHAINVIZ QTCORE QTGUI QTOPENGL OROCOS-KDL',
+				uselib_local='cbf')
+	
+			if bld.env['HAVE_SPACEMOUSE'] == 1:
+				task2.uselib += ' SPACEMOUSE'
+	
+	if bld.env['CBF_HAVE_XSD'] == 1 and bld.env['CBF_HAVE_EIGEN2'] == 1:
+		task3a = bld.new_task_gen(
+			features='cc cprogram', 
+			source='cbf_test_c_bindings.c', 
+			target='cbf_test_c_bindings', 
+			includes=['.', '../libcbf/', '../schemas'], 
+			uselib_local='cbf',
+			uselib = 'XERCESC')
+		
+		task3b = bld.new_task_gen(
+			features='cxx cprogram', 
+			source='cbf_test_plugins.cc', 
+			target='cbf_test_plugins', 
+			includes=['.', '../libcbf/', '../schemas'], 
+			uselib_local='cbf',
+			uselib = 'XERCESC')
+
+		task3b = bld.new_task_gen(
+			features='cxx cprogram', 
+			source='cbf_test_simple_plugin_api.cc', 
+			target='cbf_test_simple_plugin_api', 
+			includes=['.', '../libcbf/', '../schemas'], 
+			uselib_local='cbf',
+			uselib = 'XERCESC')
+
+	if bld.env['CBF_HAVE_XSD'] == 1:
+		task4 = bld.new_task_gen(
+			features='cxx cprogram', 
+			source='cbf_test_xsd_output.cc', 
+			target='cbf_test_xsd_output', 
+			includes='. ../libcbf/ ../schemas/',
+			uselib_local='schemalib', 
+			uselib = 'XERCESC XSD') 
+	
+

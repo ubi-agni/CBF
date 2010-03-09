@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+
+ <Potential xsi:type="SquarePotentialType">
+  <Dimension> 1 </Dimension>
+  <Coefficient> 0.1 </Coefficient>
+ </Potential>
+
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
+
+ <SensorTransform xsi:type="SensorTransformChainType">
+  <SensorTransform xsi:type="LinearSensorTransformType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [4,4]((-0.31494,-1.27271,0.17601,2.34739),(1.10182,1.72873,0.16080,-0.62306),(-0.16610,0.66456,-0.84254,0.81752),(0.928614,0.107583,-0.106014,-0.051105)) </String>
+   </Matrix>
+  </SensorTransform>
+
+  <SensorTransform xsi:type="LinearSensorTransformType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [2,4]((0.79106,1.15111,0.49348,1.12127),(-0.98669,0.18238,0.57302,-1.31960)) </String>
+   </Matrix>
+  </SensorTransform>
+
+  <SensorTransform xsi:type="LinearSensorTransformType">
+   <Matrix xsi:type="BoostMatrixType">
+    <String> [1,2]((1.15111,1.12127)) </String>
+   </Matrix>
+  </SensorTransform>
+ </SensorTransform>
+
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 4 </Dimension>
+  <Vector xsi:type="BoostVectorType">
+   <String> [4](1,2,3,4) </String>
+  </Vector>
+ </Resource>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="BoostVectorType">
+   <String> [1](4) </String>
+  </Vector>
+ </Reference>
+
+</Controller>
+
+

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+
+ <Potential xsi:type="PythonPotentialType">
+  <Dimension> 2 </Dimension>
+  <ExecScript>
+#---
+import scipy as S
+import scipy.linalg as L 
+ref = S.array(references[0])
+inp = S.array(input)
+res = 0.1 * (ref - inp)
+result = list(res)
+#---
+  </ExecScript>
+ </Potential>
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+ <SensorTransform xsi:type="PythonSensorTransformType">
+  <TaskDimension> 2 </TaskDimension>
+  <ResourceDimension> 3 </ResourceDimension>
+  <ExecScript>
+#---
+import sys
+import scipy as S
+import scipy.linalg as L
+j = S.mat([[1, 0.3, -12], [0.1, 1, 20]])
+jacobian = S.matrix.tolist(j)
+result = S.matrix.tolist(S.transpose(j * S.transpose(S.mat(S.array(resource)))))[0]
+#print(result)
+#print(jacobian)
+#sys.stdout.flush()
+#---
+  </ExecScript>
+ </SensorTransform>
+
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 3 </Dimension>
+ </Resource>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 0 </Coefficient>
+   <Coefficient> 12 </Coefficient>
+  </Vector>
+ </Reference>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+</Controller>
+
+

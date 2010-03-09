@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<!-- 
+A "real life" controller for controlling a 7 DOF robotic arm
+making use of composite potentials and composite sensor
+transforms to control position and orientation simultaneously.
+-->
+
+<!DOCTYPE 
+  chain [
+   <!ENTITY KukaChain SYSTEM "simple_chain.xml">
+  ]
+>
+
+<Controller 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:type="PrimitiveControllerType"
+ xmlns:xi="http://www.w3.org/2001/XInclude"
+>
+ <MaxGradientNorm>0.0000001</MaxGradientNorm>
+
+ <Potential xsi:type="SquarePotentialType">
+  <Dimension> 3 </Dimension>
+  <Coefficient> 0.001 </Coefficient>
+ </Potential>
+
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
+
+ <SensorTransform xsi:type="KDLChainPositionSensorTransformType">
+  &KukaChain;
+ </SensorTransform>
+
+
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 7 </Dimension>
+ </Resource>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="BoostVectorType">
+   <String> [3](0,0,0.6) </String>
+  </Vector>
+ </Reference>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+</Controller>
+
+

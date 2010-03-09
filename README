@@ -1,0 +1,40 @@
+- libcbf - Control Basis Framework Library
+
+This is a C++-library for the control basis framework. Grupen et. al.
+proposed the basic idea to factor closed loop controllers into
+individual simple components. 
+
+- Literature
+
+To be filled in..
+
+- Requirements
+
+  - A C++ compiler that likes templates
+
+  - the BOOST libs including the BOOST Numeric UBLAS package
+
+- Optional Requirements
+
+  - KDL, for KDL based inverse and forward kinematics
+
+  - libpa10, for operating the pa10 robot arm
+
+  - xsd, a xml schema to c++ translator. This is needed if 
+    you want to be able to create controllers automatically
+    from XML files
+
+  - libxerces-c++ 2.6 or higher
+
+  - Python C API and boost.python¸ the BOOST python bindings, 
+    if you would like to be able to prototype new sensor/
+    effector transforms or potential functions using 
+    python code embedded into libcbf
+
+  - Doxygen, for building the documentation
+
+- Author
+
+Florian Paul Schmidt (mista.tapas@gmx.net)
+
+

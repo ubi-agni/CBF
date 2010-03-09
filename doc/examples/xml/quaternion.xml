@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+ <Coefficient> 1 </Coefficient>
+
+ <Potential xsi:type="QuaternionPotentialType">
+  <Coefficient> 0.1 </Coefficient>
+ </Potential>
+
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
+ <SensorTransform xsi:type="IdentitySensorTransformType">
+  <Dimension> 4 </Dimension>
+ </SensorTransform>
+
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 4 </Dimension>
+  <Vector xsi:type="BoostVectorType">
+   <String> [4](0,0,1,0) </String> 
+  </Vector>
+ </Resource>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="BoostVectorType">
+   <String> [4](1,0,0,0) </String>
+  </Vector>
+ </Reference>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+</Controller>
+
+

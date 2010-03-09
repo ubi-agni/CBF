@@ -1,0 +1,134 @@
+/* -*- mode: c-non-suck; -*- */
+
+#ifndef CBF_PLUGIN_POOL_HH
+#define CBF_PLUGIN_POOL_HH
+
+#include <map>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+
+#include <boost/shared_ptr.hpp>
+
+#include <cbf/config.h>
+
+
+namespace xsd { namespace cxx { namespace tree {
+	class _type;
+}}}
+
+namespace CBF {
+
+
+/**
+	The base class for all PluginHelper classes that take care
+	of one type each. The derived classes are usually created
+	by the macros CBF_PLUGIN_DECL_CLASS and CBF_PLUGIN_IMPL_CLASS
+	found in the header cbf/plugin_decl_macros.h and 
+	cbf/plugin_impl_macros.h..
+
+	Of the derived classe there is exactly one static instance
+	defined in the corresponding source file. This
+	instance registers itself with the corresponding
+	plugin pool instance.
+*/
+template <class SuperClass>
+struct PluginHelper {
+	typedef boost::shared_ptr<SuperClass> SuperClassPtr;
+	std::string m_Name;
+	std::string m_Type;
+
+	virtual SuperClassPtr create(
+		const xsd::cxx::tree::_type &t
+	) { 
+		return SuperClassPtr(); 
+	}
+
+	virtual void *create() = 0;
+
+	virtual ~PluginHelper() { }
+};
+
+
+/**
+	This class is a template as we need several of these, one for
+	each base class of the different controller components.
+
+	There are explcit instantiations of this template for each of
+	the required types..
+
+	Each one of them is realized as singleton. Thus to construct a
+	certain e.g. SensorTransform from an XML instance type, one would
+	do something like
+
+	PluginPool<SensorTransform>::get_instance()->create(...)
+*/
+template <class SuperClass>
+struct PluginPool {
+	static PluginPool *get_instance() {
+		if (s_Instance == 0) {
+			s_Instance = new PluginPool;
+			return s_Instance;
+		}
+
+		return s_Instance;
+	}
+
+	virtual ~PluginPool() {
+		s_Instance = 0;
+	}
+
+	std::vector<PluginHelper<SuperClass>*> m_PluginHelpers;
+
+	void addPluginHelper(PluginHelper<SuperClass> *plugin_helper) {
+		m_PluginHelpers.push_back(plugin_helper);
+		#ifdef CBF_DEBUG
+			std::cout <<
+				"adding plugin with name: " << 
+				(plugin_helper->m_Name) << 
+				" and type: " << 
+				plugin_helper->m_Type << 
+				"  and i'm instance: " <<
+				(void*)s_Instance <<
+				std::endl;
+			for (unsigned int i = 0; i < m_PluginHelpers.size(); ++i) {
+				CBF_DEBUG("got: " << m_PluginHelpers[i]->m_Name)
+			}
+		#endif
+	}
+
+	boost::shared_ptr<SuperClass> create_from_index(unsigned int index) {
+		if (index > m_PluginHelpers.size())
+			throw std::runtime_error("PluginPool: index out of bounds");
+
+		return boost::shared_ptr<SuperClass>((SuperClass*)m_PluginHelpers[index]->create());
+	}
+
+	boost::shared_ptr<SuperClass> create_from_name(const std::string &name) {
+		for (unsigned int i = 0; i < m_PluginHelpers.size(); ++i)
+		{
+			if (m_PluginHelpers[i]->m_Name == name) {
+				return create_from_index(i);
+			}
+		}
+		return boost::shared_ptr<SuperClass>();
+	}
+
+	boost::shared_ptr<SuperClass> create_from_xml(const xsd::cxx::tree::_type &xml_document);
+
+	template<class XMLType>
+	boost::shared_ptr<SuperClass> create_from_file(const std::string &file_name);
+
+	protected:
+		static PluginPool *s_Instance;
+
+		PluginPool() {
+
+		}
+};
+
+
+} // namespace
+
+#endif

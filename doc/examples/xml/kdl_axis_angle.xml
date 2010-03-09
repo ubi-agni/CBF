@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE
+  chain [
+   <!ENTITY KukaChain SYSTEM "kuka_chain.xml">
+  ]
+>
+
+
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+
+ <Potential xsi:type="AxisAnglePotentialType">
+  <Coefficient> 0.1 </Coefficient>
+ </Potential>
+
+
+ <SensorTransform xsi:type="KDLChainAxisAngleSensorTransformType">
+  &KukaChain;
+ </SensorTransform>
+ 
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 7 </Dimension>
+ </Resource>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="BoostVectorType">
+   <String> [3](0,0.1,0) </String>
+  </Vector>
+ </Reference>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+</Controller>
+
+
