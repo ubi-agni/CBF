@@ -1,3 +1,6 @@
+Note that you need a working Python installation for the build
+scripts to work..
+
 1. ./waf configure
 
   Note: If you want a release build, add the --optimize option to the 
