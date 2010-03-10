@@ -26,5 +26,5 @@ def configure(conf):
 	pass
 
 def build(bld):
-	build.add_subdirs('examples')
+	bld.add_subdirs('examples')
 

@@ -25,5 +25,5 @@ def configure(conf):
 	pass
 
 def build(bld):
-	build.add_subdirs('cpp c python')
+	bld.add_subdirs('cpp c python')
 
