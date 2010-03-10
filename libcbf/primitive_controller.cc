@@ -172,7 +172,7 @@ namespace CBF {
 		subordinate_step(result);
 		m_EffectorTransform->resource()->add(result);
 	
-		if (finished()) { return true; } else { return false; }
+		return finished();
 		//CBF_DEBUG("Resource: " <<  m_EffectorTransform->resource()->get())
 	}
 	
