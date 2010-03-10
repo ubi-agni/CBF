@@ -8,7 +8,21 @@ individual simple components.
 
 To be filled in..
 
+- How to get the software
+
+Install the git toolchain on you computer. Then from a console, clone
+this repository:
+
+git://github.com/mistatapas/CBF.git
+
+You can use e.g. this comand to check the current version of 
+the software into a directory called cbf:
+
+git clone git://github.com/mistatapas/CBF.git cbf
+
 - Requirements
+
+  - A working python installation 
 
   - A C++ compiler that likes templates
 
@@ -32,6 +46,11 @@ To be filled in..
     python code embedded into libcbf
 
   - Doxygen, for building the documentation
+
+- Installation
+
+See the INSTALL file for information on how to build and 
+install the software
 
 - Author
 
