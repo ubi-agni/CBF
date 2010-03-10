@@ -1,4 +1,4 @@
-- libcbf - Control Basis Framework Library
+- CBF - A Control Basis Framework Library
 
 This is a C++-library for the control basis framework. Grupen et. al.
 proposed the basic idea to factor closed loop controllers into
