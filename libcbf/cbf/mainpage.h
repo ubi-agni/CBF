@@ -25,7 +25,7 @@ namespace CBF {
 
 	\author Florian Paul Schmidt
 
-	To start with, here's a simple example that creates a very simple controller. This example can be found in the test/ directory named cbf_simple_test.cc. It should have been built together with the library libcbf.so. All controllers created manually like this follow the same scheme. Read on below this example for more detailed information.
+	To start with, here's a simple example that creates a very simple controller. This example can be found in the doc/examples/cpp directory named cbf_simple_test.cc. It should have been built together with the library libcbf.so. All controllers created manually like this follow the same scheme. Read on below this example for more detailed information.
 
 	\includelineno cbf_simple_test.cc
 
@@ -112,12 +112,12 @@ namespace CBF {
 
 	Here is an example that is a little more elaborate. It sports composite Potentials and SensorTransforms to create a composite position/orientation controller for a 7-DOF Kuka leightweight arm.
 
-	\include kdl_composite.xml
+	\include kdl_kuka_composite.xml
 
 	\section Examples
 	You might take a look at one of the test programs in the test/ folder (follow the below link and then click  "Go to the source code of this file."):
 
-	- cbf_test_recipes.cc This example shows how to create a controller from an XML file description.
+	- cbf_run_controller_from_xml.cc This example shows how to create a controller from an XML file description.
 
 	- cbf_simple_test.cc This example tests some basic CBF functionality. It also assembles a PrimitiveController "manually".
 

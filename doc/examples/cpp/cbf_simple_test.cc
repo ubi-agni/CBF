@@ -18,8 +18,6 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-/* -*- mode: c-non-suck; -*- */
-
 #include <cbf/primitive_controller.h>
 #include <cbf/potential.h>
 #include <cbf/identity_transform.h>
