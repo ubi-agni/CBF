@@ -14,9 +14,12 @@
 
  <Resource xsi:type="DummyResourceType">
   <Dimension> 3 </Dimension>
+  <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 0 </Coefficient>
+   <Coefficient> 1 </Coefficient>
+   <Coefficient> 0 </Coefficient>
+  </Vector>
  </Resource>
-
- <CombinationStrategy xsi:type="AddingStrategyType"/>
 
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="SimpleVectorType">
@@ -25,6 +28,8 @@
    <Coefficient> 0 </Coefficient>
   </Vector>
  </Reference>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
 
 </Controller>
 

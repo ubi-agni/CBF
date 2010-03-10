@@ -1,22 +1,31 @@
 <?xml version="1.0"?>
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+
  <Potential xsi:type="SquarePotentialType">
   <Dimension> 3 </Dimension>
   <Coefficient> 1 </Coefficient>
  </Potential>
+
  <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
  <SensorTransform xsi:type="LinearSensorTransformType">
-  <Matrix xsi:type="BoostMatrixType"> <String> [2,3]((1,0,0),(0,1.01,0)) </String> </Matrix>
+  <Matrix xsi:type="BoostMatrixType"> 
+   <String> [2,3]((1,0,0),(0,1.01,0)) </String> 
+  </Matrix>
  </SensorTransform>
+
  <Resource xsi:type="DummyResourceType">
   <Dimension> 3 </Dimension>
  </Resource>
+
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="BoostVectorType">
    <String> [2](0,10) </String>
   </Vector>
  </Reference>
+
  <CombinationStrategy xsi:type="AddingStrategyType"/>
+
 </Controller>
 
 
