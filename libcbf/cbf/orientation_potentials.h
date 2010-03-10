@@ -41,6 +41,7 @@
 
 CBF_PLUGIN_PREAMBLE(QuaternionPotential)
 CBF_PLUGIN_PREAMBLE(AxisAnglePotential)
+CBF_PLUGIN_PREAMBLE(AxisPotential)
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
