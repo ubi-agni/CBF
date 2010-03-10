@@ -4,16 +4,27 @@ This is a C++-library for the control basis framework. Grupen et. al.
 proposed the basic idea to factor closed loop controllers into
 individual simple components. 
 
+This software has been developed with the generous support of the
+CITEC (Cognitive Interaction Technology - Center of Excellence),
+which is part of the Excellence Initiative of the Germen Federal
+Government.
+
 - Literature
 
-To be filled in..
+See e.g.
+
+http://www-robotics.cs.umass.edu/Publications/Publications
+
+for a list of relevant publications, especially:
+
+http://www-robotics.cs.umass.edu/Papers/huber_thesis.ps.gz
 
 - How to get the software
 
 Install the git toolchain on you computer. Then from a console, clone
 this repository:
 
-git://github.com/mistatapas/CBF.git
+git://github.com/fps/CBF.git
 
 You can use e.g. this comand to check the current version of 
 the software into a directory called cbf:
