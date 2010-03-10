@@ -27,7 +27,6 @@ def configure(conf):
 	pass
 
 def build(bld):
-	
 	if bld.env['CBF_HAVE_XSD'] == 1 and bld.env['CBF_HAVE_EIGEN2'] == 1:
 		task3a = bld.new_task_gen(
 			features='cc cprogram', 
