@@ -565,7 +565,10 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = ../../libcbf/ \
-                         ../../test/ \
+                         ../../tests/ \
+                         ../../doc/examples/cpp/ \
+                         ../../doc/examples/c/ \
+                         ../../apps/ \
                          ../../schemas/ \
                          ../../doc/examples/xml/
 

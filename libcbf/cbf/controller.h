@@ -73,7 +73,7 @@ namespace CBF {
 			calling finished() for the first time.
 
 			This base class implementation always
-			returns true, as there's nothing to do..
+			returns true, as there's nothing to do.
 		*/
 		virtual bool finished() { return true; }
 	};

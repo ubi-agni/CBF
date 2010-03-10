@@ -52,6 +52,8 @@ namespace CBF {
 
 	- Resource A resource represents capabilities of a robot as a vector of CBFFloat. Often these are control affordances of a robotic manipulator, e.g. joint angles.
 
+   - Reference A reference represents a point in task space that the controller is supposed to reach. More generally speaking it's a set of points and the controller is free to converge to any of them.
+
 	- EffectorTransform This transform implements the inverse of the task jacobian. It is used to transform the gradient step in Task space to a gradient step in Resource space
 
 

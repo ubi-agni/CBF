@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 		CBF::ControllerPtr c = 
 			pp->create_from_file<ControllerType>(filename);
 
-		c->step();
+		while (c->step() == false) ;
 	}
 
 	return 0;
