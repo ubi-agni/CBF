@@ -18,24 +18,13 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 """
 
+
 def set_options(opt):
+	opt.sub_options('examples')
+
+def configure(conf):
 	pass
 
-def build(env):
-	if bld.env['CBF_HAVE_KDL'] == 1 and bld.env['CBF_HAVE_EIGEN2'] == 1:
-		bld.new_task_gen(
-			features='cxx cprogram', 
-			source='cbf_test.cc', 
-			target='cbf_test', 
-			includes='. ../libcbf/', 
-			uselib_local='cbf')
-
-	if bld.env['CBF_HAVE_XSD'] == 1:
-		task4 = bld.new_task_gen(
-			features='cxx cprogram', 
-			source='cbf_test_xsd_output.cc', 
-			target='cbf_test_xsd_output', 
-			includes='. ../libcbf/ ../schemas/',
-			uselib_local='schemalib', 
-			uselib = 'XERCESC XSD') 
+def build(bld):
+	build.add_subdirs('examples')
 

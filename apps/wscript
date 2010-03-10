@@ -28,15 +28,6 @@ def configure(conf):
 
 def build(bld):
 	if bld.env['CBF_HAVE_KDL'] == 1 and bld.env['CBF_HAVE_EIGEN2'] == 1:
-	
-		task3b = bld.new_task_gen(
-			features='cxx cprogram', 
-			source='cbf_test_plugins.cc', 
-			target='cbf_test_plugins', 
-			includes=['.', '../libcbf/', '../schemas'], 
-			uselib_local='cbf',
-			uselib = 'XERCESC')
-
 		task3b = bld.new_task_gen(
 			features='cxx cprogram', 
 			source='cbf_run_controller_from_xml.cc', 

@@ -212,7 +212,9 @@ def set_options(opt):
 
 
 	opt.sub_options('libcbf')
-	opt.sub_options('qcbf')
+	opt.sub_options('apps')
+	opt.sub_options('doc')
+	opt.sub_options('tests')
 	opt.tool_options('qt4')
 	#opt.sub_options('test')
 	#opt.sub_options('schemas')
@@ -395,7 +397,7 @@ def configure(conf):
 
 
 def build(bld):
-	bld.add_subdirs('schemas qcbf libcbf apps tests')
+	bld.add_subdirs('schemas libcbf apps tests')
 
 	bld.install_files('${PREFIX}/include/cbf', bld.path.ant_glob('libcbf/cbf/*.h', bld=True, flat=True))
 	bld.install_files('${PREFIX}/include/cbf', bld.path.ant_glob('schemas/*.hxx', bld=True, flat=True))
