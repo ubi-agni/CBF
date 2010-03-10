@@ -29,7 +29,7 @@ git://github.com/fps/CBF.git
 You can use e.g. this comand to check the current version of 
 the software into a directory called cbf:
 
-git clone git://github.com/mistatapas/CBF.git cbf
+git clone git://github.com/cbf/CBF.git cbf
 
 - Requirements
 
