@@ -60,7 +60,7 @@ namespace CBF {
 		m_SubordinateCoefficient(beta),
 		m_InitReferenceFromSensorTransform(init_reference_from_sensor_transform)
 	{
-		CBF_DEBUG("[PrimitiveController]: Constructor1")
+		CBF_DEBUG("Constructor1")
 	}
 	
 	PrimitiveController::PrimitiveController(
@@ -73,7 +73,7 @@ namespace CBF {
 		m_SubordinateCoefficient(beta),
 		m_InitReferenceFromSensorTransform(init_reference_from_sensor_transform)
 	{ 
-		CBF_DEBUG("Constructor1")
+		CBF_DEBUG("Constructor2")
 	}
 	
 	

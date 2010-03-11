@@ -71,13 +71,23 @@ namespace CBF {
 	typedef boost::shared_ptr<DampedWeightedGenericEffectorTransform> DampedWeightedGenericEffectorTransformPtr;
 	
 	/**
-		@brief Pseudo inverse based generic effector transform (damped, weighted)
+		@brief Pseudo inverse based generic effector transform (damped, weighted).
+
+		TODO: Implement!!!
 	*/
 	struct DampedWeightedGenericEffectorTransform : public EffectorTransform {
 		CBF_PLUGIN_DECL_METHODS(DampedWeightedGenericEffectorTransform)
 
 		protected:	
 	 		FloatMatrix m_Weights;
+
+			/**
+				@brief This variable controls the amount of damping
+
+				Instead of 1/lambda where lambda is a singular value of the 
+				sensor transform this uses lambda/(m_DampingConstant + lambda^2)
+			*/
+			Float m_DampingConstant;
 
 		public:	
 			virtual void update();

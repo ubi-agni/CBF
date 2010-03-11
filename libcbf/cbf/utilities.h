@@ -83,11 +83,9 @@ inline FloatVector unpack_axis_angle3(FloatVector &v) {
 	Calculates pseudo inverse of matrix m and writes it into result. m must have more columns
 	than rows.
 */
+Float damped_pseudo_inverse(const FloatMatrix &m, FloatMatrix &result, Float damping_constant = 0.001);
+
 Float pseudo_inverse(const FloatMatrix &m, FloatMatrix &result);
-
-Float weighted_damped_pseudo_inverse(const FloatMatrix &m, FloatMatrix &result);
-
-Float undamped_pseudo_inverse(const FloatMatrix &m, FloatMatrix &result);
 
 template<class matrix_T>
 Float determinant(ublas::matrix_expression<matrix_T> const& mat_r)

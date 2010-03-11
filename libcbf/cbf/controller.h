@@ -28,7 +28,6 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
 /**
 	@brief The CBF namespace holds the user visible classes provided by the ControlBasisFramework lib.
@@ -55,7 +54,9 @@ namespace CBF {
 			Subclasses need to implement this. If this is 
 			a controller program, the semantics still
 			is to run a single step of "underlying" 
-			controllers and then return immediately.. 
+			controllers and then return immediately..
+			(TODO: is this really so? Discuss and
+			clarify!!) 
 	
 			The controller is expected to return true 
 			when finished() would return true, too.
@@ -63,7 +64,7 @@ namespace CBF {
 			Always run step() at least once before 
 			calling finished() for the first time.
 		*/
-		virtual bool step() { return true; }
+		virtual bool step() { return finished(); }
 	
 		/**
 			Has this controller reached its goal? 
@@ -77,7 +78,6 @@ namespace CBF {
 		*/
 		virtual bool finished() { return true; }
 	};
-	
 	
 	//! Convenience typedef
 	typedef boost::shared_ptr<Controller> ControllerPtr;

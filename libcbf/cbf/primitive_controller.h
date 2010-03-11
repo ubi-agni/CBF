@@ -177,16 +177,6 @@ namespace CBF {
 	
 			ReferencePtr reference() { return m_Reference; }
 	
-	#if 0
-			void set_references(std::vector<FloatVector> &references) {
-				m_References = references;
-			}
-	
-			std::vector<FloatVector> &references() {
-				return m_References;
-			}
-	#endif
-	
 			void set_subordinate_controllers(std::vector<PrimitiveControllerPtr> subordinate_controllers) {
 				m_SubordinateControllers = subordinate_controllers;
 			}

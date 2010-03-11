@@ -101,21 +101,14 @@ namespace CBF {
 		}
 
 		/**
-			@brief Binf this sensor transform to a resource
+			@brief Bind this sensor transform to a resource
 
 			Subclasses might have to override this. See e.g. 
 			CompositeSensorTransform for an example that does this.
 		*/
 		virtual void set_resource(ResourcePtr r) {
 			if (r->dim() != resource_dim()) {
-				std::stringstream stream;
-				stream << "[SensorTransform]: Dimension mismatch!";
-				stream 
-					<< " Expected resource dim " 
-					<< resource_dim() 
-					<< " but got " 
-					<< r->dim();
-				throw std::runtime_error(stream.str().c_str());
+				throw std::runtime_error("[SensorTransform]: Dimension mismatch");
 			}
 			m_Resource = r;
 		}
@@ -132,6 +125,12 @@ namespace CBF {
 		virtual FloatMatrix &task_jacobian() { return m_TaskJacobian; }
 	
 		protected:
+			/**
+				@brief This value should be checked against by update(). 
+				to avoid calling update more often than nessecary.
+			*/
+			int m_Cycle;
+
 			/**
 				A sensor transformation is bound to a resource..
 			*/

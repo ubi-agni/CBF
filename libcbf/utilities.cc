@@ -79,73 +79,6 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 
 
 #ifdef CBF_HAVE_EIGEN2
-	Float undamped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
-		bool transpose = false;
-	
-		if (M.size2() > M.size1()) transpose = true;
-	
-		//! Placeholders for the singular value decomposition
-		Eigen::MatrixXd m((int)M.size1(), (int)M.size2());
-	
-		//! rows and cols hold dimensions of input matrix
-		int rows = (int)M.size1();
-		int cols = (int)M.size2();
-	
-		for (int row = 0; row < rows; ++row)
-		{
-			for (int col = 0; col < cols; ++col)
-			{
-				m(row,col) = M(row,col);	
-			}
-		}
-	
-		if (transpose) m.transposeInPlace();
-	
-		Eigen::SVD<Eigen::MatrixXd> svd = m.svd();
-	
-		const Eigen::MatrixXd& Sv = svd.singularValues();
-		CBF_DEBUG("singularValues: " << Sv);
-	
-		//! Prepare a diagonal matrix from the singularValues vector
-		Eigen::MatrixXd SvMatrix(Sv.rows(), Sv.rows());
-		SvMatrix.setZero();
-	
-		Float det = 1.0;
-		//! We use the ordinary reciprocal for testing purposes here
-		for (int i = 0; i < Sv.rows(); ++i) {
-			SvMatrix(i,i) = Sv(i,0) / (0.00 + (Sv(i,0) * Sv(i,0)));
-			det *= SvMatrix(i,i);
-#if 0
-			if (Sv(i,0) > 0.001)
-				SvMatrix(i,i) = 1.0 / (Sv(i,0));
-			else {
-				CBF_DEBUG("SINGULAR")
-				SvMatrix(i,i) = 0.0;
-			}
-#endif
-			// std::cout << Sv(i,0)  << std::endl;
-		}
-		CBF_DEBUG("deter:" << det)
-		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
-	
-		CBF_DEBUG("svd: "<< std::endl << SvMatrix)
-	
-		Eigen::MatrixXd res = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-	
-		result = FloatMatrix(res.rows(), res.cols());
-	
-		for (int row = 0; row < res.rows(); ++row)
-		{
-			for (int col = 0; col < res.cols(); ++col)
-			{
-				result(row,col) = res(row,col);
-			}
-		}
-	
-		if (transpose) result = ublas::trans(result);
-		return det;
-	}
-
 	Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
 		bool transpose = false;
 	
@@ -180,7 +113,72 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		Float det = 1.0;
 		//! We use the ordinary reciprocal for testing purposes here
 		for (int i = 0; i < Sv.rows(); ++i) {
-			SvMatrix(i,i) = Sv(i,0) / (0.001 + (Sv(i,0) * Sv(i,0)));
+			//SvMatrix(i,i) = Sv(i,0) / (0.00 + (Sv(i,0) * Sv(i,0)));
+			det *= SvMatrix(i,i);
+			if (Sv(i,0) > 0.001)
+				SvMatrix(i,i) = 1.0 / (Sv(i,0));
+			else {
+				CBF_DEBUG("SINGULAR")
+				SvMatrix(i,i) = 0.0;
+			}
+			// std::cout << Sv(i,0)  << std::endl;
+		}
+		CBF_DEBUG("deter:" << det)
+		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
+	
+		CBF_DEBUG("svd: "<< std::endl << SvMatrix)
+	
+		Eigen::MatrixXd res = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+	
+		result = FloatMatrix(res.rows(), res.cols());
+	
+		for (int row = 0; row < res.rows(); ++row)
+		{
+			for (int col = 0; col < res.cols(); ++col)
+			{
+				result(row,col) = res(row,col);
+			}
+		}
+	
+		if (transpose) result = ublas::trans(result);
+		return det;
+	}
+
+	Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, Float damping_constant) {
+		bool transpose = false;
+	
+		if (M.size2() > M.size1()) transpose = true;
+	
+		//! Placeholders for the singular value decomposition
+		Eigen::MatrixXd m((int)M.size1(), (int)M.size2());
+	
+		//! rows and cols hold dimensions of input matrix
+		int rows = (int)M.size1();
+		int cols = (int)M.size2();
+	
+		for (int row = 0; row < rows; ++row)
+		{
+			for (int col = 0; col < cols; ++col)
+			{
+				m(row,col) = M(row,col);	
+			}
+		}
+	
+		if (transpose) m.transposeInPlace();
+	
+		Eigen::SVD<Eigen::MatrixXd> svd = m.svd();
+	
+		const Eigen::MatrixXd& Sv = svd.singularValues();
+		CBF_DEBUG("singularValues: " << Sv);
+	
+		//! Prepare a diagonal matrix from the singularValues vector
+		Eigen::MatrixXd SvMatrix(Sv.rows(), Sv.rows());
+		SvMatrix.setZero();
+	
+		Float det = 1.0;
+		//! We use the ordinary reciprocal for testing purposes here
+		for (int i = 0; i < Sv.rows(); ++i) {
+			SvMatrix(i,i) = Sv(i,0) / (damping_constant + (Sv(i,0) * Sv(i,0)));
 			det *= SvMatrix(i,i);
 #if 0
 			if (Sv(i,0) > 0.001)
