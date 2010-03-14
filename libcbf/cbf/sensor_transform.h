@@ -142,7 +142,7 @@ namespace CBF {
 			FloatVector m_ResourceValue;
 
 			/**
-				Should be calculated by update()
+				Should be calculated by update() and returned by result()
 			*/
 			FloatVector m_Result;
 
