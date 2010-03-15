@@ -23,14 +23,16 @@
 #ifndef CBF_IMPL_PLUGIN_MACROS_HH
 #define CBF_IMPL_PLUGIN_MACROS_HH
 
+#ifdef CBF_HAVE_XSD
+	#include <schemas.hxx>
+#endif
+
+
 #include <cbf/config.h>
 
 #include <cbf/plugin_decl_macros.h>
 #include <cbf/debug_macros.h>
 
-#ifdef CBF_HAVE_XSD
-	#include <schemas.hxx>
-#endif
 
 #ifdef CBF_HAVE_XSD
 	/**
@@ -39,10 +41,20 @@
 	*/
 	#define CBF_PLUGIN_XSD_CREATOR(ClassName, SuperclassName)\
 			boost::shared_ptr<SuperclassName> create(const xsd::cxx::tree::_type &t) {\
-				const ClassName##Type *p = dynamic_cast<const ClassName##Type*>(&t); \
-				if (p == 0) \
-					return boost::shared_ptr<ClassName>(); \
-				return boost::shared_ptr<ClassName>(new ClassName(*p)); \
+				try { \
+					const ClassName##Type *p = dynamic_cast<const ClassName##Type*>(&t); \
+					if (p == 0) \
+						return boost::shared_ptr<ClassName>(); \
+					return boost::shared_ptr<ClassName>(new ClassName(*p)); \
+				} \
+				catch (xml_schema::exception &e) { \
+					std::cerr << "Error Error Error: " << e.what() << std::endl << std::flush; \
+					throw; \
+				} \
+				catch (...) { \
+					std::cerr << "FEWEGWWEGWGWEGEWG" << std::endl; \
+					throw; \
+				} \
 			}
 #else
 	#define CBF_PLUGIN_XSD_CREATOR(ClassName, SuperclassName)
@@ -58,12 +70,12 @@
 		of this class (defined by CBF_PLUGIN_IMPL_CLASS)
 		does the adding automatically...
 	*/
-	#define CBF_PLUGIN_DECL_CLASS(ClassName,SuperclassName)\
-	struct ClassName##PluginHelper : public PluginHelper<SuperclassName> {\
-		ClassName##PluginHelper();\
-		void *create();\
-		CBF_PLUGIN_XSD_CREATOR(ClassName, SuperclassName)\
-	};\
+	#define CBF_PLUGIN_DECL_CLASS(ClassName,SuperclassName) \
+	struct ClassName##PluginHelper : public PluginHelper<SuperclassName> { \
+		ClassName##PluginHelper(); \
+		void *create(); \
+		CBF_PLUGIN_XSD_CREATOR(ClassName, SuperclassName) \
+	}; \
 	extern ClassName##PluginHelper ClassName##PluginHelperInstance;
 
 #else
@@ -71,21 +83,21 @@
 #endif
 
 #ifdef CBF_HAVE_PLUGIN_SUPPORT
-	#define CBF_PLUGIN_IMPL_CLASS(ClassName,SuperclassName)\
-	ClassName##PluginHelper::ClassName##PluginHelper(){\
-		m_Name = #ClassName;\
-		m_Type = #SuperclassName;\
-		CBF_DEBUG(m_Name)\
-		CBF_DEBUG(m_Type)\
-		PluginPool<SuperclassName>::get_instance()->addPluginHelper(this);\
-	}\
-	void * ClassName##PluginHelper::create() {\
-		return new ClassName;\
-	}\
+	#define CBF_PLUGIN_IMPL_CLASS(ClassName,SuperclassName) \
+	ClassName##PluginHelper::ClassName##PluginHelper(){ \
+		m_Name = #ClassName; \
+		m_Type = #SuperclassName; \
+		CBF_DEBUG(m_Name) \
+		CBF_DEBUG(m_Type) \
+		PluginPool<SuperclassName>::get_instance()->addPluginHelper(this); \
+	} \
+	void * ClassName##PluginHelper::create() { \
+		return new ClassName; \
+	} \
 	ClassName##PluginHelper ClassName##PluginHelper##Instance;
 
-	#define CBF_PLUGIN_CLASS(ClassName, SuperclassName)\
-		CBF_PLUGIN_DECL_CLASS(ClassName, SuperclassName)\
+	#define CBF_PLUGIN_CLASS(ClassName, SuperclassName) \
+		CBF_PLUGIN_DECL_CLASS(ClassName, SuperclassName) \
 		CBF_PLUGIN_IMPL_CLASS(ClassName, SuperclassName)
 #else
 	#define CBF_PLUGIN_CLASS(ClassName, SuperclassName)

@@ -30,6 +30,7 @@
 #include <cbf/controller.h>
 #include <cbf/primitive_controller.h>
 #include <cbf/reference.h>
+#include <cbf/debug_macros.h>
 
 #include <stdexcept>
 
@@ -51,7 +52,7 @@ namespace CBF {
 			unsigned long column,
 			severity,
 			const std::basic_string<char>& message) {
-				std::cout << "\"" << message <<"\"" << " in line: " << line << ", column: " << column << std::endl;
+				std::cerr << "[ParsingErrorHandler]: \"" << message <<"\"" << " in line: " << line << ", column: " << column << std::endl;
 				return false;
 			}
 	};
@@ -64,16 +65,21 @@ namespace CBF {
 	template <class ComponentType, class XMLType>
 	boost::shared_ptr<ComponentType> create_from_file(const std::string &filename) {
 		ParsingErrorHandler err_handler;
-		std::auto_ptr<XMLType> xml_instance
-			(::Controller
-				(filename,
-				 err_handler,
-				 xml_schema::flags::dont_validate));
-		
-		std::cout << "- Cooking controller..." << std::endl;
+		try {
+			std::auto_ptr<XMLType> xml_instance
+				(::Controller
+					(filename,
+					 err_handler,
+					 xml_schema::flags::dont_validate));
+
+			CBF_DEBUG("Cooking controller...")
+			boost::shared_ptr<ComponentType> ptr = PluginPool<ComponentType>::get_instance()->create_from_xml(*xml_instance);
+			return ptr;
+		} catch (xml_schema::exception &e) {
+			std::cerr << "Error parsing document: " << e << std::endl << std::flush;
+			throw;
+		}	
 		//! Finally let's create the controller instance..
-		boost::shared_ptr<ComponentType> ptr = PluginPool<ComponentType>::get_instance()->create_from_xml(*xml_instance);
-		return ptr;
 	}
 
 

@@ -2,8 +2,8 @@
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
 
  <Potential xsi:type="SquarePotentialType">
-  <Dimension> 3 </Dimension>
   <Coefficient> 0.1 </Coefficient>
+  <Dimension> 3 </Dimension>
  </Potential>
 
  <EffectorTransform xsi:type="GenericEffectorTransformType"/>

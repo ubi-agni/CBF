@@ -40,11 +40,11 @@ using namespace boost::numeric;
 
 struct test {
 	void operator()(int i) {
-		std::cout << "jhejkf| " << i << std::endl;
+		std::cout << "jhejkf1| " << i << std::endl;
 	}
 
 	void exec() {
-		std::cout << "jhejkf|" << std::endl;
+		std::cout << "jhejkf2|" << std::endl;
 	}
 };
 
