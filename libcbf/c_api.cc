@@ -207,7 +207,7 @@ cbf_controller_get_current_task_position(struct primitive_controller *c, double 
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
-	std::copy((*p)->get_current_task_position().begin(),(*p)->get_current_task_position().end(), out);
+	std::copy((*p)->current_task_position().begin(),(*p)->current_task_position().end(), out);
 
 	return 1;	
 }

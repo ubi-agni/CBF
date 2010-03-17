@@ -167,7 +167,7 @@ namespace CBF {
 				This function only returns sensible values after
 				the controller has run at least once...
 			*/
-			const FloatVector &get_current_task_position() {
+			const FloatVector &current_task_position() {
 				return m_CurrentTaskPosition;
 			}
 
