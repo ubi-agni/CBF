@@ -45,8 +45,8 @@ namespace CBF {
 	struct Controller {
 
 		Controller() :
-			m_UpdateCycle(0),
-			m_ActionCycle(0)
+			m_UpdateCycle(-2),
+			m_ActionCycle(-2)
 		{
 
 		}
@@ -122,9 +122,10 @@ namespace CBF {
 		virtual void do_update(int cycle)  { }
 
 		/**
-			@brief This member updates the internal state
-			depending on whether it's a new cycle or not
-			(by calling do_update() if appropriate).
+			@brief This member checks whether it's 
+			time to take action based on the cycle id.
+
+			If it is time, then it calls the do_action() method
 		*/
 		virtual void action(int cycle) {
 			if (m_ActionCycle != cycle) 
