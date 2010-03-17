@@ -79,7 +79,7 @@ namespace CBF {
 	
 	
 	
-	FloatVector &PrimitiveController::subordinate_step(ublas::vector<Float> &result) 
+	void PrimitiveController::do_update(int cycle) 
 	{
 		assert(m_Reference.get() != 0);
 		assert(m_SensorTransform.get() != 0);
@@ -130,7 +130,8 @@ namespace CBF {
 		m_SubordinateGradientSteps.resize(m_SubordinateControllers.size());
 	
 		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) {
-			m_SubordinateControllers[i]->subordinate_step(m_SubordinateGradientSteps[i]);
+			m_SubordinateControllers[i]->update(cycle);
+			m_SubordinateGradientSteps[i] = m_SubordinateControllers[i]->result();
 			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i])
 		}
 	
@@ -154,26 +155,13 @@ namespace CBF {
 		);
 		CBF_DEBUG("combined_results * beta: " << m_CombinedResults * m_SubordinateCoefficient)
 	
-		result = (m_ResourceStep * m_Coefficient) + (m_CombinedResults * m_SubordinateCoefficient);
-
-		return result;
-
-		// CBF_DEBUG("result: " << result)
-// 		std::cout << "@: ";
-// 		for (unsigned int i = 0; i < result.size(); ++i) 
-// 			std::cout << result[i] << " ";
-// 		std::cout << std::endl;
+		m_Result = (m_ResourceStep * m_Coefficient) + (m_CombinedResults * m_SubordinateCoefficient);
 	}
 	
-	bool PrimitiveController::step() {
-		// a place to store our results
-		ublas::vector<Float> result = ublas::zero_vector<Float>(m_SensorTransform->task_dim());
-	
-		subordinate_step(result);
-		m_EffectorTransform->resource()->add(result);
-	
-		return finished();
-		//CBF_DEBUG("Resource: " <<  m_EffectorTransform->resource()->get())
+	void PrimitiveController::do_action(int cycle) {
+		update(cycle);
+
+		m_EffectorTransform->resource()->add(m_Result);
 	}
 	
 	void PrimitiveController::set_resource(ResourcePtr resource) throw (std::runtime_error) {

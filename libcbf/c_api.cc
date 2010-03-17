@@ -30,6 +30,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/dummy_reference.h>
 #include <algorithm>
+#include <cstdlib>
 
 void cbf_init() {
 
@@ -173,8 +174,10 @@ cbf_controller_step(struct primitive_controller *c, double *in, double *out)
 		//! A place to store the result...
 		boost::numeric::ublas::vector<CBF::Float> result;
 
-		//! Actually perform the step...
-		(*p)->subordinate_step(result);
+		//! Update the controller state
+		(*p)->update(rand());
+
+		result = (*p)->result();
 
 		//! Copy result over into out array...
 		std::copy(result.begin(), result.end(), out);

@@ -13,11 +13,6 @@
   resource 
  -->
  <xs:complexType name="ControllerType" abstract="true">
-  <xs:annotation>
-   <xs:documentation>
-    This is an (abstract in C++) base type. You need to use one of the derived types like e.g. PrimitiveControllerType.
-   </xs:documentation>
-  </xs:annotation>
  </xs:complexType>
 
  <xs:complexType name="ControllerSequenceType">
@@ -499,7 +494,7 @@
     <xs:sequence>
      <xs:element name="Dimension" type="xs:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
      <xs:element name="Coefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
-     <xs:element name="MaxGradientStepNorm" type="xs:float" />
+     <xs:element name="MaxGradientStepNorm" type="xs:float" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>

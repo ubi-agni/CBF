@@ -27,8 +27,4 @@
 
 namespace CBF {
 	
-	Controller::~Controller() {
-	
-	}
-	
 } // namespace

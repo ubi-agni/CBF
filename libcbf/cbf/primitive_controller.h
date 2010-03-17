@@ -62,7 +62,7 @@ namespace CBF {
 		steps of the subordinate controller is 
 		projected into the null space of this controller.
 	*/
-	struct PrimitiveController : public SubordinateController {
+	struct PrimitiveController : public Controller {
 		CBF_PLUGIN_DECL_METHODS(PrimitiveController)
 
 		/** 
@@ -240,18 +240,14 @@ namespace CBF {
 			virtual void set_resource(ResourcePtr resource) throw (std::runtime_error);
 		
 			/**
-				Every controller needs to implement the step() function. It maps the output
-				of the gradient_step() function to the effector transform and writes the result into
-				the result argument
-			*/
-			virtual FloatVector &subordinate_step(FloatVector &result);
-		
-			/**
 				This reimplementation of the base class' method assumes that we are not a subordinate
 				controller, because subordinate controllers are always called via the do_step() method
 			*/
-			virtual bool step();
+			virtual void do_update(int cycle);
+
+			virtual void do_action(int cycle);
 		
+			virtual FloatVector &result() { return m_Result; }
 
 			/**
 
@@ -261,6 +257,8 @@ namespace CBF {
 			virtual bool finished();
 	
 		protected:
+			FloatVector m_Result;
+
 			/**	Member variable for efficiency reasons.. */
 			FloatMatrix m_TaskJacobian;
 	

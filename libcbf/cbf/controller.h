@@ -24,10 +24,9 @@
 #include <cbf/plugin_decl_macros.h>
 #include <cbf/types.h>
 
-#include <boost/shared_ptr.hpp>
+#include <cstdlib>
 
-#include <memory>
-#include <string>
+#include <boost/shared_ptr.hpp>
 
 /**
 	@brief The CBF namespace holds the user visible classes provided by the ControlBasisFramework lib.
@@ -44,19 +43,25 @@ namespace CBF {
 		interface.
 	*/
 	struct Controller {
+
+		Controller() :
+			m_UpdateCycle(0),
+			m_ActionCycle(0)
+		{
+
+		}
+
 		/**
 			A virtual destructor, so polymorphic cleanup 
 			works nicely
 		*/
-		virtual ~Controller();
+		virtual ~Controller() { }
 	
 		/**
 			Subclasses need to implement this. If this is 
 			a controller program, the semantics still
 			is to run a single step of "underlying" 
 			controllers and then return immediately..
-			(TODO: is this really so? Discuss and
-			clarify!!) 
 	
 			The controller is expected to return true 
 			when finished() would return true, too.
@@ -64,7 +69,22 @@ namespace CBF {
 			Always run step() at least once before 
 			calling finished() for the first time.
 		*/
-		virtual bool step() { return finished(); }
+		virtual bool step(int cycle = -1) { 
+			int real_cycle;
+
+			if (cycle == -1) 
+				real_cycle = rand();
+			else
+				real_cycle = cycle;
+
+			//! Update internal state
+			update(real_cycle);
+
+			//! Put results of update() into effect..
+			action(real_cycle);
+
+			return finished(); 
+		}
 	
 		/**
 			Has this controller reached its goal? 
@@ -77,31 +97,59 @@ namespace CBF {
 			returns true, as there's nothing to do.
 		*/
 		virtual bool finished() { return true; }
+
+		/**
+			@brief This member updates the internal state
+			depending on whether it's a new cycle or not
+			(by calling do_update() if appropriate).
+		*/
+		virtual void update(int cycle) {
+			if (m_UpdateCycle != cycle) 
+				do_update(cycle);
+
+			m_UpdateCycle = cycle;
+		}
+
+		/**
+			@brief This function should do the
+			calculation. 
+
+			It is only called by update() when nessecary 
+			(i.e. the cycle ID changed)..
+
+			The default implementation does nothing
+		*/
+		virtual void do_update(int cycle)  { }
+
+		/**
+			@brief This member updates the internal state
+			depending on whether it's a new cycle or not
+			(by calling do_update() if appropriate).
+		*/
+		virtual void action(int cycle) {
+			if (m_ActionCycle != cycle) 
+				do_action(cycle);
+
+			m_ActionCycle = cycle;
+		}
+	
+
+
+		/**
+			@brief This function should put the result of the update()
+			step into action
+
+			The default implementation does nothing.
+		*/
+		virtual void do_action(int cycle) { }
+
+		protected:
+			int m_UpdateCycle;
+			int m_ActionCycle;
 	};
 	
 	//! Convenience typedef
 	typedef boost::shared_ptr<Controller> ControllerPtr;
-
-
-
-	/**
-		@brief An interface to be implemented by 
-		all Controllers that can act as subordinate 
-		controller.
-
-		The main difference is that this controller
-		type is not expected to take action. But
-		rather it should return the result of
-		its computations by storing it into
-		the result vector.
-
-		The do_step() method should also return 
-		a reference to the result vector, too, 
-		so calls can be chained..
-	*/
-	struct SubordinateController : public Controller {
-		virtual FloatVector &subordinate_step(FloatVector &result) = 0;
-	};
 } // namespace
 
 
