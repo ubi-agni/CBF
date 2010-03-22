@@ -243,6 +243,15 @@ struct SquarePotential : public Potential {
 
 	}
 
+	void set_max_gradient_step(Float max_gradient_step) {
+		m_MaxGradientStep = max_gradient_step;
+	}
+
+	Float max_gradient_step() {
+		return m_MaxGradientStep;
+	}
+		
+
 	virtual bool converged() {
 		return m_Converged;		
 	}
