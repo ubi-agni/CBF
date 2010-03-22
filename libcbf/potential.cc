@@ -66,9 +66,14 @@ namespace CBF {
 	SquarePotential::SquarePotential(const SquarePotentialType &xml_instance) {
 		CBF_DEBUG("[SquarePotential(const SquaredPotentialType &xml_instance)]: yay!")
 		CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
-		m_Coefficient = xml_instance.Coefficient();
-		m_Dim = xml_instance.Dimension();
-		m_MaxGradientStep = xml_instance.MaxGradientStepNorm();
+		if (xml_instance.Coefficient().present())
+			m_Coefficient = *xml_instance.Coefficient();
+
+		if (xml_instance.Dimension().present())
+			m_Dim = *xml_instance.Dimension();
+
+		if (xml_instance.MaxGradientStepNorm().present())
+			m_MaxGradientStep = *xml_instance.MaxGradientStepNorm();
 
 		if (xml_instance.DistanceThreshold().present())
 			m_DistanceThreshold = *(xml_instance.DistanceThreshold());
