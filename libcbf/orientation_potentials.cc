@@ -104,6 +104,9 @@ namespace CBF {
 		}
 
 
+
+
+
 	#ifdef CBF_HAVE_XSD
 		QuaternionPotential::QuaternionPotential(const QuaternionPotentialType &xml_instance) {
 			CBF_DEBUG("[QuaternionPotential(const QuaternionPotentialType &xml_instance)]: yay!")

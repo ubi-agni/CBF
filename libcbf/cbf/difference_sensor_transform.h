@@ -38,54 +38,53 @@ namespace CBF {
 	struct DifferenceSensorTransform : public SensorTransform {
 		CBF_PLUGIN_DECL_METHODS(DifferenceSensorTransform)
 
-		DifferenceSensorTransform(std::vector<SensorTransformPtr> transforms = std::vector<SensorTransformPtr>()) {
-			if (transforms.size() != 0)
-				set_transforms(transforms);
+		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr())
+		{
+			if (t1.get() && t2.get())
+				set_transforms(t1, t2);
 		}
 
-		void set_transforms(std::vector<SensorTransformPtr> &transforms) {
-			if (transforms.size() != 2) 
-				throw std::runtime_error("[DifferenceSensorTransform]: Number of transforms != 2");
-
-			if (transforms[0]->resource_dim() != transforms[1]->resource_dim())
+		void set_transforms(SensorTransformPtr t1, SensorTransformPtr t2) {
+			if (t1->resource_dim() != t2->resource_dim())
 				throw std::runtime_error("[DifferenceSensorTransform]: Resource dimensions do not match");
 
-			if (transforms[0]->task_dim() != transforms[1]->task_dim())
+			if (t1->task_dim() != t2->task_dim())
 				throw std::runtime_error("[DifferenceSensorTransform]: Task dimensions do not match");
 
-			m_Transforms = transforms;
+			m_Transform1 = t1;
+			m_Transform2 = t2;
 		}
 
 		void set_resource(ResourcePtr resource) {
-			m_Transforms[0]->set_resource(resource);
-			m_Transforms[1]->set_resource(resource);
+			m_Transform1->set_resource(resource);
+			m_Transform2->set_resource(resource);
 			m_Resource = resource;
 		}
 
 		void update() {
-			assert(m_Transforms.size() == 2);
-			assert(m_Transforms[0]->task_dim() == m_Transforms[1]->task_dim());
+			assert(m_Transform1->task_dim() == m_Transform2->task_dim());
 
-			m_Transforms[0]->update();
-			m_Transforms[1]->update();
+			m_Transform1->update();
+			m_Transform2->update();
 
 			//! The jacobian is just the difference of the individual transforms
-			m_TaskJacobian = m_Transforms[0]->task_jacobian() - m_Transforms[1]->task_jacobian();
+			m_TaskJacobian = m_Transform1->task_jacobian() - m_Transform2->task_jacobian();
 
 			//! And the result is just the difference of the individual results.
-			m_Result = m_Transforms[0]->result() - m_Transforms[1]->result();
+			m_Result = m_Transform1->result() - m_Transform2->result();
 		}
 
 		// As both sensor transforms are required to have the same resource dimensionality, it does not matter
 		// which one we return
-		unsigned int resource_dim() { return m_Transforms[0]->resource_dim(); }
+		unsigned int resource_dim() { return m_Transform1->resource_dim(); }
 
 		// As both sensor transforms are required to have the same task dimensionality, it does not matter
 		// which one we return
-		unsigned int task_dim() { return m_Transforms[0]->task_dim(); }
+		unsigned int task_dim() { return m_Transform1->task_dim(); }
 
 		protected:
-			std::vector<SensorTransformPtr> m_Transforms;
+			SensorTransformPtr m_Transform1;
+			SensorTransformPtr m_Transform2;
 	};
 
 	typedef boost::shared_ptr<DifferenceSensorTransform>

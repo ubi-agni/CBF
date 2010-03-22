@@ -152,6 +152,14 @@ struct CompositePotential : public Potential {
 		set_potentials(potentials);
 	}
 
+	CompositePotential(PotentialPtr p1, PotentialPtr p2) {
+		std::vector<PotentialPtr> v;
+		v.push_back(p1);
+		v.push_back(p2);
+
+		set_potentials(v);
+	}
+
 	/**
 		@brief Set the potentials to combine..
 	*/

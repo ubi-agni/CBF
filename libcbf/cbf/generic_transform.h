@@ -66,9 +66,8 @@ namespace CBF {
 		}
 	};
 	
-	
-	class DampedWeightedGenericEffectorTransform;
-	typedef boost::shared_ptr<DampedWeightedGenericEffectorTransform> DampedWeightedGenericEffectorTransformPtr;
+	typedef boost::shared_ptr<GenericEffectorTransform> GenericEffectorTransformPtr;
+
 	
 	/**
 		@brief Pseudo inverse based generic effector transform (damped, weighted).
@@ -92,8 +91,11 @@ namespace CBF {
 		public:	
 			virtual void update();
 		
-			DampedWeightedGenericEffectorTransform(SensorTransformPtr sensor_transform = SensorTransformPtr())
+			DampedWeightedGenericEffectorTransform(
+				SensorTransformPtr sensor_transform = SensorTransformPtr(),
+				Float dampingConstant = 0.1)
 			{
+				m_DampingConstant = dampingConstant;
 				set_sensor_transform(sensor_transform);
 			}
 		
@@ -115,7 +117,8 @@ namespace CBF {
 			}
 	};
 	
-	typedef boost::shared_ptr<GenericEffectorTransform> GenericEffectorTransformPtr;
+	typedef boost::shared_ptr<DampedWeightedGenericEffectorTransform> DampedWeightedGenericEffectorTransformPtr;
+	
 	
 } // namespace
 

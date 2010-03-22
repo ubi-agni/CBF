@@ -47,6 +47,7 @@ namespace CBF {
 
 namespace ublas = boost::numeric::ublas;
 
+const Float slerp_threshold = 0.01;
 /** 
 	@brief Calculates the result of n-dimensional SLERP.
 
@@ -54,18 +55,7 @@ namespace ublas = boost::numeric::ublas;
 
 	NOTE: The vectors should have the same length of 1..
 */
-inline FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
-	Float angle = acos(ublas::inner_prod(start, end));
-
-	if (angle == 0) {
-		result = start;
-		return result;
-	}
-
-	result = start * (sin((1 - step)* angle)/sin(angle)) + (sin(step * angle)/sin(angle)) * end;
-
-	return result;
-}
+FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result);
 
 inline FloatVector unpack_axis_angle3(FloatVector &v) {
 	FloatVector ret(4);

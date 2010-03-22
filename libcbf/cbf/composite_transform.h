@@ -61,6 +61,13 @@ namespace CBF {
 				set_transforms(transforms);
 			}
 
+			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2) {
+				std::vector<SensorTransformPtr> v;
+				v.push_back(t1);
+				v.push_back(t2);
+				set_transforms(v);
+			}
+
 			virtual void set_transforms(std::vector<SensorTransformPtr> transforms);
 		
 			virtual unsigned resource_dim();

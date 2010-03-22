@@ -78,12 +78,8 @@ int main() {
 	CBF::KDLChainPositionSensorTransformPtr st2
 		(new CBF::KDLChainPositionSensorTransform(chain2));
 
-	std::vector<CBF::SensorTransformPtr> v;
-	v.push_back(st1);
-	v.push_back(st2);
-
 	CBF::DifferenceSensorTransformPtr st
-		(new CBF::DifferenceSensorTransform(v));
+		(new CBF::DifferenceSensorTransform(st1, st2));
 
 	CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(st));
 
@@ -94,7 +90,7 @@ int main() {
 	//! The X-Direction..
 	//! Gah, screw c++.. This could be so much easier :D
 	CBF::DummyReferencePtr dref(new CBF::DummyReference(1,3));
-	double ref[] = {1, 0, 0};
+	double ref[] = {-1, -1, 1};
 	CBF::FloatVector vref(3);
 	std::copy(ref, ref+3, vref.begin());
 	dref->set_reference(vref);

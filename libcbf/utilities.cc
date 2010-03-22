@@ -43,6 +43,22 @@
 
 namespace CBF {
 
+FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
+	Float angle = acos(ublas::inner_prod(start, end));
+
+	if (fabs(angle) <= slerp_threshold) {
+		CBF_DEBUG("small angle")
+		result = end;
+		return result;
+	}
+
+	result = start * (sin((1 - step)* angle)/sin(angle)) + (sin(step * angle)/sin(angle)) * end;
+
+	CBF_DEBUG(result)
+
+	return result;
+}
+
 
 
 #ifdef CBF_HAVE_KDL
