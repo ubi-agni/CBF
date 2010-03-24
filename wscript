@@ -361,7 +361,7 @@ def configure(conf):
 
 
 	# boost.python
-#	conf.check_tool('compiler_cc')
+	conf.check_tool('compiler_cc')
 	conf.check_tool('python')
 	conf.check_python_version((2,4,2))
 	conf.check_python_headers()
