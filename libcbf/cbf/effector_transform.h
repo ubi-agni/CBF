@@ -97,7 +97,7 @@ namespace CBF {
 			May only be called after a call to exec() to update the internal
 			matrices.
 		*/
-		virtual FloatMatrix &inverse_task_jacobian() { return m_InverseTaskJacobian; }
+		virtual const FloatMatrix &inverse_task_jacobian() const { return m_InverseTaskJacobian; }
 	
 	
 	
@@ -105,7 +105,7 @@ namespace CBF {
 			Needs to be implemented in subclass to allow dimensionality checking when
 			this is bound to a resource.
 		*/
-		virtual unsigned resource_dim() = 0;
+		virtual unsigned resource_dim() const = 0;
 	
 		ResourcePtr resource() {
 			return m_Resource;
@@ -121,7 +121,7 @@ namespace CBF {
 			Needs to be implemented in subclass to allow dimensionality checking when
 			this is bound to a resource.
 		*/
-		virtual unsigned int task_dim() = 0;
+		virtual unsigned int task_dim() const = 0;
 	
 		protected:
 			/** 

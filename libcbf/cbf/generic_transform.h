@@ -53,15 +53,11 @@ namespace CBF {
 			result = ublas::prod(m_InverseTaskJacobian, input);
 		}
 	
-		virtual void inverse_task_jacobian(FloatMatrix &result) {
-			result = m_InverseTaskJacobian;
-		}
-	
-		virtual unsigned resource_dim() {
+		virtual unsigned resource_dim() const {
 			return m_SensorTransform->resource_dim();
 		}
 	
-		virtual unsigned int task_dim() {
+		virtual unsigned int task_dim() const {
 			return m_SensorTransform->task_dim();
 		}
 	};
@@ -104,15 +100,11 @@ namespace CBF {
 				result = ublas::prod(m_InverseTaskJacobian, input);
 			}
 		
-			virtual void inverse_task_jacobian(FloatMatrix &result) {
-				result = m_InverseTaskJacobian;
-			}
-		
-			virtual unsigned resource_dim() {
+			virtual unsigned resource_dim() const {
 				return m_SensorTransform->resource_dim();
 			}
 		
-			virtual unsigned int task_dim() {
+			virtual unsigned int task_dim() const {
 				return m_SensorTransform->task_dim();
 			}
 	};

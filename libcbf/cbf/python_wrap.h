@@ -163,7 +163,9 @@ namespace CBF {
 	
 			//! exec() basically does nothing but return cached results..
 			virtual void exec(FloatVector &result) { result = m_Result; }
+
 			virtual unsigned resource_dim() const { return m_ResourceDim; }
+
 			virtual unsigned int task_dim() const { return m_TaskDim; }
 	
 			//! Only return the cached results.
