@@ -31,6 +31,8 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 #include <vector>
+#include <string>
+#include <stdexcept>
 
 class SensorTransformType;
 
@@ -82,21 +84,21 @@ namespace CBF {
 			@brief Return a reference to the result calculated in the 
 			update() function.
 		*/
-		virtual FloatVector &result() { return m_Result; }
+		virtual const FloatVector &result() const { return m_Result; }
 
 		/**
 			@brief Needs to be implemented in subclass to allow 
 			dimensionality checking when this is bound to a resource.
 		*/
-		virtual unsigned resource_dim() = 0;
+		virtual unsigned int resource_dim() const = 0;
 	
 		/**
 			@brief Needs to be implemented in subclass to allow 
 			dimensionality checking when bound to a resource.
 		*/
-		virtual unsigned int task_dim() = 0;
+		virtual unsigned int task_dim() const = 0;
 	
-		ResourcePtr resource() {
+		const ResourcePtr resource() const {
 			return m_Resource;
 		}
 
@@ -122,8 +124,23 @@ namespace CBF {
 			May only be called after a call to update() to update the internal
 			matrices.
 		*/
-		virtual FloatMatrix &task_jacobian() { return m_TaskJacobian; }
+		virtual const FloatMatrix &task_jacobian() const { return m_TaskJacobian; }
 	
+
+		/**
+			@brief Returns a reference to a vector of strings holding
+			the names of the components of the task space
+
+			For example a position sensor transform might return a vector
+			holding the strings "X", "Y", "Z".
+
+			Note: May throw a std::runtime_error if the SensorTransform didn't
+			assign names to the components
+		*/
+		virtual const std::vector<std::string>& component_names() const throw (std::runtime_error) {
+			return m_ComponentNames;
+		}
+
 		protected:
 			/**
 				@brief This value should be checked against by update(). 
@@ -150,6 +167,13 @@ namespace CBF {
 				Should be calculated by update()
 			*/
 			FloatMatrix m_TaskJacobian;
+
+			/**
+				@brief Strings giving names to the components
+
+				See component_names() for more info..
+			*/
+			std::vector<std::string> m_ComponentNames;
 	};
 	
 	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;

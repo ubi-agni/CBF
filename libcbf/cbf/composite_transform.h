@@ -70,9 +70,9 @@ namespace CBF {
 
 			virtual void set_transforms(std::vector<SensorTransformPtr> transforms);
 		
-			virtual unsigned resource_dim();
+			virtual unsigned resource_dim() const;
 
-			virtual unsigned int task_dim();
+			virtual unsigned int task_dim() const;
 
 			virtual void update();
 	

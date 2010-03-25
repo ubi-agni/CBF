@@ -94,7 +94,8 @@ namespace CBF {
 
 			virtual Float distance(const FloatVector &v1, const FloatVector &v2) { return 0; }
 
-			virtual bool converged() { return false; }
+			/** TODO: implement!! */
+			virtual bool converged() const { return false; }
 
 			virtual void gradient (
 				FloatVector &result, 
@@ -102,7 +103,7 @@ namespace CBF {
 				const FloatVector &input
 			);
 		
-			virtual unsigned int task_dim();
+			virtual unsigned int task_dim() const;
 	
 			std::string m_InitScript;
 	
@@ -162,11 +163,11 @@ namespace CBF {
 	
 			//! exec() basically does nothing but return cached results..
 			virtual void exec(FloatVector &result) { result = m_Result; }
-			virtual unsigned resource_dim() { return m_ResourceDim; }
-			virtual unsigned int task_dim() { return m_TaskDim; }
+			virtual unsigned resource_dim() const { return m_ResourceDim; }
+			virtual unsigned int task_dim() const { return m_TaskDim; }
 	
 			//! Only return the cached results.
-			virtual void get_task_jacobian(FloatMatrix &result) { result = m_Jacobian; }
+			virtual const FloatMatrix& get_task_jacobian(FloatMatrix &result) const { return m_Jacobian; }
 	
 			std::string m_InitScript;
 	

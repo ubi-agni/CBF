@@ -62,7 +62,7 @@ struct LinearSensorTransform : public SensorTransform {
 		Needs to be implemented in subclass to allow dimensionality checking when
 		this is bound to a resource.
 	*/
-	virtual unsigned int resource_dim() {
+	virtual unsigned int resource_dim() const {
 		return m_Matrix.size2();
 	}
 
@@ -70,7 +70,7 @@ struct LinearSensorTransform : public SensorTransform {
 		Needs to be implemented in subclass to allow dimensionality checking when
 		this is bound to a resource.
 	*/
-	virtual unsigned int task_dim() {
+	virtual unsigned int task_dim() const {
 		return m_Matrix.size1();
 	}
 };

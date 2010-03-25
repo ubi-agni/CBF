@@ -74,9 +74,9 @@ namespace CBF {
 			const FloatVector &input
 		);
 	
-		virtual unsigned int task_dim() { return 4u; }
+		virtual unsigned int task_dim() const { return 4u; }
 
-		virtual bool converged() { return false; }
+		virtual bool converged() const { return false; }
 
 		virtual Float norm(const FloatVector &v) {
 			Quaternion q = v;
@@ -125,9 +125,9 @@ namespace CBF {
 			const FloatVector &input
 		);
 	
-		virtual unsigned int task_dim() { return 3u; }
+		virtual unsigned int task_dim() const { return 3u; }
 
-		virtual bool converged() {
+		virtual bool converged() const {
 			return m_Converged;
 		}
 
@@ -198,9 +198,9 @@ namespace CBF {
 			result = s - in;
 		}
 	
-		virtual unsigned int task_dim() { return m_Dimension; }
+		virtual unsigned int task_dim() const { return m_Dimension; }
 
-		virtual bool converged() {
+		virtual bool converged() const {
 			return m_Converged;
 		}
 

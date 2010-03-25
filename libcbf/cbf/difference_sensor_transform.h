@@ -76,11 +76,11 @@ namespace CBF {
 
 		// As both sensor transforms are required to have the same resource dimensionality, it does not matter
 		// which one we return
-		unsigned int resource_dim() { return m_Transform1->resource_dim(); }
+		unsigned int resource_dim() const { return m_Transform1->resource_dim(); }
 
 		// As both sensor transforms are required to have the same task dimensionality, it does not matter
 		// which one we return
-		unsigned int task_dim() { return m_Transform1->task_dim(); }
+		unsigned int task_dim() const { return m_Transform1->task_dim(); }
 
 		protected:
 			SensorTransformPtr m_Transform1;

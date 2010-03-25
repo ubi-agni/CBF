@@ -121,6 +121,7 @@
 
  <xs:complexType name="SensorTransformType" abstract="true">
   <xs:sequence>
+   <xs:element name="ComponentNames" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
  </xs:complexType>
 

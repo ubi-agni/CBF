@@ -45,14 +45,14 @@ namespace CBF {
 			m_SensorTransforms[i]->set_resource(resource);
 	}
 
-	unsigned int CompositeSensorTransform::resource_dim() {
+	unsigned int CompositeSensorTransform::resource_dim() const {
 		//! NOTE: All sensor transforms should work on the same resource
 		if (m_SensorTransforms.size() == 0) throw std::runtime_error("[CompositeSensorTransform]: No sensor transforms set");
 	
 		return m_SensorTransforms[0]->resource_dim();
 	}
 	
-	unsigned int CompositeSensorTransform::task_dim() {
+	unsigned int CompositeSensorTransform::task_dim() const {
 		//! TODO: Cache result if inefficient as is..
 		unsigned int sum = 0;
 	

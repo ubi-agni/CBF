@@ -101,7 +101,7 @@ namespace CBF {
 		
 	}
 	
-	unsigned int BaseKDLChainSensorTransform::resource_dim() {
+	unsigned int BaseKDLChainSensorTransform::resource_dim() const {
 		return m_Chain->getNrOfJoints();
 	}
 	

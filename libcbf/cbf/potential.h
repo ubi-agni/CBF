@@ -114,9 +114,9 @@ struct Potential {
 		const FloatVector &input
 	) = 0;
 
-	virtual bool converged() = 0;
+	virtual bool converged() const = 0;
 
-	virtual unsigned int task_dim() = 0;
+	virtual unsigned int task_dim() const = 0;
 };
 
 typedef boost::shared_ptr<Potential> PotentialPtr;
@@ -203,7 +203,7 @@ struct CompositePotential : public Potential {
 		This implementation test if all of the potentials are converged and only then
 		returns true
 	*/
-	virtual bool converged() {
+	virtual bool converged() const {
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i)
 			if (m_Potentials[i]->converged() == false)
 				return false;
@@ -211,7 +211,7 @@ struct CompositePotential : public Potential {
 		return true;
 	}
 
-	virtual unsigned int task_dim() {
+	virtual unsigned int task_dim() const {
 		return m_Dim;
 	}
 
@@ -252,7 +252,7 @@ struct SquarePotential : public Potential {
 	}
 		
 
-	virtual bool converged() {
+	virtual bool converged() const {
 		return m_Converged;		
 	}
 
@@ -265,7 +265,7 @@ struct SquarePotential : public Potential {
 		return (norm(v1 - v2));
 	}
 
-	virtual unsigned int task_dim() {
+	virtual unsigned int task_dim() const {
 		return m_Dim;
 	}
 

@@ -47,11 +47,11 @@ namespace CBF {
 			
 		}	
 	
-		virtual unsigned get_resource_dim() {
+		virtual unsigned get_resource_dim() const {
 			return m_Dim;
 		}
 	
-		virtual unsigned int get_task_dim() {
+		virtual unsigned int get_task_dim() const {
 			return m_Dim;
 		}
 	};
@@ -76,11 +76,11 @@ namespace CBF {
 			m_Result = m_Resource->get();
 		}
 	
-		virtual unsigned int resource_dim() {
+		virtual unsigned int resource_dim() const {
 			return m_Dim;
 		}
 	
-		virtual unsigned int task_dim() {
+		virtual unsigned int task_dim() const {
 			return m_Dim;
 		}
 	};

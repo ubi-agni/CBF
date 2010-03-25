@@ -100,7 +100,7 @@ namespace CBF {
 				For all derived types the resource dim is always the same: the number of joints
 				of the kinematic chain
 			*/
-			virtual unsigned int resource_dim();
+			virtual unsigned int resource_dim() const ;
 
 			/**
 				Call this function once m_Chain is set to a valid chain..
@@ -128,7 +128,7 @@ namespace CBF {
 	
 		KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain = boost::shared_ptr<KDL::Chain>(new KDL::Chain));
 
-		virtual unsigned int task_dim() { return 3u; }
+		virtual unsigned int task_dim() const { return 3u; }
 
 		virtual void update();
 	};
@@ -162,7 +162,7 @@ namespace CBF {
 			);
 		
 
-			virtual unsigned int task_dim() { return 4u; }
+			virtual unsigned int task_dim() const { return 4u; }
 
 			virtual void update();
 	};
@@ -193,7 +193,7 @@ namespace CBF {
 				boost::shared_ptr<KDL::Chain>(new KDL::Chain)
 		);
 		
-		virtual unsigned int task_dim() { return 3u; }
+		virtual unsigned int task_dim() const { return 3u; }
 
 		virtual void update();
 	};
