@@ -405,6 +405,14 @@ def build(bld):
 		task.rule=bld.env['DOXYGEN'] + ' ../../Doxyfile'
 		task.cwd=bld.bdir + '/default'
 		task.always = True
-		#print "build doc"
+
+		bld.path.update_build_dir(bld.env)
+		bld.install_files('${PREFIX}/share/doc/cbf/html/', bld.path.ant_glob('doc/html/*', dir=True, bld=True))
+
+	bld.install_files('${PREFIX}/share/doc/cbf/examples/cpp', bld.path.ant_glob('doc/examples/cpp/*.cc', src=True, flat=True, dir=True))
+	bld.install_files('${PREFIX}/share/doc/cbf/examples/c', bld.path.ant_glob('doc/examples/c/*.c', flat=True, dir=True))
+	bld.install_files('${PREFIX}/share/doc/cbf/examples/python', bld.path.ant_glob('doc/examples/python/*.py', flat=True, dir=True))
+	bld.install_files('${PREFIX}/share/doc/cbf/examples/xml', bld.path.ant_glob('doc/examples/xml/*.xml', flat=True, dir=True))
+	#print "build doc"
 	
 	
