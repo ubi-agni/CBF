@@ -58,7 +58,8 @@ namespace CBF {
 		SensorTransform()	{
 	
 		}
-	
+
+		SensorTransform(const SensorTransformType &xml_instance);	
 
 		/**
 			@brief A virtual desctructor to allow the clean destruction 

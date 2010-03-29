@@ -205,7 +205,8 @@ namespace CBF {
 	
 	
 	#ifdef CBF_HAVE_XSD
-		BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(const ChainBaseType &xml_instance) :
+		BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(const ChainBaseType &xml_instance, const SensorTransformType &xml_st_instance) :
+			SensorTransform(xml_st_instance),
 			m_Frame(new KDL::Frame),
 			m_Jacobian(new KDL::Jacobian)
 		{
@@ -289,7 +290,7 @@ namespace CBF {
 		}
 		
 		KDLChainPositionSensorTransform::KDLChainPositionSensorTransform(const KDLChainPositionSensorTransformType &xml_instance) :
-			BaseKDLChainSensorTransform(xml_instance.Chain())
+			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance)
 		{
 			//! TODO: recheck this function to make sure it works in all cases..
 		
@@ -299,7 +300,7 @@ namespace CBF {
 		KDLChainOrientationQuatSensorTransform::KDLChainOrientationQuatSensorTransform(
 			const KDLChainOrientationQuatSensorTransformType &xml_instance
 		) :
-			BaseKDLChainSensorTransform(xml_instance.Chain())
+			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance)
 		{
 			//! TODO: recheck this function to make sure it works in all cases..
 		
@@ -309,7 +310,7 @@ namespace CBF {
 		KDLChainAxisAngleSensorTransform::KDLChainAxisAngleSensorTransform(
 			const KDLChainAxisAngleSensorTransformType &xml_instance
 		) :
-			BaseKDLChainSensorTransform(xml_instance.Chain())
+			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance)
 		{
 			//! TODO: recheck this function to make sure it works in all cases..
 		

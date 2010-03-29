@@ -94,7 +94,7 @@ namespace CBF {
 				(boost::shared_ptr<KDL::Chain> chain = boost::shared_ptr<KDL::Chain>());
 	
 			//! This constructor is only implemented when XSD support is enabled..
-			BaseKDLChainSensorTransform(const ChainBaseType &xml_instance);
+			BaseKDLChainSensorTransform(const ChainBaseType &xml_chain_instance, const SensorTransformType &xml_st_instance);
 	
 			/**
 				For all derived types the resource dim is always the same: the number of joints

@@ -22,12 +22,18 @@
 
 #include <cbf/sensor_transform.h>
 
+#ifdef CBF_HAVE_XSD
+	#include <cbf/schemas.hxx>
+#endif
+
 #include <iostream>
 
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
+SensorTransform::SensorTransform(const SensorTransformType &xml_instance) {
 
+}
 #endif
 
 } // namespace
