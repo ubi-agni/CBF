@@ -99,7 +99,8 @@ namespace CBF {
 	}
 	
 	#ifdef CBF_HAVE_XSD
-		CompositeSensorTransform::CompositeSensorTransform(const CompositeSensorTransformType &xml_instance)
+		CompositeSensorTransform::CompositeSensorTransform(const CompositeSensorTransformType &xml_instance) :
+			SensorTransform(xml_instance)
 		{
 			CBF_DEBUG("yay!!!");
 		

@@ -24,7 +24,8 @@
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		DifferenceSensorTransform::DifferenceSensorTransform(const DifferenceSensorTransformType &xml_instance)
+		DifferenceSensorTransform::DifferenceSensorTransform(const DifferenceSensorTransformType &xml_instance) :
+			SensorTransform(xml_instance)
 		{
 			CBF_DEBUG("yay!!!");
 		
