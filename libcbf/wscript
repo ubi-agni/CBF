@@ -37,6 +37,7 @@ def build(bld):
 		controller_sequence.cc
 		identity_transform.cc 
 		primitive_controller.cc 
+		composite_primitive_controller.cc 
 		resource.cc 
 		dummy_resource.cc 
 		sensor_transform.cc 
