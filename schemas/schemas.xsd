@@ -32,6 +32,7 @@
   <xs:complexContent>
    <xs:extension base="ControllerType">
     <xs:sequence>
+      <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="1"/>
       <xs:element name="Coefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
       <xs:element name="SubordinateCoefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
 
@@ -46,6 +47,16 @@
       <xs:element name="CombinationStrategy" type="CombinationStrategyType" minOccurs="0" maxOccurs="1"/>
 
       <xs:element name="Reference" type="ReferenceType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="CompositePrimitiveControllerType">
+  <xs:complexContent>
+   <xs:extension base="PrimitiveControllerType">
+    <xs:sequence>
+     <xs:element name="Controller" type="PrimitiveControllerType" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -257,10 +268,15 @@
   </xs:sequence>
  </xs:complexType>
 
+ <!--
+  This type is used for referencing chains that the host application
+  might offer..
+ -->
  <xs:complexType name="ChainReferenceType">
   <xs:complexContent>
    <xs:extension base="ChainBaseType">
     <xs:sequence>
+     <xs:element name="Reference" type="xs:string"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
