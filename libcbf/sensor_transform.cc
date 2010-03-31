@@ -23,7 +23,7 @@
 #include <cbf/sensor_transform.h>
 
 #ifdef CBF_HAVE_XSD
-	#include <cbf/schemas.hxx>
+	#include <schemas.hxx>
 #endif
 
 #include <iostream>
@@ -32,7 +32,12 @@ namespace CBF {
 
 #ifdef CBF_HAVE_XSD
 SensorTransform::SensorTransform(const SensorTransformType &xml_instance) {
-
+	for (
+		SensorTransformType::ComponentName_sequence::const_iterator it = xml_instance.ComponentName().begin();
+		it != xml_instance.ComponentName().end();
+		++it) {
+			m_ComponentNames.push_back(*it);
+	}
 }
 #endif
 

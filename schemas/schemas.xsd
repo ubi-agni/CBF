@@ -13,6 +13,9 @@
   resource 
  -->
  <xs:complexType name="ControllerType" abstract="true">
+  <xs:sequence>
+   <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+  </xs:sequence>
  </xs:complexType>
 
  <xs:complexType name="ControllerSequenceType">
@@ -32,7 +35,6 @@
   <xs:complexContent>
    <xs:extension base="ControllerType">
     <xs:sequence>
-      <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="1"/>
       <xs:element name="Coefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
       <xs:element name="SubordinateCoefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
 
@@ -132,7 +134,7 @@
 
  <xs:complexType name="SensorTransformType" abstract="true">
   <xs:sequence>
-   <xs:element name="ComponentNames" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+   <xs:element name="ComponentName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
  </xs:complexType>
 

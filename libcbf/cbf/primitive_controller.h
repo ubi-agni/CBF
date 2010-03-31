@@ -160,19 +160,8 @@ namespace CBF {
 				first run.
 			*/
 			bool m_InitReferenceFromSensorTransform;
-	
-			/**
-				@brief A user given name.
-			*/
-			std::string m_Name;
-	
+
 		public:
-			/**
-				@brief Returns a reference to the user given name of this controller..
-			*/
-			std::string& name() {
-				return m_Name;
-			}
 			/**
 				This function only returns sensible values after
 				the controller has run at least once...

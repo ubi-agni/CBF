@@ -129,17 +129,14 @@ namespace CBF {
 	
 
 		/**
-			@brief Returns a reference to a vector of strings holding
-			the names of the components of the task space
-
-			For example a position sensor transform might return a vector
-			holding the strings "X", "Y", "Z".
-
-			Note: May throw a std::runtime_error if the SensorTransform didn't
-			assign names to the components
+			@brief: Returns a reference to the string holding the human readable name
+			for the n-th component of the task space..
 		*/
-		virtual const std::vector<std::string>& component_names() const throw (std::runtime_error) {
-			return m_ComponentNames;
+		virtual const std::string& component_name(unsigned int n)  {
+			if (n >= m_ComponentNames.size())
+				return m_DefaultComponentName;
+
+			return m_ComponentNames[n];
 		}
 
 		protected:
@@ -175,6 +172,8 @@ namespace CBF {
 				See component_names() for more info..
 			*/
 			std::vector<std::string> m_ComponentNames;
+
+			std::string m_DefaultComponentName;
 	};
 	
 	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;

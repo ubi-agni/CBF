@@ -144,9 +144,18 @@ namespace CBF {
 		*/
 		virtual void do_action(int cycle) { }
 
+		/**
+			@brief Returns a reference to the user given name of this controller..
+		*/
+		std::string& name() {
+			return m_Name;
+		}
+
 		protected:
 			int m_UpdateCycle;
 			int m_ActionCycle;
+
+			std::string m_Name;
 	};
 	
 	//! Convenience typedef
