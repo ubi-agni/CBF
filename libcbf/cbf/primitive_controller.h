@@ -167,63 +167,51 @@ namespace CBF {
 				the controller has run at least once...
 			*/
 			const FloatVector &current_task_position() {
-				return m_CurrentTaskPosition;
-			}
+				return m_CurrentTaskPosition; }
 
 			void set_reference(ReferencePtr reference) {
-				m_Reference = reference;
-			}
+				m_Reference = reference; }
 	
 			ReferencePtr reference() { return m_Reference; }
 	
-			void set_subordinate_controllers(std::vector<PrimitiveControllerPtr> subordinate_controllers) {
-				m_SubordinateControllers = subordinate_controllers;
-			}
+			void set_subordinate_controllers(
+				std::vector<PrimitiveControllerPtr> subordinate_controllers) {
+				m_SubordinateControllers = subordinate_controllers; }
 		
 			std::vector<PrimitiveControllerPtr> &subordinate_controllers() {
-				return m_SubordinateControllers;
-			}
+				return m_SubordinateControllers;	}
 	
 			void set_sensor_transform(SensorTransformPtr sensor_transform) {
-				m_SensorTransform = sensor_transform;
-			}
+				m_SensorTransform = sensor_transform; }
 	
 			SensorTransformPtr sensor_transform() {
-				return m_SensorTransform;
-			}
+				return m_SensorTransform; }
 	
 			void set_potential(PotentialPtr potential) {
-				m_Potential = potential;
-			}
+				m_Potential = potential; }
 	
-			PotentialPtr potential() {
-				return m_Potential;
-			}
+			PotentialPtr potential() {	return m_Potential; }
 	
 			void set_effector_transform(
-				EffectorTransformPtr effector_transform) 
-			{
-				m_EffectorTransform = effector_transform;
-			}
+				EffectorTransformPtr effector_transform) {
+				m_EffectorTransform = effector_transform; }
 	
 			EffectorTransformPtr effector_transform() {
-				return m_EffectorTransform;
-			}
+				return m_EffectorTransform; }
 	
 			void set_combination_strategy(
-				CombinationStrategyPtr combination_strategy) 
-			{
-				m_CombinationStrategy = combination_strategy;
-			}
+				CombinationStrategyPtr combination_strategy) {
+				m_CombinationStrategy = combination_strategy; }
 	
 			CombinationStrategyPtr combination_strategy() {
-				return m_CombinationStrategy;
-			}
+				return m_CombinationStrategy; }
 	
 			void set_coefficient(Float coefficient);
+
 			Float coefficient();
 	
 			void set_subordinate_coefficient(Float beta);
+
 			Float subordinate_coefficient();
 	
 
@@ -245,7 +233,14 @@ namespace CBF {
 			virtual void do_update(int cycle);
 
 			virtual void do_action(int cycle);
-		
+
+			/**
+				@brief Returns the result of the calculationss done on update().
+
+				The update() function is supposed to update all sensor transforms, potentials
+				etc. The last step of a control cycly is applying the result (the resource
+				space gradient step) of these	calculations to the resource.
+			*/
 			virtual FloatVector &result() { return m_Result; }
 
 			/**
