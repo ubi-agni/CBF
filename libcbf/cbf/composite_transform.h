@@ -77,6 +77,10 @@ namespace CBF {
 			virtual void update();
 	
 			virtual void set_resource(ResourcePtr resource);
+
+			virtual std::vector<SensorTransformPtr> &transforms() {
+				return m_SensorTransforms;
+			}
 	};
 	
 	typedef boost::shared_ptr<CompositeSensorTransform> CompositeSensorTransformPtr;
