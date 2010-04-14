@@ -78,7 +78,7 @@ namespace CBF {
 	
 			virtual void set_resource(ResourcePtr resource);
 
-			virtual std::vector<SensorTransformPtr> &transforms() {
+			virtual const std::vector<SensorTransformPtr> &transforms() const {
 				return m_SensorTransforms;
 			}
 	};
