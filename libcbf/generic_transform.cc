@@ -36,7 +36,7 @@ void DampedGenericEffectorTransform::update() {
 	CBF_DEBUG("updating")
 
 	//m_SensorTransform->task_jacobian(m_Jacobian);
-	damped_pseudo_inverse(m_SensorTransform->task_jacobian(), m_InverseTaskJacobian);
+	damped_pseudo_inverse(m_SensorTransform->task_jacobian(), m_InverseTaskJacobian, m_DampingConstant);
 
 	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
 }

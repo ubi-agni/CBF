@@ -7,7 +7,7 @@
  </Potential>
 
  <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
-  <DampingConstant> 0.1 </DampingConstant>
+  <DampingConstant> 0.001 </DampingConstant>
  </EffectorTransform>
 
  <SensorTransform xsi:type="IdentitySensorTransformType">
