@@ -218,6 +218,16 @@
   </xs:complexContent>
  </xs:complexType>
 
+ <xs:complexType name="DampedGenericEffectorTransformType">
+  <xs:complexContent>
+   <xs:extension base="EffectorTransformType">
+    <xs:sequence>
+     <xs:element name="DampingConstant" type="xs:float" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
  <xs:complexType name="DampedWeightedGenericEffectorTransformType">
   <xs:complexContent>
    <xs:extension base="EffectorTransformType">

@@ -6,7 +6,9 @@
   <Dimension> 3 </Dimension>
  </Potential>
 
- <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+ <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
+  <DampingConstant> 0.1 </DampingConstant>
+ </EffectorTransform>
 
  <SensorTransform xsi:type="IdentitySensorTransformType">
   <Dimension> 3 </Dimension>
@@ -23,8 +25,8 @@
 
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 0 </Coefficient>
    <Coefficient> 1 </Coefficient>
+   <Coefficient> 0 </Coefficient>
    <Coefficient> 0 </Coefficient>
   </Vector>
  </Reference>

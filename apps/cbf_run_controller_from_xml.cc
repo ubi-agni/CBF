@@ -40,7 +40,8 @@ int main(int argc, char *argv[]) {
 			CBF::ControllerPtr c = 
 				pp->create_from_file<ControllerType>(filename);
 
-			while (c->step() == false) ;
+			while (c->step() == false)
+				std::cout << "step" << std::endl;
 
 		} catch (std::exception &e) {
 			std::cerr 

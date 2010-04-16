@@ -32,6 +32,7 @@
 #include <boost/numeric/ublas/io.hpp>
 
 CBF_PLUGIN_PREAMBLE(GenericEffectorTransform)
+CBF_PLUGIN_PREAMBLE(DampedGenericEffectorTransform)
 CBF_PLUGIN_PREAMBLE(DampedWeightedGenericEffectorTransform)
 
 namespace CBF {
@@ -63,6 +64,41 @@ namespace CBF {
 	};
 	
 	typedef boost::shared_ptr<GenericEffectorTransform> GenericEffectorTransformPtr;
+
+
+	/**
+		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
+	*/
+	struct DampedGenericEffectorTransform : public EffectorTransform {
+		CBF_PLUGIN_DECL_METHODS(DampedGenericEffectorTransform)
+	
+		virtual void update();
+	
+		DampedGenericEffectorTransform(
+			Float damping_constant = 0.1, 
+			SensorTransformPtr sensor_transform = SensorTransformPtr())
+			: m_DampingConstant(damping_constant)
+		{
+			set_sensor_transform(sensor_transform);
+		}
+	
+		virtual void exec(const FloatVector &input, FloatVector &result) {
+			result = ublas::prod(m_InverseTaskJacobian, input);
+		}
+	
+		virtual unsigned resource_dim() const {
+			return m_SensorTransform->resource_dim();
+		}
+	
+		virtual unsigned int task_dim() const {
+			return m_SensorTransform->task_dim();
+		}
+
+		protected:
+			Float m_DampingConstant;
+	};
+	
+	typedef boost::shared_ptr<DampedGenericEffectorTransform> DampedGenericEffectorTransformPtr;
 
 	
 	/**

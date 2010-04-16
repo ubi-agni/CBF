@@ -93,6 +93,7 @@ namespace CBF {
 		boost::shared_ptr<SuperClass> p;
 		for (unsigned int i = 0; i < m_PluginHelpers.size(); ++i)
 		{
+			CBF_DEBUG("trying helper for class: " << m_PluginHelpers[i]->m_Name)
 			p = m_PluginHelpers[i]->create(xml_document);
 			if (p.get() == 0) continue;
 			else return p;

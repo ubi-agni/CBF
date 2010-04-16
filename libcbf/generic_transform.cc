@@ -32,6 +32,15 @@ void GenericEffectorTransform::update() {
 	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
 }
 
+void DampedGenericEffectorTransform::update() {
+	CBF_DEBUG("updating")
+
+	//m_SensorTransform->task_jacobian(m_Jacobian);
+	damped_pseudo_inverse(m_SensorTransform->task_jacobian(), m_InverseTaskJacobian);
+
+	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
+}
+
 
 void DampedWeightedGenericEffectorTransform::update() {
 	CBF_DEBUG("updating")
@@ -49,6 +58,14 @@ void DampedWeightedGenericEffectorTransform::update() {
 	
 	}
 	
+
+	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const DampedGenericEffectorTransformType &xml_instance)
+	{
+		if(xml_instance.DampingConstant().present()) {
+			m_DampingConstant = (*xml_instance.DampingConstant());
+		}
+	}
+
 	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const DampedWeightedGenericEffectorTransformType &xml_instance)
 	{
 	
@@ -56,6 +73,7 @@ void DampedWeightedGenericEffectorTransform::update() {
 #endif
 
 CBF_PLUGIN_CLASS(GenericEffectorTransform, EffectorTransform)
+CBF_PLUGIN_CLASS(DampedGenericEffectorTransform, EffectorTransform)
 CBF_PLUGIN_CLASS(DampedWeightedGenericEffectorTransform, EffectorTransform)
 
 
