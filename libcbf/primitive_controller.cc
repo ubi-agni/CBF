@@ -190,33 +190,24 @@ namespace CBF {
 			if (xml_instance.Name().present())
 				m_Name = *xml_instance.Name();
 
-			if (xml_instance.Coefficient().present())
-				m_Coefficient = *xml_instance.Coefficient();
+			m_Coefficient = xml_instance.Coefficient();
 		
-			if (xml_instance.SubordinateCoefficient().present())
-				m_SubordinateCoefficient = *xml_instance.SubordinateCoefficient();
+			m_SubordinateCoefficient = xml_instance.SubordinateCoefficient();
 		
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");
-			if (xml_instance.Potential().present()) {
-				CBF_DEBUG("Potential present")
-				m_Potential = PluginPool<Potential>::get_instance()->create_from_xml(*xml_instance.Potential());
-			}
+			m_Potential = PluginPool<Potential>::get_instance()->create_from_xml(xml_instance.Potential());
 
 			//! Instantiate the Effector transform
-			if (xml_instance.SensorTransform().present()) {
-				CBF_DEBUG("Creating sensor transform...")
-				m_SensorTransform = PluginPool<SensorTransform>::get_instance()->create_from_xml(*xml_instance.SensorTransform());
-			}
+			CBF_DEBUG("Creating sensor transform...")
+			m_SensorTransform = PluginPool<SensorTransform>::get_instance()->create_from_xml(xml_instance.SensorTransform());
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Instantiate the Effector transform
-			if (xml_instance.EffectorTransform().present()) {
-				CBF_DEBUG("Creating effector transform...")
-				m_EffectorTransform = PluginPool<EffectorTransform>::get_instance()->create_from_xml(*xml_instance.EffectorTransform());
-				m_EffectorTransform->set_sensor_transform(m_SensorTransform);
-			}
+			CBF_DEBUG("Creating effector transform...")
+			m_EffectorTransform = PluginPool<EffectorTransform>::get_instance()->create_from_xml(xml_instance.EffectorTransform());
+			m_EffectorTransform->set_sensor_transform(m_SensorTransform);
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
@@ -252,35 +243,21 @@ namespace CBF {
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Create a resource if given...
-			if (xml_instance.Resource().present())
-			{
-				CBF_DEBUG("Creating resource...")
-				ResourcePtr res = PluginPool<Resource>::get_instance()->create_from_xml(*xml_instance.Resource());
-				//! And bind to it...
-				CBF_DEBUG("Binding to resource...")
-		
-				//CBF_DEBUG(m_SensorTransform.get())
-		
-				set_resource(res);
-			}
+			CBF_DEBUG("Creating resource...")
+			ResourcePtr res = PluginPool<Resource>::get_instance()->create_from_xml(xml_instance.Resource());
+			//! And bind to it...
+			CBF_DEBUG("Binding to resource...")
+			set_resource(res);
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating combination strategy...")
-			if (xml_instance.CombinationStrategy().present())
-				m_CombinationStrategy = 
-					PluginPool<CombinationStrategy>::get_instance()->create_from_xml(*xml_instance.CombinationStrategy());
-			else
-				m_CombinationStrategy = 
-					CombinationStrategyPtr(new AddingStrategy);
+			m_CombinationStrategy = 
+				PluginPool<CombinationStrategy>::get_instance()->create_from_xml(xml_instance.CombinationStrategy());
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating reference...")
-			if (xml_instance.Reference().present())
-				m_Reference = 
-					PluginPool<Reference>::get_instance()->create_from_xml(*xml_instance.Reference());
-			else
-				m_Reference = 
-					ReferencePtr(new DummyReference);
+			m_Reference = 
+				PluginPool<Reference>::get_instance()->create_from_xml(xml_instance.Reference());
 		}
 		
 	#endif

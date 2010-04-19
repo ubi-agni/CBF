@@ -273,37 +273,7 @@ struct SquarePotential : public Potential {
 		FloatVector &result,
 		const std::vector<FloatVector > &references,
 		const FloatVector &input
-	) {
-		//! First we find the closest reference vector
-		Float min_dist = std::numeric_limits<Float>::max();
-		unsigned int min_index = 0;
-
-		//std::cout  << "[SquarePotential]: sizes: " << references[0].size() << " " << input.size() << std::endl;
-
-		for (unsigned int i = 0; i < references.size(); ++i) {
-			Float dist = distance(input, references[i]);
-			if (dist < min_dist) {
-				min_index = i;
-				min_dist = dist;
-			}
-		}
-
-		// CBF_DEBUG("min_index " << min_index)
-
-		//! The gradient of a square function is just negative of
-		//! input - reference..
-		result = m_Coefficient * (references[min_index] - input);
-		Float result_norm = norm(result);
-		// CBF_DEBUG("result_norm " << result_norm)
-
-		//! Normalize gradient step so it's not bigger than m_MaxGradientStep
-		if (result_norm >= m_MaxGradientStep)
-			result = (m_MaxGradientStep/result_norm) * result;
-		// std::cout << "[SquaredPotential]: result: " << result << std::endl;
-
-		m_Converged = check_convergence(distance(input, references[min_index]), norm(result));
-		// CBF_DEBUG("m_Converged " << m_Converged)
-	}
+	);
 };
 
 typedef boost::shared_ptr<SquarePotential> SquarePotentialPtr;

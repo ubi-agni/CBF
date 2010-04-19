@@ -226,14 +226,12 @@ namespace CBF {
 			sanitize_string(m_ExecScript);
 			CBF_DEBUG("ExecScript:\n" << m_ExecScript)
 		
-			if (xml_instance.InitScript().present())
-				m_InitScript = *(xml_instance.InitScript());
+			m_InitScript = xml_instance.InitScript();
 		
 			sanitize_string(m_InitScript);
 			CBF_DEBUG("InitScript:\n" << m_InitScript)
 		
-			if (xml_instance.FiniScript().present())
-				m_FiniScript = *(xml_instance.FiniScript());
+			m_FiniScript = xml_instance.FiniScript();
 		
 			sanitize_string(m_FiniScript);
 			CBF_DEBUG("FiniScript:\n" << m_FiniScript)
@@ -250,14 +248,12 @@ namespace CBF {
 			sanitize_string(m_ExecScript);
 			CBF_DEBUG("ExecScript:\n" << m_ExecScript)
 		
-			if (xml_instance.InitScript().present())
-				m_InitScript = *(xml_instance.InitScript());
+			m_InitScript = xml_instance.InitScript();
 		
 			sanitize_string(m_InitScript);
 			CBF_DEBUG("InitScript:\n" << m_InitScript)
 		
-			if (xml_instance.FiniScript().present())
-				m_FiniScript = *(xml_instance.FiniScript());
+			m_FiniScript = xml_instance.FiniScript();
 		
 			sanitize_string(m_FiniScript);
 			CBF_DEBUG("FiniScript:\n" << m_FiniScript)

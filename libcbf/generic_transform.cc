@@ -61,9 +61,7 @@ void DampedWeightedGenericEffectorTransform::update() {
 
 	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const DampedGenericEffectorTransformType &xml_instance)
 	{
-		if(xml_instance.DampingConstant().present()) {
-			m_DampingConstant = (*xml_instance.DampingConstant());
-		}
+		m_DampingConstant = (xml_instance.DampingConstant());
 	}
 
 	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const DampedWeightedGenericEffectorTransformType &xml_instance)

@@ -1,9 +1,17 @@
 <?xml version="1.0"?>
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
 
+ <Coefficient> 1 </Coefficient>
+ <SubordinateCoefficient> 1 </SubordinateCoefficient>
+ <InitReferenceFromSensorTransform> 0 </InitReferenceFromSensorTransform>
+
  <Potential xsi:type="SquarePotentialType">
+  <ConvergenceCriterion> 1 </ConvergenceCriterion>
+  <DistanceThreshold> 0.01 </DistanceThreshold>
+  <StepNormThreshold> 0.0001 </StepNormThreshold>
   <Coefficient> 0.1 </Coefficient>
   <Dimension> 3 </Dimension>
+  <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
  </Potential>
 
  <EffectorTransform xsi:type="GenericEffectorTransformType"/>
@@ -17,7 +25,6 @@
  </SensorTransform>
 
  <Resource xsi:type="DummyResourceType">
-  <Dimension> 3 </Dimension>
   <Vector xsi:type="SimpleVectorType">
    <Coefficient> 0 </Coefficient>
    <Coefficient> 1 </Coefficient>

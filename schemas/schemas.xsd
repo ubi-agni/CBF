@@ -35,20 +35,20 @@
   <xs:complexContent>
    <xs:extension base="ControllerType">
     <xs:sequence>
-      <xs:element name="Coefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="SubordinateCoefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Coefficient" type="xs:float"/>
+      <xs:element name="SubordinateCoefficient" type="xs:float"/>
 
-      <xs:element name="InitReferenceFromSensorTransform" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="InitReferenceFromSensorTransform" type="xs:boolean"/>
 
-      <xs:element name="Potential" type="PotentialType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="EffectorTransform" type="EffectorTransformType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="Resource" type="ResourceType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Potential" type="PotentialType"/>
+      <xs:element name="EffectorTransform" type="EffectorTransformType"/>
+      <xs:element name="SensorTransform" type="SensorTransformType"/>
+      <xs:element name="Resource" type="ResourceType"/>
 
       <xs:element name="PrimitiveController" type="PrimitiveControllerType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="CombinationStrategy" type="CombinationStrategyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="CombinationStrategy" type="CombinationStrategyType"/>
 
-      <xs:element name="Reference" type="ReferenceType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Reference" type="ReferenceType"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -148,10 +148,10 @@
 
     or OR'ed combination of these (e.g. 3 = 1 OR 2)..
    -->
-   <xs:element name="ConvergenceCriterion" type="xs:nonNegativeInteger" minOccurs="0" maxOccurs="unbounded"/>
+   <xs:element name="ConvergenceCriterion" type="xs:nonNegativeInteger"/>
 
-   <xs:element name="DistanceThreshold" type="xs:float" minOccurs="0" maxOccurs="1"/>
-   <xs:element name="StepNormThreshold" type="xs:float" minOccurs="0" maxOccurs="1"/>
+   <xs:element name="DistanceThreshold" type="xs:float"/>
+   <xs:element name="StepNormThreshold" type="xs:float"/>
   </xs:sequence>
  </xs:complexType>
 
@@ -173,7 +173,7 @@
   <xs:complexContent>
    <xs:extension base="ReferenceType">
     <xs:sequence>
-     <xs:element name="Vector" type="VectorType" minOccurs="0" maxOccurs="unbounded"/>
+     <xs:element name="Vector" type="VectorType" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -190,7 +190,7 @@
   <xs:complexContent>
    <xs:extension base="ReferenceType">
     <xs:sequence>
-     <xs:element name="Vector" type="VectorType" minOccurs="0" maxOccurs="unbounded"/>
+     <xs:element name="Vector" type="VectorType" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -200,15 +200,12 @@
   <xs:complexContent>
    <xs:extension base="ReferenceType">
     <xs:sequence>
-     <xs:element name="Reference" type="ReferenceType" minOccurs="0" maxOccurs="unbounded"/>
+     <xs:element name="Reference" type="ReferenceType" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
  </xs:complexType>
 
- <!--
-  Effector Transform types
- -->
  <xs:complexType name="GenericEffectorTransformType">
   <xs:complexContent>
    <xs:extension base="EffectorTransformType">
@@ -222,7 +219,7 @@
   <xs:complexContent>
    <xs:extension base="EffectorTransformType">
     <xs:sequence>
-     <xs:element name="DampingConstant" type="xs:float" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="DampingConstant" type="xs:float"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -269,21 +266,12 @@
   </xs:complexContent>
  </xs:complexType>
 
-
-
- <!-- 
-  Some auxillary types for the KDLChainEffectorTransform 
- -->
  <xs:complexType name="ChainBaseType" abstract="true">
   <xs:sequence>
    <xs:element name="Name" type="xs:string"/>
   </xs:sequence>
  </xs:complexType>
 
- <!--
-  This type is used for referencing chains that the host application
-  might offer..
- -->
  <xs:complexType name="ChainReferenceType">
   <xs:complexContent>
    <xs:extension base="ChainBaseType">
@@ -352,10 +340,6 @@
   </xs:sequence>
  </xs:complexType>
 
- <!--
-   The elements must be a boost matrix string representation, e.g.:
-   "[3,2]((1,0),(0,1),(0,0))"
- -->
  <xs:complexType name="BoostMatrixType">
   <xs:complexContent>
    <xs:extension base="MatrixType">
@@ -376,12 +360,6 @@
   </xs:complexContent>
  </xs:complexType>
 
-
-
-
- <!--
-  Sensor Transform types
- -->
  <xs:complexType name="IdentitySensorTransformType">
   <xs:complexContent>
    <xs:extension base="SensorTransformType">
@@ -398,9 +376,9 @@
     <xs:sequence>
      <xs:element name="TaskDimension"  type="xs:nonNegativeInteger"/>
      <xs:element name="ResourceDimension"  type="xs:nonNegativeInteger"/>
-     <xs:element name="InitScript" type="xs:string" minOccurs="0" maxOccurs="1"/>
-     <xs:element name="ExecScript" type="xs:string" minOccurs="1" maxOccurs="1"/>
-     <xs:element name="FiniScript" type="xs:string" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="InitScript" type="xs:string"/>
+     <xs:element name="ExecScript" type="xs:string"/>
+     <xs:element name="FiniScript" type="xs:string"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -491,7 +469,6 @@
   </xs:complexContent>
  </xs:complexType>
 
-
  <xs:complexType name="LinearSensorTransformType">
    <xs:complexContent>
    <xs:extension base="SensorTransformType">
@@ -502,11 +479,6 @@
   </xs:complexContent>
  </xs:complexType>
 
-
-
- <!-- 
-  Potential Functions
- -->
  <xs:complexType name="CompositePotentialType">
   <xs:complexContent>
    <xs:extension base="PotentialType">
@@ -521,9 +493,9 @@
   <xs:complexContent>
    <xs:extension base="PotentialType">
     <xs:sequence>
-     <xs:element name="Dimension" type="xs:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
-     <xs:element name="Coefficient" type="xs:float" minOccurs="0" maxOccurs="1"/>
-     <xs:element name="MaxGradientStepNorm" type="xs:float" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
+     <xs:element name="Coefficient" type="xs:float"/>
+     <xs:element name="MaxGradientStepNorm" type="xs:float"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -534,9 +506,9 @@
    <xs:extension base="PotentialType">
     <xs:sequence>
      <xs:element name="Dimension"  type="xs:nonNegativeInteger"/>
-     <xs:element name="InitScript" type="xs:string" minOccurs="0" maxOccurs="1"/>
-     <xs:element name="ExecScript" type="xs:string" minOccurs="1" maxOccurs="1"/>
-     <xs:element name="FiniScript" type="xs:string" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="InitScript" type="xs:string"/>
+     <xs:element name="ExecScript" type="xs:string"/>
+     <xs:element name="FiniScript" type="xs:string"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -573,17 +545,11 @@
   </xs:complexContent>
  </xs:complexType>
 
-
- <!--
-  Resource types
- -->
-
  <xs:complexType name="DummyResourceType">
   <xs:complexContent>
    <xs:extension base = "ResourceType">
     <xs:sequence>
-     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
-     <xs:element name="Vector" type="VectorType" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="Vector" type="VectorType"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
