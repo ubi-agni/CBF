@@ -51,10 +51,6 @@
 					std::cerr << "Error Error Error: " << e.what() << std::endl << std::flush; \
 					throw; \
 				} \
-				catch (...) { \
-					std::cerr << "FEWEGWWEGWGWEGEWG" << std::endl; \
-					throw; \
-				} \
 			}
 #else
 	#define CBF_PLUGIN_XSD_CREATOR(ClassName, SuperclassName)
