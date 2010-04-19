@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
 
 	secondary_controller->set_effector_transform(
 		CBF::EffectorTransformPtr(
-			new CBF::GenericEffectorTransform(
+			new CBF::DampedGenericEffectorTransform(
 				secondary_controller->sensor_transform())));
 
 	secondary_controller->set_potential(

@@ -75,8 +75,8 @@ namespace CBF {
 		virtual void update();
 	
 		DampedGenericEffectorTransform(
-			Float damping_constant = 0.1, 
-			SensorTransformPtr sensor_transform = SensorTransformPtr())
+			SensorTransformPtr sensor_transform = SensorTransformPtr(),
+			Float damping_constant = 0.1)
 			: m_DampingConstant(damping_constant)
 		{
 			set_sensor_transform(sensor_transform);
