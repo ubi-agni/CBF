@@ -108,9 +108,7 @@
    </xs:extension>
   </xs:complexContent>
  </xs:complexType>
- <!-- 
-  The basic types that are extended by below types 
- -->
+
  <xs:complexType name="CombinationStrategyType"/>
 
  <xs:complexType name="ReferenceType"/>
