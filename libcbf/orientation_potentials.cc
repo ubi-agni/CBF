@@ -112,7 +112,7 @@ namespace CBF {
 			CBF_DEBUG("[QuaternionPotential(const QuaternionPotentialType &xml_instance)]: yay!")
 			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
 			m_Coefficient = xml_instance.Coefficient();
-			m_DistanceThreshold = (xml_instance.DistanceThreshold());
+			//m_DistanceThreshold = (xml_instance.DistanceThreshold());
 		}
 		
 		AxisAnglePotential::AxisAnglePotential(const AxisAnglePotentialType &xml_instance) {
@@ -122,7 +122,7 @@ namespace CBF {
 
 			m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
 
-			m_DistanceThreshold = xml_instance.DistanceThreshold();
+			//m_DistanceThreshold = xml_instance.DistanceThreshold();
 		}
 	#endif
 	

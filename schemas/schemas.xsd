@@ -126,8 +126,7 @@
  </xs:complexType>
 
  <xs:complexType name="EffectorTransformType" abstract="true">
-  <xs:sequence>
-  </xs:sequence>
+  <xs:sequence/>
  </xs:complexType>
 
  <xs:complexType name="SensorTransformType" abstract="true">
@@ -136,37 +135,36 @@
   </xs:sequence>
  </xs:complexType>
 
+ <xs:complexType name="ConvergenceCriterionType" abstract="true">
+   <xs:sequence/>
+ </xs:complexType>
+
+ <xs:complexType name="DistanceThresholdType">
+  <xs:complexContent>
+   <xs:extension base="ConvergenceCriterionType">
+    <xs:sequence>
+     <xs:element name="Threshold" type="xs:float"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="StepNormThresholdType">
+  <xs:complexContent>
+   <xs:extension base="ConvergenceCriterionType">
+    <xs:sequence>
+     <xs:element name="Threshold" type="xs:float"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
  <xs:complexType name="PotentialType" abstract="true">
   <xs:sequence>
-   <!-- 
-    The ConvergenceCriterion can take on the values
-
-    - 1: See if current task position is less than DistanceThreshold away from the closest reference
-    - 2: See if gradient step is less than StepNormThreshold
-
-    or OR'ed combination of these (e.g. 3 = 1 OR 2)..
-   -->
-   <xs:element name="ConvergenceCriterion" type="xs:nonNegativeInteger"/>
-
-   <xs:element name="DistanceThreshold" type="xs:float"/>
-   <xs:element name="StepNormThreshold" type="xs:float"/>
+   <xs:element name="ConvergenceCriterion" type="ConvergenceCriterionType" minOccurs="1" maxOccurs="unbounded"/>
   </xs:sequence>
  </xs:complexType>
 
-
-
-
-
-
-
-
- <!-- 
-  Here come the types that one can use to parametrize a controller 
- -->
-
- <!--
-  Reference types
- -->
  <xs:complexType name="DummyReferenceType">
   <xs:complexContent>
    <xs:extension base="ReferenceType">

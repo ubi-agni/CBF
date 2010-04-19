@@ -101,7 +101,30 @@ namespace CBF {
 
 
 	#ifdef CBF_HAVE_XSD
-	SquarePotential::SquarePotential(const SquarePotentialType &xml_instance) {
+	Potential::Potential(const PotentialType &xml_instance) {
+		m_ConvergenceCriterion = 0;
+		for (
+			PotentialType::ConvergenceCriterion_const_iterator it = 
+				xml_instance.ConvergenceCriterion().begin();
+			it != xml_instance.ConvergenceCriterion().end();
+			++it
+		) {
+			const DistanceThresholdType *d = dynamic_cast<const DistanceThresholdType *>(&(*it));
+			if (d != 0) {
+				m_ConvergenceCriterion |= DISTANCE_THRESHOLD;
+				m_DistanceThreshold = d->Threshold();
+			}
+			const StepNormThresholdType *s = dynamic_cast<const StepNormThresholdType *>(&(*it));
+			if (s != 0) {
+				m_ConvergenceCriterion |= STEP_THRESHOLD;
+				m_StepNormThreshold = s->Threshold();
+			}
+		}
+	}
+
+	SquarePotential::SquarePotential(const SquarePotentialType &xml_instance) :
+		Potential(xml_instance) 
+	{
 		CBF_DEBUG("[SquarePotential(const SquaredPotentialType &xml_instance)]: yay!")
 		CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
 		m_Coefficient = xml_instance.Coefficient();
@@ -110,12 +133,14 @@ namespace CBF {
 
 		m_MaxGradientStep = xml_instance.MaxGradientStepNorm();
 
-		m_DistanceThreshold = xml_instance.DistanceThreshold();
+		// m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
 
 	CBF_PLUGIN_CLASS(SquarePotential, Potential)
 	
-	CompositePotential::CompositePotential(const CompositePotentialType &xml_instance) {
+	CompositePotential::CompositePotential(const CompositePotentialType &xml_instance) :
+		Potential(xml_instance) 
+	{
 		CBF_DEBUG("[CompositePotential(const CompositePotentialType &xml_instance)]: yay!")
 		//std::cout << "Coefficient: " << xml_instance.Coefficient() << std::endl;
 		std::vector<PotentialPtr> tmp;
@@ -129,7 +154,7 @@ namespace CBF {
 			}
 		set_potentials(tmp);
 
-		m_DistanceThreshold = xml_instance.DistanceThreshold();
+		//m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
 	#endif
 

@@ -42,6 +42,7 @@
 CBF_PLUGIN_PREAMBLE(SquarePotential)
 CBF_PLUGIN_PREAMBLE(CompositePotential)
 CBF_PLUGIN_PREAMBLE(DirectionPotential)
+CBF_PLUGIN_PREAMBLE(Potential)
 
 namespace CBF {
 
@@ -70,6 +71,8 @@ struct Potential {
 
 	Float m_DistanceThreshold;
 	Float m_StepNormThreshold;
+
+	CBF_PLUGIN_DECL_METHODS(Potential)
 
 	Potential(
 		int convergence_criterion = DISTANCE_THRESHOLD,
