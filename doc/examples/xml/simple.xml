@@ -6,10 +6,12 @@
   <Dimension> 3 </Dimension>
  </Potential>
 
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+<!--
  <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
-  <DampingConstant> 0.001 </DampingConstant>
+  <DampingConstant> 0.1 </DampingConstant>
  </EffectorTransform>
-
+-->
  <SensorTransform xsi:type="IdentitySensorTransformType">
   <Dimension> 3 </Dimension>
  </SensorTransform>

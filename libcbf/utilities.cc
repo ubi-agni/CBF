@@ -127,17 +127,14 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		SvMatrix.setZero();
 	
 		Float det = 1.0;
-		//! We use the ordinary reciprocal for testing purposes here
 		for (int i = 0; i < Sv.rows(); ++i) {
-			//SvMatrix(i,i) = Sv(i,0) / (0.00 + (Sv(i,0) * Sv(i,0)));
 			det *= SvMatrix(i,i);
-			if (Sv(i,0) > 0.001)
+			if (fabs(Sv(i,0)) > 0.001)
 				SvMatrix(i,i) = 1.0 / (Sv(i,0));
 			else {
 				CBF_DEBUG("SINGULAR")
 				SvMatrix(i,i) = 0.0;
 			}
-			// std::cout << Sv(i,0)  << std::endl;
 		}
 		CBF_DEBUG("deter:" << det)
 		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
