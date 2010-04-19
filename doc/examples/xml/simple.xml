@@ -6,11 +6,11 @@
  <InitReferenceFromSensorTransform> 0 </InitReferenceFromSensorTransform>
 
  <Potential xsi:type="SquarePotentialType">
-<!--
+
   <ConvergenceCriterion xsi:type="DistanceThresholdType">
    <Threshold> 0.000001 </Threshold>
   </ConvergenceCriterion>
--->
+
   <Dimension> 3 </Dimension>
   <Coefficient> 0.1 </Coefficient>
   <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
