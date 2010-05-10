@@ -176,8 +176,8 @@ int main(int argc, char *argv[]) {
 		q1 = v1;
 		q2 = v2;
 
-		q1.from_axis_angle(q1);
-		q2.from_axis_angle(q2);
+		q1.from_axis_angle4(q1);
+		q2.from_axis_angle4(q2);
 
 		CBF::Quaternion q3;
 		q3 = q1.conjugate() * q2;

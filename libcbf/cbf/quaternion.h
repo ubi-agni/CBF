@@ -47,7 +47,7 @@ struct Quaternion {
 		Float x = 1,
 		Float y = 0,
 		Float z = 0
-		) :
+	) :
 		w(w),
 		x(x),
 		y(y),
@@ -80,7 +80,7 @@ struct Quaternion {
 			w * q_rhs.w
 			+ x * q_rhs.x
 			+ y * q_rhs.y
-			+ z * q_rhs.z 
+			+ z * q_rhs.z
 		);
 	}
 
@@ -282,7 +282,7 @@ struct Quaternion {
 	}
 
 	/** Setup this quaternion from an unpacked axis angle representation */
-	void from_axis_angle(Quaternion &q)
+	void from_axis_angle4(Quaternion &q)
 	{
 		Float sinAngle;
 		Float half_angle = 0.5 * q.w;

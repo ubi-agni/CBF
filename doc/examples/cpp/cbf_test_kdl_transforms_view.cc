@@ -172,6 +172,8 @@ int main(int argc, char *argv[]) {
 
 
 #ifdef CBF_HAVE_SPACEMOUSE
+	//! If there was libnavi present at configuration time, then the user
+	//! can specify any argument. Then this example is controlled by the spacemouse
 	std::cout << "HAVE_SPACEMOUSE" << std::endl;
 	if (argc > 1)
 	{
@@ -203,35 +205,18 @@ int main(int argc, char *argv[]) {
 	
 					const double factor = 0.0001;
 	
-#if 0
-					primary_controller->references()[0][0] += factor * axes[0];
-					primary_controller->references()[0][1] += -factor * axes[1];
-					primary_controller->references()[0][2] += -factor * axes[2];
-#endif
 					ref->references()[0][0] += factor * axes[0];
 					ref->references()[0][1] += -factor * axes[1];
 					ref->references()[0][2] += -factor * axes[2];
 
-					CBF::ublas::vector<CBF::Float> current_rot_ref(4);
-					current_rot_ref[0] = 0;
+					CBF::ublas::vector<CBF::Float> current_rot_ref(3);
 					std::copy(
 						ref->references()[0].begin() + 3,
 						ref->references()[0].end(),
-						current_rot_ref.begin() + 1);
+						current_rot_ref.begin());
 	
-					float w = CBF::ublas::norm_2(current_rot_ref);
-					if (w != 0)
-						current_rot_ref = current_rot_ref * (1.0/w);
-					else {
-						current_rot_ref = CBF::ublas::zero_vector<CBF::Float>(4);
-						current_rot_ref[1] = 1;
-					}
-	
-					current_rot_ref[0] = w;
-	
-					CBF::Quaternion tmp = current_rot_ref;
 					CBF::Quaternion current_rot_ref_q;
-					current_rot_ref_q.from_axis_angle(tmp);
+					current_rot_ref_q.from_axis_angle3(current_rot_ref);
 	
 					std::cout << "current_q: " << current_rot_ref_q << std::endl;
 	
@@ -240,32 +225,31 @@ int main(int argc, char *argv[]) {
 					CBF::Quaternion rot_x(cos(rot_factor * axes[3] / 2.0), sin(rot_factor * axes[3] / 2.0), 0, 0);
 					CBF::Quaternion rot_y(cos(rot_factor * axes[4] / 2.0), 0, sin(rot_factor * axes[4] / 2.0), 0);
 					CBF::Quaternion rot_z(cos(rot_factor * axes[5] / 2.0), 0, 0, sin(rot_factor * axes[5] / 2.0));
-					rot_x.normalize();
-					rot_y.normalize();
-					rot_z.normalize();
+
+					rot_x.normalize(); rot_y.normalize(); rot_z.normalize();
 	
-					current_rot_ref_q = rot_z.conjugate() * rot_y.conjugate() * rot_x.conjugate() * current_rot_ref_q;
+					current_rot_ref_q = 
+						rot_x * rot_y * rot_z
+						* current_rot_ref_q
+						* rot_z.conjugate() * rot_y.conjugate() * rot_x.conjugate();
+
 					//current_rot_ref_q = rot_y * current_rot_ref_q;
 	
 					std::cout << "next_q: " << current_rot_ref_q << std::endl;
 	
 					current_rot_ref_q.normalize();
-					current_rot_ref_q.axis_angle();
+					current_rot_ref_q.to_axis_angle3(current_rot_ref);
 	
 					std::cout << "next_q axis/angle " << current_rot_ref_q << std::endl;
-	
-					current_rot_ref = current_rot_ref_q;
-					current_rot_ref = current_rot_ref * current_rot_ref[0];
-					current_rot_ref[0] = 0;
-	
+
 					std::cout << "new_rot_ref: " << current_rot_ref << std::endl;
 					std::copy(
-						current_rot_ref.begin() + 1,
+						current_rot_ref.begin(),
 						current_rot_ref.end(),
 						ref->references()[0].begin() + 3
 					);
 	
-					//std::cout << "ref: " << primary_controller->references()[0] << std::endl;
+					std::cout << "ref: " << primary_controller->reference()->get()[0] << std::endl;
 				}
 				primary_controller->step();
 	
@@ -288,37 +272,6 @@ int main(int argc, char *argv[]) {
 	}
 #endif
 
-#if 0
-	ref->references()[0][0] = 1;//1.0 * sin(angle);
-	ref->references()[0][1] = 1;//1.0 * cos(angle);
-	ref->references()[0][2] = 0;//1.0 * cos(angle);
-
-	primary_controller->step();
-
-	while (true) {
-		CBF::FloatVector cur_task_pos(primary_controller->get_current_task_position().size());
-		std::copy(
-			primary_controller->get_current_task_position().begin(), 
-			primary_controller->get_current_task_position().end(), 
-			cur_task_pos.begin());
-	
-		ref->set_reference(cur_task_pos);
-		primary_controller->step();
-
-		for (unsigned int j = 0; j < chain_view.pose().size(); ++j)
-		{
-			chain_view.pose()[j] = primary_controller->effector_transform()->resource()->get()[j];
-		}
-		chain_view.show();
-		chain_view.update();
-
-		app.processEvents();
-		usleep(10000);
-	}
-
-#endif
-
-
 	unsigned int count = 0;
 
 	float angle = 0;
@@ -340,7 +293,6 @@ int main(int argc, char *argv[]) {
 			ref->references()[0][3] = angle;//M_PI/2.0;
 			ref->references()[0][4] = 0;//angle;
 			ref->references()[0][5] = 0;//angle;
-
 
 			primary_controller->step();
 
