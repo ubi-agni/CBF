@@ -95,6 +95,8 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 
 
 #ifdef CBF_HAVE_EIGEN2
+	static const double pseudo_inv_precision_threshold = 0.001;
+
 	Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
 		bool transpose = false;
 	
@@ -108,12 +110,8 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		int cols = (int)M.size2();
 	
 		for (int row = 0; row < rows; ++row)
-		{
 			for (int col = 0; col < cols; ++col)
-			{
 				m(row,col) = M(row,col);	
-			}
-		}
 	
 		if (transpose) m.transposeInPlace();
 	
@@ -129,7 +127,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		Float det = 1.0;
 		for (int i = 0; i < Sv.rows(); ++i) {
 			det *= SvMatrix(i,i);
-			if (fabs(Sv(i,0)) > 0.001)
+			if (fabs(Sv(i,0)) > pseudo_inv_precision_threshold)
 				SvMatrix(i,i) = 1.0 / (Sv(i,0));
 			else {
 				CBF_DEBUG("SINGULAR")
@@ -146,12 +144,8 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		result = FloatMatrix(res.rows(), res.cols());
 	
 		for (int row = 0; row < res.rows(); ++row)
-		{
 			for (int col = 0; col < res.cols(); ++col)
-			{
 				result(row,col) = res(row,col);
-			}
-		}
 	
 		if (transpose) result = ublas::trans(result);
 		return det;
@@ -170,12 +164,8 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		int cols = (int)M.size2();
 	
 		for (int row = 0; row < rows; ++row)
-		{
 			for (int col = 0; col < cols; ++col)
-			{
 				m(row,col) = M(row,col);	
-			}
-		}
 	
 		if (transpose) m.transposeInPlace();
 	
@@ -193,14 +183,6 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		for (int i = 0; i < Sv.rows(); ++i) {
 			SvMatrix(i,i) = Sv(i,0) / (damping_constant + (Sv(i,0) * Sv(i,0)));
 			det *= SvMatrix(i,i);
-#if 0
-			if (Sv(i,0) > 0.001)
-				SvMatrix(i,i) = 1.0 / (Sv(i,0));
-			else {
-				CBF_DEBUG("SINGULAR")
-				SvMatrix(i,i) = 0.0;
-			}
-#endif
 			// std::cout << Sv(i,0)  << std::endl;
 		}
 		CBF_DEBUG("deter:" << det)
@@ -213,13 +195,9 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		result = FloatMatrix(res.rows(), res.cols());
 	
 		for (int row = 0; row < res.rows(); ++row)
-		{
 			for (int col = 0; col < res.cols(); ++col)
-			{
 				result(row,col) = res(row,col);
-			}
-		}
-	
+
 		if (transpose) result = ublas::trans(result);
 		return det;
 	}
