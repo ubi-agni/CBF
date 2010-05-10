@@ -103,8 +103,9 @@ namespace CBF {
 	#ifdef CBF_HAVE_XSD
 	Potential::Potential(const PotentialType &xml_instance) {
 		m_ConvergenceCriterion = 0;
+
 		if (xml_instance.ConvergenceCriterion().begin() == xml_instance.ConvergenceCriterion().end())
-			throw std::runtime_error("Missing ConvergenceCriterion");
+			throw std::runtime_error("[Potential]: Missing ConvergenceCriterion");
 
 		for (
 			PotentialType::ConvergenceCriterion_const_iterator it = 

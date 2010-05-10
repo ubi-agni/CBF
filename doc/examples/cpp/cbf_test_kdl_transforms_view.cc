@@ -39,7 +39,7 @@
 
 #include <cbf/plugin_decl_macros.h>
 
-#ifdef HAVE_SPACEMOUSE
+#ifdef CBF_HAVE_SPACEMOUSE
 	#include <spacenavi.h>
 	#include <sys/stat.h>
 	#include <fcntl.h>
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 	CBF::PrimitiveControllerPtr primary_controller(
 		new CBF::PrimitiveController(1, 1));
 
-	CBF::DummyReferencePtr ref(new CBF::DummyReference(1,6));
+	CBF::DummyReferencePtr ref(new CBF::DummyReference(1, 6));
 	primary_controller->set_reference(ref);
 	
 
@@ -95,30 +95,22 @@ int main(int argc, char *argv[]) {
 	*/
 	std::vector<CBF::SensorTransformPtr> sensor_trafos;
 
-	sensor_trafos.push_back(
-		CBF::SensorTransformPtr(
-			new CBF::KDLChainPositionSensorTransform(chain)
-		)
-	);
+	sensor_trafos.push_back
+		(CBF::SensorTransformPtr
+			(new CBF::KDLChainPositionSensorTransform(chain)));
 
-	sensor_trafos.push_back(
-		CBF::SensorTransformPtr(
-			new CBF::KDLChainAxisAngleSensorTransform(chain)
-		)
-	);
+	sensor_trafos.push_back
+		(CBF::SensorTransformPtr
+			(new CBF::KDLChainAxisAngleSensorTransform(chain)));
 
-	primary_controller->set_sensor_transform( 
-		CBF::SensorTransformPtr(
-			new CBF::CompositeSensorTransform(sensor_trafos)
-		)
-	);
+	primary_controller->set_sensor_transform
+		(CBF::SensorTransformPtr
+			(new CBF::CompositeSensorTransform(sensor_trafos)));
 
 	//! We use the generic pseudo inverse based effector transform,.
-	primary_controller->set_effector_transform(
-		CBF::EffectorTransformPtr(
-			new CBF::GenericEffectorTransform(primary_controller->sensor_transform())
-		)
-	);
+	primary_controller->set_effector_transform
+		(CBF::EffectorTransformPtr
+			(new CBF::DampedGenericEffectorTransform(primary_controller->sensor_transform())));
 
 	/**
 		Add a potential function. The potential function is again a composite one,
@@ -178,7 +170,7 @@ int main(int argc, char *argv[]) {
 	//primary_controller->subordinate_controllers().push_back(secondary_controller);
 
 
-#ifdef HAVE_SPACEMOUSE
+#ifdef CBF_HAVE_SPACEMOUSE
 	std::cout << "HAVE_SPACEMOUSE" << std::endl;
 	if (argc > 1)
 	{

@@ -39,15 +39,15 @@ int main() {
 	for (unsigned int i = 0; i < NUM_OF_JOINT_TRIPLES; ++i) {
 		chain1->addSegment(
 			KDL::Segment(
-				KDL::Joint::RotX, KDL::Frame(KDL::Vector(0,0,0.1))));
+				KDL::Joint::RotX, KDL::Frame(KDL::Vector(0, 0, 0.1))));
 
 		chain1->addSegment(
 			KDL::Segment(
-				KDL::Joint::RotY, KDL::Frame(KDL::Vector(0,0,0.1))));
+				KDL::Joint::RotY, KDL::Frame(KDL::Vector(0, 0, 0.1))));
 
 		chain1->addSegment(
 			KDL::Segment(
-				KDL::Joint::RotZ, KDL::Frame(KDL::Vector(0,0,0.1))));
+				KDL::Joint::RotZ, KDL::Frame(KDL::Vector(0, 0, 0.1))));
 	}
 
 	//! Build up a second chain with one additional fixed link
@@ -55,21 +55,21 @@ int main() {
 	for (unsigned int i = 0; i < NUM_OF_JOINT_TRIPLES; ++i) {
 		chain2->addSegment(
 			KDL::Segment(
-				KDL::Joint::RotX, KDL::Frame(KDL::Vector(0,0,0.1))));
+				KDL::Joint::RotX, KDL::Frame(KDL::Vector(0, 0, 0.1))));
 
 		chain2->addSegment(
 			KDL::Segment(
-				KDL::Joint::RotY, KDL::Frame(KDL::Vector(0,0,0.1))));
+				KDL::Joint::RotY, KDL::Frame(KDL::Vector(0, 0, 0.1))));
 
 		chain2->addSegment(
 			KDL::Segment(
-				KDL::Joint::RotZ, KDL::Frame(KDL::Vector(0,0,0.1))));
+				KDL::Joint::RotZ, KDL::Frame(KDL::Vector(0, 0, 0.1))));
 	}
 	//! On chain2 we add a final link with a fixed joint. This
 	//! allows our difference sensor transform to do its thing
 	chain2->addSegment(
 		KDL::Segment(
-			KDL::Joint::None, KDL::Frame(KDL::Vector(0,0,0.1))));
+			KDL::Joint::None, KDL::Frame(KDL::Vector(0, 0, 1))));
 
 
 	CBF::KDLChainPositionSensorTransformPtr st1
@@ -81,7 +81,8 @@ int main() {
 	CBF::DifferenceSensorTransformPtr st
 		(new CBF::DifferenceSensorTransform(st1, st2));
 
-	CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(st));
+	CBF::DampedGenericEffectorTransformPtr et(new CBF::DampedGenericEffectorTransform(st));
+	// CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(st));
 
 	//! An AxisPotential for R^3
 	CBF::AxisPotentialPtr p(new CBF::AxisPotential(3, 0.01));
