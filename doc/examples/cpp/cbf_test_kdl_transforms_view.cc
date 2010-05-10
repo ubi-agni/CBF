@@ -161,13 +161,14 @@ int main(int argc, char *argv[]) {
 		minimize joint angles and their minimum is at 0 :)
 	*/
 	// secondary_controller->references().push_back(CBF::ublas::zero_vector<CBF::Float>(NUM_OF_JOINT_TRIPLES * 3));
-	secondary_controller->set_reference(CBF::ReferencePtr(new CBF::DummyReference(1,NUM_OF_JOINT_TRIPLES * 3)));
+	secondary_controller->set_reference(
+		CBF::ReferencePtr(new CBF::DummyReference(1,NUM_OF_JOINT_TRIPLES * 3)));
 
 	/**
 		Finally add the secondary controller so its output is projected into the
 		nullspace of the primary controller
 	*/
-	//primary_controller->subordinate_controllers().push_back(secondary_controller);
+	primary_controller->subordinate_controllers().push_back(secondary_controller);
 
 
 #ifdef CBF_HAVE_SPACEMOUSE
