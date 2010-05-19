@@ -19,7 +19,7 @@
 */
 
 #include <cbf/primitive_controller.h>
-#include <cbf/potential.h>
+#include <cbf/square_potential.h>
 #include <cbf/identity_transform.h>
 #include <cbf/generic_transform.h>
 #include <cbf/dummy_resource.h>

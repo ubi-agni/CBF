@@ -18,11 +18,9 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-/* -*- mode: c-non-suck; -*- */
-
 #include <cbf/primitive_controller.h>
-
-#include <cbf/potential.h>
+#include <cbf/square_potential.h>
+#include <cbf/composite_potential.h>
 #include <cbf/effector_transform.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/kdl_transforms.h>
@@ -44,20 +42,6 @@
 
 int main(int argc, char *argv[]) {
 	srand(1);
-
-#if 0
-	{
-		//! Test some matrix conversion functions which are specific to KDL stuff
-		KDL::Jacobian jac(3,1);
-		CBF::ublas::matrix<CBF::CBFFloat> m;
-		m = CBF::assign(m, jac);
-		std::cout << "m: " << m << std::endl;
-
-		KDL::Frame f;
-		m = CBF::assign(m, f);
-		std::cout << "m: " << m << std::endl;
-	}
-#endif
 
 	CBF::PrimitiveControllerPtr controller;
 	for (int i = 0; i < 3; ++i)

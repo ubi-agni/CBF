@@ -126,7 +126,7 @@ namespace CBF {
 	{
 		CBF_PLUGIN_DECL_METHODS(KDLChainPositionSensorTransform)
 	
-		KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain = boost::shared_ptr<KDL::Chain>(new KDL::Chain));
+		KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain = boost::shared_ptr<KDL::Chain>());
 
 		virtual unsigned int task_dim() const { return 3u; }
 
@@ -158,7 +158,7 @@ namespace CBF {
 		public:
 			KDLChainOrientationQuatSensorTransform(
 				boost::shared_ptr<KDL::Chain> chain = 
-					boost::shared_ptr<KDL::Chain>(new KDL::Chain)
+					boost::shared_ptr<KDL::Chain>()
 			);
 		
 
@@ -190,7 +190,7 @@ namespace CBF {
 	
 		KDLChainAxisAngleSensorTransform(
 			boost::shared_ptr<KDL::Chain> chain =
-				boost::shared_ptr<KDL::Chain>(new KDL::Chain)
+				boost::shared_ptr<KDL::Chain>()
 		);
 		
 		virtual unsigned int task_dim() const { return 3u; }

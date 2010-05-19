@@ -120,8 +120,6 @@ namespace CBF {
 			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
 			m_Coefficient = xml_instance.Coefficient();
 
-			m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
-
 			//m_DistanceThreshold = xml_instance.DistanceThreshold();
 		}
 	#endif

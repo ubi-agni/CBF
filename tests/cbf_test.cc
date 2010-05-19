@@ -23,6 +23,7 @@
 #include <cbf/primitive_controller.h>
 
 #include <cbf/potential.h>
+#include <cbf/square_potential.h>
 #include <cbf/effector_transform.h>
 #include <cbf/identity_transform.h>
 #include <cbf/dummy_resource.h>
@@ -73,7 +74,7 @@ int main(int argc, char *argv[]) {
 		CBF::PrimitiveController controller;
 	
 		//! Create nessecary members of the primitive controller.
-		controller.set_potential(CBF::PotentialPtr(new CBF::SquarePotential(6)));
+		controller.set_potential(CBF::SquarePotentialPtr(new CBF::SquarePotential(6)));
 	
 		//! For this simple test we only use the identity transform
 		controller.set_sensor_transform(CBF::SensorTransformPtr(new CBF::IdentitySensorTransform(6)));

@@ -164,6 +164,7 @@
  <xs:complexType name="PotentialType" abstract="true">
   <xs:sequence>
    <xs:element name="ConvergenceCriterion" type="ConvergenceCriterionType" minOccurs="1" maxOccurs="unbounded"/>
+   <xs:element name="MaxGradientStepNorm" type="xs:float"/>
   </xs:sequence>
  </xs:complexType>
 

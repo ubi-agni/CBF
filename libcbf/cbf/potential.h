@@ -18,30 +18,15 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-/* -*- mode: c-non-suck; -*- */
-
 #ifndef CONTROL_BASIS_POTENTIAL_HH
 #define CONTROL_BASIS_POTENTIAL_HH
 
 #include <cbf/types.h>
 #include <cbf/utilities.h>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
-#include <vector>
-#include <cassert>
-#include <stdexcept>
-#include <limits>
-#include <algorithm>
-#include <iostream>
-
 #include <cbf/plugin_decl_macros.h>
 
-CBF_PLUGIN_PREAMBLE(SquarePotential)
-CBF_PLUGIN_PREAMBLE(CompositePotential)
-CBF_PLUGIN_PREAMBLE(DirectionPotential)
+#include <boost/shared_ptr.hpp>
+
 CBF_PLUGIN_PREAMBLE(Potential)
 
 namespace CBF {
@@ -72,16 +57,23 @@ struct Potential {
 	Float m_DistanceThreshold;
 	Float m_StepNormThreshold;
 
+	bool m_ClampGradientStepNorm;
+	Float m_MaxGradientStepNorm;
+
 	CBF_PLUGIN_DECL_METHODS(Potential)
 
 	Potential(
 		int convergence_criterion = DISTANCE_THRESHOLD,
 		Float distance_threshold = 0.01,
-		Float stepnorm_threshold = 0.001
+		Float stepnorm_threshold = 0.001,
+		bool clamp_gradient_step_norm = false,
+		Float max_gradient_step_norm = 0.1
 	) :
 		m_ConvergenceCriterion(convergence_criterion),
 		m_DistanceThreshold(distance_threshold),
-		m_StepNormThreshold(stepnorm_threshold)
+		m_StepNormThreshold(stepnorm_threshold),
+		m_ClampGradientStepNorm(clamp_gradient_step_norm),
+		m_MaxGradientStepNorm(max_gradient_step_norm)
 	{
 
 	}
@@ -90,8 +82,24 @@ struct Potential {
 
 	}
 
+	virtual void set_max_gradient_step_norm(Float gradient_norm) {
+		m_MaxGradientStepNorm = gradient_norm;
+	}
+
+	virtual Float max_gradient_step_norm() {
+		return m_MaxGradientStepNorm;
+	}
+
+	/**
+		The norm() function has to return a sensible notion of length for the
+		gradient step that is passed into it..
+	*/
 	virtual Float norm(const FloatVector &v) = 0;
 
+	/**
+		For two points of the space that this potential is operating on, this function
+		should return a sensible notion of distance between the two points
+	*/
 	virtual Float distance(const FloatVector &v1, const FloatVector &v2) = 0;
 
 	/**
@@ -123,168 +131,6 @@ struct Potential {
 };
 
 typedef boost::shared_ptr<Potential> PotentialPtr;
-
-
-/**
-	@brief The composite potential can be used to combine individual potentials
-	into a single one.
-
-	This is useful e.g. when the task space is a product
-	of two rather different spaces (position and orientation for example).
-*/
-struct CompositePotential : public Potential {
-	CBF_PLUGIN_DECL_METHODS(CompositePotential)
-
-	/**
-		@brief The potentials which are combined into a bigger one..
-	*/
-	std::vector<PotentialPtr> m_Potentials;
-
-	//! @brief Buffers which are instance variables for efficiency reasons
-	std::vector<FloatVector > m_in_buffers;
-
-	//! @brief Buffers which are instance variables for efficiency reasons
-	std::vector<FloatVector > m_out_buffers;
-
-	//! @brief Buffers which are instance variables for efficiency reasons
-	std::vector<FloatVector > m_ref_buffers;
-
-	unsigned int m_Dim;
-
-	CompositePotential(std::vector<PotentialPtr> potentials = std::vector<PotentialPtr>()) {
-		set_potentials(potentials);
-	}
-
-	CompositePotential(PotentialPtr p1, PotentialPtr p2) {
-		std::vector<PotentialPtr> v;
-		v.push_back(p1);
-		v.push_back(p2);
-
-		set_potentials(v);
-	}
-
-	/**
-		@brief Set the potentials to combine..
-	*/
-	void set_potentials(std::vector<PotentialPtr> &potentials) 
-	{
-		m_Potentials = potentials;
-		m_in_buffers.resize(potentials.size());
-		m_out_buffers.resize(potentials.size());
-		m_ref_buffers.resize(potentials.size());
-		m_Dim = 0;
-
-		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-			m_Dim += m_Potentials[i]->task_dim();
-			m_in_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->task_dim());
-			m_out_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->task_dim());
-			m_ref_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->task_dim());
-		}
-	}
-
-	virtual void gradient (
-		FloatVector &result, 
-		const std::vector<FloatVector > &references, 
-		const FloatVector &input
-	);
-
-	/**
-		We don't know how to combine the norms of the different potentials
-		so we return 0..
-	*/
-	virtual Float norm(const FloatVector &v) {
-		throw std::runtime_error("[CompositePotential]: Don't know how to calculate norm");
-		return 0;
-	}
-
-	virtual Float distance(const FloatVector &v1, const FloatVector &v2) {
-		throw std::runtime_error("[CompositePotential]: Don't know how to calculate distance");
-		return 0;
-	}
-
-	/** 
-		This implementation test if all of the potentials are converged and only then
-		returns true
-	*/
-	virtual bool converged() const {
-		for (unsigned int i = 0; i < m_Potentials.size(); ++i)
-			if (m_Potentials[i]->converged() == false)
-				return false;
-
-		return true;
-	}
-
-	virtual unsigned int task_dim() const {
-		return m_Dim;
-	}
-
-};
-
-typedef boost::shared_ptr<CompositePotential> CompositePotentialPtr;
-
-
-
-
-/**
-	@brief A squared potential functions
-*/
-struct SquarePotential : public Potential {
-	CBF_PLUGIN_DECL_METHODS(SquarePotential)
-
-	Float m_Coefficient;
-	Float m_MaxGradientStep;
-	unsigned int m_Dim;
-
-	bool m_Converged;
-
-	SquarePotential(unsigned int dim = 1, Float coefficient = 1.0) :
-		m_Coefficient(coefficient),
-		m_MaxGradientStep(1.0),
-		m_Dim(dim),
-		m_Converged(false)
-	{
-
-	}
-
-	void set_max_gradient_step(Float max_gradient_step) {
-		m_MaxGradientStep = max_gradient_step;
-	}
-
-	Float max_gradient_step() {
-		return m_MaxGradientStep;
-	}
-		
-
-	virtual bool converged() const {
-		return m_Converged;		
-	}
-
-	virtual Float norm(const FloatVector &v) {
-		return ublas::norm_2(v);
-	}
-
-	virtual Float distance(const FloatVector &v1, const FloatVector &v2) {
-		// CBF_DEBUG("distance: " << (norm(v1 - v2)))
-		return (norm(v1 - v2));
-	}
-
-	virtual unsigned int task_dim() const {
-		return m_Dim;
-	}
-
-	virtual void gradient (
-		FloatVector &result,
-		const std::vector<FloatVector > &references,
-		const FloatVector &input
-	);
-};
-
-typedef boost::shared_ptr<SquarePotential> SquarePotentialPtr;
-
-
-struct DirectionPotential {
-	CBF_PLUGIN_DECL_METHODS(DirectionPotential)
-};
 
 } // namespace
 

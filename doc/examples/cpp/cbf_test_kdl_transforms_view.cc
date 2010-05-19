@@ -22,8 +22,8 @@
 #include <qkdlchainview.h>
 
 #include <cbf/primitive_controller.h>
-
-#include <cbf/potential.h>
+#include <cbf/square_potential.h>
+#include <cbf/composite_potential.h>
 #include <cbf/effector_transform.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/kdl_transforms.h>
@@ -48,6 +48,10 @@
 #include <iostream>
 #include <cstdlib>
 #include <unistd.h>
+
+
+#include <boost/shared_ptr.hpp>
+#include <kdl/chain.hpp>
 
 #define NUM_OF_STEPS 10000 
 

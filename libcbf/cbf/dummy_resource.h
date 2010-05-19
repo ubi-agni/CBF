@@ -27,13 +27,6 @@
 
 #include <cbf/plugin_decl_macros.h>
 
-#include <string>
-#include <iostream>
-#include <cstdlib>
-#include <cmath>
-#include <deque>
-
-#include <boost/numeric/ublas/io.hpp>
 
 CBF_PLUGIN_PREAMBLE(DummyResource)
 

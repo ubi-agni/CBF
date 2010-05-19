@@ -33,72 +33,6 @@ namespace CBF {
 	}
 
 
-	void CompositePotential::gradient (
-		FloatVector &result, 
-		const std::vector<FloatVector > &references, 
-		const FloatVector &input
-	) {
-		result = ublas::zero_vector<Float>(input.size());
-
-		unsigned int current_index = 0;
-		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-			CBF_DEBUG("[CompositePotential]: ----")
-			std::copy(references[0].begin() + current_index, references[0].begin() + current_index + m_Potentials[i]->task_dim(), m_ref_buffers[i].begin());
-
-			std::copy(input.begin() + current_index, input.begin() + current_index + m_Potentials[i]->task_dim(), m_in_buffers[i].begin());
-			CBF_DEBUG("[CompositePotential]: in: " <<  m_in_buffers[i])
-
-			std::vector<FloatVector > tmp_refs;
-			tmp_refs.push_back(m_ref_buffers[i]);
-			CBF_DEBUG("[CompositePotential]: tmp_refs: " <<  tmp_refs[0])
-			CBF_DEBUG("[CompositePotential]: m_ref_buffers: " <<  m_ref_buffers[i])
-
-			m_Potentials[i]->gradient(m_out_buffers[i], tmp_refs, m_in_buffers[i]);
-			CBF_DEBUG("[CompositePotential]: out: " <<  m_out_buffers[i])
-			std::copy(m_out_buffers[i].begin(), m_out_buffers[i].end(), result.begin() + current_index);
-
-			current_index += m_Potentials[i]->task_dim();
-		}
-	}
-
-
-	void SquarePotential::gradient (
-		FloatVector &result,
-		const std::vector<FloatVector > &references,
-		const FloatVector &input
-	) {
-		//! First we find the closest reference vector
-		Float min_dist = std::numeric_limits<Float>::max();
-		unsigned int min_index = 0;
-
-		//std::cout  << "[SquarePotential]: sizes: " << references[0].size() << " " << input.size() << std::endl;
-
-		for (unsigned int i = 0; i < references.size(); ++i) {
-			Float dist = distance(input, references[i]);
-			if (dist < min_dist) {
-				min_index = i;
-				min_dist = dist;
-			}
-		}
-
-		// CBF_DEBUG("min_index " << min_index)
-
-		//! The gradient of a square function is just negative of
-		//! input - reference..
-		result = m_Coefficient * (references[min_index] - input);
-		Float result_norm = norm(result);
-		// CBF_DEBUG("result_norm " << result_norm)
-
-		//! Normalize gradient step so it's not bigger than m_MaxGradientStep
-		if (result_norm >= m_MaxGradientStep)
-			result = (m_MaxGradientStep/result_norm) * result;
-		// std::cout << "[SquaredPotential]: result: " << result << std::endl;
-
-		m_Converged = check_convergence(distance(input, references[min_index]), norm(result));
-		// CBF_DEBUG("m_Converged " << m_Converged)
-	}
-
-
 
 	#ifdef CBF_HAVE_XSD
 	Potential::Potential(const PotentialType &xml_instance) {
@@ -124,41 +58,8 @@ namespace CBF {
 				m_StepNormThreshold = s->Threshold();
 			}
 		}
-	}
 
-	SquarePotential::SquarePotential(const SquarePotentialType &xml_instance) :
-		Potential(xml_instance) 
-	{
-		CBF_DEBUG("[SquarePotential(const SquaredPotentialType &xml_instance)]: yay!")
-		CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
-		m_Coefficient = xml_instance.Coefficient();
-
-		m_Dim = xml_instance.Dimension();
-
-		m_MaxGradientStep = xml_instance.MaxGradientStepNorm();
-
-		// m_DistanceThreshold = xml_instance.DistanceThreshold();
-	}
-
-	CBF_PLUGIN_CLASS(SquarePotential, Potential)
-	
-	CompositePotential::CompositePotential(const CompositePotentialType &xml_instance) :
-		Potential(xml_instance) 
-	{
-		CBF_DEBUG("[CompositePotential(const CompositePotentialType &xml_instance)]: yay!")
-		//std::cout << "Coefficient: " << xml_instance.Coefficient() << std::endl;
-		std::vector<PotentialPtr> tmp;
-		for (
-			CompositePotentialType::Potential_const_iterator it = xml_instance.Potential().begin();
-			it != xml_instance.Potential().end();
-			++it)
-			{
-				PotentialPtr pot = PluginPool<Potential>::get_instance()->create_from_xml(*it);
-				tmp.push_back(pot);
-			}
-		set_potentials(tmp);
-
-		//m_DistanceThreshold = xml_instance.DistanceThreshold();
+		m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
 	}
 	#endif
 

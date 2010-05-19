@@ -108,13 +108,11 @@ namespace CBF {
 		CBF_PLUGIN_DECL_METHODS(AxisAnglePotential)
 		//! @brief  This coefficient determines the rate of convergence. Choose between 0 and 1.
 		Float m_Coefficient;
-		Float m_MaxGradientStepNorm;
 
 		bool m_Converged;
 	
 		AxisAnglePotential(Float coefficient = 0.1) :
-			m_Coefficient(coefficient),
-			m_MaxGradientStepNorm(0.1)
+			m_Coefficient(coefficient)
 		{
 	
 		}

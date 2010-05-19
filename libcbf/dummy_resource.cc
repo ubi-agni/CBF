@@ -23,6 +23,15 @@
 #include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
 
+#include <string>
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <deque>
+
+#include <boost/numeric/ublas/io.hpp>
+
+
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
 	#ifdef CBF_HAVE_PLUGIN_SUPPORT
