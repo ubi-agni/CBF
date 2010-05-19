@@ -23,21 +23,16 @@
 #ifndef CONTROL_BASIS_COMPOSITE_POTENTIAL_HH
 #define CONTROL_BASIS_COMPOSITE_POTENTIAL_HH
 
+#include <cbf/config.h>
 #include <cbf/types.h>
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
 #include <cbf/plugin_decl_macros.h>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
 
 #include <vector>
-#include <cassert>
 #include <stdexcept>
-#include <limits>
-#include <algorithm>
-#include <iostream>
 
 
 
@@ -144,6 +139,8 @@ struct CompositePotential : public Potential {
 };
 
 typedef boost::shared_ptr<CompositePotential> CompositePotentialPtr;
+
+} // namespace
 
 #endif
 

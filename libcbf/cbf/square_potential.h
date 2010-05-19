@@ -26,6 +26,7 @@
 #include <cbf/types.h>
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
+#include <cbf/config.h>
 #include <cbf/plugin_decl_macros.h>
 
 #include <boost/shared_ptr.hpp>

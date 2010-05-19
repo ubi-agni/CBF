@@ -22,18 +22,19 @@
 #include <qkdlchainview.h>
 
 #include <cbf/primitive_controller.h>
-#include <cbf/square_potential.h>
+#include <cbf/dummy_reference.h>
+#include <cbf/kdl_transforms.h>
 #include <cbf/composite_potential.h>
+#include <cbf/composite_transform.h>
+#include <cbf/square_potential.h>
 #include <cbf/effector_transform.h>
 #include <cbf/sensor_transform.h>
-#include <cbf/kdl_transforms.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/combination_strategy.h>
 #include <cbf/identity_transform.h>
-#include <cbf/composite_transform.h>
 #include <cbf/orientation_potentials.h>
 #include <cbf/generic_transform.h>
-#include <cbf/dummy_reference.h>
+
 #include <cbf/utilities.h>
 #include <cbf/avoid_singularities.h>
 

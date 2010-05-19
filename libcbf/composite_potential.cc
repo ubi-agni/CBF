@@ -19,7 +19,8 @@
 */
 
 #include <cbf/composite_potential.h>
-#include <cbf/plugin_macros.h>
+#include <cbf/config.h>
+#include <cbf/plugin_impl_macros.h>
 
 namespace CBF {
 

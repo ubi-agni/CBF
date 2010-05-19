@@ -35,8 +35,6 @@
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 
-#include <kdl/chain.hpp>
-
 //! Forward declarations for stuff from KDL namespace that's only
 //! used bu way of references
 namespace KDL {

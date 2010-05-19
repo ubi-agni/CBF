@@ -19,11 +19,12 @@
 */
 
 #include <cbf/primitive_controller.h>
+
 #include <cbf/square_potential.h>
 #include <cbf/composite_potential.h>
+#include <cbf/kdl_transforms.h>
 #include <cbf/effector_transform.h>
 #include <cbf/sensor_transform.h>
-#include <cbf/kdl_transforms.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/combination_strategy.h>
 #include <cbf/utilities.h>
@@ -33,7 +34,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include <kdl/jacobian.hpp>
+// #include <kdl/jacobian.hpp>
 #include <kdl/chain.hpp>
 
 #define NUM_OF_STEPS 1000 

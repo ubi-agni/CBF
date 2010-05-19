@@ -62,6 +62,4 @@ namespace CBF {
 		m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
 	}
 	#endif
-
-	CBF_PLUGIN_CLASS(CompositePotential, Potential)
 } // namespace
