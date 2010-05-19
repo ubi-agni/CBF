@@ -494,7 +494,6 @@
     <xs:sequence>
      <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
      <xs:element name="Coefficient" type="xs:float"/>
-     <xs:element name="MaxGradientStepNorm" type="xs:float"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -528,7 +527,6 @@
    <xs:extension base="PotentialType">
     <xs:sequence>
      <xs:element name="Coefficient" type="xs:float"/>
-     <xs:element name="MaxGradientStepNorm" type="xs:float"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
