@@ -32,13 +32,11 @@
 #include <cbf/dummy_resource.h>
 #include <cbf/combination_strategy.h>
 #include <cbf/identity_transform.h>
-#include <cbf/orientation_potentials.h>
+#include <cbf/axis_angle_potential.h>
 #include <cbf/generic_transform.h>
-
 #include <cbf/utilities.h>
 #include <cbf/avoid_singularities.h>
-
-#include <cbf/plugin_decl_macros.h>
+#include <cbf/quaternion.h>
 
 #ifdef CBF_HAVE_SPACEMOUSE
 	#include <spacenavi.h>

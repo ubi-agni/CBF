@@ -46,7 +46,8 @@ def build(bld):
 		utilities.cc
 		combination_strategy.cc
 		composite_transform.cc
-		orientation_potentials.cc
+		axis_angle_potential.cc
+		axis_potential.cc
 		composite_potential.cc
 		square_potential.cc
 		linear_transform.cc 

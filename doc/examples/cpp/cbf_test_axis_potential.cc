@@ -19,7 +19,7 @@
 */
 
 #include <cbf/primitive_controller.h>
-#include <cbf/orientation_potentials.h>
+#include <cbf/axis_potential.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
 #include <cbf/difference_sensor_transform.h>

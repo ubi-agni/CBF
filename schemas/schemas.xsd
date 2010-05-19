@@ -534,6 +534,16 @@
   </xs:complexContent>
  </xs:complexType>
 
+ <xs:complexType name="AxisPotentialType">
+  <xs:complexContent>
+   <xs:extension base="PotentialType">
+    <xs:sequence>
+     <xs:element name="Coefficient" type="xs:float"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
  <xs:complexType name="NavigationFunctionPotentialType">
   <xs:complexContent>
    <xs:extension base="PotentialType">
