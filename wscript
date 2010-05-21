@@ -287,7 +287,7 @@ def configure(conf):
 		conf.env.CPPPATH_EIGEN2 = Options.options.eigen2dir + "/include"
 	if Options.options.eigen2inc:
 		conf.env.CPPPATH_EIGEN2 = Options.options.eigen2inc
-	if conf.check(fragment = '#include "eigen2/Eigen/Core"\n int main() { return 0; }\n', uselib = 'EIGEN2', msg="Checking for eigen2"):
+	if conf.check(fragment = '#include "Eigen/Core"\n int main() { return 0; }\n', uselib = 'EIGEN2', msg="Checking for eigen2"):
 		conf.define('CBF_HAVE_EIGEN2', 1)
 		defines['CBF_HAVE_EIGEN2'] = 1
 
