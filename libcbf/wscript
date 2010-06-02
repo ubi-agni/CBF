@@ -78,9 +78,9 @@ def build(bld):
 		task.source += ' xcf_resource.cc'
 		task.uselib += ' XCF'
 
-	if bld.env['CBF_HAVE_MEMORY'] == 1:
+	if bld.env['CBF_HAVE_MEMORY'] == 1 and bld.env['CBF_HAVE_XMLTIO'] == 1:
 		task.source += ' memory_resource.cc'
-		task.uselib += ' MEMORY'
+		task.uselib += ' MEMORY XMLTIO'
 
 	if bld.env['CBF_HAVE_PLUGIN_SUPPORT'] == 1:
 		task.source += ' plugin_pool.cc'

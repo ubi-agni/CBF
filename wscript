@@ -317,7 +317,7 @@ def configure(conf):
 		else:
 			os.environ['PKG_CONFIG_PATH'] = s	
 
-	conf.check_cfg(package='Xmltio', atleast_version='0.21.0', args='--cflags --libs', uselib_store='XMLTIO')
+	conf.check_cfg(package='xmltio', atleast_version='1.4.0', args='--cflags --libs', uselib_store='XMLTIO')
 	if conf.env['HAVE_XMLTIO'] == 1:
 		conf.define('CBF_HAVE_XMLTIO', 1)
 		defines['CBF_HAVE_XMLTIO'] = 1

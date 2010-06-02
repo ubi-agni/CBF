@@ -43,7 +43,6 @@ namespace CBF {
 			}
 		
 			set_resources(resources);
-
 	}
 
 #endif
