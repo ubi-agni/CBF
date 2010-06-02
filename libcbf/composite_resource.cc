@@ -19,4 +19,36 @@
 */
 
 #include <cbf/composite_resource.h>
+#include <cbf/plugin_impl_macros.h>
+
+namespace CBF {
+
+#ifdef CBF_HAVE_XSD
+	CBF_PLUGIN_CLASS(CompositeResource, Resource)
+
+	CompositeResource::CompositeResource(const CompositeResourceType &xml_instance) {
+			std::vector<ResourcePtr> resources;
+		
+			//! Instantiate the subordinate resources
+			CompositeResourceType::Resource_const_iterator it;
+			for (
+				it = xml_instance.Resource().begin(); 
+				it != xml_instance.Resource().end();
+				++it
+			)
+			{
+				ResourcePtr tr(PluginPool<Resource>::get_instance()->create_from_xml(*it));
+				resources.push_back(tr);
+				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
+			}
+		
+			set_resources(resources);
+
+	}
+
+#endif
+
+} // namespace
+
+
 
