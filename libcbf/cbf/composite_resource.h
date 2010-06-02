@@ -32,9 +32,52 @@ namespace CBF {
 /** @brief: A class used to combine several resources into a single one */
 struct CompositeResource : public Resource
 {
+	CompositeResource(std::vector<ResourcePtr> resources = std::vector<ResourcePtr>()) {
+	}
+
+	virtual void set_resources(std::vector<ResourcePtr> resources) {
+		m_Resources = resources;
+		unsigned int dim = 0;
+
+		for (
+			unsigned int i = 1, len = m_Resources.size();
+			i < len;
+			++i)
+		{
+			dim += m_Resources[i]->dim();
+		}
+		
+		m_ResourceValues = FloatVector(dim);
+	}
+
+	virtual unsigned int dim() {
+		return m_ResourceValues.size();
+	}
+
+	virtual void update() {
+		for (
+			unsigned int i = 1, unsigned int len = m_Resources.size();
+			i < len;
+			++i) {
+			
+		}
+	}
+
+	virtual void set(const FloatVector&) {
+
+	}
+
+	virtual void add(const FloatVector &arg) {
+
+	}
+
+	virtual FloatVector &get() {
+		return m_ResourceValue;
+	}
 
 	protected:
 		std::vector<ResourcePtr> m_Resources;
+		FloatVector m_ResourceValues;
 };
 
 } // namespace

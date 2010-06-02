@@ -71,6 +71,14 @@ namespace CBF {
 		*/
 		virtual void add(const FloatVector &arg) = 0;
 	
+		/**
+			@brief Set the resource to a desired state
+
+			Note: This is not always a sensible operation to perform (blindly
+			setting robot arm joint angle values for example might lead to collisions).
+
+			Implementations are thus free to implement this method as a noop
+		*/
 		virtual void set(const FloatVector &arg) = 0;
 	
 		/**
