@@ -29,6 +29,7 @@
 #include <Memory/Condition.hpp>
 #include <Memory/Subscription.hpp>
 #include <Memory/Interface.hpp>
+#include <xmltio/Document.hpp>
 
 #include <boost/bind.hpp>
 
