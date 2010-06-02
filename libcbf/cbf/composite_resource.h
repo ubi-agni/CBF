@@ -56,7 +56,7 @@ struct CompositeResource : public Resource
 
 	virtual void update() {
 		for (
-			unsigned int i = 1, unsigned int len = m_Resources.size();
+			unsigned int i = 1, len = m_Resources.size();
 			i < len;
 			++i) {
 			
@@ -72,7 +72,7 @@ struct CompositeResource : public Resource
 	}
 
 	virtual FloatVector &get() {
-		return m_ResourceValue;
+		return m_ResourceValues;
 	}
 
 	protected:

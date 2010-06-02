@@ -25,7 +25,7 @@ namespace CBF {
 struct MemoryResource : public Resource {
 	MemoryResource(
 		const std::string &uri, 
-		const std::string &xpath
+		const std::string &xpath,
 		const std::string &path) 
 	:
 		m_MemoryInterface(
