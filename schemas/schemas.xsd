@@ -205,6 +205,16 @@
   </xs:complexContent>
  </xs:complexType>
 
+ <xs:complexType name="CompositeResourceType">
+  <xs:complexContent>
+   <xs:extension base="ResourceType">
+    <xs:sequence>
+     <xs:element name="Resource" type="ResourceType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
  <xs:complexType name="GenericEffectorTransformType">
   <xs:complexContent>
    <xs:extension base="EffectorTransformType">

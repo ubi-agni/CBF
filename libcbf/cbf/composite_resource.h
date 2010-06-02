@@ -59,7 +59,6 @@ struct CompositeResource : public Resource
 			unsigned int i = 1, len = m_Resources.size();
 			i < len;
 			++i) {
-			
 		}
 	}
 
