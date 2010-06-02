@@ -34,6 +34,14 @@ def set_options(opt):
 	opt.tool_options('compiler_cc')
 
 	opt.add_option(
+		'--with-xcf-dir', 
+		action='store', 
+		help='PREFIX, where to find the XCF installation',
+		dest='xcfdir'
+	)
+
+
+	opt.add_option(
 		'--with-kdl-dir', 
 		action='store', 
 		help='PREFIX, where to find the KDL installation',
@@ -140,6 +148,21 @@ def set_options(opt):
 		help='PREFIX, where XSD is installed'
 	)
 
+	opt.add_option(
+		'--with-memory-dir',
+		dest='memorydir',
+		type='string',
+		action='store',
+		help='PREFIX, where Memory is installed'
+	)
+
+	opt.add_option(
+		'--with-xmltio-dir',
+		dest='xmltiodir',
+		type='string',
+		action='store',
+		help='PREFIX, where xmltio is installed'
+	)
 
 	opt.add_option(
 		'--with-doxygen',
@@ -245,7 +268,6 @@ def configure(conf):
 		defines['CBF_NDEBUG'] = 1
 		
 	if Options.options.debug_color:
-		conf.define('CBF_DEBUG_COLOR',1)
 		conf.define('CBF_DEBUG_COLOR', 1)
 		defines['CBF_DEBUG_COLOR'] = 1
 
@@ -259,6 +281,46 @@ def configure(conf):
 
 	# pkg-config
 	conf.check_cfg(atleast_pkgconfig_version='0.9.4')
+
+
+	# Memory
+	if Options.options.memorydir:
+		s = Options.options.xcfdir + "/lib/pkgconfig/";
+		if 'PKG_CONFIG_PATH' in os.environ:
+			os.environ['PKG_CONFIG_PATH'] += ":" + s
+		else:
+			os.environ['PKG_CONFIG_PATH'] = s	
+
+	conf.check_cfg(package='Memory', atleast_version='0.21.0', args='--cflags --libs', uselib_store='MEMORY')
+	if conf.env['HAVE_MEMORY'] == 1:
+		conf.define('CBF_HAVE_MEMORY', 1)
+		defines['CBF_HAVE_MEMORY'] = 1
+
+	# XCF
+	if Options.options.xcfdir:
+		s = Options.options.xcfdir + "/lib/pkgconfig/";
+		if 'PKG_CONFIG_PATH' in os.environ:
+			os.environ['PKG_CONFIG_PATH'] += ":" + s
+		else:
+			os.environ['PKG_CONFIG_PATH'] = s	
+
+	conf.check_cfg(package='xcf', atleast_version='0.9.0', args='--cflags --libs', uselib_store='XCF')
+	if conf.env['HAVE_XCF'] == 1:
+		conf.define('CBF_HAVE_XCF', 1)
+		defines['CBF_HAVE_XCF'] = 1
+
+	# XMLTIO
+	if Options.options.xmltiodir:
+		s = Options.options.xcfdir + "/lib/pkgconfig/";
+		if 'PKG_CONFIG_PATH' in os.environ:
+			os.environ['PKG_CONFIG_PATH'] += ":" + s
+		else:
+			os.environ['PKG_CONFIG_PATH'] = s	
+
+	conf.check_cfg(package='Xmltio', atleast_version='0.21.0', args='--cflags --libs', uselib_store='XMLTIO')
+	if conf.env['HAVE_XMLTIO'] == 1:
+		conf.define('CBF_HAVE_XMLTIO', 1)
+		defines['CBF_HAVE_XMLTIO'] = 1
 
 	# KDL
 	if Options.options.kdldir:

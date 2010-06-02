@@ -25,12 +25,16 @@
 
 #include <cbf/resource.h>
 
+#include <vector>
+
 namespace CBF {
 
 /** @brief: A class used to combine several resources into a single one */
 struct CompositeResource : public Resource
 {
 
+	protected:
+		std::vector<ResourcePtr> m_Resources;
 };
 
 } // namespace

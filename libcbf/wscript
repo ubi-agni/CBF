@@ -60,7 +60,7 @@ def build(bld):
 		quaternion.cc
 		difference_sensor_transform.cc
 		weighted_sum_transforms.cc
-		"""
+	"""
 	
 	task = bld.new_task_gen()
 	task.features     = 'cxx cshlib'
@@ -74,14 +74,20 @@ def build(bld):
 		task.source += ' spacenavi_reference.cc'
 		task.uselib += ' SPACEMOUSE'
 
+	if bld.env['CBF_HAVE_XSD'] == 1:
+		task.source += ' xcf_resource.cc'
+		task.uselib += ' XCF'
+
+	if bld.env['CBF_HAVE_MEMORY'] == 1:
+		task.source += ' memory_resource.cc'
+		task.uselib += ' MEMORY'
+
 	if bld.env['CBF_HAVE_PLUGIN_SUPPORT'] == 1:
 		task.source += ' plugin_pool.cc'
 	
 	if bld.env['CBF_HAVE_XSD'] == 1:
 		task.uselib_local += ' schemalib'
 		task.source += ' c_bindings.cc c_api.cc'
-		#task.uselib += ' XERCES'
-	
 
 	if bld.env['CBF_HAVE_BOOST_PYTHON'] == 1:
 		task.source += ' python_wrap.cc'
@@ -99,9 +105,8 @@ def build(bld):
 	if bld.env['CBF_HAVE_KDL'] == 1:
 		task.source += ' kdl_transforms.cc'
 		task.uselib += ' OROCOS-KDL'
-		#bld.env['defines']['HAVE_KDL'] = 1
 
-	if bld.env.CBF_HAVE_EIGEN2 == 1:
+	if bld.env['CBF_HAVE_EIGEN2'] == 1:
 		task.source += ' generic_transform.cc'
 		task.uselib += ' EIGEN2'
 

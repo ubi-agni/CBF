@@ -28,7 +28,6 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/resource.h>
 #include <cbf/generic_transform.h>
-#include <cbf/orientation_potentials.h>
 #include <cbf/potential.h>
 #include <cbf/sensor_transform.h>
 
