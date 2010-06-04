@@ -29,6 +29,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <string>
 
 #include <Memory/SynchronizedQueue.hpp>
 #include <riRobotInterface.h>
@@ -45,9 +46,9 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 	CBF_PLUGIN_DECL_METHODS(RobotInterfaceResource)
 
 	RobotInterfaceResource(
-		const std::string &memory_uri, 
-		const std::string &robot_name,
-		unsigned int dimension
+		const std::string &memory_uri = "", 
+		const std::string &robot_name = "",
+		unsigned int dimension = 0
 	)
 	{
 		init(memory_uri, robot_name, dimension);
@@ -111,6 +112,14 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 
 	virtual const FloatVector &get() {
 		return m_Result;
+	}
+
+	virtual void set(const FloatVector &arg) {
+
+	}
+
+	virtual unsigned int dim() {
+		return m_Result.size();
 	}
 
 	protected:
