@@ -572,6 +572,18 @@
   </xs:complexContent>
  </xs:complexType>
 
+ <xs:complexType name="RobotInterfaceResourceType">
+  <xs:complexContent>
+   <xs:extension base = "ResourceType">
+    <xs:sequence>
+     <xs:element name="MemoryName" type="xs:string"/>
+     <xs:element name="RobotName" type="xs:string"/>
+     <xs:element name="NumberOfJoints" type="xs:nonNegativeInteger"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
  <!--
   This type represents a primitive controller as resource. 
 

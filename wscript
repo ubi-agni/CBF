@@ -34,6 +34,14 @@ def set_options(opt):
 	opt.tool_options('compiler_cc')
 
 	opt.add_option(
+		'--with-robotinterface-dir', 
+		action='store', 
+		help='PREFIX, where to find the RobotInterface installation',
+		dest='robotinterfacedir'
+	)
+
+
+	opt.add_option(
 		'--with-xcf-dir', 
 		action='store', 
 		help='PREFIX, where to find the XCF installation',
@@ -283,9 +291,23 @@ def configure(conf):
 	conf.check_cfg(atleast_pkgconfig_version='0.9.4')
 
 
+	# Robotinterface
+	if Options.options.robotinterfacedir:
+		s = Options.options.robotinterfacedir + "/lib/pkgconfig/";
+		if 'PKG_CONFIG_PATH' in os.environ:
+			os.environ['PKG_CONFIG_PATH'] += ":" + s
+		else:
+			os.environ['PKG_CONFIG_PATH'] = s	
+
+	conf.check_cfg(package='robotinterface', args='--cflags --libs', uselib_store='ROBOTINTERFACE')
+	if conf.env['HAVE_ROBOTINTERFACE'] == 1:
+		conf.define('CBF_HAVE_ROBOTINTERFACE', 1)
+		defines['CBF_HAVE_ROBOTINTERFACE'] = 1
+
+
 	# Memory
 	if Options.options.memorydir:
-		s = Options.options.xcfdir + "/lib/pkgconfig/";
+		s = Options.options.memorydir + "/lib/pkgconfig/";
 		if 'PKG_CONFIG_PATH' in os.environ:
 			os.environ['PKG_CONFIG_PATH'] += ":" + s
 		else:

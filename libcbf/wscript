@@ -78,6 +78,10 @@ def build(bld):
 		task.source += ' xcf_resource.cc'
 		task.uselib += ' XCF'
 
+	if bld.env['CBF_HAVE_ROBOTINTERFACE'] == 1 and bld.env['CBF_HAVE_MEMORY'] == 1:
+		task.source += ' robotinterface_resource.cc'
+		task.uselib += ' ROBOTINTERFACE'
+
 	if bld.env['CBF_HAVE_MEMORY'] == 1 and bld.env['CBF_HAVE_XMLTIO'] == 1:
 		task.source += ' memory_resource.cc'
 		task.uselib += ' MEMORY XMLTIO'
