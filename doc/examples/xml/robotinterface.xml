@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+
+ <Coefficient> 1 </Coefficient>
+ <SubordinateCoefficient> 1 </SubordinateCoefficient>
+ <InitReferenceFromSensorTransform> 0 </InitReferenceFromSensorTransform>
+
+ <Potential xsi:type="SquarePotentialType">
+  <MaxGradientStepNorm> 0.1 </MaxGradientStepNorm>
+
+  <ConvergenceCriterion xsi:type="DistanceThresholdType">
+   <Threshold> 0.001 </Threshold>
+  </ConvergenceCriterion>
+
+  <Dimension> 7 </Dimension>
+  <Coefficient> 0.4 </Coefficient>
+ </Potential>
+
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
+ <SensorTransform xsi:type="IdentitySensorTransformType">
+  <Dimension> 7 </Dimension>
+ </SensorTransform>
+
+ <Resource xsi:type="RobotInterfaceResourceType">
+  <MemoryName>xcf:wb</MemoryName>
+  <RobotName>LeftArm</RobotName>
+  <NumberOfJoints> 7 </NumberOfJoints>
+ </Resource>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="BoostVectorType">
+
+   <String>[7](1.18682,1.18682,0.00000,-1.04720,-1.30900,-1.39626,0.00000)</String>
+
+
+<!--
+   <String>[7](0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000)</String>
+-->
+  </Vector>
+ </Reference>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+</Controller>
