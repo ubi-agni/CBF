@@ -35,6 +35,7 @@
 #include <riRobotInterface.h>
 #include <riEventHandler.h>
 #include <riRobotEvent.h>
+#include <riRobotState.h>
 #include <riPoseEvent.h>
 
 
@@ -73,6 +74,16 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 
 		m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name, true, true);
 		m_RobotCommandSet.defaults(robot_name) << robotinterface::cmd::moveMode("stp", "joint");
+
+		robotinterface::RobotState state = m_RobotInterface.query(robot_name);
+
+		std::copy(
+			state.getPosture().begin(), 
+			state.getPosture().end(),
+			m_Result.begin()
+		);
+
+		m_LastPose = m_Result;
 	}
 
 
@@ -87,10 +98,14 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 
 		const std::vector<float> &tmp = pe->getPose(robotinterface::PoseEvent::POSTURE);
 
+		// std::cout << "dimesion: " << tmp.size() << std::endl;
+
 		if (tmp.size() != m_LastPose.size())
 			throw std::runtime_error("Dimension mismatch");
 
 		std::copy(tmp.begin(), tmp.end(), m_LastPose.begin());
+
+		std::cout << "LAST POSE: " << m_LastPose << std::endl;
 	}
 
 
@@ -101,11 +116,10 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 	}
 
 	virtual void add(const FloatVector &arg) {
-		assert(std::cout << "slobodan was here" << std::endl);
-
+		FloatVector tmp = m_Result + arg;
 		m_RobotCommandSet 
 			<< robotinterface::cmd::clear()
-			<< robotinterface::cmd::posture(arg.begin(), arg.end(), "rad");
+			<< robotinterface::cmd::posture(tmp.begin(), tmp.end(), "rad");
 
 		m_RobotInterface.send(m_RobotCommandSet);
 	}
