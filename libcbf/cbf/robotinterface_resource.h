@@ -32,6 +32,7 @@
 #include <string>
 
 #include <Memory/SynchronizedQueue.hpp>
+
 #include <riRobotInterface.h>
 #include <riEventHandler.h>
 #include <riRobotEvent.h>
