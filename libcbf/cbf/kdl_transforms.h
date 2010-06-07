@@ -37,7 +37,7 @@
 #include <cbf/effector_transform.h>
 
 //! Forward declarations for stuff from KDL namespace that's only
-//! used bu way of references
+//! used by way of references
 namespace KDL {
 	class Tree;
 	class Chain;
