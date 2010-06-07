@@ -275,6 +275,23 @@
   </xs:complexContent>
  </xs:complexType>
 
+ <xs:complexType name="TreeBaseType" abstract="true">
+  <xs:sequence>
+   <xs:element name="Name" type="xs:string"/>
+  </xs:sequence>
+ </xs:complexType>
+
+ <xs:complexType name="TreeType">
+  <xs:complexContent>
+   <xs:extension base="TreeBaseType">
+    <xs:sequence>
+     <xs:element name="Segment" type="SegmentType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
  <xs:complexType name="ChainBaseType" abstract="true">
   <xs:sequence>
    <xs:element name="Name" type="xs:string"/>
@@ -295,13 +312,13 @@
   <xs:complexContent>
    <xs:extension base="ChainBaseType">
     <xs:sequence>
-     <xs:element name="Segment" type="ChainSegmentType" minOccurs="1" maxOccurs="unbounded"/>
+     <xs:element name="Segment" type="SegmentType" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
  </xs:complexType>
 
- <xs:complexType name="ChainSegmentType">
+ <xs:complexType name="SegmentType">
   <xs:sequence>
    <xs:element name="Frame" type="FrameType"/>
    <xs:element name="Joint" type="JointType"/>
@@ -448,6 +465,32 @@
  </xs:complexType>
 
 
+ <xs:complexType name="KDLTreePositionSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="Tree" type="TreeBaseType"/>
+     <xs:element name="SegmentName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+ <xs:complexType name="KDLTreeAxisAngleSensorTransformType">
+  <xs:complexContent>
+   <xs:extension base="SensorTransformType">
+    <xs:sequence>
+     <xs:element name="Tree" type="TreeBaseType"/>
+     <xs:element name="SegmentName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
+
+
  <xs:complexType name="KDLChainPositionSensorTransformType">
   <xs:complexContent>
    <xs:extension base="SensorTransformType">
@@ -458,15 +501,6 @@
   </xs:complexContent>
  </xs:complexType>
 
- <xs:complexType name="KDLChainOrientationQuatSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="Chain" type="ChainBaseType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
 
  <xs:complexType name="KDLChainAxisAngleSensorTransformType">
   <xs:complexContent>

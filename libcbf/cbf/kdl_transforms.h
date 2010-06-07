@@ -31,6 +31,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <vector>
 
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
@@ -38,22 +39,28 @@
 //! Forward declarations for stuff from KDL namespace that's only
 //! used bu way of references
 namespace KDL {
+	class Tree;
 	class Chain;
 	class JntArray;
 	class Frame;
 	class Jacobian;
 	class ChainJntToJacSolver;
+	class TreeJntToJacSolver;
 	class ChainFkSolverPos_recursive;
 	class ChainFkSolverVel_recursive;
+	class TreeFkSolverPos_recursive;
+	class TreeFkSolverVel_wdls;
 }
 
 //! Forward declarations for XML instance types
 // CBF_PLUGIN_PREAMBLE EffectorTransformType;
 CBF_PLUGIN_PREAMBLE(KDLChainPositionSensorTransform)
-CBF_PLUGIN_PREAMBLE(KDLChainOrientationQuatSensorTransform)
 CBF_PLUGIN_PREAMBLE(KDLChainAxisAngleSensorTransform)
+CBF_PLUGIN_PREAMBLE(KDLTreePositionSensorTransform)
+CBF_PLUGIN_PREAMBLE(KDLTreeAxisAngleSensorTransform)
 
 class ChainBaseType;
+class TreeBaseType;
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
@@ -89,7 +96,7 @@ namespace CBF {
 				any user intervention.
 			*/
 			BaseKDLChainSensorTransform
-				(boost::shared_ptr<KDL::Chain> chain = boost::shared_ptr<KDL::Chain>());
+				(boost::shared_ptr<KDL::Chain> chain);
 	
 			//! This constructor is only implemented when XSD support is enabled..
 			BaseKDLChainSensorTransform(const ChainBaseType &xml_chain_instance, const SensorTransformType &xml_st_instance);
@@ -140,41 +147,6 @@ namespace CBF {
 	
 	
 	
-
-	
-	/**
-		@brief This class implements the SensorTransform for an arbitrary KDL chain. The task space is
-		the orientation of the end effector of the chain specified as quaternion
-	*/
-	struct KDLChainOrientationQuatSensorTransform : public BaseKDLChainSensorTransform
-	{
-		CBF_PLUGIN_DECL_METHODS(KDLChainOrientationQuatSensorTransform)
-	
-		protected:
-			// FloatVector m_Result;
-	
-		public:
-			KDLChainOrientationQuatSensorTransform(
-				boost::shared_ptr<KDL::Chain> chain = 
-					boost::shared_ptr<KDL::Chain>()
-			);
-		
-
-			virtual unsigned int task_dim() const { return 4u; }
-
-			virtual void update();
-	};
-
-	typedef boost::shared_ptr<KDLChainOrientationQuatSensorTransform> KDLChainOrientationQuatSensorTransformPtr;
-	
-	
-	
-	
-	
-	
-	
-
-	
 	
 	/**
 		@brief This class implements the SensorTransform for an arbitrary KDL chain. The task space is
@@ -197,6 +169,73 @@ namespace CBF {
 	};
 	
 	typedef boost::shared_ptr<KDLChainAxisAngleSensorTransform> KDLChainAxisAngleSensorTransformPtr;	
+
+
+
+
+
+
+
+	/**
+		@brief Abstract base class for KDL based transform classes.
+	
+		This class encapsulates the basic funcionality of the different concrete classes
+		which implement different representations for the orientation part of the transform 
+		(e.g. euler angles, quaternions, screws and twists).
+	
+		This is an abstract class and thus it cannot be instantiated directly..
+	*/
+	struct BaseKDLTreeSensorTransform : public SensorTransform {
+		protected:
+			boost::shared_ptr<KDL::Tree> m_Tree;
+			boost::shared_ptr<KDL::TreeJntToJacSolver> m_JacSolver;
+			boost::shared_ptr<KDL::TreeFkSolverPos_recursive> m_FKSolver;
+			boost::shared_ptr<KDL::TreeFkSolverVel_wdls> m_FKVelSolver;
+	
+			FloatMatrix m_Twists;
+	
+			//! Intermediate result
+			std::vector<boost::shared_ptr<KDL::Frame> > m_Frames;
+	
+			//! Intermediate result
+			std::vector<boost::shared_ptr<KDL::Jacobian> > m_Jacobians;
+
+			//! The segment identifiers for which to solve the FK
+			std::vector<std::string> m_SegmentNames;
+	
+		public:
+			/**
+				Do not use instances of this class unless the tree has been set with a valid tree
+				and init_solvers() was called. This should have been done by subclasses without
+				any user intervention.
+			*/
+			BaseKDLTreeSensorTransform
+				(boost::shared_ptr<KDL::Tree> tree, const std::vector<std::string> &segment_names);
+	
+			//! This constructor is only implemented when XSD support is enabled..
+			BaseKDLTreeSensorTransform(const TreeBaseType &xml_tree_instance, const SensorTransformType &xml_st_instance);
+	
+			/**
+				For all derived types the resource dim is always the same: the number of joints
+				of the kinematic tree
+			*/
+			virtual unsigned int resource_dim() const ;
+
+			/**
+				Call this function once m_Tree is set to a valid tree..
+			*/
+			virtual void init_solvers();
+	
+			/**
+				This reads the current resource values and updates the KDL::Jacobian matrix..
+			*/
+			virtual void update();
+
+			boost::shared_ptr<KDL::Tree> tree() { return m_Tree; }
+	};
+	
+	
+
 
 } // namespace
 
