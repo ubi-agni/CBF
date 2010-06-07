@@ -1,5 +1,6 @@
 #include <cbf/masking_resource.h>
 #include <cbf/plugin_impl_macros.h>
+#include <cbf/plugin_pool.h>
 
 namespace CBF {
 
@@ -9,7 +10,20 @@ namespace CBF {
 
 
 MaskingResource::MaskingResource(const MaskingResourceType &xml_instance) {
+	ResourcePtr resource 
+		= PluginPool<Resource>::get_instance()->create_from_xml(
+			xml_instance.Resource());
 
+	std::vector<unsigned int> indexes;
+
+	for (
+		MaskingResourceType::Index_const_iterator it = xml_instance.Index().begin();
+		it != xml_instance.Index().end();
+		++it) {
+			indexes.push_back(*it);
+	}
+
+	set_resource_and_indexes(resource, indexes);
 }
 
 

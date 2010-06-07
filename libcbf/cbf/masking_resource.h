@@ -57,7 +57,7 @@ struct MaskingResource : public Resource {
 		m_Resource->add(tmp);
 	}
 
-	virtual unsigned int dim() { return 0; }
+	virtual unsigned int dim() { return m_Indexes.size(); }
 
 	protected:
 		ResourcePtr m_Resource;

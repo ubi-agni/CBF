@@ -611,8 +611,9 @@
   <xs:complexContent>
    <xs:extension base = "ResourceType">
     <xs:sequence>
+     <xs:element name="Resource" type="ResourceType"/>
      <!-- Specify the components you want as integers -->
-     <xs:element name="Component" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="unbounded"/>
+     <xs:element name="Index" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
