@@ -69,7 +69,6 @@
 	#define CBF_PLUGIN_DECL_CLASS(ClassName,SuperclassName) \
 	struct ClassName##PluginHelper : public PluginHelper<SuperclassName> { \
 		ClassName##PluginHelper(); \
-		void *create(); \
 		CBF_PLUGIN_XSD_CREATOR(ClassName, SuperclassName) \
 	}; \
 	extern ClassName##PluginHelper ClassName##PluginHelperInstance;
@@ -86,9 +85,6 @@
 		CBF_DEBUG(m_Name) \
 		CBF_DEBUG(m_Type) \
 		PluginPool<SuperclassName>::get_instance()->addPluginHelper(this); \
-	} \
-	void * ClassName##PluginHelper::create() { \
-		return new ClassName; \
 	} \
 	ClassName##PluginHelper ClassName##PluginHelper##Instance;
 

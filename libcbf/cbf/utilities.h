@@ -31,17 +31,23 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp> 
+#include <boost/shared_ptr.hpp>
+
 #include <cmath>
 
 #include <iostream>
 
 namespace KDL {
+	class Chain;
+	class Tree;
 	class Jacobian;
 	class Frame;
 }
 
 class VectorType;
 class MatrixType;
+class ChainBaseType;
+class TreeBaseType;
 
 namespace CBF {
 
@@ -117,6 +123,10 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &j);
 
 FloatVector create_vector(const VectorType &xml_instance);
 FloatMatrix create_matrix(const MatrixType &xml_instance);
+
+boost::shared_ptr<KDL::Chain> create_chain(const ChainBaseType &xml_instance);
+boost::shared_ptr<KDL::Tree> create_tree(const TreeBaseType &xml_instance);
+
 
 } // namespace
 

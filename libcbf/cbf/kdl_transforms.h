@@ -237,6 +237,54 @@ namespace CBF {
 	
 
 
+	/**
+		@brief This class implements the SensorTransform for an arbitrary KDL tree. The task space is
+		the position of the end effector of the tree.
+	*/
+	struct KDLTreePositionSensorTransform : public BaseKDLTreeSensorTransform
+	{
+		CBF_PLUGIN_DECL_METHODS(KDLTreePositionSensorTransform)
+	
+		KDLTreePositionSensorTransform(boost::shared_ptr<KDL::Tree> tree = boost::shared_ptr<KDL::Tree>());
+
+		virtual unsigned int task_dim() const { return 3u * m_SegmentNames.size(); }
+
+		virtual void update();
+	};
+	
+	typedef boost::shared_ptr<KDLTreePositionSensorTransform> KDLTreePositionSensorTransformPtr;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+		@brief This class implements the SensorTransform for an arbitrary KDL tree. The task space is
+		the orientation of the end effector of the tree specified in compact axis-angle representation
+		(compact meaning here that the angle is absorbed into the length of the axid vector resulting
+		in a 3D representation.
+	*/
+	struct KDLTreeAxisAngleSensorTransform : public BaseKDLTreeSensorTransform
+	{
+		CBF_PLUGIN_DECL_METHODS(KDLTreeAxisAngleSensorTransform)
+	
+		KDLTreeAxisAngleSensorTransform(
+			boost::shared_ptr<KDL::Tree> tree =
+				boost::shared_ptr<KDL::Tree>()
+		);
+		
+		virtual unsigned int task_dim() const { return 3u * m_SegmentNames.size(); }
+
+		virtual void update();
+	};
+	
+	typedef boost::shared_ptr<KDLTreeAxisAngleSensorTransform> KDLTreeAxisAngleSensorTransformPtr;	
+
+
 } // namespace
 
 #endif

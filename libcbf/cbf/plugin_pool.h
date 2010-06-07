@@ -65,8 +65,6 @@ struct PluginHelper {
 		return SuperClassPtr(); 
 	}
 
-	virtual void *create() = 0;
-
 	virtual ~PluginHelper() { }
 };
 
@@ -116,23 +114,6 @@ struct PluginPool {
 				CBF_DEBUG("got: " << m_PluginHelpers[i]->m_Name)
 			}
 		#endif
-	}
-
-	boost::shared_ptr<SuperClass> create_from_index(unsigned int index) {
-		if (index > m_PluginHelpers.size())
-			throw std::runtime_error("PluginPool: index out of bounds");
-
-		return boost::shared_ptr<SuperClass>((SuperClass*)m_PluginHelpers[index]->create());
-	}
-
-	boost::shared_ptr<SuperClass> create_from_name(const std::string &name) {
-		for (unsigned int i = 0; i < m_PluginHelpers.size(); ++i)
-		{
-			if (m_PluginHelpers[i]->m_Name == name) {
-				return create_from_index(i);
-			}
-		}
-		return boost::shared_ptr<SuperClass>();
 	}
 
 	boost::shared_ptr<SuperClass> create_from_xml(const xsd::cxx::tree::_type &xml_document);

@@ -320,6 +320,7 @@
 
  <xs:complexType name="SegmentType">
   <xs:sequence>
+   <xs:element name="Name"  type="xs:string"/>
    <xs:element name="Frame" type="FrameType"/>
    <xs:element name="Joint" type="JointType"/>
   </xs:sequence>
@@ -601,6 +602,17 @@
    <xs:extension base = "ResourceType">
     <xs:sequence>
      <xs:element name="Vector" type="VectorType"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+ <xs:complexType name="MaskingResourceType">
+  <xs:complexContent>
+   <xs:extension base = "ResourceType">
+    <xs:sequence>
+     <!-- Specify the components you want as integers -->
+     <xs:element name="Component" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
