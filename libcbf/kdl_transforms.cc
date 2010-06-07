@@ -151,6 +151,7 @@ namespace CBF {
 
 
 
+
 	BaseKDLTreeSensorTransform::BaseKDLTreeSensorTransform(
 		boost::shared_ptr<KDL::Tree> tree,
 		const std::vector<std::string> &segment_names
@@ -205,7 +206,77 @@ namespace CBF {
 	}
 	
 
+	KDLTreePositionSensorTransform::KDLTreePositionSensorTransform(
+		boost::shared_ptr<KDL::Tree> tree, 
+		std::vector<std::string> segment_names
+	) : 
+		BaseKDLTreeSensorTransform(tree, segment_names)
+	{
+		m_Result = FloatVector(3 * segment_names.size());
+		m_TaskJacobian = FloatMatrix(3 * segment_names.size(), tree->getNrOfJoints());
+	}
 
+
+
+
+	void KDLTreePositionSensorTransform::update() {
+		BaseKDLTreeSensorTransform::update();
+
+		unsigned int total_row = 0;
+		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i) {
+			for (unsigned int row = 0; row < 3; ++row, ++total_row) {
+				for (unsigned int col = 0; col < resource_dim(); ++col) {
+					m_TaskJacobian(total_row, col) = (*m_Jacobians[i])(row,col);
+				}
+				m_Result[total_row] = m_Frames[i]->p(row);
+			}
+		}
+	}
+	
+
+
+
+
+	KDLTreeAxisAngleSensorTransform::KDLTreeAxisAngleSensorTransform(
+		boost::shared_ptr<KDL::Tree> tree, 
+		std::vector<std::string> segment_names
+	) : 
+		BaseKDLTreeSensorTransform(tree, segment_names)
+	{
+		m_Result = FloatVector(3 * segment_names.size());
+		m_TaskJacobian = FloatMatrix(3 * segment_names.size(), tree->getNrOfJoints());
+	}
+
+
+	void KDLTreeAxisAngleSensorTransform::update() {
+		BaseKDLTreeSensorTransform::update();
+	
+		CBF_DEBUG("Updating Jacobian")
+	
+		unsigned int total_row = 0;
+		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i) {
+			for (unsigned int row = 0; row < 3; ++row) {
+				for (unsigned int col = 0; col < resource_dim(); ++col) {
+					m_TaskJacobian(total_row,col) = (*m_Jacobians[i])(row+3, col);
+				}
+			}
+			//! Buffer result, so we can return it when requested...
+			KDL::Vector vec;
+			float angle;
+			angle = (m_Frames[i]->M).GetRotAngle(vec, 0.0000000000001);
+	
+			// angle = fmod(angle + 2.0 * M_PI, 2.0 * M_PI);
+			if (angle > M_PI) angle -= 2.0 * M_PI;
+			if (angle <= -M_PI) angle += 2.0 * M_PI;
+	
+			for (unsigned int row = 0; row < 3; ++row) {
+				m_Result[total_row] = vec(row) * angle;
+			}
+		}
+
+		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian)
+	
+	}
 
 
 
@@ -270,5 +341,7 @@ namespace CBF {
 	
 	CBF_PLUGIN_CLASS(KDLChainPositionSensorTransform, SensorTransform)
 	CBF_PLUGIN_CLASS(KDLChainAxisAngleSensorTransform, SensorTransform)
+	CBF_PLUGIN_CLASS(KDLTreePositionSensorTransform, SensorTransform)
+	CBF_PLUGIN_CLASS(KDLTreeAxisAngleSensorTransform, SensorTransform)
 } // namespace
 

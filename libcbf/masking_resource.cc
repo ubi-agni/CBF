@@ -11,15 +11,16 @@ namespace CBF {
 
 MaskingResource::MaskingResource(const MaskingResourceType &xml_instance) {
 	ResourcePtr resource 
-		= PluginPool<Resource>::get_instance()->create_from_xml(
-			xml_instance.Resource());
+		= PluginPool<Resource>::get_instance()->create_from_xml
+			(xml_instance.Resource());
 
 	std::vector<unsigned int> indexes;
 
-	for (
-		MaskingResourceType::Index_const_iterator it = xml_instance.Index().begin();
-		it != xml_instance.Index().end();
-		++it) {
+	for 
+		(MaskingResourceType::Index_const_iterator it = xml_instance.Index().begin();
+		 it != xml_instance.Index().end(); 
+		 ++it)
+	{
 			indexes.push_back(*it);
 	}
 

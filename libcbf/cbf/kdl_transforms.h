@@ -131,7 +131,7 @@ namespace CBF {
 	{
 		CBF_PLUGIN_DECL_METHODS(KDLChainPositionSensorTransform)
 	
-		KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain = boost::shared_ptr<KDL::Chain>());
+		KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain);
 
 		virtual unsigned int task_dim() const { return 3u; }
 
@@ -159,8 +159,7 @@ namespace CBF {
 		CBF_PLUGIN_DECL_METHODS(KDLChainAxisAngleSensorTransform)
 	
 		KDLChainAxisAngleSensorTransform(
-			boost::shared_ptr<KDL::Chain> chain =
-				boost::shared_ptr<KDL::Chain>()
+			boost::shared_ptr<KDL::Chain> chain
 		);
 		
 		virtual unsigned int task_dim() const { return 3u; }
@@ -245,7 +244,10 @@ namespace CBF {
 	{
 		CBF_PLUGIN_DECL_METHODS(KDLTreePositionSensorTransform)
 	
-		KDLTreePositionSensorTransform(boost::shared_ptr<KDL::Tree> tree = boost::shared_ptr<KDL::Tree>());
+		KDLTreePositionSensorTransform(
+			boost::shared_ptr<KDL::Tree> tree, 
+			std::vector<std::string> segment_names
+		);
 
 		virtual unsigned int task_dim() const { return 3u * m_SegmentNames.size(); }
 
@@ -273,10 +275,10 @@ namespace CBF {
 		CBF_PLUGIN_DECL_METHODS(KDLTreeAxisAngleSensorTransform)
 	
 		KDLTreeAxisAngleSensorTransform(
-			boost::shared_ptr<KDL::Tree> tree =
-				boost::shared_ptr<KDL::Tree>()
+			boost::shared_ptr<KDL::Tree> tree, 
+			std::vector<std::string> segment_names
 		);
-		
+
 		virtual unsigned int task_dim() const { return 3u * m_SegmentNames.size(); }
 
 		virtual void update();
