@@ -75,7 +75,7 @@ def build(bld):
 		task.source += ' spacenavi_reference.cc'
 		task.uselib += ' SPACEMOUSE'
 
-	if bld.env['CBF_HAVE_XSD'] == 1:
+	if bld.env['CBF_HAVE_XCF'] == 1:
 		task.source += ' xcf_resource.cc'
 		task.uselib += ' XCF'
 
