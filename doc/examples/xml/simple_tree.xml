@@ -12,7 +12,7 @@
    <Threshold> 0.000001 </Threshold>
   </ConvergenceCriterion>
 
-  <Dimension> 6 </Dimension>
+  <Dimension> 5 </Dimension>
   <Coefficient> 0.1 </Coefficient>
  </Potential>
 

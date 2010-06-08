@@ -61,6 +61,10 @@ namespace CBF {
 			return m_References;
 		}
 
+		virtual unsigned int dim() {
+			return m_References.size();
+		}
+
 		protected:
 	};
 

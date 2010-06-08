@@ -90,6 +90,8 @@ namespace CBF {
 		assert(m_SensorTransform->resource() != 0);
 		assert(m_EffectorTransform->resource() != 0);
 
+		assert(m_Reference->dim() == m_Potential->task_dim());
+
 		m_Reference->update();
 	
 		m_References = m_Reference->get();

@@ -63,6 +63,10 @@ namespace CBF {
 	
 			}
 		}
+
+		virtual unsigned int dim() {
+			return 6u;
+		}
 	
 		protected:
 			snavi_event_t m_Event;

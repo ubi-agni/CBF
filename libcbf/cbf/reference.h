@@ -44,6 +44,8 @@ namespace CBF {
 		*/
 		virtual void update() = 0;
 	
+		virtual unsigned int dim() = 0;
+
 		/**
 			A reference can deliver more than one value (e.g. if there is more than one
 			task space goal that might be worth reaching. The ambivalence is then
