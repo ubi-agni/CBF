@@ -228,6 +228,7 @@ namespace CBF {
 				m_Result[total_row] = m_Frames[i]->p(row);
 			}
 		}
+		CBF_DEBUG("TaskJacobian " << m_TaskJacobian)
 	}
 	
 

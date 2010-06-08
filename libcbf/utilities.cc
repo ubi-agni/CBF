@@ -274,7 +274,7 @@ boost::shared_ptr<KDL::Segment> create_segment(const SegmentType &xml_instance) 
 
 	CBF_DEBUG("Adding Segment for real..")
 
-	return boost::shared_ptr<KDL::Segment>(new KDL::Segment(*joint, *frame));
+	return boost::shared_ptr<KDL::Segment>(new KDL::Segment(xml_instance.Name(), *joint, *frame));
 }
 
 boost::shared_ptr<KDL::Frame> create_frame(const FrameType &xml_instance) {
