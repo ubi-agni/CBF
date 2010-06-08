@@ -261,6 +261,7 @@ FloatMatrix create_matrix(const MatrixType &xml_instance)
 #endif
 
 #ifdef CBF_HAVE_XSD
+#ifdef CBF_HAVE_KDL
 
 boost::shared_ptr<KDL::Chain> create_chain(const ChainBaseType &xml_instance) {
 	boost::shared_ptr<KDL::Chain> chain(new KDL::Chain);
@@ -344,7 +345,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const TreeBaseType &xml_instance) {
 }
 
 #endif
-
+#endif
 
 } // namespace
 
