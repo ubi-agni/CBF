@@ -12,8 +12,8 @@
    <Threshold> 0.000001 </Threshold>
   </ConvergenceCriterion>
 
-  <Dimension> 3 </Dimension>
-  <Coefficient> 0.5 </Coefficient>
+  <Dimension> 6 </Dimension>
+  <Coefficient> 0.1 </Coefficient>
  </Potential>
 
  <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
@@ -34,6 +34,7 @@
      <Type>Rotational</Type>
      <Axis>Y</Axis>
     </Joint>
+
     <Segment type="TreeSegmentType">
      <Name>FooBar</Name>
      <Frame xsi:type="MatrixFrameType">
@@ -58,13 +59,43 @@
       </Joint>
      </Segment>
     </Segment>
+
+    <Segment type="TreeSegmentType">
+     <Name>FooBar2</Name>
+     <Frame xsi:type="MatrixFrameType">
+      <Matrix xsi:type="BoostMatrixType">
+       <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.5),(0,0,0,1)) </String>
+      </Matrix>
+     </Frame>
+     <Joint xsi:type="JointType">
+      <Type>Rotational</Type>
+      <Axis>X</Axis>
+     </Joint>
+     <Segment type="TreeSegmentType">
+      <Name>Foo2</Name>
+      <Frame xsi:type="MatrixFrameType">
+       <Matrix xsi:type="BoostMatrixType">
+        <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.5),(0,0,0,1)) </String>
+       </Matrix>
+      </Frame>
+      <Joint xsi:type="JointType">
+       <Type>Rotational</Type>
+       <Axis>Z</Axis>
+      </Joint>
+     </Segment>
+    </Segment>
+
+
    </Segment>
   </Tree>
   <SegmentName>Foo</SegmentName>
+  <SegmentName>Foo2</SegmentName>
  </SensorTransform>
 
  <Resource xsi:type="DummyResourceType">
   <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 0.1 </Coefficient>
+   <Coefficient> 0.1 </Coefficient>
    <Coefficient> 0.1 </Coefficient>
    <Coefficient> 0.1 </Coefficient>
    <Coefficient> 0.1 </Coefficient>
@@ -73,9 +104,12 @@
 
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 0.2 </Coefficient>
-   <Coefficient> 0.2 </Coefficient>
-   <Coefficient> 0.2 </Coefficient>
+   <Coefficient> 0.1 </Coefficient>
+   <Coefficient> 0.1 </Coefficient>
+   <Coefficient> 0.1 </Coefficient>
+   <Coefficient> -0.1 </Coefficient>
+   <Coefficient> -0.1 </Coefficient>
+   <Coefficient> -0.1 </Coefficient>
   </Vector>
  </Reference>
 
