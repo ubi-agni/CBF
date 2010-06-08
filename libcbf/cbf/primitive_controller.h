@@ -214,7 +214,6 @@ namespace CBF {
 
 			Float subordinate_coefficient();
 	
-
 			/**
 				This method might throw a std::runtime_error describing a dimension
 				mismatch. 
@@ -249,7 +248,9 @@ namespace CBF {
 				after calling step() at least once..
 			*/
 			virtual bool finished();
-	
+
+			virtual void check_dimensions();
+
 		protected:
 			FloatVector m_Result;
 

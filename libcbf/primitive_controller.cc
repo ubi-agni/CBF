@@ -61,6 +61,7 @@ namespace CBF {
 		m_InitReferenceFromSensorTransform(init_reference_from_sensor_transform)
 	{
 		CBF_DEBUG("Constructor1")
+		check_dimensions();
 	}
 	
 	PrimitiveController::PrimitiveController(
@@ -75,7 +76,26 @@ namespace CBF {
 	{ 
 		CBF_DEBUG("Constructor2")
 	}
-	
+
+
+	void PrimitiveController::check_dimensions() {
+		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim())
+
+		if (m_Reference->dim() != m_Potential->dim())
+			throw std::runtime_error("Reference and Potential dimensions mismatch");
+
+		if (m_SensorTransform->task_dim() != m_Potential->dim())
+			throw std::runtime_error("SensorTransform and Potential dimensions mismatch");
+
+		if (m_SensorTransform->resource_dim() != m_SensorTransform->resource()->dim())
+			throw std::runtime_error("SensorTransform and Resource dimensions mismatch");
+
+		if (m_EffectorTransform->task_dim() != m_Potential->dim())
+			throw std::runtime_error("EffectorTransform and Potential dimensions mismatch");
+
+		if (m_EffectorTransform->resource_dim() != m_EffectorTransform->resource()->dim())
+			throw std::runtime_error("EffectorTransform and Resource dimensions mismatch");
+	}	
 	
 	
 	
@@ -90,7 +110,7 @@ namespace CBF {
 		assert(m_SensorTransform->resource() != 0);
 		assert(m_EffectorTransform->resource() != 0);
 
-		assert(m_Reference->dim() == m_Potential->task_dim());
+		assert(m_Reference->dim() == m_Potential->dim());
 
 		m_Reference->update();
 	
@@ -260,6 +280,8 @@ namespace CBF {
 			CBF_DEBUG("Creating reference...")
 			m_Reference = 
 				PluginPool<Reference>::get_instance()->create_from_xml(xml_instance.Reference());
+
+			check_dimensions();
 		}
 		
 	#endif

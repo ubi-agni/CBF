@@ -70,7 +70,7 @@ struct SquarePotential : public Potential {
 		return (norm(v1 - v2));
 	}
 
-	virtual unsigned int task_dim() const {
+	virtual unsigned int dim() const {
 		return m_Dim;
 	}
 

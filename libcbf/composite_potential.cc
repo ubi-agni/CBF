@@ -34,9 +34,9 @@ namespace CBF {
 		unsigned int current_index = 0;
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
 			CBF_DEBUG("[CompositePotential]: ----")
-			std::copy(references[0].begin() + current_index, references[0].begin() + current_index + m_Potentials[i]->task_dim(), m_ref_buffers[i].begin());
+			std::copy(references[0].begin() + current_index, references[0].begin() + current_index + m_Potentials[i]->dim(), m_ref_buffers[i].begin());
 
-			std::copy(input.begin() + current_index, input.begin() + current_index + m_Potentials[i]->task_dim(), m_in_buffers[i].begin());
+			std::copy(input.begin() + current_index, input.begin() + current_index + m_Potentials[i]->dim(), m_in_buffers[i].begin());
 			CBF_DEBUG("[CompositePotential]: in: " <<  m_in_buffers[i])
 
 			std::vector<FloatVector > tmp_refs;
@@ -48,7 +48,7 @@ namespace CBF {
 			CBF_DEBUG("[CompositePotential]: out: " <<  m_out_buffers[i])
 			std::copy(m_out_buffers[i].begin(), m_out_buffers[i].end(), result.begin() + current_index);
 
-			current_index += m_Potentials[i]->task_dim();
+			current_index += m_Potentials[i]->dim();
 		}
 	}
 

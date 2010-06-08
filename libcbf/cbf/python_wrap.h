@@ -103,7 +103,7 @@ namespace CBF {
 				const FloatVector &input
 			);
 		
-			virtual unsigned int task_dim() const;
+			virtual unsigned int dim() const;
 	
 			std::string m_InitScript;
 	

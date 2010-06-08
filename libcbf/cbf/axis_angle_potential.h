@@ -59,7 +59,7 @@ namespace CBF {
 			const FloatVector &input
 		);
 	
-		virtual unsigned int task_dim() const { return 3u; }
+		virtual unsigned int dim() const { return 3u; }
 
 		virtual bool converged() const {
 			return m_Converged;

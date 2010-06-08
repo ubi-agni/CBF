@@ -93,7 +93,7 @@ namespace CBF {
 			result = s - in;
 		}
 	
-		virtual unsigned int task_dim() const { return m_Dimension; }
+		virtual unsigned int dim() const { return m_Dimension; }
 
 		virtual bool converged() const {
 			return m_Converged;

@@ -93,10 +93,10 @@ struct CompositePotential : public Potential {
 		m_Dim = 0;
 
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-			m_Dim += m_Potentials[i]->task_dim();
-			m_in_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->task_dim());
-			m_out_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->task_dim());
-			m_ref_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->task_dim());
+			m_Dim += m_Potentials[i]->dim();
+			m_in_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+			m_out_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+			m_ref_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
 		}
 	}
 
@@ -132,7 +132,7 @@ struct CompositePotential : public Potential {
 		return true;
 	}
 
-	virtual unsigned int task_dim() const {
+	virtual unsigned int dim() const {
 		return m_Dim;
 	}
 

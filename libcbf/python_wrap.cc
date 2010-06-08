@@ -84,7 +84,7 @@ namespace CBF {
 	{
 	}
 	
-	unsigned int PythonPotential::task_dim() const {
+	unsigned int PythonPotential::dim() const {
 		return m_Dim;
 	}
 	

@@ -127,7 +127,7 @@ struct Potential {
 
 	virtual bool converged() const = 0;
 
-	virtual unsigned int task_dim() const = 0;
+	virtual unsigned int dim() const = 0;
 };
 
 typedef boost::shared_ptr<Potential> PotentialPtr;
