@@ -285,7 +285,7 @@
   <xs:complexContent>
    <xs:extension base="TreeBaseType">
     <xs:sequence>
-     <xs:element name="Segment" type="SegmentType" minOccurs="1" maxOccurs="unbounded"/>
+     <xs:element name="Segment" type="TreeSegmentType" minOccurs="1" maxOccurs="unbounded"/>
     </xs:sequence>
    </xs:extension>
   </xs:complexContent>
@@ -318,9 +318,20 @@
   </xs:complexContent>
  </xs:complexType>
 
+ <xs:complexType name="TreeSegmentType">
+  <xs:complexContent>
+   <xs:extension base="SegmentType">
+    <xs:sequence>
+     <xs:element name="Segment" type="TreeSegmentType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:extension>
+  </xs:complexContent>
+ </xs:complexType>
+
+
  <xs:complexType name="SegmentType">
   <xs:sequence>
-   <xs:element name="Name"  type="xs:string"/>
+   <xs:element name="Name" type="xs:string"/>
    <xs:element name="Frame" type="FrameType"/>
    <xs:element name="Joint" type="JointType"/>
   </xs:sequence>

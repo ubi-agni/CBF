@@ -42,10 +42,15 @@ namespace KDL {
 	class Tree;
 	class Jacobian;
 	class Frame;
+	class Joint;
+	class Segment;
 }
 
 class VectorType;
 class MatrixType;
+class SegmentType;
+class FrameType;
+class JointType;
 class ChainBaseType;
 class TreeBaseType;
 
@@ -123,6 +128,10 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &j);
 
 FloatVector create_vector(const VectorType &xml_instance);
 FloatMatrix create_matrix(const MatrixType &xml_instance);
+
+boost::shared_ptr<KDL::Segment> create_segment(const SegmentType &xml_instance);
+boost::shared_ptr<KDL::Frame> create_frame(const FrameType &xml_instance);
+boost::shared_ptr<KDL::Joint> create_joint(const JointType &xml_instance);
 
 boost::shared_ptr<KDL::Chain> create_chain(const ChainBaseType &xml_instance);
 boost::shared_ptr<KDL::Tree> create_tree(const TreeBaseType &xml_instance);
