@@ -12,7 +12,7 @@
 */
 #define CBF_THROW_RUNTIME_ERROR(x) { \
 	std::stringstream cbf_error_stringstream; \
-   cbf_error_stringstream <<  """[" << __FILE__ << ":" << __LINE__ << " - " << __FUNCTION__ << "()]: " << x; \
+	cbf_error_stringstream <<  """[" << __FILE__ << ":" << __LINE__ << " - " << __FUNCTION__ << "()]: " << x; \
 	throw std::runtime_error(cbf_error_stringstream.str()); \
 }
 
