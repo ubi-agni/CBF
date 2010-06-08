@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 		CBF::PluginPool<CBF::Controller> *pp = 
 			CBF::PluginPool<CBF::Controller>::get_instance();
 
-		try {
+//		try {
 			CBF::ControllerPtr c = 
 				pp->create_from_file<ControllerType>(filename);
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 				usleep(100000);
 				std::cout << "step" << std::endl;
 			}
-
+#if 0
 		} catch (std::exception &e) {
 			std::cerr 
 				<< "Error creating controller from XML file: "
@@ -59,6 +59,7 @@ int main(int argc, char *argv[]) {
 
 			throw;
 		}
+#endif
 	}
 
 	return 0;

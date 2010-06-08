@@ -40,7 +40,6 @@
  <Resource xsi:type="DummyResourceType">
   <Vector xsi:type="SimpleVectorType">
    <Coefficient> 0 </Coefficient>
-   <Coefficient> 0 </Coefficient>
   </Vector>
  </Resource>
 

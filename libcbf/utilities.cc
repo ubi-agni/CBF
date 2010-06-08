@@ -269,10 +269,10 @@ boost::shared_ptr<KDL::Segment> create_segment(const SegmentType &xml_instance) 
 	boost::shared_ptr<KDL::Joint> joint = create_joint(xml_instance.Joint());
 
 
-	CBF_DEBUG("[KDLChainSensorTransform]: Extracting joint...")
+	CBF_DEBUG("Extracting joint...")
 
 
-	CBF_DEBUG("[KDLChainSensorTransform]: Adding Segment for real..")
+	CBF_DEBUG("Adding Segment for real..")
 
 	return boost::shared_ptr<KDL::Segment>(new KDL::Segment(*joint, *frame));
 }
@@ -283,13 +283,13 @@ boost::shared_ptr<KDL::Frame> create_frame(const FrameType &xml_instance) {
 
 	if (matrix_frame_instance != 0)
 	{
-		CBF_DEBUG("[KDLChainSensorTransform]: Extracting matrix...")
+		CBF_DEBUG("Extracting matrix...")
 
 		FloatMatrix m;
 		m = create_matrix((*matrix_frame_instance).Matrix());
 
 		if (m.size1() != 4 || m.size2() != 4)
-			throw std::runtime_error("[KDLChainSensorTransform]: Matrix is not 4x4");
+			throw std::runtime_error("Matrix is not 4x4");
 
 		for (int row = 0; row < 3; ++row)
 		{
@@ -303,7 +303,7 @@ boost::shared_ptr<KDL::Frame> create_frame(const FrameType &xml_instance) {
 			frame->p(row) = m(row, 3);
 	}
 	else
-		throw std::runtime_error("[KDLChainSensorTransform]: Frame type not supported yet..");
+		throw std::runtime_error("Frame type not supported yet..");
 
 	return frame;
 }
@@ -312,7 +312,7 @@ boost::shared_ptr<KDL::Joint> create_joint(const JointType &xml_instance) {
 	boost::shared_ptr<KDL::Joint> joint;
 
 	if (xml_instance.Type() == "Rotational") {
-		CBF_DEBUG("[KDLChainSensorTransform]: Extracting rotational joint...")
+		CBF_DEBUG("Extracting rotational joint...")
 		if (xml_instance.Axis() == "X") {
 			CBF_DEBUG("X")
 			joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::RotX));
@@ -328,7 +328,7 @@ boost::shared_ptr<KDL::Joint> create_joint(const JointType &xml_instance) {
 	}
 
 	if (xml_instance.Type() == "Translational") {
-		throw std::logic_error("[KDLChainSensorTransform]: Translational joints not supported yet. TODO: fix this :)");
+		throw std::logic_error("Translational joints not supported yet. TODO: fix this :)");
 	}
 	return joint;
 }
@@ -341,7 +341,7 @@ boost::shared_ptr<KDL::Chain> create_chain(const ChainBaseType &xml_instance) {
 	const ChainType *chain_instance  = dynamic_cast<const ChainType*>(&xml_instance);
 
 	if (chain_instance == 0)
-		throw std::runtime_error("[KDLChainSensorTransform]: Chain type not handled yet..");
+		throw std::runtime_error("Chain type not handled yet..");
 
 	for (
 		ChainType::Segment_const_iterator it =(*chain_instance).Segment().begin(); 
@@ -349,12 +349,12 @@ boost::shared_ptr<KDL::Chain> create_chain(const ChainBaseType &xml_instance) {
 		++it
 	)
 	{
-		CBF_DEBUG("[KDLChainSensorTransform]: Adding Segment...")
+		CBF_DEBUG("Adding Segment...")
 
 		boost::shared_ptr<KDL::Segment> segment = create_segment(*it);
 
 		chain->addSegment(*segment);
-		CBF_DEBUG("[KDLChainSensorTransform]: number of joints: " << chain->getNrOfJoints())
+		CBF_DEBUG("number of joints: " << chain->getNrOfJoints())
 	}
 	return chain;
 }
@@ -382,7 +382,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const TreeBaseType &xml_instance) {
 	const TreeType *tree_instance  = dynamic_cast<const TreeType*>(&xml_instance);
 
 	if (tree_instance == 0)
-		throw std::runtime_error("[KDLTreeSensorTransform]: Tree type not handled yet..");
+		throw std::runtime_error("Tree type not handled yet..");
 
 	for (
 		TreeType::Segment_const_iterator it =(*tree_instance).Segment().begin(); 
@@ -390,11 +390,11 @@ boost::shared_ptr<KDL::Tree> create_tree(const TreeBaseType &xml_instance) {
 		++it
 	)
 	{
-		CBF_DEBUG("[KDLTreeSensorTransform]: Adding Segment...")
+		CBF_DEBUG("Adding Segment...")
 
 		tree_add_segment(tree, "root", *it);
 
-		CBF_DEBUG("[KDLTreeSensorTransform]: number of joints: " << tree->getNrOfJoints())
+		CBF_DEBUG("Number of joints: " << tree->getNrOfJoints())
 	}
 	return tree;
 }
