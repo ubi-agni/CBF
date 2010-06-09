@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 	MainWindow win(0, "qCBF");
 	win.show();
 
-	CBF::ResourcePtr p = CBF::PluginPool<CBF::Resource>::get_instance()->create(0);
+	// CBF::ResourcePtr p = CBF::PluginPool<CBF::Resource>::get_instance();
 
 	return(qapp.exec());
 }
