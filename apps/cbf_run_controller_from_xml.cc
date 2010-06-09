@@ -23,15 +23,60 @@
 
 #include <string>
 #include <stdexcept>
+#include <cstdlib>
+#include <vector>
 
 #include <schemas.hxx>
 
-int main(int argc, char *argv[]) {
-	if (argc < 2) throw std::runtime_error
-		("Too few arguments. Please be a bit more verbose!");
+#include <boost/program_options.hpp>
 
-	for (int i = 1; i < argc; ++i) {
-		std::string filename(argv[i]);
+namespace po = boost::program_options;
+
+
+int main(int argc, char *argv[]) {
+	po::options_description options_description("Allowed options");
+	options_description.add_options() 
+		("help", "produce help message")
+		("sleep-time", po::value<unsigned int>(), "time to sleep between cycles in microseconds")
+		("recipe", po::value<std::vector<std::string > >(), "XML file containing controller recipe (can be used more than once)")
+		;
+
+	po::variables_map variables_map;
+
+	po::store(
+		po::parse_command_line(
+			argc, 
+			argv, 
+			options_description
+		), 
+		variables_map
+	);
+
+	po::notify(variables_map);
+
+	if (variables_map.count("help")) {
+		std::cout << options_description << std::endl;
+		exit(EXIT_SUCCESS);
+	}
+
+	//! sleep time in microseconds
+	unsigned int sleep_time = 0;
+
+	if (variables_map.count("sleep-time"))
+		sleep_time = variables_map["sleep-time"].as<int>();
+
+	std::vector<std::string> recipes;
+
+	if (!variables_map.count("recipe")) {
+		std::cout << "No recipes specified" << std::endl;
+		std::cout << options_description << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	recipes = variables_map["recipe"].as<std::vector<std::string> >();
+
+	for (unsigned int i = 0; i < recipes.size(); ++i) {
+		std::string filename(recipes[i]);
 
 		CBF::PluginPool<CBF::Controller> *pp = 
 			CBF::PluginPool<CBF::Controller>::get_instance();
@@ -41,7 +86,7 @@ int main(int argc, char *argv[]) {
 				pp->create_from_file<ControllerType>(filename);
 
 			while (c->step() == false) {
-				usleep(100000);
+				usleep(sleep_time);
 				std::cout << "step" << std::endl;
 			}
 #if 0

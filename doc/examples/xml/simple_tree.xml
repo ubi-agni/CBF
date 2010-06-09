@@ -47,7 +47,7 @@
       <Axis>X</Axis>
      </Joint>
      <Segment type="TreeSegmentType">
-      <Name>Foo</Name>
+      <Name>Foobar2</Name>
       <Frame xsi:type="MatrixFrameType">
        <Matrix xsi:type="BoostMatrixType">
         <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.5),(0,0,0,1)) </String>
@@ -57,6 +57,19 @@
        <Type>Rotational</Type>
        <Axis>Z</Axis>
       </Joint>
+
+      <Segment type="TreeSegmentType">
+       <Name>Foo</Name>
+       <Frame xsi:type="MatrixFrameType">
+        <Matrix xsi:type="BoostMatrixType">
+         <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.5),(0,0,0,1)) </String>
+        </Matrix>
+       </Frame>
+       <Joint xsi:type="JointType">
+        <Type>Rotational</Type>
+        <Axis>Z</Axis>
+       </Joint>
+      </Segment>
      </Segment>
     </Segment>
 
@@ -94,6 +107,7 @@
 
  <Resource xsi:type="DummyResourceType">
   <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 0.1 </Coefficient>
    <Coefficient> 0.1 </Coefficient>
    <Coefficient> 0.1 </Coefficient>
    <Coefficient> 0.1 </Coefficient>

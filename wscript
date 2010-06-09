@@ -33,6 +33,7 @@ def set_options(opt):
 	opt.tool_options('python')
 	opt.tool_options('compiler_cc')
 
+
 	opt.add_option(
 		'--with-robotinterface-dir', 
 		action='store', 
@@ -192,11 +193,11 @@ def set_options(opt):
 	
 
 	opt.add_option(
-		'--with-boost-python-dir',
-		dest='boostpythondir',
+		'--with-boost-dir',
+		dest='boostdir',
 		type='string',
 		action='store',
-		help='PREFIX, where Python-C lib and headers are installed'
+		help='PREFIX, where boost lib and headers are installed'
 	)
 
 	opt.add_option(
@@ -456,6 +457,15 @@ def configure(conf):
 		conf.define('CBF_HAVE_BOOST_PYTHON', 1)
 		defines['CBF_HAVE_BOOST_PYTHON'] = 1
 #
+
+	conf.check(header_name='boost/shared_ptr.hpp', uselib_store='BOOST_SHARED_PTR')
+
+	conf.check(lib='boost_program_options-mt', uselib_store='BOOST_PROGRAM_OPTIONS')
+	conf.check(header_name='boost/program_options.hpp', uselib_store='BOOST_PROGRAM_OPTIONS')
+	if ('LIB_BOOST_PROGRAM_OPTIONS' in conf.env):
+		print ("we got python and boost")
+		conf.define('CBF_HAVE_BOOST_PROGRAM_OPTIONS', 1)
+		defines['CBF_HAVE_BOOST_PROGRAM_OPTIONS'] = 1
 
 	# since we don't want all kinds of junk in config.h, but just the ones
 	# we have added explicitly in the dict 'defines' clear all defines

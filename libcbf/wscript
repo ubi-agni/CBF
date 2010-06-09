@@ -68,7 +68,7 @@ def build(bld):
 	task.source       = sources
 	task.target       = 'cbf'
 	task.includes     = ['.', bld.bdir + '/default/schemas/']
-	task.uselib       = ''
+	task.uselib       = ' BOOST_SHARED_PTR'
 	task.uselib_local = ''
 
 	if bld.env['CBF_HAVE_SPACEMOUSE'] == 1:
