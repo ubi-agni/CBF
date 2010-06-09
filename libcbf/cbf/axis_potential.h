@@ -72,11 +72,6 @@ namespace CBF {
 				}
 			}
 
-			if (min_distance < m_DistanceThreshold)
-				m_Converged = true;
-			else
-				m_Converged = false;
-
 			//! Now that we have the reference closest to our input, calculate 
 			//! SLERP step into that direction
 			FloatVector ref = 

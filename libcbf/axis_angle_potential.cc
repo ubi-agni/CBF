@@ -69,8 +69,6 @@ namespace CBF {
 			if(norm(result) > m_MaxGradientStepNorm)
 				result *= m_MaxGradientStepNorm/norm(result);
 
-			//TODO: fix when using all references
-			m_Converged = check_convergence(distance(input, references[0]), norm(result));
 			CBF_DEBUG("Result: " << result)
 		}
 

@@ -27,6 +27,7 @@
 #include <cbf/plugin_macros.h>
 #include <cbf/plugin_pool.h>
 #include <cbf/dummy_reference.h>
+#include <cbf/exceptions.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -38,7 +39,7 @@
 
 namespace CBF {
 	void PrimitiveController::init() {
-
+		m_Converged = false;
 	}
 
 	PrimitiveController::PrimitiveController(
@@ -48,7 +49,6 @@ namespace CBF {
 		CombinationStrategyPtr combination_strategy,
 		std::vector<PrimitiveControllerPtr> subordinate_controllers,
 		Float alpha,
-		Float beta,
 		bool init_reference_from_sensor_transform 
 	) :
 		m_SubordinateControllers(subordinate_controllers),
@@ -57,23 +57,23 @@ namespace CBF {
 		m_EffectorTransform(effector_transform),
 		m_CombinationStrategy(combination_strategy),
 		m_Coefficient(alpha),
-		m_SubordinateCoefficient(beta),
 		m_InitReferenceFromSensorTransform(init_reference_from_sensor_transform)
 	{
+		init();
+
 		CBF_DEBUG("Constructor1")
 		check_dimensions();
 	}
 	
 	PrimitiveController::PrimitiveController(
 		Float alpha,
-		Float beta,
-		bool init_reference_from_sensor_transform
+			bool init_reference_from_sensor_transform
 	) :
 		m_CombinationStrategy(CombinationStrategyPtr(new AddingStrategy)),
 		m_Coefficient(alpha),
-		m_SubordinateCoefficient(beta),
 		m_InitReferenceFromSensorTransform(init_reference_from_sensor_transform)
 	{ 
+		init();
 		CBF_DEBUG("Constructor2")
 	}
 
@@ -175,15 +175,17 @@ namespace CBF {
 			m_InvJacobianTimesJacobian,
 			m_CombinedResults
 		);
-		CBF_DEBUG("combined_results * beta: " << m_CombinedResults * m_SubordinateCoefficient)
+		CBF_DEBUG("combined_results * beta: " << m_CombinedResults)
 	
-		m_Result = (m_ResourceStep * m_Coefficient) + (m_CombinedResults * m_SubordinateCoefficient);
+		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
 	}
 	
 	void PrimitiveController::do_action(int cycle) {
 		update(cycle);
 
 		m_EffectorTransform->resource()->add(m_Result);
+
+		m_Converged = check_convergence();
 	}
 	
 	void PrimitiveController::set_resource(ResourcePtr resource) throw (std::runtime_error) {
@@ -194,27 +196,77 @@ namespace CBF {
 		for (unsigned int i = 0; i  < m_SubordinateControllers.size(); ++i)
 			m_SubordinateControllers[i]->set_resource(resource);
 	}
+
+	bool PrimitiveController::check_convergence() {
+		Float stepnorm = ublas::norm_2(m_Result);
+
+		Float min_dist = m_Potential->distance(m_CurrentTaskPosition, m_Reference->get()[0]);
+		for (unsigned int i = 1, len = m_Reference->get().size(); i < len; ++i) {
+			Float cur_dist = 	m_Potential->distance(m_CurrentTaskPosition, m_Reference->get()[i]);
+			if (cur_dist < min_dist) min_dist = cur_dist;
+		}
+
+		Float dist = min_dist;
+
+		CBF_DEBUG("distance_thresh " << m_TaskSpaceDistanceThreshold << " " << (dist < m_TaskSpaceDistanceThreshold) << " " << dist)
+		CBF_DEBUG("stepnorm_thresh " << m_ResourceStepNormThreshold << " " << (stepnorm < m_ResourceStepNormThreshold) << " " << stepnorm)
+
+		bool converged = 
+			((m_ConvergenceCriterion & TASK_SPACE_DISTANCE_THRESHOLD) && (dist < m_TaskSpaceDistanceThreshold)) 
+			||
+			((m_ConvergenceCriterion & RESOURCE_STEP_THRESHOLD) && (stepnorm < m_ResourceStepNormThreshold));
+
+		return converged;
+	}
 	
 	bool PrimitiveController::finished() {
 		// check whether we have approached one of the references to within a small error
-		return m_Potential->converged();
+		return m_Converged;
+		// return m_Potential->converged();
 	}
 	
 	#ifdef CBF_HAVE_XSD
 		PrimitiveController::PrimitiveController(const PrimitiveControllerType &xml_instance) :
 			m_Coefficient(1.0),
-			m_SubordinateCoefficient(1.0),
 			m_InitReferenceFromSensorTransform(false)
 		
 		{
 			CBF_DEBUG("Constructing")
+			init();
+
 
 			if (xml_instance.Name().present())
 				m_Name = *xml_instance.Name();
 
 			m_Coefficient = xml_instance.Coefficient();
 		
-			m_SubordinateCoefficient = xml_instance.SubordinateCoefficient();
+			m_ConvergenceCriterion = 0;
+
+			if (xml_instance.ConvergenceCriterion().begin() == xml_instance.ConvergenceCriterion().end())
+				CBF_THROW_RUNTIME_ERROR("Missing ConvergenceCriterion");
+
+			for (
+				PrimitiveControllerType::ConvergenceCriterion_const_iterator it = 
+					xml_instance.ConvergenceCriterion().begin();
+				it != xml_instance.ConvergenceCriterion().end();
+				++it
+			) {
+				const TaskSpaceDistanceThresholdType *d = dynamic_cast<const TaskSpaceDistanceThresholdType *>(&(*it));
+				if (d != 0) {
+					m_ConvergenceCriterion |= TASK_SPACE_DISTANCE_THRESHOLD;
+					m_TaskSpaceDistanceThreshold = d->Threshold();
+					CBF_DEBUG("TaskSpaceDistanceThreshold " << m_TaskSpaceDistanceThreshold)
+					continue;
+				}
+				const ResourceStepNormThresholdType *s = dynamic_cast<const ResourceStepNormThresholdType *>(&(*it));
+				if (s != 0) {
+					m_ConvergenceCriterion |= RESOURCE_STEP_THRESHOLD;
+					m_ResourceStepNormThreshold = s->Threshold();
+					CBF_DEBUG("ResourceStepThreshold " << m_ResourceStepNormThreshold)
+					continue;
+				}
+				CBF_THROW_RUNTIME_ERROR("ConvergenceCriterion type not supported yet")
+			}
 		
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");

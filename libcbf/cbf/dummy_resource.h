@@ -75,10 +75,7 @@ namespace CBF {
 			// CBF_DEBUG("current values" << m_Variables);
 		}
 	
-		virtual void add(const FloatVector &arg) {
-			set(m_Variables + arg);
-			// CBF_DEBUG("current values" << m_Variables);
-		}
+		virtual void add(const FloatVector &arg);
 	
 		virtual unsigned int dim() {
 			return m_Variables.size();

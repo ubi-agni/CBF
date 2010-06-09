@@ -54,9 +54,6 @@ namespace CBF {
 		if (result_norm >= m_MaxGradientStepNorm)
 			result = (m_MaxGradientStepNorm/result_norm) * result;
 		// std::cout << "[SquaredPotential]: result: " << result << std::endl;
-
-		m_Converged = check_convergence(distance(input, references[min_index]), norm(result));
-		// CBF_DEBUG("m_Converged " << m_Converged)
 	}
 
 

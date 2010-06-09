@@ -38,7 +38,8 @@
    <xs:extension base="ControllerType">
     <xs:sequence>
       <xs:element name="Coefficient" type="xs:float"/>
-      <xs:element name="SubordinateCoefficient" type="xs:float"/>
+
+      <xs:element name="ConvergenceCriterion" type="ConvergenceCriterionType" minOccurs="1" maxOccurs="unbounded"/>
 
       <xs:element name="InitReferenceFromSensorTransform" type="xs:boolean"/>
 
@@ -141,7 +142,7 @@
    <xs:sequence/>
  </xs:complexType>
 
- <xs:complexType name="DistanceThresholdType">
+ <xs:complexType name="TaskSpaceDistanceThresholdType">
   <xs:complexContent>
    <xs:extension base="ConvergenceCriterionType">
     <xs:sequence>
@@ -151,7 +152,7 @@
   </xs:complexContent>
  </xs:complexType>
 
- <xs:complexType name="StepNormThresholdType">
+ <xs:complexType name="ResourceStepNormThresholdType">
   <xs:complexContent>
    <xs:extension base="ConvergenceCriterionType">
     <xs:sequence>
@@ -163,7 +164,6 @@
 
  <xs:complexType name="PotentialType" abstract="true">
   <xs:sequence>
-   <xs:element name="ConvergenceCriterion" type="ConvergenceCriterionType" minOccurs="1" maxOccurs="unbounded"/>
    <xs:element name="MaxGradientStepNorm" type="xs:float"/>
   </xs:sequence>
  </xs:complexType>

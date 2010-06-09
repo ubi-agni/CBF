@@ -2,18 +2,19 @@
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
 
  <Coefficient> 1 </Coefficient>
- <SubordinateCoefficient> 1 </SubordinateCoefficient>
+
+ <ConvergenceCriterion xsi:type="ResourceStepNormThresholdType">
+  <Threshold> 0.000001 </Threshold>
+ </ConvergenceCriterion>
+
+
  <InitReferenceFromSensorTransform> 0 </InitReferenceFromSensorTransform>
 
  <Potential xsi:type="SquarePotentialType">
   <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
 
-  <ConvergenceCriterion xsi:type="DistanceThresholdType">
-   <Threshold> 0.000001 </Threshold>
-  </ConvergenceCriterion>
-
   <Dimension> 6 </Dimension>
-  <Coefficient> 0.1 </Coefficient>
+  <Coefficient> 0.01 </Coefficient>
  </Potential>
 
  <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
@@ -32,7 +33,7 @@
     </Frame>
     <Joint xsi:type="JointType">
      <Type>Rotational</Type>
-     <Axis>Y</Axis>
+     <Axis>X</Axis>
     </Joint>
 
     <Segment type="TreeSegmentType">
@@ -44,7 +45,7 @@
      </Frame>
      <Joint xsi:type="JointType">
       <Type>Rotational</Type>
-      <Axis>X</Axis>
+      <Axis>Y</Axis>
      </Joint>
      <Segment type="TreeSegmentType">
       <Name>Foobar2</Name>
@@ -57,7 +58,6 @@
        <Type>Rotational</Type>
        <Axis>Z</Axis>
       </Joint>
-
       <Segment type="TreeSegmentType">
        <Name>Foo</Name>
        <Frame xsi:type="MatrixFrameType">
@@ -74,7 +74,7 @@
     </Segment>
 
     <Segment type="TreeSegmentType">
-     <Name>FooBar2</Name>
+     <Name>FooBar3</Name>
      <Frame xsi:type="MatrixFrameType">
       <Matrix xsi:type="BoostMatrixType">
        <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.5),(0,0,0,1)) </String>
@@ -82,10 +82,10 @@
      </Frame>
      <Joint xsi:type="JointType">
       <Type>Rotational</Type>
-      <Axis>X</Axis>
+      <Axis>Y</Axis>
      </Joint>
      <Segment type="TreeSegmentType">
-      <Name>Foo2</Name>
+      <Name>FooBar2</Name>
       <Frame xsi:type="MatrixFrameType">
        <Matrix xsi:type="BoostMatrixType">
         <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.5),(0,0,0,1)) </String>
@@ -93,11 +93,22 @@
       </Frame>
       <Joint xsi:type="JointType">
        <Type>Rotational</Type>
-       <Axis>Z</Axis>
+       <Axis>Y</Axis>
       </Joint>
+      <Segment type="TreeSegmentType">
+       <Name>Foo2</Name>
+       <Frame xsi:type="MatrixFrameType">
+        <Matrix xsi:type="BoostMatrixType">
+         <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0.5),(0,0,0,1)) </String>
+        </Matrix>
+       </Frame>
+       <Joint xsi:type="JointType">
+        <Type>Rotational</Type>
+        <Axis>Z</Axis>
+       </Joint>
+      </Segment>
      </Segment>
     </Segment>
-
 
    </Segment>
   </Tree>
@@ -105,25 +116,32 @@
   <SegmentName>Foo2</SegmentName>
  </SensorTransform>
 
- <Resource xsi:type="DummyResourceType">
-  <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-  </Vector>
+ <Resource xsi:type="CompositeResourceType">
+  <Resource xsi:type="DummyResourceType">
+   <Vector xsi:type="SimpleVectorType">
+    <Coefficient> 0.1 </Coefficient>
+    <Coefficient> 0.1 </Coefficient>
+    <Coefficient> 0.1 </Coefficient>
+    <Coefficient> 0.1 </Coefficient>
+   </Vector>
+  </Resource>
+  <Resource xsi:type="DummyResourceType">
+   <Vector xsi:type="SimpleVectorType">
+    <Coefficient> 0.1 </Coefficient>
+    <Coefficient> 0.1 </Coefficient>
+    <Coefficient> 0.1 </Coefficient>
+   </Vector>
+  </Resource>
  </Resource>
 
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
    <Coefficient> -0.1 </Coefficient>
    <Coefficient> -0.1 </Coefficient>
    <Coefficient> -0.1 </Coefficient>
+   <Coefficient> 0.1 </Coefficient>
+   <Coefficient> 0.1 </Coefficient>
+   <Coefficient> 0.1 </Coefficient>
   </Vector>
  </Reference>
 

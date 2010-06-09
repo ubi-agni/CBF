@@ -28,8 +28,6 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 #include <vector>
-#include <stdexcept>
-#include <string>
 
 #include <cbf/controller.h>
 #include <cbf/potential.h>
@@ -73,8 +71,7 @@ namespace CBF {
 			is only supported for DummyReferences		
 		*/	
 		PrimitiveController(
-			Float alpha = 1.0,
-			Float beta = 1.0,
+			Float coefficient = 1.0,
 			bool init_reference_from_sensor_transform = false
 		);
 	
@@ -91,16 +88,39 @@ namespace CBF {
 			SensorTransformPtr sensor_transform,
 			CombinationStrategyPtr combination_strategy = CombinationStrategyPtr(new AddingStrategy),
 			std::vector<PrimitiveControllerPtr> subordinate_controllers = std::vector<PrimitiveControllerPtr>(),
-			Float alpha = 1.0,
-			Float beta = 1.0,
+			Float coefficient = 1.0,
 			bool init_reference_from_sensor_transform = false
 		);
 	
 	
 		protected:
+			bool m_Converged;
+
+			/**
+				@brief: Check for convergence of the controller
+		
+				This should only be used after the result has been calculated
+			*/ 
+			virtual bool check_convergence();
+	
+			/**
+				DISTANCE_THRESHOLD means that the potential should signal
+				convergence when only a certain distance away from at
+				least one reference..
+		
+				Some potentials might not have a notion of reference. For 
+				these convergence might be determined by a sufficiently
+				small gradient step norm. For this the STEP_THRESHOLD 
+				is useful.
+			*/
+			enum ConvergenceCriterion { TASK_SPACE_DISTANCE_THRESHOLD = 1, RESOURCE_STEP_THRESHOLD = 2 };
+			unsigned int m_ConvergenceCriterion;
+		
+			Float m_TaskSpaceDistanceThreshold;
+			Float m_ResourceStepNormThreshold;
+		
 			//* @brief Function for stuff common to all constructors */
 			void init();
-
 
 			/**
 				A reference determines the task 
@@ -148,11 +168,6 @@ namespace CBF {
 				The factor for the primary gradient step
 			*/
 			Float m_Coefficient;
-	
-			/**
-				The factor for the secondary gradient step
-			*/
-			Float m_SubordinateCoefficient;
 	
 			/**
 				This bool tells the primitive controller to set the

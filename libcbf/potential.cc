@@ -23,41 +23,9 @@
 
 namespace CBF {
 
-	bool Potential::check_convergence(Float dist, Float stepnorm) {
-		CBF_DEBUG("distance_thresh " << (dist < m_DistanceThreshold) << " " << dist)
-		bool converged = 
-			((m_ConvergenceCriterion & DISTANCE_THRESHOLD) && (dist < m_DistanceThreshold)) ||
-			((m_ConvergenceCriterion & STEP_THRESHOLD) && (stepnorm < m_StepNormThreshold));
-		CBF_DEBUG("converged: " << converged)
-		return converged;
-	}
-
-
-
 	#ifdef CBF_HAVE_XSD
 	Potential::Potential(const PotentialType &xml_instance) {
-		m_ConvergenceCriterion = 0;
-
-		if (xml_instance.ConvergenceCriterion().begin() == xml_instance.ConvergenceCriterion().end())
-			throw std::runtime_error("[Potential]: Missing ConvergenceCriterion");
-
-		for (
-			PotentialType::ConvergenceCriterion_const_iterator it = 
-				xml_instance.ConvergenceCriterion().begin();
-			it != xml_instance.ConvergenceCriterion().end();
-			++it
-		) {
-			const DistanceThresholdType *d = dynamic_cast<const DistanceThresholdType *>(&(*it));
-			if (d != 0) {
-				m_ConvergenceCriterion |= DISTANCE_THRESHOLD;
-				m_DistanceThreshold = d->Threshold();
-			}
-			const StepNormThresholdType *s = dynamic_cast<const StepNormThresholdType *>(&(*it));
-			if (s != 0) {
-				m_ConvergenceCriterion |= STEP_THRESHOLD;
-				m_StepNormThreshold = s->Threshold();
-			}
-		}
+		CBF_DEBUG("Constructor")
 
 		m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
 	}

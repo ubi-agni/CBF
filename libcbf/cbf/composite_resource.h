@@ -55,7 +55,7 @@ struct CompositeResource : public Resource
 			unsigned int dim = 0;
 	
 			for (
-				unsigned int i = 1, len = m_Resources.size();
+				unsigned int i = 0, len = m_Resources.size();
 				i < len;
 				++i)
 			{
@@ -80,7 +80,7 @@ struct CompositeResource : public Resource
 			unsigned int current_start_index = 0;
 	
 			for (
-				unsigned int i = 1, len = m_Resources.size();
+				unsigned int i = 0, len = m_Resources.size();
 				i < len;
 				++i) 
 			{
@@ -102,7 +102,7 @@ struct CompositeResource : public Resource
 			unsigned int current_start_index = 0;
 	
 			for (
-				unsigned int i = 1, len = m_Resources.size();
+				unsigned int i = 0, len = m_Resources.size();
 				i < len;
 				++i) 
 			{
@@ -125,7 +125,7 @@ struct CompositeResource : public Resource
 			unsigned int current_start_index = 0;
 	
 			for (
-				unsigned int i = 1, len = m_Resources.size();
+				unsigned int i = 0, len = m_Resources.size();
 				i < len;
 				++i) 
 			{

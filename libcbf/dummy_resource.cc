@@ -33,6 +33,12 @@
 
 
 namespace CBF {
+	void DummyResource::add(const FloatVector &arg) {
+		set(m_Variables + arg);
+		CBF_DEBUG("current values" << m_Variables);
+	}
+
+
 	#ifdef CBF_HAVE_XSD
 	#ifdef CBF_HAVE_PLUGIN_SUPPORT
 		DummyResource::DummyResource(const DummyResourceType &xml_instance)

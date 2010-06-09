@@ -43,6 +43,7 @@ namespace CBF {
 			}
 		
 			set_resources(resources);
+			CBF_DEBUG("dim: " << dim())
 	}
 
 #endif

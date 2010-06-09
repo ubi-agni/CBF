@@ -41,37 +41,15 @@ namespace ublas = boost::numeric::ublas;
 	absolute value of the potential function needs to be known.
 */
 struct Potential {
-	/**
-		DISTANCE_THRESHOLD means that the potential should signal
-		convergence when only a certain distance away from at
-		least one reference..
-
-		Some potentials might not have a notion of reference. For 
-		these convergence might be determined by a sufficiently
-		small gradient step norm. For this the STEP_THRESHOLD 
-		is useful.
-	*/
-	enum ConvergenceCriterion { DISTANCE_THRESHOLD = 1, STEP_THRESHOLD = 2 };
-	unsigned int m_ConvergenceCriterion;
-
-	Float m_DistanceThreshold;
-	Float m_StepNormThreshold;
-
 	bool m_ClampGradientStepNorm;
 	Float m_MaxGradientStepNorm;
 
 	CBF_PLUGIN_DECL_METHODS(Potential)
 
 	Potential(
-		int convergence_criterion = DISTANCE_THRESHOLD,
-		Float distance_threshold = 0.01,
-		Float stepnorm_threshold = 0.001,
 		bool clamp_gradient_step_norm = false,
 		Float max_gradient_step_norm = 0.1
 	) :
-		m_ConvergenceCriterion(convergence_criterion),
-		m_DistanceThreshold(distance_threshold),
-		m_StepNormThreshold(stepnorm_threshold),
 		m_ClampGradientStepNorm(clamp_gradient_step_norm),
 		m_MaxGradientStepNorm(max_gradient_step_norm)
 	{
@@ -103,15 +81,6 @@ struct Potential {
 	virtual Float distance(const FloatVector &v1, const FloatVector &v2) = 0;
 
 	/**
-		@brief: Check for convergence of the potential
-
-		The potential has to determine distance and stepnorm itself, as the
-		norm in use might be very different from the euclidian norm (e.g. 
-		for rotational spaces)
-	*/ 
-	virtual bool check_convergence(Float dist, Float stepnorm);
-
-	/**
 		The gradient can be implemented analytically or 
 		numerically depending on taste and application
 
@@ -124,8 +93,6 @@ struct Potential {
 		const std::vector<FloatVector > &references, 
 		const FloatVector &input
 	) = 0;
-
-	virtual bool converged() const = 0;
 
 	virtual unsigned int dim() const = 0;
 };

@@ -28,6 +28,7 @@
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
 #include <cbf/plugin_decl_macros.h>
+#include <cbf/exceptions.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -111,15 +112,16 @@ struct CompositePotential : public Potential {
 		so we return 0..
 	*/
 	virtual Float norm(const FloatVector &v) {
-		throw std::runtime_error("[CompositePotential]: Don't know how to calculate norm");
+		CBF_THROW_RUNTIME_ERROR("[CompositePotential]: Don't know how to calculate norm. TODO: fix!!");
 		return 0;
 	}
 
 	virtual Float distance(const FloatVector &v1, const FloatVector &v2) {
-		throw std::runtime_error("[CompositePotential]: Don't know how to calculate distance");
+		CBF_THROW_RUNTIME_ERROR("[CompositePotential]: Don't know how to calculate distances. TODO: fix!!");
 		return 0;
 	}
 
+#if 0
 	/** 
 		This implementation test if all of the potentials are converged and only then
 		returns true
@@ -131,6 +133,7 @@ struct CompositePotential : public Potential {
 
 		return true;
 	}
+#endif
 
 	virtual unsigned int dim() const {
 		return m_Dim;
