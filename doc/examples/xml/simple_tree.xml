@@ -136,9 +136,9 @@
 
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="SimpleVectorType">
-   <Coefficient> -0.1 </Coefficient>
-   <Coefficient> -0.1 </Coefficient>
-   <Coefficient> -0.1 </Coefficient>
+   <Coefficient> 0.3 </Coefficient>
+   <Coefficient> 0.9 </Coefficient>
+   <Coefficient> 0.9 </Coefficient>
    <Coefficient> 0.1 </Coefficient>
    <Coefficient> 0.1 </Coefficient>
    <Coefficient> 0.1 </Coefficient>

@@ -327,6 +327,9 @@ boost::shared_ptr<KDL::Joint> create_joint(const JointType &xml_instance) {
 		}
 	}
 
+	if (xml_instance.Type() == "None")
+		joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::None));
+
 	if (xml_instance.Type() == "Translational") {
 		throw std::logic_error("Translational joints not supported yet. TODO: fix this :)");
 	}
