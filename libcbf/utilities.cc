@@ -20,6 +20,7 @@
 
 #include <cbf/utilities.h>
 #include <cbf/debug_macros.h>
+#include <cbf/exceptions.h>
 
 #ifdef CBF_HAVE_KDL
 	#include <kdl/jacobian.hpp>
@@ -232,7 +233,7 @@ ublas::vector<Float> create_vector(const VectorType &xml_instance) {
 		std::stringstream stream(boost_vector->String());
 		ublas::vector<Float> v;
 		stream >> v;
-		if (v.size() == 0) throw std::runtime_error("[utilities]: create_vector(): Empty Vector");
+		if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
 
 		return v;
 	}
