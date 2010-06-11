@@ -4,7 +4,7 @@
  <Coefficient> 1 </Coefficient>
 
  <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
-  <Threshold> 0.000001 </Threshold>
+  <Threshold> 0.001 </Threshold>
  </ConvergenceCriterion>
 
 
@@ -25,7 +25,7 @@
   <Tree xsi:type="TreeType">
    <Name>arms</Name>
      <Segment xsi:type="TreeSegmentType">
-        <Name>Segment0</Name>
+        <Name>root2</Name>
         <Frame xsi:type="MatrixFrameType">
            <Matrix xsi:type="BoostMatrixType">
               <String>[4,4]((1,0,0,0),(0,1,0,0),(0,0,1,0),(0,0,0,1))</String>
@@ -33,7 +33,7 @@
         </Frame>
         <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
         <Segment xsi:type="TreeSegmentType">
-           <Name>Segment1</Name>
+           <Name>Left.arm.sBase</Name>
            <Frame xsi:type="MatrixFrameType">
               <Matrix xsi:type="BoostMatrixType">
                  <String>[4,4]((2.22045e-16,1,1.22461e-16,20),(1,-2.22045e-16,-1.2326e-32,85),(1.2326e-32,1.22461e-16,-1,135.2),(0,0,0,1))</String>
@@ -42,7 +42,7 @@
            <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
         </Segment>
         <Segment xsi:type="TreeSegmentType">
-           <Name>Segment2</Name>
+           <Name>Left.arm.J1</Name>
            <Frame xsi:type="MatrixFrameType">
               <Matrix xsi:type="BoostMatrixType">
                  <String>[4,4]((1.11022e-16,-1,0,20),(0,0,1,85),(-1,-1.11022e-16,0,135.2),(0,0,0,1))</String>
@@ -50,7 +50,7 @@
            </Frame>
            <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
            <Segment xsi:type="TreeSegmentType">
-              <Name>Segment3</Name>
+              <Name>Left.arm.sSeg1</Name>
               <Frame xsi:type="MatrixFrameType">
                  <Matrix xsi:type="BoostMatrixType">
                     <String>[4,4]((0,0,1,20),(-2.22045e-16,-1,0,1.23512e-15),(1,-2.22045e-16,0,-4.44089e-15),(0,0,0,1))</String>
@@ -58,7 +58,7 @@
               </Frame>
               <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
               <Segment xsi:type="TreeSegmentType">
-                 <Name>Segment4</Name>
+                 <Name>Left.arm.J2</Name>
                  <Frame xsi:type="MatrixFrameType">
                     <Matrix xsi:type="BoostMatrixType">
                        <String>[4,4]((0,0,1,4.44089e-15),(1,0,0,9.31547e-16),(0,1,0,11.5),(0,0,0,1))</String>
@@ -66,7 +66,7 @@
                  </Frame>
                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                  <Segment xsi:type="TreeSegmentType">
-                    <Name>Segment5</Name>
+                    <Name>Left.arm.sSeg2</Name>
                     <Frame xsi:type="MatrixFrameType">
                        <Matrix xsi:type="BoostMatrixType">
                           <String>[4,4]((0,1,0,2.62117e-15),(0,0,1,-3.55271e-15),(1,0,0,-4.44089e-15),(0,0,0,1))</String>
@@ -74,7 +74,7 @@
                     </Frame>
                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                     <Segment xsi:type="TreeSegmentType">
-                       <Name>Segment6</Name>
+                       <Name>Left.arm.J3</Name>
                        <Frame xsi:type="MatrixFrameType">
                           <Matrix xsi:type="BoostMatrixType">
                              <String>[4,4]((0,-2.22045e-16,1,4.44089e-15),(0,-1,-2.22045e-16,-2.62117e-15),(1,0,0,3.55271e-15),(0,0,0,1))</String>
@@ -82,7 +82,7 @@
                        </Frame>
                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                        <Segment xsi:type="TreeSegmentType">
-                          <Name>Segment7</Name>
+                          <Name>Left.arm.sSeg3</Name>
                           <Frame xsi:type="MatrixFrameType">
                              <Matrix xsi:type="BoostMatrixType">
                                 <String>[4,4]((0,0,1,45),(-2.22045e-16,-1,0,-2.62117e-15),(1,-2.22045e-16,0,-4.44089e-15),(0,0,0,1))</String>
@@ -90,7 +90,7 @@
                           </Frame>
                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                           <Segment xsi:type="TreeSegmentType">
-                             <Name>Segment8</Name>
+                             <Name>Left.arm.J4</Name>
                              <Frame xsi:type="MatrixFrameType">
                                 <Matrix xsi:type="BoostMatrixType">
                                    <String>[4,4]((0,0,1,4.44089e-15),(1,0,0,-1.02696e-15),(0,1,0,2.22045e-15),(0,0,0,1))</String>
@@ -98,7 +98,7 @@
                              </Frame>
                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                              <Segment xsi:type="TreeSegmentType">
-                                <Name>Segment9</Name>
+                                <Name>Left.arm.sSeg4</Name>
                                 <Frame xsi:type="MatrixFrameType">
                                    <Matrix xsi:type="BoostMatrixType">
                                       <String>[4,4]((0,1,0,1.02696e-15),(0,0,1,-3.55271e-15),(1,0,0,-4.44089e-15),(0,0,0,1))</String>
@@ -106,7 +106,7 @@
                                 </Frame>
                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                 <Segment xsi:type="TreeSegmentType">
-                                   <Name>Segment10</Name>
+                                   <Name>Left.arm.J5</Name>
                                    <Frame xsi:type="MatrixFrameType">
                                       <Matrix xsi:type="BoostMatrixType">
                                          <String>[4,4]((0,-2.22045e-16,1,4.44089e-15),(0,-1,-2.22045e-16,-1.02696e-15),(1,0,0,3.55271e-15),(0,0,0,1))</String>
@@ -114,7 +114,7 @@
                                    </Frame>
                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                    <Segment xsi:type="TreeSegmentType">
-                                      <Name>Segment11</Name>
+                                      <Name>Left.arm.sSeg5</Name>
                                       <Frame xsi:type="MatrixFrameType">
                                          <Matrix xsi:type="BoostMatrixType">
                                             <String>[4,4]((0,0,1,31),(-2.22045e-16,-1,0,2.52576e-15),(1,-2.22045e-16,0,-4.44089e-15),(0,0,0,1))</String>
@@ -122,7 +122,7 @@
                                       </Frame>
                                       <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                       <Segment xsi:type="TreeSegmentType">
-                                         <Name>Segment12</Name>
+                                         <Name>Left.arm.J6</Name>
                                          <Frame xsi:type="MatrixFrameType">
                                             <Matrix xsi:type="BoostMatrixType">
                                                <String>[4,4]((0,0,1,4.44089e-15),(1,0,0,-4.51028e-17),(0,1,0,19),(0,0,0,1))</String>
@@ -130,7 +130,7 @@
                                          </Frame>
                                          <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                          <Segment xsi:type="TreeSegmentType">
-                                            <Name>Segment13</Name>
+                                            <Name>Left.arm.sSeg6</Name>
                                             <Frame xsi:type="MatrixFrameType">
                                                <Matrix xsi:type="BoostMatrixType">
                                                   <String>[4,4]((0,1,0,4.51028e-17),(0,0,1,-1.33227e-15),(1,0,0,-4.44089e-15),(0,0,0,1))</String>
@@ -138,7 +138,7 @@
                                             </Frame>
                                             <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                             <Segment xsi:type="TreeSegmentType">
-                                               <Name>Segment14</Name>
+                                               <Name>Left.J7</Name>
                                                <Frame xsi:type="MatrixFrameType">
                                                   <Matrix xsi:type="BoostMatrixType">
                                                      <String>[4,4]((0,-2.22045e-16,1,4.44089e-15),(0,-1,-2.22045e-16,2.52749e-15),(1,0,0,8),(0,0,0,1))</String>
@@ -146,7 +146,7 @@
                                                </Frame>
                                                <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                <Segment xsi:type="TreeSegmentType">
-                                                  <Name>Segment15</Name>
+                                                  <Name>Left.hand.sForearm</Name>
                                                   <Frame xsi:type="MatrixFrameType">
                                                      <Matrix xsi:type="BoostMatrixType">
                                                         <String>[4,4]((-1.11022e-16,5.55112e-17,1,1.39715e-14),(-0.956305,-0.292372,-5.55112e-17,-2.88233e-15),(0.292372,-0.956305,1.11022e-16,-5.15573e-15),(0,0,0,1))</String>
@@ -154,7 +154,7 @@
                                                   </Frame>
                                                   <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                   <Segment xsi:type="TreeSegmentType">
-                                                     <Name>Segment16</Name>
+                                                     <Name>Left.hand.WR2</Name>
                                                      <Frame xsi:type="MatrixFrameType">
                                                         <Matrix xsi:type="BoostMatrixType">
                                                            <String>[4,4]((-4.44089e-16,-2.22045e-16,1,-2.70964e-15),(-1,-2.22045e-16,-4.44089e-16,-6.22419e-15),(2.22045e-16,-1,-2.22045e-16,41.5),(0,0,0,1))</String>
@@ -162,7 +162,7 @@
                                                      </Frame>
                                                      <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                      <Segment xsi:type="TreeSegmentType">
-                                                        <Name>Segment17</Name>
+                                                        <Name>Left.hand.sWrist</Name>
                                                         <Frame xsi:type="MatrixFrameType">
                                                            <Matrix xsi:type="BoostMatrixType">
                                                               <String>[4,4]((-4.44089e-16,-2.22045e-16,-1,2.83801e-15),(1.28056e-16,1,-2.22045e-16,1.79023e-15),(1,-1.28056e-16,-4.44089e-16,2.70964e-15),(0,0,0,1))</String>
@@ -170,7 +170,7 @@
                                                         </Frame>
                                                         <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                         <Segment xsi:type="TreeSegmentType">
-                                                           <Name>Segment18</Name>
+                                                           <Name>Left.hand.WR1</Name>
                                                            <Frame xsi:type="MatrixFrameType">
                                                               <Matrix xsi:type="BoostMatrixType">
                                                                  <String>[4,4]((1,6.03659e-33,-1.30018e-32,2.87964e-16),(6.03659e-33,-1,-2.22045e-16,-3.4),(-1.30018e-32,2.22045e-16,-1,4.51028e-15),(0,0,0,1))</String>
@@ -178,7 +178,7 @@
                                                            </Frame>
                                                            <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                            <Segment xsi:type="TreeSegmentType">
-                                                              <Name>Segment19</Name>
+                                                              <Name>Left.hand.palm</Name>
                                                               <Frame xsi:type="MatrixFrameType">
                                                                  <Matrix xsi:type="BoostMatrixType">
                                                                     <String>[4,4]((1,1.47153e-32,2.12341e-16,-2.73045e-15),(3.24339e-32,1,-2.22045e-16,5.96181e-15),(-2.12341e-16,2.22045e-16,1,6.66242e-17),(0,0,0,1))</String>
@@ -186,7 +186,7 @@
                                                               </Frame>
                                                               <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment20</Name>
+                                                                 <Name>Left.hand.THJ5</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((0.707107,0.691141,0.149414,-3.14),(-0.707107,0.691141,0.149414,3),(5.55112e-17,-0.211303,0.977421,0.85),(0,0,0,1))</String>
@@ -194,7 +194,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment21</Name>
+                                                                    <Name>Left.hand.th5</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((-4.996e-16,6.66134e-16,-1,-1.07553e-16),(-0.977421,-0.211303,3.33067e-16,1.03226e-15),(-0.211303,0.977421,7.21645e-16,-3.19865e-15),(0,0,0,1))</String>
@@ -202,7 +202,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment22</Name>
+                                                                       <Name>Left.hand.THJ4</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1,-1.50663e-16,7.63128e-17,3.33067e-16),(-1.06425e-16,-0.211303,0.977421,3.34455e-15),(-1.31136e-16,-0.977421,-0.211303,-1.07553e-16),(0,0,0,1))</String>
@@ -210,7 +210,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment23</Name>
+                                                                          <Name>Left.hand.th4</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((1,-1.06425e-16,-1.31136e-16,-3.33067e-16),(-1.50663e-16,-0.211303,-0.977421,-3.69149e-15),(7.63128e-17,0.977421,-0.211303,-4.21538e-15),(0,0,0,1))</String>
@@ -218,7 +218,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment24</Name>
+                                                                             <Name>Left.hand.THJ3</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((-1,1.09964e-16,-7.68229e-17,-6.07153e-16),(-5.18526e-17,0.211303,0.977421,8.61811e-15),(1.23714e-16,0.977421,-0.211303,3.75),(0,0,0,1))</String>
@@ -226,7 +226,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment25</Name>
+                                                                                <Name>Left.hand.th3</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((-1,-5.18526e-17,1.23714e-16,-6.07153e-16),(1.09964e-16,0.211303,0.977421,1.48527e-15),(-7.68229e-17,0.977421,-0.211303,5.40085e-15),(0,0,0,1))</String>
@@ -234,7 +234,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment26</Name>
+                                                                                   <Name>Left.hand.THJ2</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((-2.77556e-16,-0.707107,-0.707107,-6.07153e-16),(-1,2.77556e-16,1.11022e-16,-5.59275e-15),(1.11022e-16,0.707107,-0.707107,-3.10516e-16),(0,0,0,1))</String>
@@ -242,7 +242,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment27</Name>
+                                                                                      <Name>Left.hand.th2</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((-2.77556e-16,-1,1.11022e-16,8.61811e-15),(-0.707107,2.77556e-16,0.707107,1.16432e-15),(-0.707107,1.11022e-16,-0.707107,-2.0666e-15),(0,0,0,1))</String>
@@ -250,7 +250,7 @@
                                                                                       </Frame>
                                                                                       <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                       <Segment xsi:type="TreeSegmentType">
-                                                                                         <Name>Segment28</Name>
+                                                                                         <Name>Left.hand.THJ1</Name>
                                                                                          <Frame xsi:type="MatrixFrameType">
                                                                                             <Matrix xsi:type="BoostMatrixType">
                                                                                                <String>[4,4]((-2.77556e-16,-0.707107,-0.707107,-3.3723e-15),(-1,2.77556e-16,1.11022e-16,8.6875e-15),(1.11022e-16,0.707107,-0.707107,3.25),(0,0,0,1))</String>
@@ -258,7 +258,7 @@
                                                                                          </Frame>
                                                                                          <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                          <Segment xsi:type="TreeSegmentType">
-                                                                                            <Name>Segment29</Name>
+                                                                                            <Name>Left.hand.th1</Name>
                                                                                             <Frame xsi:type="MatrixFrameType">
                                                                                                <Matrix xsi:type="BoostMatrixType">
                                                                                                   <String>[4,4]((-2.77556e-16,-1,1.11022e-16,-5.52336e-15),(-0.707107,2.77556e-16,0.707107,3.02048e-15),(-0.707107,1.11022e-16,-0.707107,2.36801e-15),(0,0,0,1))</String>
@@ -276,7 +276,7 @@
                                                                  </Segment>
                                                               </Segment>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment30</Name>
+                                                                 <Name>Left.hand.FFJ4</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((-4.44089e-16,-7.71562e-18,1,-3.3),(-2.22045e-16,-1,-7.71562e-18,9.4),(1,-2.22045e-16,4.44089e-16,-4.32987e-15),(0,0,0,1))</String>
@@ -284,7 +284,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment31</Name>
+                                                                    <Name>Left.hand.ff4</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((-4.44089e-16,-1,-2.22045e-16,2.01922e-15),(2.22045e-16,2.22045e-16,-1,2.52576e-15),(1,-4.44089e-16,2.22045e-16,-2.46678e-15),(0,0,0,1))</String>
@@ -292,7 +292,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment32</Name>
+                                                                       <Name>Left.hand.FFJ3</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1,3.01342e-32,-2.7767e-32,2.46678e-15),(-2.7767e-32,1.11022e-16,-1,2.01922e-15),(-3.01342e-32,1,1.11022e-16,2.52576e-15),(0,0,0,1))</String>
@@ -300,7 +300,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment33</Name>
+                                                                          <Name>Left.hand.ff3</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-2.46678e-15),(3.01342e-32,1.11022e-16,1,4.5),(-2.7767e-32,-1,1.11022e-16,4.01762e-15),(0,0,0,1))</String>
@@ -308,7 +308,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment34</Name>
+                                                                             <Name>Left.hand.FFJ2</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((1,3.01342e-32,-2.7767e-32,1.93942e-15),(-2.7767e-32,1.11022e-16,-1,3.85803e-15),(-3.01342e-32,1,1.11022e-16,-6.66134e-16),(0,0,0,1))</String>
@@ -316,7 +316,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment35</Name>
+                                                                                <Name>Left.hand.ff2</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-1.93942e-15),(3.01342e-32,1.11022e-16,1,2.5),(-2.7767e-32,-1,1.11022e-16,4.96825e-15),(0,0,0,1))</String>
@@ -324,7 +324,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment36</Name>
+                                                                                   <Name>Left.hand.FFJ1</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((1,3.01342e-32,-2.7767e-32,1.64452e-15),(-2.7767e-32,1.11022e-16,-1,4.87804e-15),(-3.01342e-32,1,1.11022e-16,5.55112e-16),(0,0,0,1))</String>
@@ -332,7 +332,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment37</Name>
+                                                                                      <Name>Left.hand.ff1</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-1.64452e-15),(3.01342e-32,1.11022e-16,1,2.5),(-2.7767e-32,-1,1.11022e-16,5.98827e-15),(0,0,0,1))</String>
@@ -348,7 +348,7 @@
                                                                  </Segment>
                                                               </Segment>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment38</Name>
+                                                                 <Name>Left.hand.MFJ4</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((-4.44089e-16,-7.71562e-18,1,-1.1),(-2.22045e-16,-1,-7.71562e-18,9.8),(1,-2.22045e-16,4.44089e-16,-3.44169e-15),(0,0,0,1))</String>
@@ -356,7 +356,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment39</Name>
+                                                                    <Name>Left.hand.mf4</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((-4.44089e-16,-1,-2.22045e-16,1.20043e-15),(2.22045e-16,2.22045e-16,-1,2.95944e-15),(1,-4.44089e-16,2.22045e-16,2.98025e-15),(0,0,0,1))</String>
@@ -364,7 +364,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment40</Name>
+                                                                       <Name>Left.hand.MFJ3</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1,3.01342e-32,-2.7767e-32,-2.98025e-15),(-2.7767e-32,1.11022e-16,-1,1.20043e-15),(-3.01342e-32,1,1.11022e-16,2.95944e-15),(0,0,0,1))</String>
@@ -372,7 +372,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment41</Name>
+                                                                          <Name>Left.hand.mf3</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((1,-2.7767e-32,-3.01342e-32,2.98025e-15),(3.01342e-32,1.11022e-16,1,4.5),(-2.7767e-32,-1,1.11022e-16,3.19883e-15),(0,0,0,1))</String>
@@ -380,7 +380,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment42</Name>
+                                                                             <Name>Left.hand.MFJ2</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((1,3.01342e-32,-2.7767e-32,-3.50761e-15),(-2.7767e-32,1.11022e-16,-1,3.03924e-15),(-3.01342e-32,1,1.11022e-16,-2.22045e-16),(0,0,0,1))</String>
@@ -388,7 +388,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment43</Name>
+                                                                                <Name>Left.hand.mf2</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-3.59782e-15),(3.01342e-32,1.11022e-16,1,2.5),(-2.7767e-32,-1,1.11022e-16,4.14946e-15),(0,0,0,1))</String>
@@ -396,7 +396,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment44</Name>
+                                                                                   <Name>Left.hand.MFJ1</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((1,3.01342e-32,-2.7767e-32,3.30638e-15),(-2.7767e-32,1.11022e-16,-1,4.05925e-15),(-3.01342e-32,1,1.11022e-16,9.99201e-16),(0,0,0,1))</String>
@@ -404,7 +404,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment45</Name>
+                                                                                      <Name>Left.hand.mf1</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-3.30638e-15),(3.01342e-32,1.11022e-16,1,2.5),(-2.7767e-32,-1,1.11022e-16,5.16948e-15),(0,0,0,1))</String>
@@ -420,7 +420,7 @@
                                                                  </Segment>
                                                               </Segment>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment46</Name>
+                                                                 <Name>Left.hand.RFJ4</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((-4.44089e-16,7.71562e-18,1,1.1),(2.22045e-16,1,-7.71562e-18,9.8),(-1,2.22045e-16,-4.44089e-16,-1.38778e-15),(0,0,0,1))</String>
@@ -428,7 +428,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment47</Name>
+                                                                    <Name>Left.hand.rf4</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((4.44089e-16,1,2.22045e-16,8.18789e-16),(-2.22045e-16,-2.22045e-16,1,-3.21618e-15),(1,-4.44089e-16,2.22045e-16,-2.43208e-15),(0,0,0,1))</String>
@@ -436,7 +436,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment48</Name>
+                                                                       <Name>Left.hand.RFJ3</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1,3.01342e-32,-2.7767e-32,2.43208e-15),(-2.7767e-32,1.11022e-16,-1,-8.18789e-16),(-3.01342e-32,1,1.11022e-16,3.21618e-15),(0,0,0,1))</String>
@@ -444,7 +444,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment49</Name>
+                                                                          <Name>Left.hand.rf3</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-2.43208e-15),(3.01342e-32,1.11022e-16,1,4.5),(-2.7767e-32,-1,1.11022e-16,1.17961e-15),(0,0,0,1))</String>
@@ -452,7 +452,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment50</Name>
+                                                                             <Name>Left.hand.RFJ2</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((1,3.01342e-32,-2.7767e-32,1.90473e-15),(-2.7767e-32,1.11022e-16,-1,1.02002e-15),(-3.01342e-32,1,1.11022e-16,0),(0,0,0,1))</String>
@@ -460,7 +460,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment51</Name>
+                                                                                <Name>Left.hand.rf2</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-1.90473e-15),(3.01342e-32,1.11022e-16,1,2.5),(-2.7767e-32,-1,1.11022e-16,2.13024e-15),(0,0,0,1))</String>
@@ -468,7 +468,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment52</Name>
+                                                                                   <Name>Left.hand.RFJ1</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((1,3.01342e-32,-2.7767e-32,1.61329e-15),(-2.7767e-32,1.11022e-16,-1,2.04003e-15),(-3.01342e-32,1,1.11022e-16,1.22125e-15),(0,0,0,1))</String>
@@ -476,7 +476,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment53</Name>
+                                                                                      <Name>Left.hand.rf1</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-1.61329e-15),(3.01342e-32,1.11022e-16,1,2.5),(-2.7767e-32,-1,1.11022e-16,3.15026e-15),(0,0,0,1))</String>
@@ -492,7 +492,7 @@
                                                                  </Segment>
                                                               </Segment>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment54</Name>
+                                                                 <Name>Left.hand.LFJ5</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((0.57358,0.79461,0.199001,4.4),(-0.81915,0.556397,0.139344,0.4),(9.71445e-17,-0.242937,0.970042,2.85882e-15),(0,0,0,1))</String>
@@ -500,7 +500,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment55</Name>
+                                                                    <Name>Left.hand.lf5</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((0.342016,-1.11022e-16,-0.939694,-1.91778),(-0.911543,-0.242937,-0.33177,4.85991e-07),(-0.228286,0.970042,-0.0830883,1.21711e-07),(0,0,0,1))</String>
@@ -508,7 +508,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment56</Name>
+                                                                       <Name>Left.hand.LFJ4</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1.80411e-16,-0.819152,-0.573576,-5.4302),(-1,-4.16334e-17,-2.22045e-16,1.249e-14),(2.22045e-16,0.573576,-0.819152,3.80227),(0,0,0,1))</String>
@@ -516,7 +516,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment57</Name>
+                                                                          <Name>Left.hand.lf4</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((4.44089e-16,1,2.22045e-16,3.32373e-15),(-2.22045e-16,-2.22045e-16,1,-2.93862e-15),(1,-4.44089e-16,2.22045e-16,-8.88178e-16),(0,0,0,1))</String>
@@ -524,7 +524,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment58</Name>
+                                                                             <Name>Left.hand.LFJ3</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((1,3.01342e-32,-2.7767e-32,8.88178e-16),(-2.7767e-32,1.11022e-16,-1,-3.32373e-15),(-3.01342e-32,1,1.11022e-16,2.93862e-15),(0,0,0,1))</String>
@@ -532,7 +532,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment59</Name>
+                                                                                <Name>Left.hand.lf3</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-8.88178e-16),(3.01342e-32,1.11022e-16,1,4.5),(-2.7767e-32,-1,1.11022e-16,-1.32533e-15),(0,0,0,1))</String>
@@ -540,7 +540,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment60</Name>
+                                                                                   <Name>Left.hand.LFJ2</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((1,3.01342e-32,-2.7767e-32,3.60822e-16),(-2.7767e-32,1.11022e-16,-1,-1.48492e-15),(-3.01342e-32,1,1.11022e-16,-2.22045e-16),(0,0,0,1))</String>
@@ -548,7 +548,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment61</Name>
+                                                                                      <Name>Left.hand.lf2</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-3.60822e-16),(3.01342e-32,1.11022e-16,1,2.5),(-2.7767e-32,-1,1.11022e-16,-3.747e-16),(0,0,0,1))</String>
@@ -556,7 +556,7 @@
                                                                                       </Frame>
                                                                                       <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                       <Segment xsi:type="TreeSegmentType">
-                                                                                         <Name>Segment62</Name>
+                                                                                         <Name>Left.hand.LFJ1</Name>
                                                                                          <Frame xsi:type="MatrixFrameType">
                                                                                             <Matrix xsi:type="BoostMatrixType">
                                                                                                <String>[4,4]((1,3.01342e-32,-2.7767e-32,6.59195e-17),(-2.7767e-32,1.11022e-16,-1,-4.64906e-16),(-3.01342e-32,1,1.11022e-16,8.88178e-16),(0,0,0,1))</String>
@@ -564,7 +564,7 @@
                                                                                          </Frame>
                                                                                          <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                          <Segment xsi:type="TreeSegmentType">
-                                                                                            <Name>Segment63</Name>
+                                                                                            <Name>Left.hand.lf1</Name>
                                                                                             <Frame xsi:type="MatrixFrameType">
                                                                                                <Matrix xsi:type="BoostMatrixType">
                                                                                                   <String>[4,4]((1,-2.7767e-32,-3.01342e-32,-6.59195e-17),(3.01342e-32,1.11022e-16,1,2.5),(-2.7767e-32,-1,1.11022e-16,6.45317e-16),(0,0,0,1))</String>
@@ -600,7 +600,7 @@
            </Segment>
         </Segment>
         <Segment xsi:type="TreeSegmentType">
-           <Name>Segment64</Name>
+           <Name>Right.arm.sBase</Name>
            <Frame xsi:type="MatrixFrameType">
               <Matrix xsi:type="BoostMatrixType">
                  <String>[4,4]((-0.0035028,-0.999977,0.00585088,-19.8238),(-0.999975,0.00353868,0.0061324,84.9524),(-0.00615296,-0.00582926,-0.999964,137.1),(0,0,0,1))</String>
@@ -609,7 +609,7 @@
            <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
         </Segment>
         <Segment xsi:type="TreeSegmentType">
-           <Name>Segment65</Name>
+           <Name>Right.arm.J1</Name>
            <Frame xsi:type="MatrixFrameType">
               <Matrix xsi:type="BoostMatrixType">
                  <String>[4,4]((0.00585088,-8.67362e-19,0.999983,-19.8238),(0.0061324,0.999981,-3.58806e-05,84.9524),(-0.999964,0.00613251,0.00585077,137.1),(0,0,0,1))</String>
@@ -617,7 +617,7 @@
            </Frame>
            <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
            <Segment xsi:type="TreeSegmentType">
-              <Name>Segment66</Name>
+              <Name>Right.arm.sSeg1</Name>
               <Frame xsi:type="MatrixFrameType">
                  <Matrix xsi:type="BoostMatrixType">
                     <String>[4,4]((0,0,1,20),(-0.999994,0.00350286,0,7.95499e-16),(-0.00350286,-0.999994,0,1.73321e-15),(0,0,0,1))</String>
@@ -625,7 +625,7 @@
               </Frame>
               <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
               <Segment xsi:type="TreeSegmentType">
-                 <Name>Segment67</Name>
+                 <Name>Right.arm.J2</Name>
                  <Frame xsi:type="MatrixFrameType">
                     <Matrix xsi:type="BoostMatrixType">
                        <String>[4,4]((-3.33067e-16,-0.00613244,-0.999981,-7.07767e-16),(1,-1.11022e-16,-3.33067e-16,1.34094e-15),(-1.11022e-16,-0.999981,0.00613244,11.7),(0,0,0,1))</String>
@@ -633,7 +633,7 @@
                  </Frame>
                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                  <Segment xsi:type="TreeSegmentType">
-                    <Name>Segment68</Name>
+                    <Name>Right.arm.sSeg2</Name>
                     <Frame xsi:type="MatrixFrameType">
                        <Matrix xsi:type="BoostMatrixType">
                           <String>[4,4]((-3.33067e-16,1,-1.11022e-16,-1.34094e-15),(-0.00613244,-1.11022e-16,-0.999981,8.67015e-15),(-0.999981,-3.33067e-16,0.00613244,-7.56882e-16),(0,0,0,1))</String>
@@ -641,7 +641,7 @@
                     </Frame>
                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                     <Segment xsi:type="TreeSegmentType">
-                       <Name>Segment69</Name>
+                       <Name>Right.arm.J3</Name>
                        <Frame xsi:type="MatrixFrameType">
                           <Matrix xsi:type="BoostMatrixType">
                              <String>[4,4]((0,-0.999994,-0.00350286,-7.07767e-16),(0,0.00350286,-0.999994,1.34094e-15),(1,0,0,7.10543e-15),(0,0,0,1))</String>
@@ -649,7 +649,7 @@
                        </Frame>
                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                        <Segment xsi:type="TreeSegmentType">
-                          <Name>Segment70</Name>
+                          <Name>Right.arm.sSeg3</Name>
                           <Frame xsi:type="MatrixFrameType">
                              <Matrix xsi:type="BoostMatrixType">
                                 <String>[4,4]((0,0,1,31),(-0.999994,0.00350286,0,-7.05188e-16),(-0.00350286,-0.999994,0,-2.21824e-15),(0,0,0,1))</String>
@@ -657,7 +657,7 @@
                           </Frame>
                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                           <Segment xsi:type="TreeSegmentType">
-                             <Name>Segment71</Name>
+                             <Name>Right.arm.J4</Name>
                              <Frame xsi:type="MatrixFrameType">
                                 <Matrix xsi:type="BoostMatrixType">
                                    <String>[4,4]((-3.33067e-16,-0.00613244,-0.999981,-2.35922e-16),(1,-1.11022e-16,-3.33067e-16,-3.2821e-15),(-1.11022e-16,-0.999981,0.00613244,14),(0,0,0,1))</String>
@@ -665,7 +665,7 @@
                              </Frame>
                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                              <Segment xsi:type="TreeSegmentType">
-                                <Name>Segment72</Name>
+                                <Name>Right.arm.sSeg4</Name>
                                 <Frame xsi:type="MatrixFrameType">
                                    <Matrix xsi:type="BoostMatrixType">
                                       <String>[4,4]((-3.33067e-16,1,-1.11022e-16,-2.70617e-16),(-0.00613244,-1.11022e-16,-0.999981,6.43582e-16),(-0.999981,-3.33067e-16,0.00613244,-2.38796e-16),(0,0,0,1))</String>
@@ -673,7 +673,7 @@
                                 </Frame>
                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                 <Segment xsi:type="TreeSegmentType">
-                                   <Name>Segment73</Name>
+                                   <Name>Right.arm.J5</Name>
                                    <Frame xsi:type="MatrixFrameType">
                                       <Matrix xsi:type="BoostMatrixType">
                                          <String>[4,4]((0,-0.999994,-0.00350286,-2.35922e-16),(0,0.00350286,-0.999994,2.70617e-16),(1,0,0,0),(0,0,0,1))</String>
@@ -681,7 +681,7 @@
                                    </Frame>
                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                    <Segment xsi:type="TreeSegmentType">
-                                      <Name>Segment74</Name>
+                                      <Name>Right.arm.sSeg5</Name>
                                       <Frame xsi:type="MatrixFrameType">
                                          <Matrix xsi:type="BoostMatrixType">
                                             <String>[4,4]((0,0,1,28.2),(-0.999994,0.00350286,0,1.39692e-14),(-0.00350286,-0.999994,0,3.15925e-16),(0,0,0,1))</String>
@@ -689,7 +689,7 @@
                                       </Frame>
                                       <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                       <Segment xsi:type="TreeSegmentType">
-                                         <Name>Segment75</Name>
+                                         <Name>Right.arm.J6</Name>
                                          <Frame xsi:type="MatrixFrameType">
                                             <Matrix xsi:type="BoostMatrixType">
                                                <String>[4,4]((-3.33067e-16,-0.00613244,-0.999981,1.54182e-14),(1,-1.11022e-16,-3.33067e-16,1.23165e-15),(-1.11022e-16,-0.999981,0.00613244,19.8),(0,0,0,1))</String>
@@ -697,7 +697,7 @@
                                          </Frame>
                                          <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                          <Segment xsi:type="TreeSegmentType">
-                                            <Name>Segment76</Name>
+                                            <Name>Right.arm.sSeg6</Name>
                                             <Frame xsi:type="MatrixFrameType">
                                                <Matrix xsi:type="BoostMatrixType">
                                                   <String>[4,4]((-3.33067e-16,1,-1.11022e-16,2.32106e-15),(-0.00613244,-1.11022e-16,-0.999981,1.40448e-15),(-0.999981,-3.33067e-16,0.00613244,1.19986e-15),(0,0,0,1))</String>
@@ -705,7 +705,7 @@
                                             </Frame>
                                             <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                             <Segment xsi:type="TreeSegmentType">
-                                               <Name>Segment77</Name>
+                                               <Name>Right.J7</Name>
                                                <Frame xsi:type="MatrixFrameType">
                                                   <Matrix xsi:type="BoostMatrixType">
                                                      <String>[4,4]((0,-0.999994,-0.00350286,-6.08541e-15),(0,0.00350286,-0.999994,-3.49894e-15),(1,0,0,7),(0,0,0,1))</String>
@@ -713,7 +713,7 @@
                                                </Frame>
                                                <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                <Segment xsi:type="TreeSegmentType">
-                                                  <Name>Segment78</Name>
+                                                  <Name>Right.hand.sForearm</Name>
                                                   <Frame xsi:type="MatrixFrameType">
                                                      <Matrix xsi:type="BoostMatrixType">
                                                         <String>[4,4]((1.73472e-17,0,1,0),(0.457109,0.889411,0,4.88663e-15),(-0.889411,0.457109,-1.73472e-17,1.92244e-15),(0,0,0,1))</String>
@@ -721,7 +721,7 @@
                                                   </Frame>
                                                   <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                   <Segment xsi:type="TreeSegmentType">
-                                                     <Name>Segment79</Name>
+                                                     <Name>Right.hand.WR2</Name>
                                                      <Frame xsi:type="MatrixFrameType">
                                                         <Matrix xsi:type="BoostMatrixType">
                                                            <String>[4,4]((-1.66533e-16,-0.00657835,-0.999978,4.05925e-16),(1,-5.55112e-17,-1.66533e-16,-2.24126e-15),(-5.55112e-17,-0.999978,0.00657835,41.5),(0,0,0,1))</String>
@@ -729,7 +729,7 @@
                                                      </Frame>
                                                      <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                      <Segment xsi:type="TreeSegmentType">
-                                                        <Name>Segment80</Name>
+                                                        <Name>Right.hand.sWrist</Name>
                                                         <Frame xsi:type="MatrixFrameType">
                                                            <Matrix xsi:type="BoostMatrixType">
                                                               <String>[4,4]((5.28989e-17,2.20744e-16,1,-5.77316e-15),(-0.00657835,0.999978,-2.20744e-16,7.65932e-16),(-0.999978,-0.00657835,2.61225e-18,4.00895e-16),(0,0,0,1))</String>
@@ -737,7 +737,7 @@
                                                         </Frame>
                                                         <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                         <Segment xsi:type="TreeSegmentType">
-                                                           <Name>Segment81</Name>
+                                                           <Name>Right.hand.WR1</Name>
                                                            <Frame xsi:type="MatrixFrameType">
                                                               <Matrix xsi:type="BoostMatrixType">
                                                                  <String>[4,4]((1,-1.49942e-19,3.06766e-17,-1.6584e-15),(3.61454e-19,0.999976,-0.006895,-3.4),(-3.06748e-17,0.006895,0.999976,9.99201e-16),(0,0,0,1))</String>
@@ -745,7 +745,7 @@
                                                            </Frame>
                                                            <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                            <Segment xsi:type="TreeSegmentType">
-                                                              <Name>Segment82</Name>
+                                                              <Name>Right.hand.palm</Name>
                                                               <Frame xsi:type="MatrixFrameType">
                                                                  <Matrix xsi:type="BoostMatrixType">
                                                                     <String>[4,4]((1,-7.37021e-19,3.0429e-16,1.00614e-15),(1.36107e-18,-0.999976,-0.006895,-4.01979e-15),(3.04288e-16,0.006895,-0.999976,-1.47479e-15),(0,0,0,1))</String>
@@ -753,7 +753,7 @@
                                                               </Frame>
                                                               <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment83</Name>
+                                                                 <Name>Right.hand.THJ5</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((0.707107,0.66561,0.238669,3.14),(0.707107,-0.66561,-0.238669,3),(9.71445e-17,0.337528,-0.941315,0.85),(0,0,0,1))</String>
@@ -761,7 +761,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment84</Name>
+                                                                    <Name>Right.hand.th5</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((-1.66533e-16,-1.66533e-16,1,-4.91274e-15),(-0.941315,0.337528,0,1.13508e-15),(-0.337528,-0.941315,-2.22045e-16,-5.46807e-15),(0,0,0,1))</String>
@@ -769,7 +769,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment85</Name>
+                                                                       <Name>Right.hand.THJ4</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1,1.66228e-17,6.61743e-18,-7.77156e-16),(4.64384e-19,0.345624,-0.938373,-5.5303e-15),(-1.78855e-17,0.938373,0.345624,4.91274e-15),(0,0,0,1))</String>
@@ -777,7 +777,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment86</Name>
+                                                                          <Name>Right.hand.th4</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((1,4.64384e-19,-1.78855e-17,2.55351e-15),(1.66228e-17,0.345624,0.938373,-2.7478e-15),(6.61743e-18,-0.938373,0.345624,-6.83481e-15),(0,0,0,1))</String>
@@ -785,7 +785,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment87</Name>
+                                                                             <Name>Right.hand.THJ3</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((-1,-1.66228e-17,6.61743e-18,-3.73139e-15),(-4.64384e-19,-0.345624,-0.938373,-6.66134e-15),(1.78855e-17,-0.938373,0.345624,3.75),(0,0,0,1))</String>
@@ -793,7 +793,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment88</Name>
+                                                                                <Name>Right.hand.th3</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((-1,-4.64384e-19,1.78855e-17,-1.78677e-16),(-1.66228e-17,-0.345624,-0.938373,1.95606e-15),(6.61743e-18,-0.938373,0.345624,-7.81927e-15),(0,0,0,1))</String>
@@ -801,7 +801,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment89</Name>
+                                                                                   <Name>Right.hand.THJ2</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((-1.38778e-17,0.70244,0.711743,-1.78677e-16),(1,-1.38778e-17,0,-6.66134e-15),(0,0.711743,-0.70244,4.53804e-15),(0,0,0,1))</String>
@@ -809,7 +809,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment90</Name>
+                                                                                      <Name>Right.hand.th2</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((-1.38778e-17,1,0,-7.54952e-15),(0.70244,-1.38778e-17,0.711743,-4.17852e-16),(0.711743,0,-0.70244,8.44051e-16),(0,0,0,1))</String>
@@ -817,7 +817,7 @@
                                                                                       </Frame>
                                                                                       <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                       <Segment xsi:type="TreeSegmentType">
-                                                                                         <Name>Segment91</Name>
+                                                                                         <Name>Right.hand.THJ1</Name>
                                                                                          <Frame xsi:type="MatrixFrameType">
                                                                                             <Matrix xsi:type="BoostMatrixType">
                                                                                                <String>[4,4]((-1.38778e-17,0.70244,0.711743,-6.245e-16),(1,-1.38778e-17,0,1.83881e-15),(0,0.711743,-0.70244,3.25),(0,0,0,1))</String>
@@ -825,7 +825,7 @@
                                                                                          </Frame>
                                                                                          <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                          <Segment xsi:type="TreeSegmentType">
-                                                                                            <Name>Segment92</Name>
+                                                                                            <Name>Right.hand.th1</Name>
                                                                                             <Frame xsi:type="MatrixFrameType">
                                                                                                <Matrix xsi:type="BoostMatrixType">
                                                                                                   <String>[4,4]((-1.38778e-17,1,0,-1.83881e-15),(0.70244,-1.38778e-17,0.711743,3.1985e-15),(0.711743,0,-0.70244,-2.11127e-15),(0,0,0,1))</String>
@@ -843,7 +843,7 @@
                                                                  </Segment>
                                                               </Segment>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment93</Name>
+                                                                 <Name>Right.hand.FFJ4</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((5.55112e-17,-0.00657835,-0.999978,3.3),(2.23346e-16,-0.999978,0.00657835,9.4),(-1,-2.23346e-16,0,-1.83187e-15),(0,0,0,1))</String>
@@ -851,7 +851,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment94</Name>
+                                                                    <Name>Right.hand.ff4</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((0,1,0,1.54043e-15),(-0.00657835,0,-0.999978,4.129e-16),(-0.999978,0,0.00657835,1.05896e-15),(0,0,0,1))</String>
@@ -859,7 +859,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment95</Name>
+                                                                       <Name>Right.hand.FFJ3</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1,-5.28055e-18,5.07975e-18,1.06165e-15),(-5.04322e-18,0.006895,0.999976,-1.54043e-15),(-5.31544e-18,-0.999976,0.006895,4.05925e-16),(0,0,0,1))</String>
@@ -867,7 +867,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment96</Name>
+                                                                          <Name>Right.hand.ff3</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-1.0613e-15),(-5.28055e-18,0.006895,-0.999976,-4.49989),(5.07975e-18,0.999976,0.006895,0.0310275),(0,0,0,1))</String>
@@ -875,7 +875,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment97</Name>
+                                                                             <Name>Right.hand.FFJ2</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((1,-5.28055e-18,5.07975e-18,-1.67921e-15),(-5.04322e-18,0.006895,0.999976,-7.78544e-15),(-5.31544e-18,-0.999976,0.006895,-1.55431e-15),(0,0,0,1))</String>
@@ -883,7 +883,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment98</Name>
+                                                                                <Name>Right.hand.ff2</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((1,-5.04322e-18,-5.31544e-18,1.67941e-15),(-5.28055e-18,0.006895,-0.999976,-2.49994),(5.07975e-18,0.999976,0.006895,0.0172375),(0,0,0,1))</String>
@@ -891,7 +891,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment99</Name>
+                                                                                   <Name>Right.hand.FFJ1</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((1,-5.28055e-18,5.07975e-18,3.46945e-17),(-5.04322e-18,0.006895,0.999976,-5.81479e-15),(-5.31544e-18,-0.999976,0.006895,-6.66134e-16),(0,0,0,1))</String>
@@ -899,7 +899,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment100</Name>
+                                                                                      <Name>Right.hand.ff1</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-3.44991e-17),(-5.28055e-18,0.006895,-0.999976,-2.49994),(5.07975e-18,0.999976,0.006895,0.0172375),(0,0,0,1))</String>
@@ -915,7 +915,7 @@
                                                                  </Segment>
                                                               </Segment>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment101</Name>
+                                                                 <Name>Right.hand.MFJ4</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((5.55112e-17,-0.00657835,-0.999978,1.1),(2.23346e-16,-0.999978,0.00657835,9.8),(-1,-2.23346e-16,0,1.44329e-15),(0,0,0,1))</String>
@@ -923,7 +923,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment102</Name>
+                                                                    <Name>Right.hand.mf4</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((0,1,0,4.69069e-15),(-0.00657835,0,-0.999978,3.07681e-15),(-0.999978,0,0.00657835,1.48206e-15),(0,0,0,1))</String>
@@ -931,7 +931,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment103</Name>
+                                                                       <Name>Right.hand.MFJ3</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1,-5.28055e-18,5.07975e-18,1.50227e-15),(-5.04322e-18,0.006895,0.999976,-4.69069e-15),(-5.31544e-18,-0.999976,0.006895,3.06699e-15),(0,0,0,1))</String>
@@ -939,7 +939,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment104</Name>
+                                                                          <Name>Right.hand.mf3</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-1.50192e-15),(-5.28055e-18,0.006895,-0.999976,-4.49989),(5.07975e-18,0.999976,0.006895,0.0310275),(0,0,0,1))</String>
@@ -947,7 +947,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment105</Name>
+                                                                             <Name>Right.hand.MFJ2</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((1,-5.28055e-18,5.07975e-18,-1.23512e-15),(-5.04322e-18,0.006895,0.999976,3.26822e-15),(-5.31544e-18,-0.999976,0.006895,1.11022e-15),(0,0,0,1))</String>
@@ -955,7 +955,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment106</Name>
+                                                                                <Name>Right.hand.mf2</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((1,-5.04322e-18,-5.31544e-18,1.23532e-15),(-5.28055e-18,0.006895,-0.999976,-2.49994),(5.07975e-18,0.999976,0.006895,0.0172375),(0,0,0,1))</String>
@@ -963,7 +963,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment107</Name>
+                                                                                   <Name>Right.hand.MFJ1</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((1,-5.28055e-18,5.07975e-18,4.75314e-16),(-5.04322e-18,0.006895,0.999976,5.2458e-15),(-5.31544e-18,-0.999976,0.006895,1.9984e-15),(0,0,0,1))</String>
@@ -971,7 +971,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment108</Name>
+                                                                                      <Name>Right.hand.mf1</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-4.75119e-16),(-5.28055e-18,0.006895,-0.999976,-2.49994),(5.07975e-18,0.999976,0.006895,0.0172375),(0,0,0,1))</String>
@@ -987,7 +987,7 @@
                                                                  </Segment>
                                                               </Segment>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment109</Name>
+                                                                 <Name>Right.hand.RFJ4</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((5.32682e-17,0.00657835,-0.999978,-1.1),(-2.22478e-16,0.999978,0.00657835,9.8),(1,2.22478e-16,2.24294e-18,1.02696e-15),(0,0,0,1))</String>
@@ -995,7 +995,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment110</Name>
+                                                                    <Name>Right.hand.rf4</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((0,-1,5.55112e-17,-4.30211e-15),(0.00657835,5.55112e-17,0.999978,-1.04341e-15),(-0.999978,5.55112e-17,0.00657835,-1.72081e-15),(0,0,0,1))</String>
@@ -1003,7 +1003,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment111</Name>
+                                                                       <Name>Right.hand.RFJ3</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((1,-5.28055e-18,5.07975e-18,-1.71391e-15),(-5.04322e-18,0.006895,0.999976,-4.30211e-15),(-5.31544e-18,-0.999976,0.006895,1.05471e-15),(0,0,0,1))</String>
@@ -1011,7 +1011,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment112</Name>
+                                                                          <Name>Right.hand.rf3</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((1,-5.04322e-18,-5.31544e-18,1.71426e-15),(-5.28055e-18,0.006895,-0.999976,-4.49989),(5.07975e-18,0.999976,0.006895,0.0310275),(0,0,0,1))</String>
@@ -1019,7 +1019,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment113</Name>
+                                                                             <Name>Right.hand.RFJ2</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((1,-5.28055e-18,5.07975e-18,-4.45477e-15),(-5.04322e-18,0.006895,0.999976,3.66374e-15),(-5.31544e-18,-0.999976,0.006895,-1.11022e-15),(0,0,0,1))</String>
@@ -1027,7 +1027,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment114</Name>
+                                                                                <Name>Right.hand.rf2</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-2.65046e-15),(-5.28055e-18,0.006895,-0.999976,-2.49994),(5.07975e-18,0.999976,0.006895,0.0172375),(0,0,0,1))</String>
@@ -1035,7 +1035,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment115</Name>
+                                                                                   <Name>Right.hand.RFJ1</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((1,-5.28055e-18,5.07975e-18,4.36803e-15),(-5.04322e-18,0.006895,0.999976,5.63438e-15),(-5.31544e-18,-0.999976,0.006895,0),(0,0,0,1))</String>
@@ -1043,7 +1043,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment116</Name>
+                                                                                      <Name>Right.hand.rf1</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-4.36784e-15),(-5.28055e-18,0.006895,-0.999976,-2.49994),(5.07975e-18,0.999976,0.006895,0.0172375),(0,0,0,1))</String>
@@ -1059,7 +1059,7 @@
                                                                  </Segment>
                                                               </Segment>
                                                               <Segment xsi:type="TreeSegmentType">
-                                                                 <Name>Segment117</Name>
+                                                                 <Name>Right.hand.LFJ5</Name>
                                                                  <Frame xsi:type="MatrixFrameType">
                                                                     <Matrix xsi:type="BoostMatrixType">
                                                                        <String>[4,4]((0.57358,0.756027,0.315324,-4.4),(0.81915,-0.52938,-0.220794,0.4),(8.32667e-17,0.384941,-0.922941,5.55112e-16),(0,0,0,1))</String>
@@ -1067,7 +1067,7 @@
                                                                  </Frame>
                                                                  <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                  <Segment xsi:type="TreeSegmentType">
-                                                                    <Name>Segment118</Name>
+                                                                    <Name>Right.hand.lf5</Name>
                                                                     <Frame xsi:type="MatrixFrameType">
                                                                        <Matrix xsi:type="BoostMatrixType">
                                                                           <String>[4,4]((-1,-3.15825e-17,-4.09172e-06,1.91778),(3.77642e-06,0.384941,-0.922941,-4.62393e-07),(1.57507e-06,-0.922941,-0.384941,-1.92855e-07),(0,0,0,1))</String>
@@ -1075,7 +1075,7 @@
                                                                     </Frame>
                                                                     <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                     <Segment xsi:type="TreeSegmentType">
-                                                                       <Name>Segment119</Name>
+                                                                       <Name>Right.hand.LFJ4</Name>
                                                                        <Frame xsi:type="MatrixFrameType">
                                                                           <Matrix xsi:type="BoostMatrixType">
                                                                              <String>[4,4]((0,-0.822908,0.568175,-5.4302),(1,5.55112e-17,1.66533e-16,3.88578e-15),(-1.66533e-16,0.568175,0.822908,3.80227),(0,0,0,1))</String>
@@ -1083,7 +1083,7 @@
                                                                        </Frame>
                                                                        <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                        <Segment xsi:type="TreeSegmentType">
-                                                                          <Name>Segment120</Name>
+                                                                          <Name>Right.hand.lf4</Name>
                                                                           <Frame xsi:type="MatrixFrameType">
                                                                              <Matrix xsi:type="BoostMatrixType">
                                                                                 <String>[4,4]((0,-1,5.55112e-17,-4.34375e-15),(0.00657835,5.55112e-17,0.999978,8.20668e-16),(-0.999978,5.55112e-17,0.00657835,2.88163e-15),(0,0,0,1))</String>
@@ -1091,7 +1091,7 @@
                                                                           </Frame>
                                                                           <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                           <Segment xsi:type="TreeSegmentType">
-                                                                             <Name>Segment121</Name>
+                                                                             <Name>Right.hand.LFJ3</Name>
                                                                              <Frame xsi:type="MatrixFrameType">
                                                                                 <Matrix xsi:type="BoostMatrixType">
                                                                                    <String>[4,4]((1,-5.28055e-18,5.07975e-18,2.87617e-15),(-5.04322e-18,0.006895,0.999976,-4.34375e-15),(-5.31544e-18,-0.999976,0.006895,-8.39606e-16),(0,0,0,1))</String>
@@ -1099,7 +1099,7 @@
                                                                              </Frame>
                                                                              <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                              <Segment xsi:type="TreeSegmentType">
-                                                                                <Name>Segment122</Name>
+                                                                                <Name>Right.hand.lf3</Name>
                                                                                 <Frame xsi:type="MatrixFrameType">
                                                                                    <Matrix xsi:type="BoostMatrixType">
                                                                                       <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-2.87582e-15),(-5.28055e-18,0.006895,-0.999976,-4.49989),(5.07975e-18,0.999976,0.006895,0.0310275),(0,0,0,1))</String>
@@ -1107,7 +1107,7 @@
                                                                                 </Frame>
                                                                                 <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                 <Segment xsi:type="TreeSegmentType">
-                                                                                   <Name>Segment123</Name>
+                                                                                   <Name>Right.hand.LFJ2</Name>
                                                                                    <Frame xsi:type="MatrixFrameType">
                                                                                       <Matrix xsi:type="BoostMatrixType">
                                                                                          <String>[4,4]((1,-5.28055e-18,5.07975e-18,1.42247e-16),(-5.04322e-18,0.006895,0.999976,-1.05957e-14),(-5.31544e-18,-0.999976,0.006895,-2.88658e-15),(0,0,0,1))</String>
@@ -1115,7 +1115,7 @@
                                                                                    </Frame>
                                                                                    <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                    <Segment xsi:type="TreeSegmentType">
-                                                                                      <Name>Segment124</Name>
+                                                                                      <Name>Right.hand.lf2</Name>
                                                                                       <Frame xsi:type="MatrixFrameType">
                                                                                          <Matrix xsi:type="BoostMatrixType">
                                                                                             <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-1.42052e-16),(-5.28055e-18,0.006895,-0.999976,-2.49994),(5.07975e-18,0.999976,0.006895,0.0172375),(0,0,0,1))</String>
@@ -1123,7 +1123,7 @@
                                                                                       </Frame>
                                                                                       <Joint xsi:type="JointType"><Type>Rotational</Type><Axis>X</Axis></Joint>
                                                                                       <Segment xsi:type="TreeSegmentType">
-                                                                                         <Name>Segment125</Name>
+                                                                                         <Name>Right.hand.LFJ1</Name>
                                                                                          <Frame xsi:type="MatrixFrameType">
                                                                                             <Matrix xsi:type="BoostMatrixType">
                                                                                                <String>[4,4]((1,-5.28055e-18,5.07975e-18,1.84922e-15),(-5.04322e-18,0.006895,0.999976,5.58581e-15),(-5.31544e-18,-0.999976,0.006895,-1.9984e-15),(0,0,0,1))</String>
@@ -1131,7 +1131,7 @@
                                                                                          </Frame>
                                                                                          <Joint xsi:type="JointType"><Type>None</Type><Axis>RotX</Axis></Joint>
                                                                                          <Segment xsi:type="TreeSegmentType">
-                                                                                            <Name>Segment126</Name>
+                                                                                            <Name>Right.hand.lf1</Name>
                                                                                             <Frame xsi:type="MatrixFrameType">
                                                                                                <Matrix xsi:type="BoostMatrixType">
                                                                                                   <String>[4,4]((1,-5.04322e-18,-5.31544e-18,-1.84902e-15),(-5.28055e-18,0.006895,-0.999976,-2.49994),(5.07975e-18,0.999976,0.006895,0.0172375),(0,0,0,1))</String>
@@ -1168,10 +1168,9 @@
         </Segment>
      </Segment>
   </Tree>
-  
 
-  <SegmentName>Segment29</SegmentName>
-  <SegmentName>Segment100</SegmentName>
+  <SegmentName>Left.hand.ff1</SegmentName>
+  <SegmentName>Left.hand.mf1</SegmentName>
  </SensorTransform>
 
  <Resource xsi:type="DummyResourceType">

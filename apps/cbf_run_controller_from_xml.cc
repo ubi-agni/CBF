@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
 	options_description.add_options() 
 		("help", "produce help message")
 		("sleep-time", po::value<unsigned int>(), "time to sleep between cycles in microseconds")
+		("steps", po::value<unsigned int>(), "run exact number of steps")
 		("recipe", po::value<std::vector<std::string > >(), "XML file containing controller recipe (can be used more than once)")
 		;
 
@@ -81,31 +82,18 @@ int main(int argc, char *argv[]) {
 		CBF::PluginPool<CBF::Controller> *pp = 
 			CBF::PluginPool<CBF::Controller>::get_instance();
 
-//		try {
-			CBF::ControllerPtr c = 
-				pp->create_from_file<ControllerType>(filename);
+		CBF::ControllerPtr c = 
+			pp->create_from_file<ControllerType>(filename);
 
+		if (variables_map.count("steps")) 
+			for (unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); step < steps; ++step)
+				{ c->step(); usleep(sleep_time); }
+		else
 			while (c->step() == false) {
 				usleep(sleep_time);
-				std::cout << "step" << std::endl;
 			}
-#if 0
-		} catch (std::exception &e) {
-			std::cerr 
-				<< "Error creating controller from XML file: "
-				<< e.what() 
-				<< std::endl 
-				<< std::flush;
-
-			std::cerr
-				<< "Rethrowing exception, so you can take a look at it in the debugger :D"
-				<< std::endl
-				<< std::flush;
-
-			throw;
-		}
-#endif
 	}
 
 	return 0;
 }
+

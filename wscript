@@ -275,6 +275,7 @@ def configure(conf):
 		conf.define('CBF_NDEBUG',1)
 		conf.define('NDEBUG', 1)
 		defines['CBF_NDEBUG'] = 1
+		defines['NDEBUG'] = 1
 		
 	if Options.options.debug_color:
 		conf.define('CBF_DEBUG_COLOR', 1)
