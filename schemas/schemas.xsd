@@ -13,7 +13,7 @@
   by a potential function, sensor and effector transforms and bound to a
   resource 
  -->
- <xs:complexType name="ControllerType" abstract="true">
+ <xs:complexType name="ControllerType">
   <xs:sequence>
    <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="1"/>
   </xs:sequence>
@@ -32,7 +32,7 @@
  <!--
   This type corresponds to the PrimitiveController c++ class.
  -->
- <xs:complexType name="PrimitiveControllerType" abstract="false">
+ <xs:complexType name="PrimitiveControllerType">
   <xs:complexContent>
    <xs:extension base="ControllerType">
     <xs:sequence>
@@ -131,7 +131,7 @@
   <xs:sequence/>
  </xs:complexType>
 
- <xs:complexType name="SensorTransformType" abstract="true">
+ <xs:complexType name="SensorTransformType">
   <xs:sequence>
    <xs:element name="ComponentName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
@@ -161,7 +161,7 @@
   </xs:complexContent>
  </xs:complexType>
 
- <xs:complexType name="PotentialType" abstract="true">
+ <xs:complexType name="PotentialType">
   <xs:sequence>
    <xs:element name="MaxGradientStepNorm" type="xs:float"/>
   </xs:sequence>
@@ -274,7 +274,7 @@
   </xs:complexContent>
  </xs:complexType>
 
- <xs:complexType name="TreeBaseType" abstract="true">
+ <xs:complexType name="TreeBaseType">
   <xs:sequence>
    <xs:element name="Name" type="xs:string"/>
   </xs:sequence>
@@ -291,7 +291,7 @@
  </xs:complexType>
 
 
- <xs:complexType name="ChainBaseType" abstract="true">
+ <xs:complexType name="ChainBaseType">
   <xs:sequence>
    <xs:element name="Name" type="xs:string"/>
   </xs:sequence>

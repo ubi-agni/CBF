@@ -2,26 +2,23 @@
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
 
  <Coefficient> 1 </Coefficient>
- <SubordinateCoefficient> 1 </SubordinateCoefficient>
+
+ <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
+  <Threshold> 0.01 </Threshold>
+ </ConvergenceCriterion>
+
  <InitReferenceFromSensorTransform> 0 </InitReferenceFromSensorTransform>
 
  <Potential xsi:type="SquarePotentialType">
-
-  <ConvergenceCriterion xsi:type="DistanceThresholdType">
-   <Threshold> 0.000001 </Threshold>
-  </ConvergenceCriterion>
-
+  <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
   <Dimension> 3 </Dimension>
   <Coefficient> 0.1 </Coefficient>
-  <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
  </Potential>
 
- <EffectorTransform xsi:type="GenericEffectorTransformType"/>
-<!--
  <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
   <DampingConstant> 0.1 </DampingConstant>
  </EffectorTransform>
--->
+
  <SensorTransform xsi:type="IdentitySensorTransformType">
   <Dimension> 3 </Dimension>
  </SensorTransform>
@@ -34,6 +31,8 @@
   </Vector>
  </Resource>
 
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="SimpleVectorType">
    <Coefficient> 1 </Coefficient>
@@ -41,8 +40,6 @@
    <Coefficient> 0 </Coefficient>
   </Vector>
  </Reference>
-
- <CombinationStrategy xsi:type="AddingStrategyType"/>
 
 </Controller>
 
