@@ -12,7 +12,7 @@ def build(bld):
 			features='qt4 cxx cprogram', 
 			source='qcbf_main.cc qcbf_main_window.cc', 
 			target='qcbf', 
-			includes='. ../libcbf/', 
+			includes='. ../../libcbf/', 
 			uselib_local='cbf',
 			uselib = 'QTCORE QTGUI')
 
