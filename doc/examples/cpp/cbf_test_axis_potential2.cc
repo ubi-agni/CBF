@@ -107,14 +107,8 @@ int main() {
 
 	//! Create our primitive controller
 	CBF::PrimitiveControllerPtr pc
-		(new CBF::PrimitiveController);
-
-	pc->set_sensor_transform(st);
-	pc->set_effector_transform(et);
-
-	pc->set_resource(dres);
-	pc->set_potential(p);
-	pc->set_reference(dref);
+		(new CBF::PrimitiveController(
+			dref,	p,	et, st))
 
 	do {
 		pc->step();	

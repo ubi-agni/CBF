@@ -63,33 +63,19 @@ namespace CBF {
 	struct PrimitiveController : public Controller {
 		CBF_PLUGIN_DECL_METHODS(PrimitiveController)
 
-		/** 
-			@brief: Create a barebones controller which is 
-			not useful in itself 
-	
-			Note that init_reference_from_sensor_transform 
-			is only supported for DummyReferences		
-		*/	
-		PrimitiveController(
-			Float coefficient = 1.0,
-			bool init_reference_from_sensor_transform = false
-		);
-	
 		/**
 			@brief Create a controller with the members 
 			set from the specified arguments
-	
-			Note that init_reference_from_sensor_transform 
-			is only supported for DummyReferences		
 		*/
 		PrimitiveController(
+			ReferencePtr reference,
 			PotentialPtr potential,
 			EffectorTransformPtr effector_transform,
 			SensorTransformPtr sensor_transform,
+			ResourcePtr resource,
 			CombinationStrategyPtr combination_strategy = CombinationStrategyPtr(new AddingStrategy),
 			std::vector<PrimitiveControllerPtr> subordinate_controllers = std::vector<PrimitiveControllerPtr>(),
-			Float coefficient = 1.0,
-			bool init_reference_from_sensor_transform = false
+			Float coefficient = 1.0
 		);
 	
 	
@@ -169,13 +155,6 @@ namespace CBF {
 			*/
 			Float m_Coefficient;
 	
-			/**
-				This bool tells the primitive controller to set the
-				reference to the result of the sensor transform during the
-				first run.
-			*/
-			bool m_InitReferenceFromSensorTransform;
-
 		public:
 			/**
 				This function only returns sensible values after
@@ -184,61 +163,24 @@ namespace CBF {
 			const FloatVector &current_task_position() {
 				return m_CurrentTaskPosition; }
 
-			void set_reference(ReferencePtr reference) {
-				m_Reference = reference; }
-	
 			ReferencePtr reference() { return m_Reference; }
 	
-			void set_subordinate_controllers(
-				std::vector<PrimitiveControllerPtr> subordinate_controllers) {
-				m_SubordinateControllers = subordinate_controllers; }
-		
 			std::vector<PrimitiveControllerPtr> &subordinate_controllers() {
 				return m_SubordinateControllers;	}
-	
-			void set_sensor_transform(SensorTransformPtr sensor_transform) {
-				m_SensorTransform = sensor_transform; }
 	
 			SensorTransformPtr sensor_transform() {
 				return m_SensorTransform; }
 	
-			void set_potential(PotentialPtr potential) {
-				m_Potential = potential; }
-	
 			PotentialPtr potential() {	return m_Potential; }
-	
-			void set_effector_transform(
-				EffectorTransformPtr effector_transform) {
-				m_EffectorTransform = effector_transform; }
 	
 			EffectorTransformPtr effector_transform() {
 				return m_EffectorTransform; }
 	
-			void set_combination_strategy(
-				CombinationStrategyPtr combination_strategy) {
-				m_CombinationStrategy = combination_strategy; }
-	
 			CombinationStrategyPtr combination_strategy() {
 				return m_CombinationStrategy; }
 	
-			void set_coefficient(Float coefficient);
-
 			Float coefficient();
 	
-			void set_subordinate_coefficient(Float beta);
-
-			Float subordinate_coefficient();
-	
-			/**
-				This method might throw a std::runtime_error describing a dimension
-				mismatch. 
-
-				Also note that this binds both the sensor and the effector 
-				transform to the same resource. If that is not what you want (e.g.
-				your sensor and effector transform work with different resources, then
-				use the setter methods of the sensor and effector transforms respectively.
-			*/
-			virtual void set_resource(ResourcePtr resource) throw (std::runtime_error);
 		
 			/**
 				This reimplementation of the base class' method assumes that we are not a subordinate

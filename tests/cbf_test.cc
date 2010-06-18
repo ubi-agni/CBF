@@ -70,8 +70,15 @@ int main(int argc, char *argv[]) {
 	{
 		std::cout << "Controller related stuff" << std::endl;
 
+		CBF::SensorTransformPtr st(new CBF::IdentitySensorTransform(6));
+
 		//! Create a primitive controller.
-		CBF::PrimitiveController controller;
+		CBF::PrimitiveController controller(
+			CBF::ReferencePtr(new CBF::DummyReference(1,6)),
+			CBF::PotentialPtr(new CBF::SquarePotential(6)),
+			CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(st)),
+			st);
+			
 	
 		//! Create nessecary members of the primitive controller.
 		controller.set_potential(CBF::SquarePotentialPtr(new CBF::SquarePotential(6)));

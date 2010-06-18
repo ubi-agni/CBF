@@ -100,7 +100,12 @@ int main() {
 
 	//! Create our primitive controller
 	CBF::PrimitiveControllerPtr pc
-		(new CBF::PrimitiveController);
+		(new CBF::PrimitiveController(
+			dref,
+			p,
+			et,
+			st,
+			dres));
 
 	pc->set_sensor_transform(st);
 	pc->set_effector_transform(et);

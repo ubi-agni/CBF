@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <xs:schema 
   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-  xmlns:xi="http://www.w3.org/2001/XInclude">
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:xsi="ttp://www.w3.org/2001/XMLSchema-instance">
+
  <!--
   The single element of the schema. It has to be a type extending
   the basic ControllerType defined below.
