@@ -20,8 +20,20 @@
 
 #include <cbf/composite_reference.h>
 #include <cbf/plugin_impl_macros.h>
+#include <cbf/debug_macros.h>
 
 namespace CBF {
+
+	std::vector<FloatVector> &CompositeReference::get() {
+		if (m_UpdateSuccessfull == true) {
+			CBF_DEBUG("Update success");
+			return m_ReferenceValues;
+		} else {
+			CBF_DEBUG("Update failure");
+			return m_EmptyReferenceValues;
+		}
+	}
+
 
 #ifdef CBF_HAVE_XSD
 	CBF_PLUGIN_CLASS(CompositeReference, Reference)
@@ -47,6 +59,8 @@ namespace CBF {
 	}
 
 #endif
+
+
 
 } // namespace
 

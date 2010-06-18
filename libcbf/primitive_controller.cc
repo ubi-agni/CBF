@@ -139,6 +139,7 @@ namespace CBF {
 		}
 
 		if (m_References.size() != 0) {	
+			CBF_DEBUG("No reference!");
 			//! then we do the gradient step
 			m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition);
 			CBF_DEBUG("gradientStep: " << m_GradientStep)
@@ -146,7 +147,7 @@ namespace CBF {
 			//! Map gradient step into resource step via exec:
 			m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
 		} else {
-			m_ResourceStep = ublas::zero_vector<Float>(m_EffectorTransform->task_dim());
+			m_ResourceStep = ublas::zero_vector<Float>(m_EffectorTransform->resource_dim());
 		}
 	
 		CBF_DEBUG("resourceStep: " << m_ResourceStep)

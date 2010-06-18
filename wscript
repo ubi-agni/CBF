@@ -77,7 +77,7 @@ def set_options(opt):
 	opt.add_option(
 		'--optimize', 
 		action='store_true', 
-		default=True, 
+		default=False, 
 		help='Optimize build aggressively',
 		dest='optimized'
 	)
@@ -264,11 +264,12 @@ def configure(conf):
 
 	# options handling =================================
 	if Options.options.optimized:
+		print "OPTIMIZED!!!"
 		conf.env.append_value('CXXFLAGS', ['-O4', '-funroll-loops', '-Wall', '-Werror', '-march=native', '-ffast-math'])
 	else:
 		conf.env.append_value('CXXFLAGS', ['-Wall', '-Werror'])
 
-	if Options.options.debug:
+	if Options.options.debug == True:
 		conf.env.append_value('CXXFLAGS', ['-g'])
 	
 	if (Options.options.debug_messages == False):
@@ -277,15 +278,15 @@ def configure(conf):
 		defines['CBF_NDEBUG'] = 1
 		defines['NDEBUG'] = 1
 		
-	if Options.options.debug_color:
+	if Options.options.debug_color == True:
 		conf.define('CBF_DEBUG_COLOR', 1)
 		defines['CBF_DEBUG_COLOR'] = 1
 
-	if Options.options.profiled:
+	if Options.options.profiled == True:
 		conf.env.append_value('CXXFLAGS', ['-pg', '-g'])
 		conf.env.append_value('LINKFLAGS', ['-pg', '-g'])
 	
-	if Options.options.enable_plugins:
+	if Options.options.enable_plugins == True:
 		conf.define('CBF_HAVE_PLUGIN_SUPPORT', 1)
 		defines['CBF_HAVE_PLUGIN_SUPPORT'] = 1
 

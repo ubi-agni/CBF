@@ -43,8 +43,10 @@ namespace CBF {
 struct CompositeReference : public Reference
 {
 	protected:
+		bool m_UpdateSuccessfull;
 		std::vector<ReferencePtr> m_References;
 		std::vector<FloatVector> m_ReferenceValues;
+		std::vector<FloatVector> m_EmptyReferenceValues;
 
 	public:
 		CBF_PLUGIN_DECL_METHODS(CompositeReference)
@@ -68,6 +70,7 @@ struct CompositeReference : public Reference
 			}
 			
 			m_ReferenceValues.push_back(FloatVector(dim));
+			m_UpdateSuccessfull = false;
 		}
 	
 		/**
@@ -90,6 +93,9 @@ struct CompositeReference : public Reference
 				++i) 
 			{
 				m_References[i]->update();
+
+				if (m_References[i]->get().size() == 0)
+					return;
 	
 				std::copy(
 					m_References[i]->get()[0].begin(), 
@@ -98,6 +104,7 @@ struct CompositeReference : public Reference
 	
 				current_start_index += m_References[i]->dim();			
 			}
+			m_UpdateSuccessfull = true;
 		}
 
 			
@@ -106,10 +113,7 @@ struct CompositeReference : public Reference
 
 			See update()
 		*/
-		virtual std::vector<FloatVector> &get() {
-			return m_ReferenceValues;
-		}
-	
+		virtual std::vector<FloatVector> &get();
 };
 
 } // namespace
