@@ -1173,23 +1173,35 @@
   <SegmentName>Left.hand.mf1</SegmentName>
  </SensorTransform>
 
- <Resource xsi:type="DummyResourceType">
-   <Vector xsi:type="BoostVectorType">
-    <String>[62](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
+ <Resource xsi:type="CompositeResourceType">
+   <Resource xsi:type="DummyResourceType">
+     <Vector xsi:type="BoostVectorType">
+      <String>[60](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
+     </Vector>
+   </Resource>
+   <Resource xsi:type="DummyResourceType">
+     <Vector xsi:type="BoostVectorType">
+      <String>[2](0,0)</String>
+     </Vector>
+   </Resource>
+  </Resource>
+
+ <Reference xsi:type="CompositeReferenceType">
+  <Reference xsi:type="DummyReferenceType">
+   <Vector xsi:type="SimpleVectorType">
+    <Coefficient> 0.1 </Coefficient>
+    <Coefficient> 0.2 </Coefficient>
+    <Coefficient> 0.3 </Coefficient>
    </Vector>
- </Resource>
-
- <Reference xsi:type="DummyReferenceType">
-  <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-   <Coefficient> 0.1 </Coefficient>
-  </Vector>
+  </Reference>
+  <Reference xsi:type="DummyReferenceType">
+   <Vector xsi:type="SimpleVectorType">
+    <Coefficient> -0.1 </Coefficient>
+    <Coefficient> -0.2 </Coefficient>
+    <Coefficient> -0.3 </Coefficient>
+   </Vector>
+  </Reference>
  </Reference>
-
  <CombinationStrategy xsi:type="AddingStrategyType"/>
 
 </Controller>

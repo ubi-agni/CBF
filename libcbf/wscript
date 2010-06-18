@@ -34,6 +34,7 @@ def configure(conf):
 def build(bld): 
 	sources = """
 		controller.cc 
+		composite_reference.cc
 		masking_resource.cc
 		controller_sequence.cc
 		identity_transform.cc 

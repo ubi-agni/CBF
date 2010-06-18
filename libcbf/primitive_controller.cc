@@ -113,9 +113,9 @@ namespace CBF {
 		assert(m_Reference->dim() == m_Potential->dim());
 
 		m_Reference->update();
-	
+
 		m_References = m_Reference->get();
-	
+
 		// CBF_DEBUG("ref: " << m_References[0])
 	
 		//! Update resource if nessecary
@@ -137,13 +137,17 @@ namespace CBF {
 			ref->references()[0] = m_CurrentTaskPosition;
 			m_InitReferenceFromSensorTransform = false;
 		}
-	
-		//! then we do the gradient step
-		m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition);
-		CBF_DEBUG("gradientStep: " << m_GradientStep)
+
+		if (m_References.size() != 0) {	
+			//! then we do the gradient step
+			m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition);
+			CBF_DEBUG("gradientStep: " << m_GradientStep)
  
-		//! Map gradient step into resource step via exec:
-		m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
+			//! Map gradient step into resource step via exec:
+			m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
+		} else {
+			m_ResourceStep = ublas::zero_vector<Float>(m_EffectorTransform->task_dim());
+		}
 	
 		CBF_DEBUG("resourceStep: " << m_ResourceStep)
 	
