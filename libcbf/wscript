@@ -93,7 +93,7 @@ def build(bld):
 	
 	if bld.env['CBF_HAVE_XSD'] == 1:
 		task.uselib_local += ' schemalib'
-		task.source += ' c_bindings.cc c_api.cc'
+		task.source += ' c_api.cc'
 
 	if bld.env['CBF_HAVE_BOOST_PYTHON'] == 1:
 		task.source += ' python_wrap.cc'

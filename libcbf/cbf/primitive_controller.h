@@ -70,8 +70,8 @@ namespace CBF {
 		PrimitiveController(
 			ReferencePtr reference,
 			PotentialPtr potential,
-			EffectorTransformPtr effector_transform,
 			SensorTransformPtr sensor_transform,
+			EffectorTransformPtr effector_transform,
 			ResourcePtr resource,
 			CombinationStrategyPtr combination_strategy = CombinationStrategyPtr(new AddingStrategy),
 			std::vector<PrimitiveControllerPtr> subordinate_controllers = std::vector<PrimitiveControllerPtr>(),

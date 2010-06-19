@@ -48,9 +48,6 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < 3; ++i)
 
 	{
-		//! Use a simple primitive controller for this test
-		controller = CBF::PrimitiveControllerPtr(new CBF::PrimitiveController);
-	
 		//! Build up a fairly simple KDL::Chain
 		boost::shared_ptr<KDL::Chain> chain (new KDL::Chain);
 		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
@@ -67,22 +64,18 @@ int main(int argc, char *argv[]) {
 		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
 	
 	
-		//! Add sensor and effector transform that transform to/fro position/orientation space
-		controller->set_sensor_transform(CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)));
-
-		controller->set_effector_transform(CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(controller->sensor_transform())));
-	
-		//! Add a potential function
-		controller->set_potential(CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)));
-	
-		//! Since no subordinate controller is used, this is really not necessary (TODO: Fix
-		//! this, so it's really not necessary)
-		controller->set_combination_strategy(CBF::CombinationStrategyPtr(new CBF::AddingStrategy));
-
 		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,3));
 		ref->references()[0] = CBF::ublas::unit_vector<CBF::Float>(3,1);
 		controller->set_reference(ref);
-		
+
+		//! Use a simple primitive controller for this test
+		controller = CBF::PrimitiveControllerPtr(new CBF::PrimitiveController(
+			ref,
+			CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)),
+			CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
+			CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform),
+			CBF::ResourcePtr(new CBF::DummyResource(12))
+		));
 
 		unsigned int total_steps = 0;
 		for (unsigned int run = 0; run < NUM_OF_RUNS; ++run) {

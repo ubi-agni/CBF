@@ -1,685 +1,648 @@
 <?xml version="1.0"?>
-<xs:schema 
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+<xsd:schema 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:xsi="ttp://www.w3.org/2001/XMLSchema-instance">
 
- <!--
-  The single element of the schema. It has to be a type extending
-  the basic ControllerType defined below.
- -->
- <xs:element name="Controller" type="ControllerType" />
+ <xsd:element name="ControlBasis" type="ControlBasisType"/>
 
- <!-- 
-  The basic definition of a primitive controller (one that is parametrized
-  by a potential function, sensor and effector transforms and bound to a
-  resource 
- -->
- <xs:complexType name="ControllerType">
-  <xs:sequence>
-   <xs:element name="Name" type="xs:string" minOccurs="0" maxOccurs="1"/>
-  </xs:sequence>
- </xs:complexType>
+ <xsd:complexType name="ControlBasisType">
+  <xsd:sequence>
+   <xsd:element name="Controller" type="ControllerType" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
 
- <xs:complexType name="ControllerSequenceType">
-  <xs:complexContent>
-   <xs:extension base="ControllerType">
-    <xs:sequence>
-     <xs:element name="Controller" type="ControllerType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType abstract="true" name="ControllerType">
+  <xsd:sequence>
+   <xsd:element name="Name" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+  </xsd:sequence>
+ </xsd:complexType>
 
- <!--
-  This type corresponds to the PrimitiveController c++ class.
- -->
- <xs:complexType name="PrimitiveControllerType">
-  <xs:complexContent>
-   <xs:extension base="ControllerType">
-    <xs:sequence>
-      <xs:element name="Coefficient" type="xs:float"/>
+ <xsd:complexType name="ControllerSequenceType">
+  <xsd:complexContent>
+   <xsd:extension base="ControllerType">
+    <xsd:sequence>
+     <xsd:element name="Controller" type="ControllerType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
-      <xs:element name="ConvergenceCriterion" type="ConvergenceCriterionType" minOccurs="1" maxOccurs="unbounded"/>
+ <xsd:complexType name="PrimitiveControllerType">
+  <xsd:complexContent>
+   <xsd:extension base="ControllerType">
+    <xsd:sequence>
+      <xsd:element name="Coefficient" type="xsd:float"/>
 
-      <xs:element name="InitReferenceFromSensorTransform" type="xs:boolean"/>
+      <xsd:element name="ConvergenceCriterion" type="ConvergenceCriterionType" minOccurs="1" maxOccurs="unbounded"/>
 
-      <xs:element name="Potential" type="PotentialType"/>
-      <xs:element name="EffectorTransform" type="EffectorTransformType"/>
-      <xs:element name="SensorTransform" type="SensorTransformType"/>
-      <xs:element name="Resource" type="ResourceType"/>
+      <xsd:element name="Reference" type="ReferenceType"/>
 
-      <xs:element name="PrimitiveController" type="PrimitiveControllerType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="CombinationStrategy" type="CombinationStrategyType"/>
+      <xsd:element name="Potential" type="PotentialType"/>
 
-      <xs:element name="Reference" type="ReferenceType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+      <xsd:element name="SensorTransform" type="SensorTransformType"/>
+      <xsd:element name="EffectorTransform" type="EffectorTransformType"/>
 
- <xs:complexType name="CompositePrimitiveControllerType">
-  <xs:complexContent>
-   <xs:extension base="PrimitiveControllerType">
-    <xs:sequence>
-     <xs:element name="Controller" type="PrimitiveControllerType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+      <xsd:element name="PrimitiveController" type="PrimitiveControllerType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="CombinationStrategy" type="CombinationStrategyType"/>
 
- <xs:complexType name="AvoidSingularitiesControllerType">
-  <xs:complexContent>
-   <xs:extension base="PrimitiveControllerType">
-    <xs:sequence>
-     <xs:element name="SamplingStep" type="xs:float" minOccurs="1" maxOccurs="1"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+      <xsd:element name="Resource" type="ResourceType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="CompositePrimitiveControllerType">
+  <xsd:complexContent>
+   <xsd:extension base="PrimitiveControllerType">
+    <xsd:sequence>
+     <xsd:element name="Controller" type="PrimitiveControllerType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="AvoidSingularitiesControllerType">
+  <xsd:complexContent>
+   <xsd:extension base="PrimitiveControllerType">
+    <xsd:sequence>
+     <xsd:element name="SamplingStep" type="xsd:float" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
 
- <xs:complexType name="VectorType" abstract="true">
- </xs:complexType>
+ <xsd:complexType name="VectorType" abstract="true">
+ </xsd:complexType>
 
- <xs:complexType name="SimpleVectorType">
-  <xs:complexContent>
-   <xs:extension base="VectorType"> 
-    <xs:sequence>
-     <xs:element name="Coefficient" type="xs:float" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="SimpleVectorType">
+  <xsd:complexContent>
+   <xsd:extension base="VectorType"> 
+    <xsd:sequence>
+     <xsd:element name="Coefficient" type="xsd:float" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <!-- A type to allow specification of a translation vector from a boost string representation -->
- <xs:complexType name="BoostVectorType">
-  <xs:complexContent>
-   <xs:extension base="VectorType"> 
-    <xs:sequence>
-     <xs:element name="String" type="xs:string"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="BoostVectorType">
+  <xsd:complexContent>
+   <xsd:extension base="VectorType"> 
+    <xsd:sequence>
+     <xsd:element name="String" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="EulerToAxisAngleType">
-  <xs:complexContent>
-   <xs:extension base="VectorType"> 
-    <xs:sequence>
-     <xs:element name="String" type="xs:string"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="EulerToAxisAngleType">
+  <xsd:complexContent>
+   <xsd:extension base="VectorType"> 
+    <xsd:sequence>
+     <xsd:element name="String" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="CombinationStrategyType"/>
+ <xsd:complexType name="CombinationStrategyType" abstract="true"/>
 
- <xs:complexType name="ReferenceType"/>
+ <xsd:complexType name="ReferenceType" abstract="true"/>
 
- <xs:complexType name="AddingStrategyType">
-  <xs:complexContent>
-   <xs:extension base="CombinationStrategyType">
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="AddingStrategyType">
+  <xsd:complexContent>
+   <xsd:extension base="CombinationStrategyType">
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="ResourceType" abstract="true">
-  <xs:sequence>
-  </xs:sequence>
- </xs:complexType>
+ <xsd:complexType name="ResourceType" abstract="true">
+  <xsd:sequence>
+  </xsd:sequence>
+ </xsd:complexType>
 
- <xs:complexType name="EffectorTransformType" abstract="true">
-  <xs:sequence/>
- </xs:complexType>
+ <xsd:complexType name="EffectorTransformType" abstract="true">
+  <xsd:sequence/>
+ </xsd:complexType>
 
- <xs:complexType name="SensorTransformType">
-  <xs:sequence>
-   <xs:element name="ComponentName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-  </xs:sequence>
- </xs:complexType>
+ <xsd:complexType name="SensorTransformType" abstract="true">
+  <xsd:sequence>
+   <xsd:element name="ComponentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
 
- <xs:complexType name="ConvergenceCriterionType" abstract="true">
-   <xs:sequence/>
- </xs:complexType>
+ <xsd:complexType name="ConvergenceCriterionType" abstract="true">
+   <xsd:sequence/>
+ </xsd:complexType>
 
- <xs:complexType name="TaskSpaceDistanceThresholdType">
-  <xs:complexContent>
-   <xs:extension base="ConvergenceCriterionType">
-    <xs:sequence>
-     <xs:element name="Threshold" type="xs:float"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="TaskSpaceDistanceThresholdType">
+  <xsd:complexContent>
+   <xsd:extension base="ConvergenceCriterionType">
+    <xsd:sequence>
+     <xsd:element name="Threshold" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="ResourceStepNormThresholdType">
-  <xs:complexContent>
-   <xs:extension base="ConvergenceCriterionType">
-    <xs:sequence>
-     <xs:element name="Threshold" type="xs:float"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="ResourceStepNormThresholdType">
+  <xsd:complexContent>
+   <xsd:extension base="ConvergenceCriterionType">
+    <xsd:sequence>
+     <xsd:element name="Threshold" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="PotentialType">
-  <xs:sequence>
-   <xs:element name="MaxGradientStepNorm" type="xs:float"/>
-  </xs:sequence>
- </xs:complexType>
+ <xsd:complexType abstract="true" name="PotentialType">
+  <xsd:sequence>
+   <xsd:element name="MaxGradientStepNorm" type="xsd:float"/>
+  </xsd:sequence>
+ </xsd:complexType>
 
- <xs:complexType name="DummyReferenceType">
-  <xs:complexContent>
-   <xs:extension base="ReferenceType">
-    <xs:sequence>
-     <xs:element name="Vector" type="VectorType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="DummyReferenceType">
+  <xsd:complexContent>
+   <xsd:extension base="ReferenceType">
+    <xsd:sequence>
+     <xsd:element name="Vector" type="VectorType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="SpaceNaviReferenceType">
-  <xs:complexContent>
-   <xs:extension base="ReferenceType">
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="SpaceNaviReferenceType">
+  <xsd:complexContent>
+   <xsd:extension base="ReferenceType">
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="CartesianReferenceType">
-  <xs:complexContent>
-   <xs:extension base="ReferenceType">
-    <xs:sequence>
-     <xs:element name="Vector" type="VectorType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="CartesianReferenceType">
+  <xsd:complexContent>
+   <xsd:extension base="ReferenceType">
+    <xsd:sequence>
+     <xsd:element name="Vector" type="VectorType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="CompositeReferenceType">
-  <xs:complexContent>
-   <xs:extension base="ReferenceType">
-    <xs:sequence>
-     <xs:element name="Reference" type="ReferenceType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="CompositeReferenceType">
+  <xsd:complexContent>
+   <xsd:extension base="ReferenceType">
+    <xsd:sequence>
+     <xsd:element name="Reference" type="ReferenceType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="CompositeResourceType">
-  <xs:complexContent>
-   <xs:extension base="ResourceType">
-    <xs:sequence>
-     <xs:element name="Resource" type="ResourceType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="CompositeResourceType">
+  <xsd:complexContent>
+   <xsd:extension base="ResourceType">
+    <xsd:sequence>
+     <xsd:element name="Resource" type="ResourceType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="GenericEffectorTransformType">
-  <xs:complexContent>
-   <xs:extension base="EffectorTransformType">
-    <xs:sequence>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="GenericEffectorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="EffectorTransformType">
+    <xsd:sequence>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="DampedGenericEffectorTransformType">
-  <xs:complexContent>
-   <xs:extension base="EffectorTransformType">
-    <xs:sequence>
-     <xs:element name="DampingConstant" type="xs:float"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="DampedGenericEffectorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="EffectorTransformType">
+    <xsd:sequence>
+     <xsd:element name="DampingConstant" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="DampedWeightedGenericEffectorTransformType">
-  <xs:complexContent>
-   <xs:extension base="EffectorTransformType">
-    <xs:sequence>
-     <xs:element name="Weights" type="MatrixType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
-
-<xs:complexType name="IdentityEffectorTransformType">
-  <xs:complexContent>
-   <xs:extension base="EffectorTransformType">
-    <xs:sequence>
-     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
- <xs:complexType name="EffectorTransformChainType">
-  <xs:complexContent>
-   <xs:extension base="EffectorTransformType">
-    <xs:sequence>
-     <xs:element name="EffectorTransform" type="EffectorTransformType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
- <xs:complexType name="LinearEffectorTransformType">
-   <xs:complexContent>
-   <xs:extension base="EffectorTransformType">
-    <xs:sequence>
-     <xs:element name="Matrix" type="MatrixType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
- <xs:complexType name="TreeBaseType">
-  <xs:sequence>
-   <xs:element name="Name" type="xs:string"/>
-  </xs:sequence>
- </xs:complexType>
-
- <xs:complexType name="TreeType">
-  <xs:complexContent>
-   <xs:extension base="TreeBaseType">
-    <xs:sequence>
-     <xs:element name="Segment" type="TreeSegmentType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="DampedWeightedGenericEffectorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="EffectorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Weights" type="MatrixType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
 
- <xs:complexType name="ChainBaseType">
-  <xs:sequence>
-   <xs:element name="Name" type="xs:string"/>
-  </xs:sequence>
- </xs:complexType>
+<xsd:complexType name="IdentityEffectorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="EffectorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="ChainReferenceType">
-  <xs:complexContent>
-   <xs:extension base="ChainBaseType">
-    <xs:sequence>
-     <xs:element name="Reference" type="xs:string"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="EffectorTransformChainType">
+  <xsd:complexContent>
+   <xsd:extension base="EffectorTransformType">
+    <xsd:sequence>
+     <xsd:element name="EffectorTransform" type="EffectorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="ChainType">
-  <xs:complexContent>
-   <xs:extension base="ChainBaseType">
-    <xs:sequence>
-     <xs:element name="Segment" type="SegmentType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="LinearEffectorTransformType">
+   <xsd:complexContent>
+   <xsd:extension base="EffectorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Matrix" type="MatrixType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="TreeSegmentType">
-  <xs:complexContent>
-   <xs:extension base="SegmentType">
-    <xs:sequence>
-     <xs:element name="Segment" type="TreeSegmentType" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="TreeBaseType" abstract="true">
+  <xsd:sequence>
+   <xsd:element name="Name" type="xsd:string"/>
+  </xsd:sequence>
+ </xsd:complexType>
 
-
- <xs:complexType name="SegmentType">
-  <xs:sequence>
-   <xs:element name="Name" type="xs:string"/>
-   <xs:element name="Frame" type="FrameType"/>
-   <xs:element name="Joint" type="JointType"/>
-  </xs:sequence>
- </xs:complexType>
-
- <xs:complexType name="FrameType" abstract="true">
-  <xs:sequence>
-  </xs:sequence>
- </xs:complexType>
-
- <xs:complexType name="MatrixFrameType">
-  <xs:complexContent>
-   <xs:extension base="FrameType">
-    <xs:sequence>
-     <xs:element name="Matrix" type="MatrixType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
- <xs:complexType name="TranslationFrameType">
-  <xs:complexContent>
-   <xs:extension base="FrameType">
-    <xs:sequence>
-     <xs:element name="Vector" type="VectorType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="TreeType">
+  <xsd:complexContent>
+   <xsd:extension base="TreeBaseType">
+    <xsd:sequence>
+     <xsd:element name="Segment" type="TreeSegmentType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
 
- <xs:complexType name="JointType">
-  <xs:sequence>
+ <xsd:complexType name="ChainBaseType" abstract="true">
+  <xsd:sequence>
+   <xsd:element name="Name" type="xsd:string"/>
+  </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:complexType name="ChainReferenceType">
+  <xsd:complexContent>
+   <xsd:extension base="ChainBaseType">
+    <xsd:sequence>
+     <xsd:element name="Reference" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="ChainType">
+  <xsd:complexContent>
+   <xsd:extension base="ChainBaseType">
+    <xsd:sequence>
+     <xsd:element name="Segment" type="SegmentType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="TreeSegmentType">
+  <xsd:complexContent>
+   <xsd:extension base="SegmentType">
+    <xsd:sequence>
+     <xsd:element name="Segment" type="TreeSegmentType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+
+ <xsd:complexType name="SegmentType">
+  <xsd:sequence>
+   <xsd:element name="Name" type="xsd:string"/>
+   <xsd:element name="Frame" type="FrameType"/>
+   <xsd:element name="Joint" type="JointType"/>
+  </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:complexType name="FrameType" abstract="true">
+  <xsd:sequence>
+  </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:complexType name="MatrixFrameType">
+  <xsd:complexContent>
+   <xsd:extension base="FrameType">
+    <xsd:sequence>
+     <xsd:element name="Matrix" type="MatrixType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="TranslationFrameType">
+  <xsd:complexContent>
+   <xsd:extension base="FrameType">
+    <xsd:sequence>
+     <xsd:element name="Vector" type="VectorType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+
+ <xsd:complexType name="JointType">
+  <xsd:sequence>
    <!-- This can be either "Rotational", "Translational" or "None" -->
-   <xs:element name="Type" type="xs:string" minOccurs="1" maxOccurs="1"/>
+   <xsd:element name="Type" type="xsd:string" minOccurs="1" maxOccurs="1"/>
 
    <!-- This can be either "X", "Y" or "Z" -->
-   <xs:element name="Axis" type="xs:string" minOccurs="1" maxOccurs="1"/>
-  </xs:sequence>
- </xs:complexType>
+   <xsd:element name="Axis" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+  </xsd:sequence>
+ </xsd:complexType>
 
- <xs:complexType name="MatrixType" abstract="true">
-  <xs:sequence>
-  </xs:sequence>
- </xs:complexType>
+ <xsd:complexType name="MatrixType" abstract="true">
+  <xsd:sequence>
+  </xsd:sequence>
+ </xsd:complexType>
 
- <xs:complexType name="BoostMatrixType">
-  <xs:complexContent>
-   <xs:extension base="MatrixType">
-    <xs:sequence>
-     <xs:element name="String" type="xs:string"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="BoostMatrixType">
+  <xsd:complexContent>
+   <xsd:extension base="MatrixType">
+    <xsd:sequence>
+     <xsd:element name="String" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="BoostTranslationMatrixType">
-  <xs:complexContent>
-   <xs:extension base="MatrixType">
-    <xs:sequence>
-     <xs:element name="TranslationVector" type="BoostVectorType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="BoostTranslationMatrixType">
+  <xsd:complexContent>
+   <xsd:extension base="MatrixType">
+    <xsd:sequence>
+     <xsd:element name="TranslationVector" type="BoostVectorType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="IdentitySensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="IdentitySensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="PythonSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="TaskDimension"  type="xs:nonNegativeInteger"/>
-     <xs:element name="ResourceDimension"  type="xs:nonNegativeInteger"/>
-     <xs:element name="InitScript" type="xs:string"/>
-     <xs:element name="ExecScript" type="xs:string"/>
-     <xs:element name="FiniScript" type="xs:string"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
-
- <!--
-  A type to chain sensor transforms. All but the first sensor transforms
-  need to be constant (but not nessecarily linear)
- -->
- <xs:complexType name="SensorTransformChainType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
- <!--
-  A type that allows composition of sensor transforms. So if T1 and T2 are transforms
-  transforming to task space variables t1 and t2 respectively, then the composite of
-  these two transforms to (t1' t2')', i.e. the column vector containing t1 and t2.
-
-  This allows e.g. composing orientation and position transforms into a single transform.
- -->
- <xs:complexType name="CompositeSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
- <xs:complexType name="DifferenceSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="2" maxOccurs="2"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="PythonSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="TaskDimension"  type="xsd:nonNegativeInteger"/>
+     <xsd:element name="ResourceDimension"  type="xsd:nonNegativeInteger"/>
+     <xsd:element name="InitScript" type="xsd:string"/>
+     <xsd:element name="ExecScript" type="xsd:string"/>
+     <xsd:element name="FiniScript" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
 
- <xs:complexType name="WeightedSumSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
-     <xs:element name="Weights" type="VectorType" minOccurs="1" maxOccurs="1"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="SensorTransformChainType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="CompositeSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="DifferenceSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="SensorTransform" type="SensorTransformType" minOccurs="2" maxOccurs="2"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
 
- <xs:complexType name="KDLTreePositionSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="Tree" type="TreeBaseType"/>
-     <xs:element name="SegmentName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="WeightedSumSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Weights" type="VectorType" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
 
- <xs:complexType name="KDLTreeAxisAngleSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="Tree" type="TreeBaseType"/>
-     <xs:element name="SegmentName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="KDLTreePositionSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Tree" type="TreeBaseType"/>
+     <xsd:element name="SegmentName" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+
+ <xsd:complexType name="KDLTreeAxisAngleSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Tree" type="TreeBaseType"/>
+     <xsd:element name="SegmentName" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
 
 
 
- <xs:complexType name="KDLChainPositionSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="Chain" type="ChainBaseType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="KDLChainPositionSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Chain" type="ChainBaseType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
 
- <xs:complexType name="KDLChainAxisAngleSensorTransformType">
-  <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="Chain" type="ChainBaseType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="KDLChainAxisAngleSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Chain" type="ChainBaseType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="LinearSensorTransformType">
-   <xs:complexContent>
-   <xs:extension base="SensorTransformType">
-    <xs:sequence>
-     <xs:element name="Matrix" type="MatrixType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="LinearSensorTransformType">
+   <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Matrix" type="MatrixType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="CompositePotentialType">
-  <xs:complexContent>
-   <xs:extension base="PotentialType">
-    <xs:sequence>
-     <xs:element name="Potential" type="PotentialType" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="CompositePotentialType">
+  <xsd:complexContent>
+   <xsd:extension base="PotentialType">
+    <xsd:sequence>
+     <xsd:element name="Potential" type="PotentialType" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="SquarePotentialType">
-  <xs:complexContent>
-   <xs:extension base="PotentialType">
-    <xs:sequence>
-     <xs:element name="Dimension" type="xs:nonNegativeInteger"/>
-     <xs:element name="Coefficient" type="xs:float"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="SquarePotentialType">
+  <xsd:complexContent>
+   <xsd:extension base="PotentialType">
+    <xsd:sequence>
+     <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
+     <xsd:element name="Coefficient" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="PythonPotentialType">
-  <xs:complexContent>
-   <xs:extension base="PotentialType">
-    <xs:sequence>
-     <xs:element name="Dimension"  type="xs:nonNegativeInteger"/>
-     <xs:element name="InitScript" type="xs:string"/>
-     <xs:element name="ExecScript" type="xs:string"/>
-     <xs:element name="FiniScript" type="xs:string"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="PythonPotentialType">
+  <xsd:complexContent>
+   <xsd:extension base="PotentialType">
+    <xsd:sequence>
+     <xsd:element name="Dimension"  type="xsd:nonNegativeInteger"/>
+     <xsd:element name="InitScript" type="xsd:string"/>
+     <xsd:element name="ExecScript" type="xsd:string"/>
+     <xsd:element name="FiniScript" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="QuaternionPotentialType">
-  <xs:complexContent>
-   <xs:extension base="PotentialType">
-    <xs:sequence>
-     <xs:element name="Coefficient" type="xs:float"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="QuaternionPotentialType">
+  <xsd:complexContent>
+   <xsd:extension base="PotentialType">
+    <xsd:sequence>
+     <xsd:element name="Coefficient" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="AxisAnglePotentialType">
-  <xs:complexContent>
-   <xs:extension base="PotentialType">
-    <xs:sequence>
-     <xs:element name="Coefficient" type="xs:float"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="AxisAnglePotentialType">
+  <xsd:complexContent>
+   <xsd:extension base="PotentialType">
+    <xsd:sequence>
+     <xsd:element name="Coefficient" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="AxisPotentialType">
-  <xs:complexContent>
-   <xs:extension base="PotentialType">
-    <xs:sequence>
-     <xs:element name="Coefficient" type="xs:float"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="AxisPotentialType">
+  <xsd:complexContent>
+   <xsd:extension base="PotentialType">
+    <xsd:sequence>
+     <xsd:element name="Coefficient" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="NavigationFunctionPotentialType">
-  <xs:complexContent>
-   <xs:extension base="PotentialType">
-    <xs:sequence>
-     <xs:element name="Coefficient" type="xs:float"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="NavigationFunctionPotentialType">
+  <xsd:complexContent>
+   <xsd:extension base="PotentialType">
+    <xsd:sequence>
+     <xsd:element name="Coefficient" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="DummyResourceType">
-  <xs:complexContent>
-   <xs:extension base = "ResourceType">
-    <xs:sequence>
-     <xs:element name="Vector" type="VectorType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="DummyResourceType">
+  <xsd:complexContent>
+   <xsd:extension base = "ResourceType">
+    <xsd:sequence>
+     <xsd:element name="Vector" type="VectorType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="MaskingResourceType">
-  <xs:complexContent>
-   <xs:extension base = "ResourceType">
-    <xs:sequence>
-     <xs:element name="Resource" type="ResourceType"/>
+ <xsd:complexType name="MaskingResourceType">
+  <xsd:complexContent>
+   <xsd:extension base = "ResourceType">
+    <xsd:sequence>
+     <xsd:element name="Resource" type="ResourceType"/>
      <!-- Specify the components you want as integers -->
-     <xs:element name="Index" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+     <xsd:element name="Index" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <xs:complexType name="RobotInterfaceResourceType">
-  <xs:complexContent>
-   <xs:extension base = "ResourceType">
-    <xs:sequence>
-     <xs:element name="MemoryName" type="xs:string"/>
-     <xs:element name="RobotName" type="xs:string"/>
-     <xs:element name="NumberOfJoints" type="xs:nonNegativeInteger"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
+ <xsd:complexType name="RobotInterfaceResourceType">
+  <xsd:complexContent>
+   <xsd:extension base = "ResourceType">
+    <xsd:sequence>
+     <xsd:element name="MemoryName" type="xsd:string"/>
+     <xsd:element name="RobotName" type="xsd:string"/>
+     <xsd:element name="NumberOfJoints" type="xsd:nonNegativeInteger"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
- <!--
-  This type represents a primitive controller as resource. 
+ <xsd:complexType name="PrimitiveControllerResourceType">
+  <xsd:complexContent>
+   <xsd:extension base = "ResourceType">
+    <xsd:sequence>
+     <xsd:element name="PrimitiveController" type="PrimitiveControllerType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
-  The current
-  value of the resource is the controller's sensor transformed resource
-  value. An incremental resource update step is realized as setting
-  the controller's reference to the current sensor transformed resource
-  value plus the incremental resource update step.
+ <xsd:complexType name="PA10JointResourceType">
+  <xsd:complexContent>
+   <xsd:extension base = "ResourceType">
+    <xsd:sequence>
+     <xsd:element name="Arm" type="xsd:nonNegativeInteger"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
 
-  The controller is then run until convergence.
-
-  This mechanism allows the stacking of controllers in such a way,
-  that the one's task space is the other's resource space.
-
-  A useful application of this scheme is e.g. stacking a visual servoing
-  controller "on top" of a robotic arm end effector position 
-  controller. In this application the robotic arm controller is acting as
-  resource to the visual servoing controller
- -->
- <xs:complexType name="PrimitiveControllerResourceType">
-  <xs:complexContent>
-   <xs:extension base = "ResourceType">
-    <xs:sequence>
-     <xs:element name="PrimitiveController" type="PrimitiveControllerType"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
- <xs:complexType name="PA10JointResourceType">
-  <xs:complexContent>
-   <xs:extension base = "ResourceType">
-    <xs:sequence>
-     <xs:element name="Arm" type="xs:nonNegativeInteger"/>
-    </xs:sequence>
-   </xs:extension>
-  </xs:complexContent>
- </xs:complexType>
-
-</xs:schema>
+</xsd:schema>
