@@ -42,13 +42,10 @@ namespace CBF {
 	*/
 	struct GenericEffectorTransform : public EffectorTransform {
 		CBF_PLUGIN_DECL_METHODS(GenericEffectorTransform)
+
+		GenericEffectorTransform() { }
 	
 		virtual void update();
-	
-		GenericEffectorTransform(SensorTransformPtr sensor_transform = SensorTransformPtr())
-		{
-			set_sensor_transform(sensor_transform);
-		}
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
 			result = ublas::prod(m_InverseTaskJacobian, input);
@@ -75,11 +72,10 @@ namespace CBF {
 		virtual void update();
 	
 		DampedGenericEffectorTransform(
-			SensorTransformPtr sensor_transform = SensorTransformPtr(),
 			Float damping_constant = 0.1)
 			: m_DampingConstant(damping_constant)
 		{
-			set_sensor_transform(sensor_transform);
+
 		}
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
@@ -124,11 +120,9 @@ namespace CBF {
 			virtual void update();
 		
 			DampedWeightedGenericEffectorTransform(
-				SensorTransformPtr sensor_transform = SensorTransformPtr(),
 				Float dampingConstant = 0.1)
 			{
 				m_DampingConstant = dampingConstant;
-				set_sensor_transform(sensor_transform);
 			}
 		
 		

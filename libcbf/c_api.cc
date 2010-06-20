@@ -20,7 +20,7 @@
 
 /* -*- mode: c-non-suck; -*- */
 
-#include <cbf/c_bindings.h>
+#include <cbf/c_api.h>
 
 #include <cbf/config.h>
 #include <schemas.hxx>
@@ -38,7 +38,7 @@ void cbf_init() {
 
 struct primitive_controller*
 cbf_controller_create_from_file(
-	struct primitive_controller *c, 
+	struct cbf_primitive_controller *c, 
 	const char *filename)
 {
 	CBF::PrimitiveControllerPtr *p = 0;
@@ -48,8 +48,8 @@ cbf_controller_create_from_file(
 
 		CBF_DEBUG("[create_controller_from_file]: Creating ControllerType instance")
 		//! Create ControllerType instance from xml file...
-		std::auto_ptr<ControllerType> xml_instance (
-			Controller(
+		std::auto_ptr<ControlBasisType> xml_instance (
+			ControlBasis(
 				filename,
 				xml_schema::flags::dont_validate
 			)

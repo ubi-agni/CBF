@@ -71,34 +71,16 @@ int main(int argc, char *argv[]) {
 		std::cout << "Controller related stuff" << std::endl;
 
 		CBF::SensorTransformPtr st(new CBF::IdentitySensorTransform(6));
+ 		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,6));
 
 		//! Create a primitive controller.
 		CBF::PrimitiveController controller(
-			CBF::ReferencePtr(new CBF::DummyReference(1,6)),
+			ref,
 			CBF::PotentialPtr(new CBF::SquarePotential(6)),
-			CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(st)),
-			st);
-			
-	
-		//! Create nessecary members of the primitive controller.
-		controller.set_potential(CBF::SquarePotentialPtr(new CBF::SquarePotential(6)));
-	
-		//! For this simple test we only use the identity transform
-		controller.set_sensor_transform(CBF::SensorTransformPtr(new CBF::IdentitySensorTransform(6)));
-
-		controller.set_effector_transform(CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(controller.sensor_transform())));
-	
-		//! And a dummy resource.
-		CBF::ResourcePtr resource = CBF::ResourcePtr(new CBF::DummyResource(6));
-	
-		controller.set_resource(resource);
-	
-		//! Adding of a combination strategy is really unnecessary but the design dictates we 
-		//! do it anyways (TODO: fix so this is not necessary anymore)
-		controller.set_combination_strategy(CBF::CombinationStrategyPtr(new CBF::AddingStrategy));
-
-		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,6));
-		controller.set_reference(ref);
+			st,
+			CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform),
+			CBF::ResourcePtr(new CBF::DummyResource(6))
+		);
 
 		//! Set a reference to the controller.
 		ref->references()[0][0] = 1;

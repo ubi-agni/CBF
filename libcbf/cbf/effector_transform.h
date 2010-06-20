@@ -44,12 +44,6 @@ namespace CBF {
 	struct EffectorTransform {
 		FloatVector m_ResourceValue;
 	
-		/**
-			Sensor and Effector transforms always come in pairs. So before doing anything with
-			this effector transform, be sure to set this member.
-		*/
-		SensorTransformPtr m_SensorTransform;
-	
 		EffectorTransform() {
 	
 		}
@@ -60,10 +54,6 @@ namespace CBF {
 		*/	
 		virtual ~EffectorTransform() {
 	
-		}
-	
-		virtual void set_sensor_transform(SensorTransformPtr sensor_transform) {
-			m_SensorTransform = sensor_transform;
 		}
 	
 		/**
@@ -123,7 +113,12 @@ namespace CBF {
 		*/
 		virtual unsigned int task_dim() const = 0;
 	
+		virtual void set_sensor_transform(SensorTransformPtr sensor_transform) 
+			{ m_SensorTransform = sensor_transform; }
+
 		protected:
+			SensorTransformPtr m_SensorTransform;
+
 			/** 
 				An effector transform is bound to a resource
 			*/

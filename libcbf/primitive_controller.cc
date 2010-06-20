@@ -43,14 +43,17 @@ namespace CBF {
 	}
 
 	PrimitiveController::PrimitiveController(
+		ReferencePtr reference,
 		PotentialPtr potential,
-		EffectorTransformPtr effector_transform,
 		SensorTransformPtr sensor_transform,
+		EffectorTransformPtr effector_transform,
+		ResourcePtr resource,
 		CombinationStrategyPtr combination_strategy,
 		std::vector<PrimitiveControllerPtr> subordinate_controllers,
 		Float alpha,
 		bool init_reference_from_sensor_transform 
 	) :
+		m_Reference(reference),
 		m_SubordinateControllers(subordinate_controllers),
 		m_SensorTransform(sensor_transform),
 		m_Potential(potential),
@@ -59,8 +62,10 @@ namespace CBF {
 		m_Coefficient(alpha),
 		m_InitReferenceFromSensorTransform(init_reference_from_sensor_transform)
 	{
+		m_EffectorTransform->set_sensor_transform(sensor_transform);
 		init();
 
+		potential->set_resource(resource);
 		CBF_DEBUG("Constructor1")
 		check_dimensions();
 	}

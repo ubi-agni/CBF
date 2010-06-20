@@ -32,8 +32,8 @@ int main(int argc, char *argv[]) {
 	try
 	{
 		//! Try to create a ControllerType from the passed XML document
-		std::auto_ptr<ControllerType> controller (
-			Controller(
+		std::auto_ptr<ControlBasisType> controller (
+			ControlBasis(
 				argv[1], 
 				xml_schema::flags::dont_validate
 			)

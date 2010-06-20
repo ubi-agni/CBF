@@ -81,7 +81,7 @@ int main() {
 	CBF::DifferenceSensorTransformPtr st
 		(new CBF::DifferenceSensorTransform(st1, st2));
 
-	CBF::DampedGenericEffectorTransformPtr et(new CBF::DampedGenericEffectorTransform(st));
+	CBF::DampedGenericEffectorTransformPtr et(new CBF::DampedGenericEffectorTransform);
 	// CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(st));
 
 	//! An AxisPotential for R^3
@@ -103,16 +103,9 @@ int main() {
 		(new CBF::PrimitiveController(
 			dref,
 			p,
-			et,
 			st,
+			et,
 			dres));
-
-	pc->set_sensor_transform(st);
-	pc->set_effector_transform(et);
-
-	pc->set_resource(dres);
-	pc->set_potential(p);
-	pc->set_reference(dref);
 
 	do {
 		pc->step();	

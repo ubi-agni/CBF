@@ -18,7 +18,7 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-#include <cbf/c_bindings.h>
+#include <cbf/c_api.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,8 +30,8 @@ main(int argc, char **argv) {
 	init_cbf();
 
 	//! Create controller from XML file...
-	struct primitive_controller c;
-	if (create_controller_from_file(&c, argv[1]) == 0)
+	struct cbf_primitive_controller c;
+	if (cbf_create_controller_from_file(&c, argv[1]) == 0)
 	{
 		printf("Error constructing controller. Exiting...\n");
 		exit(EXIT_FAILURE);
@@ -41,12 +41,6 @@ main(int argc, char **argv) {
 	double *in  = calloc(controller_get_resource_dim(&c), sizeof(double));
 
 	int i;
-
-#if 0
-	for (i = 0; i < controller_get_resource_dim(&c); ++i) {
-		in[i] = 0.1;
-	}
-#endif
 
 	double *out = calloc(controller_get_resource_dim(&c), sizeof(double));
 

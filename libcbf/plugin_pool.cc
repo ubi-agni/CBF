@@ -67,7 +67,7 @@ namespace CBF {
 		ParsingErrorHandler err_handler;
 		try {
 			std::auto_ptr<XMLType> xml_instance
-				(::Controller
+				(::ControlBasis
 					(filename,
 					 err_handler,
 					 xml_schema::flags::dont_validate));
@@ -138,7 +138,7 @@ template<> PluginPool<Reference> *PluginPool<Reference>::s_Instance = 0;
 	*/
 	template 
 		boost::shared_ptr<CBF::Controller> 
-		PluginPool<CBF::Controller>::create_from_file<ControllerType>(const std::string &filename);
+		PluginPool<CBF::ControlBasis>::create_from_file<ControlBasisType>(const std::string &filename);
 #endif
 
 } // namespace

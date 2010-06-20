@@ -78,8 +78,8 @@ BOOST_PYTHON_MODULE(pycbf)
 		.def("finished", &CBF::Controller::finished)
 	;
 
-	class_<CBF::PrimitiveController, bases<CBF::Controller>, CBF::PrimitiveControllerPtr>("PrimitiveController")
-		.def("step", &CBF::PrimitiveController::step)
-		.def("finished", &CBF::PrimitiveController::finished)
-	;
+//	class_<CBF::PrimitiveController, bases<CBF::Controller>, CBF::PrimitiveControllerPtr>("PrimitiveController")
+//		.def("step", &CBF::PrimitiveController::step)
+//		.def("finished", &CBF::PrimitiveController::finished)
+//	;
 }

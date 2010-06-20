@@ -89,7 +89,7 @@ int main() {
 	CBF::WeightedSumSensorTransformPtr st
 		(new CBF::WeightedSumSensorTransform(v, weights));
 
-	CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(st));
+	CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform);
 
 	//! An AxisPotential for R^3
 	CBF::AxisPotentialPtr p(new CBF::AxisPotential(3, 0.01));
@@ -108,7 +108,7 @@ int main() {
 	//! Create our primitive controller
 	CBF::PrimitiveControllerPtr pc
 		(new CBF::PrimitiveController(
-			dref,	p,	et, st))
+			dref,	p,	st, et, dres));
 
 	do {
 		pc->step();	
