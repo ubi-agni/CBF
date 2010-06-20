@@ -50,8 +50,7 @@ namespace CBF {
 		ResourcePtr resource,
 		CombinationStrategyPtr combination_strategy,
 		std::vector<PrimitiveControllerPtr> subordinate_controllers,
-		Float alpha,
-		bool init_reference_from_sensor_transform 
+		Float alpha
 	) :
 		m_Reference(reference),
 		m_SubordinateControllers(subordinate_controllers),
@@ -59,29 +58,18 @@ namespace CBF {
 		m_Potential(potential),
 		m_EffectorTransform(effector_transform),
 		m_CombinationStrategy(combination_strategy),
-		m_Coefficient(alpha),
-		m_InitReferenceFromSensorTransform(init_reference_from_sensor_transform)
+		m_Coefficient(alpha)
 	{
-		m_EffectorTransform->set_sensor_transform(sensor_transform);
-		init();
-
-		potential->set_resource(resource);
 		CBF_DEBUG("Constructor1")
+
+		m_EffectorTransform->set_sensor_transform(sensor_transform);
+
+		m_SensorTransform->set_resource(resource);
+		m_EffectorTransform->set_resource(resource);
+
 		check_dimensions();
 	}
 	
-	PrimitiveController::PrimitiveController(
-		Float alpha,
-			bool init_reference_from_sensor_transform
-	) :
-		m_CombinationStrategy(CombinationStrategyPtr(new AddingStrategy)),
-		m_Coefficient(alpha),
-		m_InitReferenceFromSensorTransform(init_reference_from_sensor_transform)
-	{ 
-		init();
-		CBF_DEBUG("Constructor2")
-	}
-
 
 	void PrimitiveController::check_dimensions() {
 		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim())
@@ -133,16 +121,6 @@ namespace CBF {
 		m_CurrentTaskPosition = m_SensorTransform->result();
 		CBF_DEBUG("currentTaskPosition: " << m_CurrentTaskPosition)
 	
-		if (m_InitReferenceFromSensorTransform == true) {
-			//! This is only supported for DummyReferences, so let's check whether we have one of those
-	
-			DummyReferencePtr ref = boost::dynamic_pointer_cast<DummyReference, Reference>(m_Reference);
-			if (ref.get() == 0) throw std::runtime_error("Not a DummyReference. Cannot initialize from sensor transform");
-	
-			ref->references()[0] = m_CurrentTaskPosition;
-			m_InitReferenceFromSensorTransform = false;
-		}
-
 		if (m_References.size() != 0) {	
 			CBF_DEBUG("No reference!");
 			//! then we do the gradient step
@@ -198,15 +176,6 @@ namespace CBF {
 		m_Converged = check_convergence();
 	}
 	
-	void PrimitiveController::set_resource(ResourcePtr resource) throw (std::runtime_error) {
-		//CBF_DEBUG(m_SensorTransform.get())
-		m_SensorTransform->set_resource(resource);
-		m_EffectorTransform->set_resource(resource);
-
-		for (unsigned int i = 0; i  < m_SubordinateControllers.size(); ++i)
-			m_SubordinateControllers[i]->set_resource(resource);
-	}
-
 	bool PrimitiveController::check_convergence() {
 		Float stepnorm = ublas::norm_2(m_Result);
 
@@ -237,8 +206,7 @@ namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
 		PrimitiveController::PrimitiveController(const PrimitiveControllerType &xml_instance) :
-			m_Coefficient(1.0),
-			m_InitReferenceFromSensorTransform(false)
+			m_Coefficient(1.0)
 		
 		{
 			CBF_DEBUG("Constructing")
@@ -331,7 +299,9 @@ namespace CBF {
 			ResourcePtr res = PluginPool<Resource>::get_instance()->create_from_xml(xml_instance.Resource());
 			//! And bind to it...
 			CBF_DEBUG("Binding to resource...")
-			set_resource(res);
+
+			m_SensorTransform->set_resource(res);
+			m_EffectorTransform->set_resource(res);
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating combination strategy...")

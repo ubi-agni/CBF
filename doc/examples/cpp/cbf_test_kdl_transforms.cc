@@ -66,7 +66,6 @@ int main(int argc, char *argv[]) {
 	
 		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,3));
 		ref->references()[0] = CBF::ublas::unit_vector<CBF::Float>(3,1);
-		controller->set_reference(ref);
 
 		//! Use a simple primitive controller for this test
 		controller = CBF::PrimitiveControllerPtr(new CBF::PrimitiveController(
@@ -79,9 +78,6 @@ int main(int argc, char *argv[]) {
 
 		unsigned int total_steps = 0;
 		for (unsigned int run = 0; run < NUM_OF_RUNS; ++run) {
-			//! Finally bind this controller to a dummy resource (one variable for each
-			//! joint of the KDL::Chain
-			controller->set_resource(CBF::ResourcePtr(new CBF::DummyResource(12)));
 			//std::cout << "[test_kdl_transforms]: run: " << run << std::endl;
 			//! Execute until convergence or NUM_OF_STEPS, whatever comes first
 			unsigned int i = 0;

@@ -8,8 +8,8 @@ namespace CBF {
 
 #ifdef CBF_HAVE_XSD
 
-CompositePrimitiveController::CompositePrimitiveController(const CompositePrimitiveControllerType &xml_instance) :
-	PrimitiveController(xml_instance)
+CompositePrimitiveController::CompositePrimitiveController(const CompositePrimitiveControllerType &xml_instance) 
+
 {
 	
 }

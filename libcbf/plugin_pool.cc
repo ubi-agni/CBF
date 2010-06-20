@@ -22,6 +22,7 @@
 
 #include <cbf/plugin_decl_macros.h>
 
+#include <cbf/control_basis.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 #include <cbf/resource.h>
@@ -52,7 +53,13 @@ namespace CBF {
 			unsigned long column,
 			severity,
 			const std::basic_string<char>& message) {
-				std::cerr << "[ParsingErrorHandler]: \"" << message <<"\"" << " in line: " << line << ", column: " << column << std::endl;
+				std::cerr 
+					<< "[ParsingErrorHandler]: \"" 
+					<< message <<"\"" 
+					<< " in line: " << line 
+					<< ", column: " << column 
+					<< std::endl;
+
 				return false;
 			}
 	};
@@ -89,7 +96,9 @@ namespace CBF {
 		to be explicitly instantiated below
 	*/
 	template<class SuperClass>
-	boost::shared_ptr<SuperClass> PluginPool<SuperClass>::create_from_xml(const xsd::cxx::tree::_type &xml_document) {
+	boost::shared_ptr<SuperClass> PluginPool<SuperClass>::create_from_xml
+		(const xsd::cxx::tree::_type &xml_document) 
+	{
 		boost::shared_ptr<SuperClass> p;
 		for (unsigned int i = 0; i < m_PluginHelpers.size(); ++i)
 		{
@@ -103,7 +112,9 @@ namespace CBF {
 
 
 	template<class SuperClass> template <class XMLType>
-	boost::shared_ptr<SuperClass> PluginPool<SuperClass>::create_from_file(const std::string &file_name) {
+	boost::shared_ptr<SuperClass> PluginPool<SuperClass>::create_from_file
+		(const std::string &file_name) 
+	{
 		// XMLType t;
 		return CBF::create_from_file<SuperClass, XMLType>(file_name);
 	}
@@ -114,6 +125,7 @@ namespace CBF {
 /**
 	One specialized instance for every base type
 */
+template class PluginPool<ControlBasis>;
 template class PluginPool<SensorTransform>;
 template class PluginPool<EffectorTransform>;
 template class PluginPool<Resource>;
@@ -123,6 +135,7 @@ template class PluginPool<Controller>;
 template class PluginPool<CombinationStrategy>;
 template class PluginPool<Reference>;
 
+template<> PluginPool<ControlBasis> *PluginPool<ControlBasis>::s_Instance = 0;
 template<> PluginPool<SensorTransform> *PluginPool<SensorTransform>::s_Instance = 0;
 template<> PluginPool<EffectorTransform> *PluginPool<EffectorTransform>::s_Instance = 0;
 template<> PluginPool<Resource> *PluginPool<Resource>::s_Instance = 0;
@@ -137,8 +150,8 @@ template<> PluginPool<Reference> *PluginPool<Reference>::s_Instance = 0;
 		@brief The static instance of the utility function to create a controller from a file
 	*/
 	template 
-		boost::shared_ptr<CBF::Controller> 
-		PluginPool<CBF::ControlBasis>::create_from_file<ControlBasisType>(const std::string &filename);
+		ControlBasisPtr
+		PluginPool<ControlBasis>::create_from_file<ControlBasisType>(const std::string &filename);
 #endif
 
 } // namespace

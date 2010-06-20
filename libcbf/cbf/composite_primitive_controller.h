@@ -1,6 +1,7 @@
 #ifndef CBF_COMPOSITE_PRIMITIVE_CONTROLLER_HH
 #define CBF_COMPOSITE_PRIMITIVE_CONTROLLER_HH
 
+#include <cbf/controller.h>
 #include <cbf/primitive_controller.h>
 #include <cbf/plugin_decl_macros.h>
 
@@ -15,7 +16,7 @@ namespace CBF {
 	sense that the task space is the combined task spaces of the 
 	individual components..
 */
-struct CompositePrimitiveController : public PrimitiveController {
+struct CompositePrimitiveController : public Controller {
 	CBF_PLUGIN_DECL_METHODS(CompositePrimitiveController);
 
 	CompositePrimitiveController(const std::vector<PrimitiveControllerPtr> controllers) {

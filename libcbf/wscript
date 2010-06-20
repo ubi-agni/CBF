@@ -55,7 +55,6 @@ def build(bld):
 		linear_transform.cc 
 		transform_chains.cc
 		composite_resource.cc
-		avoid_singularities.cc
 		reference.cc
 		dummy_reference.cc
 		gnuplot_i.cpp

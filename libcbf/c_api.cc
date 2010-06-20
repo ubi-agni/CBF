@@ -36,7 +36,7 @@ void cbf_init() {
 
 }
 
-struct primitive_controller*
+struct cbf_primitive_controller*
 cbf_controller_create_from_file(
 	struct cbf_primitive_controller *c, 
 	const char *filename)
@@ -99,7 +99,7 @@ cbf_controller_create_from_memory(struct primitive_controller *c, const char *me
 }
 
 int
-cbf_controller_get_resource_dim(struct primitive_controller *c) {
+cbf_controller_get_resource_dim(struct cbf_primitive_controller *c) {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 	try {
 		//! Check whether the controller contains a dummy resource..
@@ -122,7 +122,7 @@ cbf_controller_get_resource_dim(struct primitive_controller *c) {
 
 
 int
-cbf_controller_set_reference(struct primitive_controller* c, double *reference) {
+cbf_controller_set_reference(struct cbf_primitive_controller* c, double *reference) {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
 	boost::shared_ptr<CBF::DummyReference> d = boost::dynamic_pointer_cast<CBF::DummyReference, CBF::Reference>((*p)->reference());
@@ -138,7 +138,7 @@ cbf_controller_set_reference(struct primitive_controller* c, double *reference) 
 }
 
 int
-cbf_controller_get_reference(struct primitive_controller* c, double *reference) {
+cbf_controller_get_reference(struct cbf_primitive_controller* c, double *reference) {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
 	boost::shared_ptr<CBF::DummyReference> d = boost::dynamic_pointer_cast<CBF::DummyReference, CBF::Reference>((*p)->reference());
@@ -155,7 +155,7 @@ cbf_controller_get_reference(struct primitive_controller* c, double *reference) 
 
 
 int
-cbf_controller_step(struct primitive_controller *c, double *in, double *out)
+cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 	try {
@@ -191,8 +191,8 @@ cbf_controller_step(struct primitive_controller *c, double *in, double *out)
 	return 1;
 }
 
-struct primitive_controller*
-cbf_controller_destroy(struct primitive_controller *c)
+struct cbf_primitive_controller*
+cbf_controller_destroy(struct cbf_primitive_controller *c)
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 	CBF::PrimitiveControllerPtr empty = CBF::PrimitiveControllerPtr();
@@ -203,7 +203,7 @@ cbf_controller_destroy(struct primitive_controller *c)
 }
 
 int 
-cbf_controller_get_current_task_position(struct primitive_controller *c, double *out)
+cbf_controller_get_current_task_position(struct cbf_primitive_controller *c, double *out)
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
@@ -212,8 +212,8 @@ cbf_controller_get_current_task_position(struct primitive_controller *c, double 
 	return 1;	
 }
 
-struct primitive_controller*
-cbf_controller_get_subordinate_controller(struct primitive_controller *pc, struct primitive_controller *spc, int index) {
+struct cbf_primitive_controller*
+cbf_controller_get_subordinate_controller(struct cbf_primitive_controller *pc, struct cbf_primitive_controller *spc, int index) {
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)pc->controller_ptr);
 	
@@ -225,7 +225,7 @@ cbf_controller_get_subordinate_controller(struct primitive_controller *pc, struc
 
 
 int 
-cbf_controller_set_resource(struct primitive_controller *c, double *resource_in) {
+cbf_controller_set_resource(struct cbf_primitive_controller *c, double *resource_in) {
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
@@ -246,7 +246,7 @@ cbf_controller_set_resource(struct primitive_controller *c, double *resource_in)
 
 
 int 
-cbf_controller_get_resource(struct primitive_controller *c, double *resource_out) {
+cbf_controller_get_resource(struct cbf_primitive_controller *c, double *resource_out) {
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
@@ -261,7 +261,7 @@ cbf_controller_get_resource(struct primitive_controller *c, double *resource_out
 }
 
 int
-cbf_controller_is_finished(struct primitive_controller *pc) {
+cbf_controller_is_finished(struct cbf_primitive_controller *pc) {
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)pc->controller_ptr);
 
