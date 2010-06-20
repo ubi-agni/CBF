@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<ControlBasis>
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
  <Name> foo </Name>
 
@@ -8,7 +9,13 @@
   <Threshold> 0.01 </Threshold>
  </ConvergenceCriterion>
 
- <InitReferenceFromSensorTransform> 0 </InitReferenceFromSensorTransform>
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 1 </Coefficient>
+   <Coefficient> 0 </Coefficient>
+   <Coefficient> 0 </Coefficient>
+  </Vector>
+ </Reference>
 
  <Potential xsi:type="SquarePotentialType">
   <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
@@ -16,13 +23,13 @@
   <Coefficient> 0.1 </Coefficient>
  </Potential>
 
- <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
-  <DampingConstant> 0.1 </DampingConstant>
- </EffectorTransform>
-
  <SensorTransform xsi:type="IdentitySensorTransformType">
   <Dimension> 3 </Dimension>
  </SensorTransform>
+
+ <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
+  <DampingConstant> 0.1 </DampingConstant>
+ </EffectorTransform>
 
  <Resource xsi:type="DummyResourceType">
   <Vector xsi:type="SimpleVectorType">
@@ -34,13 +41,6 @@
 
  <CombinationStrategy xsi:type="AddingStrategyType"/>
 
- <Reference xsi:type="DummyReferenceType">
-  <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 1 </Coefficient>
-   <Coefficient> 0 </Coefficient>
-   <Coefficient> 0 </Coefficient>
-  </Vector>
- </Reference>
-
 </Controller>
 
+</ControlBasis>
