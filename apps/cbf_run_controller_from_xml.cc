@@ -20,6 +20,7 @@
 
 #include <cbf/plugin_pool.h>
 #include <cbf/controller.h>
+#include <cbf/control_basis.h>
 
 #include <string>
 #include <stdexcept>
@@ -31,7 +32,6 @@
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;
-
 
 int main(int argc, char *argv[]) {
 	po::options_description options_description("Allowed options");
@@ -79,19 +79,24 @@ int main(int argc, char *argv[]) {
 	for (unsigned int i = 0; i < recipes.size(); ++i) {
 		std::string filename(recipes[i]);
 
-		CBF::PluginPool<CBF::Controller> *pp = 
-			CBF::PluginPool<CBF::Controller>::get_instance();
+		CBF::PluginPool<CBF::ControlBasis> *pp = 
+			CBF::PluginPool<CBF::ControlBasis>::get_instance();
 
-		CBF::ControllerPtr c = 
-			pp->create_from_file<ControllerType>(filename);
+		CBF::ControlBasisPtr c = 
+			pp->create_from_file<ControlBasisType>(filename);
 
-		if (variables_map.count("steps")) 
-			for (unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); step < steps; ++step)
-				{ c->step(); usleep(sleep_time); }
-		else
-			while (c->step() == false) {
-				usleep(sleep_time);
-			}
+		for (CBF::ControlBasis::ControllerMap::iterator it = c->m_Controllers.begin();
+			it != c->m_Controllers.end();
+			++it) 
+		{
+			if (variables_map.count("steps")) 
+				for (unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); step < steps; ++step)
+					{ (*it).second->step(); usleep(sleep_time); }
+			else
+				while ((*it).second->step() == false) {
+					usleep(sleep_time);
+				}
+		}
 	}
 
 	return 0;

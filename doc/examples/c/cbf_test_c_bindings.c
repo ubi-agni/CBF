@@ -27,33 +27,34 @@
 
 int
 main(int argc, char **argv) {
-	init_cbf();
+	cbf_init();
 
 	//! Create controller from XML file...
 	struct cbf_primitive_controller c;
-	if (cbf_create_controller_from_file(&c, argv[1]) == 0)
+
+	if (cbf_controller_create_from_file(&c, argv[1]) == 0)
 	{
 		printf("Error constructing controller. Exiting...\n");
 		exit(EXIT_FAILURE);
 	}
 
 	//! Create placeholders for holding resource values and update steps...
-	double *in  = calloc(controller_get_resource_dim(&c), sizeof(double));
+	double *in  = calloc(cbf_controller_get_resource_dim(&c), sizeof(double));
 
 	int i;
 
-	double *out = calloc(controller_get_resource_dim(&c), sizeof(double));
+	double *out = calloc(cbf_controller_get_resource_dim(&c), sizeof(double));
 
 	//! Execute controller some million times..
 	for (i = 0; i < MAX_NUMBER_OF_STEPS; ++i)
 	{
-		step_controller(&c, in, out);
+		cbf_controller_step(&c, in, out);
 
 		int j;
-		for (j = 0; j < controller_get_resource_dim(&c); ++j)
+		for (j = 0; j < cbf_controller_get_resource_dim(&c); ++j)
 			in[j] += out[j];
 	}
 
-	destroy_controller(&c);
+	cbf_controller_destroy(&c);
 }
 

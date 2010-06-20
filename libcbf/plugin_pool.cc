@@ -150,7 +150,7 @@ template<> PluginPool<Reference> *PluginPool<Reference>::s_Instance = 0;
 		@brief The static instance of the utility function to create a controller from a file
 	*/
 	template 
-		ControlBasisPtr
+		boost::shared_ptr<ControlBasis>
 		PluginPool<ControlBasis>::create_from_file<ControlBasisType>(const std::string &filename);
 #endif
 
