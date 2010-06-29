@@ -26,6 +26,9 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <vector>
+#include <fstream>
+
+#include <memory>
 
 #include <schemas.hxx>
 
@@ -78,6 +81,8 @@ int main(int argc, char *argv[]) {
 
 	for (unsigned int i = 0; i < recipes.size(); ++i) {
 		std::string filename(recipes[i]);
+
+		std::auto_ptr<ControlBasisType> cb(ControlBasis(std::ifstream(recipes[i].c_str())));
 
 		CBF::PluginPool<CBF::ControlBasis> *pp = 
 			CBF::PluginPool<CBF::ControlBasis>::get_instance();
