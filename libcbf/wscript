@@ -33,6 +33,7 @@ def configure(conf):
 
 def build(bld): 
 	sources = """
+		control_basis.cc
 		controller.cc 
 		composite_reference.cc
 		masking_resource.cc

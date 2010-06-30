@@ -3,6 +3,8 @@
 
 #include <string>
 #include <map>
+#include <vector>
+
 #include <boost/shared_ptr.hpp>
 
 #include <cbf/controller.h>
@@ -21,6 +23,10 @@ struct ControlBasis {
 	
 	typedef std::map<std::string, ControllerPtr> ControllerMap;
 	ControllerMap m_Controllers;
+
+	ControllerMap &controllers() {
+		return m_Controllers;
+	}
 };
 
 typedef boost::shared_ptr<ControlBasis> ControlBasisPtr;

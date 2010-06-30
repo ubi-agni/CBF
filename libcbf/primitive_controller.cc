@@ -212,9 +212,7 @@ namespace CBF {
 			CBF_DEBUG("Constructing")
 			init();
 
-
-			if (xml_instance.Name().present())
-				m_Name = *xml_instance.Name();
+			m_Name = xml_instance.Name();
 
 			m_Coefficient = xml_instance.Coefficient();
 		

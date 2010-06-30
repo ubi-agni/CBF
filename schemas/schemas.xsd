@@ -14,7 +14,7 @@
 
  <xsd:complexType abstract="true" name="ControllerType">
   <xsd:sequence>
-   <xsd:element name="Name" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+   <xsd:element name="Name" type="xsd:string"/>
   </xsd:sequence>
  </xsd:complexType>
 

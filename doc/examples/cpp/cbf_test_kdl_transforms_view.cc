@@ -35,7 +35,6 @@
 #include <cbf/axis_angle_potential.h>
 #include <cbf/generic_transform.h>
 #include <cbf/utilities.h>
-#include <cbf/avoid_singularities.h>
 #include <cbf/quaternion.h>
 
 #ifdef CBF_HAVE_SPACEMOUSE
