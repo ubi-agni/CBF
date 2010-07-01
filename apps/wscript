@@ -28,7 +28,7 @@ def configure(conf):
 
 def build(bld):
 	bld.add_subdirs("qcbf")
-	if bld.env['CBF_HAVE_KDL'] == 1 and bld.env['CBF_HAVE_EIGEN2'] == 1 and bld.env['CBF_HAVE_BOOST_PROGRAM_OPTIONS'] == 1:
+	if bld.env['CBF_HAVE_EIGEN2'] == 1 and bld.env['CBF_HAVE_BOOST_PROGRAM_OPTIONS'] == 1:
 		task3b = bld.new_task_gen(
 			features='cxx cprogram', 
 			source='cbf_run_controller_from_xml.cc', 

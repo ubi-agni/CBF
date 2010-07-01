@@ -32,6 +32,7 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/reference.h>
 #include <cbf/debug_macros.h>
+#include <cbf/exceptions.h>
 
 #include <stdexcept>
 
@@ -107,7 +108,7 @@ namespace CBF {
 			if (p.get() == 0) continue;
 			else return p;
 		}
-		throw std::runtime_error("No responsible creator function found. Are you sure the type is correct?");
+		CBF_THROW_RUNTIME_ERROR("No responsible creator function found. Are you sure the type is correct?")
 	}
 
 
