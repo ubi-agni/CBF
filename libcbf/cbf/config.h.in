@@ -1,0 +1,4 @@
+#cmakedefine CBF_HAVE_XSD
+#cmakedefine CBF_HAVE_KDL
+#cmakedefine CBF_HAVE_EIGEN2
+
