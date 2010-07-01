@@ -1,10 +1,5 @@
 include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 
-if(CBF_HAVE_XSD)
-  link_directories("${PROJECT_BINARY_DIR}/schemas")
-  include_directories("${PROJECT_BIN_DIR}/libcbf")
-endif()
-
 set(CBF_SOURCES
   control_basis.cc
   controller.cc 
@@ -39,6 +34,15 @@ set(CBF_SOURCES
 
 set(CBF_LIBS "")
 
+set(CBF_INCLUDES "")
+set(CBF_LINKDIRS "")
+
+if(CBF_HAVE_KDL)
+  set(CBF_SOURCES ${CBF_SOURCES} kdl_transforms.cc)
+  set(CBF_LIBS ${CBF_LIBS} ${KDL_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${KDL_INCLUDE_DIRS})
+endif()
+
 if (CBF_HAVE_SPACEMOUSE)
   set(CBF_SOURCES ${CBF_SOURCES} spacenavi_reference.cc)
 endif()
@@ -63,9 +67,13 @@ endif()
 
 
 if(CBF_HAVE_XSD)
-  set(CBF_LIBS ${CBF_LIBS} cbf_schemas)
+  link_directories("${PROJECT_BINARY_DIR}/schemas")
+  set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_BIN_DIR}/libcbf")
+  set(CBF_LIBS ${CBF_LIBS} cbf_schemas ${XERCESC_LIB})
   set(CBF_SOURCES ${CBF_SOURCES} plugin_pool.cc)
 endif()
+
+include_directories(${CBF_INCLUDES})
 
 add_library(cbf SHARED
   ${CBF_SOURCES}

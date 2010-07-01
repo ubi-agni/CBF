@@ -23,30 +23,30 @@ find_package_handle_standard_args(PythonInterp "Found Python" python2)
 
 find_package(PkgConfig)
 
-pkg_check_modules(KDL orocos-kdl>1.0)
+pkg_check_modules(KDL orocos-kdl>=1.0)
 if (KDL_FOUND)
-	set(CBF_HAVE_KDL 1)
+  set(CBF_HAVE_KDL 1)
 endif()
 
 pkg_check_modules(XCF xcf>=0.9)
 if (XCF_FOUND)
-	set(CBF_HAVE_XCF 1)
+  set(CBF_HAVE_XCF 1)
 endif()
 
 pkg_check_modules(XMLTIO xmltio>=1.4)
 if (XMLTIO_FOUND)
-	set(CBF_HAVE_XMLTIO 1)
+  set(CBF_HAVE_XMLTIO 1)
 endif()
 
 pkg_check_modules(MEMORY Memory>=0.21)
 if (MEMORY_FOUND)
-	set(CBF_HAVE_MEMORY 1)
+  set(CBF_HAVE_MEMORY 1)
 endif()
 
 
 find_path(EIGEN2_INC eigen2/Eigen/Core)
 if (NOT "${EIGEN2_INC}" STREQUAL "EIGEN2_INC-NOTFOUND")
-	set(CBF_HAVE_EIGEN2 1)
+  set(CBF_HAVE_EIGEN2 1)
 endif()
 
 message(STATUS "Looking for Xerces-C")
@@ -71,7 +71,7 @@ endif()
 configure_file(
   "${PROJECT_SOURCE_DIR}/libcbf/cbf/config.h.in"
   "${PROJECT_BINARY_DIR}/libcbf/cbf/config.h"
-)
+  )
 
 add_subdirectory(schemas)
 add_subdirectory(libcbf)
