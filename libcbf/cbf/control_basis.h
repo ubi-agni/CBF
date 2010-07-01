@@ -10,8 +10,6 @@
 #include <cbf/controller.h>
 #include <cbf/plugin_decl_macros.h>
 
-
-
 CBF_PLUGIN_PREAMBLE(ControlBasis)
 
 namespace CBF {

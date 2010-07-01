@@ -70,26 +70,23 @@ int main(int argc, char *argv[]) {
 	if (variables_map.count("sleep-time"))
 		sleep_time = variables_map["sleep-time"].as<int>();
 
-	std::string control_basis;
-
 	if (!variables_map.count("control-basis")) {
 		std::cout << "No control basis specified" << std::endl;
 		std::cout << options_description << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
-	control_basis = variables_map["control-basis"].as<std::string>();
-
-	std::auto_ptr<ControlBasisType> cb(ControlBasis(control_basis));
+	std::string control_basis_name = 
+		variables_map["control-basis"].as<std::string>();
 
 	std::vector<std::string> controller_names = 
 		variables_map["controller"].as<std::vector<std::string> >();
 
-	CBF::PluginPool<CBF::ControlBasis> *pp = 
-		CBF::PluginPool<CBF::ControlBasis>::get_instance();
+	std::auto_ptr<ControlBasisType> cbt
+		(ControlBasis
+			(control_basis_name, xml_schema::flags::dont_validate));
 
-	CBF::ControlBasisPtr c = 
-		pp->create_from_file<ControlBasisType>(control_basis);
+	CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));
 
 	for (
 		unsigned int i = 0, len = controller_names.size();
@@ -98,9 +95,9 @@ int main(int argc, char *argv[]) {
 	) {
 			if (variables_map.count("steps")) {
 				for (unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); step < steps; ++step)
-					{ c->controllers()[controller_names[i]]->step(); usleep(sleep_time); }
+					{ cb->controllers()[controller_names[i]]->step(); usleep(sleep_time); }
 			} else {
-				while (c->controllers()[controller_names[i]]->step() == false) {
+				while (cb->controllers()[controller_names[i]]->step() == false) {
 					usleep(sleep_time);
 				}
 			}

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
+<ControlBasis>
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
-
+ <Name>Tree</Name>
  <Coefficient> 1 </Coefficient>
 
  <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
@@ -1205,4 +1206,4 @@
  <CombinationStrategy xsi:type="AddingStrategyType"/>
 
 </Controller>
-
+</ControlBasis>

@@ -5,19 +5,45 @@
   xmlns:xsi="ttp://www.w3.org/2001/XMLSchema-instance">
 
  <xsd:element name="ControlBasis" type="ControlBasisType"/>
-
  <xsd:complexType name="ControlBasisType">
   <xsd:sequence>
    <xsd:element name="Controller" type="ControllerType" minOccurs="0" maxOccurs="unbounded"/>
   </xsd:sequence>
  </xsd:complexType>
 
+ <xsd:element name="Controller" type="ControllerType"/>
  <xsd:complexType abstract="true" name="ControllerType">
   <xsd:sequence>
    <xsd:element name="Name" type="xsd:string"/>
   </xsd:sequence>
  </xsd:complexType>
 
+ <xsd:element name="Reference" type="ReferenceType"/>
+ <xsd:complexType name="ReferenceType" abstract="true"/>
+
+ <xsd:element name="SensorTransform" type="SensorTransformType"/>
+ <xsd:complexType name="SensorTransformType" abstract="true">
+  <xsd:sequence>
+   <xsd:element name="ComponentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:element name="EffectorTransform" type="EffectorTransformType"/>
+ <xsd:complexType name="EffectorTransformType" abstract="true">
+  <xsd:sequence/>
+ </xsd:complexType>
+
+ <xsd:element name="CombinationStrategy" type="CombinationStrategyType"/>
+ <xsd:complexType name="CombinationStrategyType" abstract="true"/>
+
+ <xsd:element name="Resource" type="ResourceType"/>
+ <xsd:complexType name="ResourceType" abstract="true">
+  <xsd:sequence>
+  </xsd:sequence>
+ </xsd:complexType>
+
+
+ <xsd:element name="ControllerSequence" type="ControllerSequenceType"/>
  <xsd:complexType name="ControllerSequenceType">
   <xsd:complexContent>
    <xsd:extension base="ControllerType">
@@ -28,6 +54,7 @@
   </xsd:complexContent>
  </xsd:complexType>
 
+ <xsd:element name="PrimitiveController" type="PrimitiveControllerType"/>
  <xsd:complexType name="PrimitiveControllerType">
   <xsd:complexContent>
    <xsd:extension base="ControllerType">
@@ -106,30 +133,12 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="CombinationStrategyType" abstract="true"/>
-
- <xsd:complexType name="ReferenceType" abstract="true"/>
 
  <xsd:complexType name="AddingStrategyType">
   <xsd:complexContent>
    <xsd:extension base="CombinationStrategyType">
    </xsd:extension>
   </xsd:complexContent>
- </xsd:complexType>
-
- <xsd:complexType name="ResourceType" abstract="true">
-  <xsd:sequence>
-  </xsd:sequence>
- </xsd:complexType>
-
- <xsd:complexType name="EffectorTransformType" abstract="true">
-  <xsd:sequence/>
- </xsd:complexType>
-
- <xsd:complexType name="SensorTransformType" abstract="true">
-  <xsd:sequence>
-   <xsd:element name="ComponentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-  </xsd:sequence>
  </xsd:complexType>
 
  <xsd:complexType name="ConvergenceCriterionType" abstract="true">
@@ -156,6 +165,7 @@
   </xsd:complexContent>
  </xsd:complexType>
 
+ <xsd:element name="Potential" type="PotentialType"/>
  <xsd:complexType abstract="true" name="PotentialType">
   <xsd:sequence>
    <xsd:element name="MaxGradientStepNorm" type="xsd:float"/>
