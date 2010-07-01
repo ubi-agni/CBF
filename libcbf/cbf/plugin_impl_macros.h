@@ -58,7 +58,7 @@
 
 
 
-#ifdef CBF_HAVE_PLUGIN_SUPPORT
+#ifdef CBF_HAVE_XSD
 	/**
 		This macro creates a subclass of PluginHelper which
 		is suitable to be added to the global instance
@@ -77,7 +77,7 @@
 	#define CBF_PLUGIN_DECL_CLASS(ClassName,SuperclassName)
 #endif
 
-#ifdef CBF_HAVE_PLUGIN_SUPPORT
+#ifdef CBF_HAVE_XSD
 	#define CBF_PLUGIN_IMPL_CLASS(ClassName,SuperclassName) \
 	ClassName##PluginHelper::ClassName##PluginHelper(){ \
 		m_Name = #ClassName; \

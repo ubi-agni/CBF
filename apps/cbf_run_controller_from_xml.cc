@@ -30,7 +30,7 @@
 
 #include <memory>
 
-#include <schemas.hxx>
+#include <cbf/schemas.hxx>
 
 #include <boost/program_options.hpp>
 
