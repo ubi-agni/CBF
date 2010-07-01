@@ -24,7 +24,7 @@
 #define CBF_IMPL_PLUGIN_MACROS_HH
 
 #ifdef CBF_HAVE_XSD
-	#include <schemas.hxx>
+	#include <cbf/schemas.hxx>
 #endif
 
 

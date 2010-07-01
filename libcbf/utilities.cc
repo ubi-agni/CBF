@@ -38,7 +38,7 @@
 #endif
 
 #ifdef CBF_HAVE_XSD
-	#include <schemas.hxx>
+	#include <cbf/schemas.hxx>
 	#include <sstream>
 	#include <boost/numeric/ublas/io.hpp>
 #endif

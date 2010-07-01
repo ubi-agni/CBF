@@ -23,7 +23,7 @@
 #include <cbf/sensor_transform.h>
 
 #ifdef CBF_HAVE_XSD
-	#include <schemas.hxx>
+	#include <cbf/schemas.hxx>
 #endif
 
 #include <iostream>

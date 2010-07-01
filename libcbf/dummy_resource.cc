@@ -40,14 +40,12 @@ namespace CBF {
 
 
 	#ifdef CBF_HAVE_XSD
-	#ifdef CBF_HAVE_PLUGIN_SUPPORT
 		DummyResource::DummyResource(const DummyResourceType &xml_instance)
 		{
 			m_Variables = create_vector(xml_instance.Vector());
 			CBF_DEBUG("current values: " << m_Variables)
 		
 		}
-	#endif
 	#endif
 	
 	CBF_PLUGIN_CLASS(DummyResource, Resource)

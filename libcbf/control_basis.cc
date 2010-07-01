@@ -2,13 +2,13 @@
 #include <cbf/plugin_pool.h>
 #include <cbf/debug_macros.h>
 
-#ifdef CBF_HAVE_PLUGIN_SUPPORT
-	#include <schemas.hxx>
+#ifdef CBF_HAVE_XSD
+	#include <cbf/schemas.hxx>
 #endif
 
 namespace CBF {
 
-#ifdef CBF_HAVE_PLUGIN_SUPPORT 
+#ifdef CBF_HAVE_XSD
 	ControlBasis::ControlBasis(const ControlBasisType &xml_instance) {
 		CBF_DEBUG("Building Control Basis")
 		for (

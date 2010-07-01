@@ -4,7 +4,6 @@
 
 namespace CBF {
 
-#ifdef CBF_HAVE_PLUGIN_SUPPORT
 #ifdef CBF_HAVE_XSD
 	CBF_PLUGIN_CLASS(RobotInterfaceResource, Resource)
 
@@ -12,7 +11,6 @@ namespace CBF {
 		init(xml_instance.MemoryName(), xml_instance.RobotName(), xml_instance.NumberOfJoints());
 	}
 
-#endif
 #endif
 
 } // namespace

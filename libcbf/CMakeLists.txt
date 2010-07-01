@@ -1,0 +1,34 @@
+include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
+include_directories("${PROJECT_BIN_DIR}/libcbf")
+
+add_library(cbf SHARED
+  		control_basis.cc
+		controller.cc 
+		composite_reference.cc
+		masking_resource.cc
+		controller_sequence.cc
+		identity_transform.cc 
+		primitive_controller.cc 
+		composite_primitive_controller.cc 
+		resource.cc 
+		dummy_resource.cc 
+		sensor_transform.cc 
+		effector_transform.cc 
+		potential.cc 
+		utilities.cc
+		combination_strategy.cc
+		composite_transform.cc
+		axis_angle_potential.cc
+		axis_potential.cc
+		composite_potential.cc
+		square_potential.cc
+		linear_transform.cc 
+		transform_chains.cc
+		composite_resource.cc
+		reference.cc
+		dummy_reference.cc
+		gnuplot_i.cpp
+		quaternion.cc
+		difference_sensor_transform.cc
+		weighted_sum_transforms.cc
+)
