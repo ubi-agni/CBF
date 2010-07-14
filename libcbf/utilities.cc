@@ -31,10 +31,10 @@
 #endif
 
 #ifdef CBF_HAVE_EIGEN2
-	#include <eigen2/Eigen/Core>
-	#include <eigen2/Eigen/Array>
-	#include <eigen2/Eigen/SVD>
-	#include <eigen2/Eigen/LU>
+	#include <Eigen/Core>
+	#include <Eigen/Array>
+	#include <Eigen/SVD>
+	#include <Eigen/LU>
 #endif
 
 #ifdef CBF_HAVE_XSD

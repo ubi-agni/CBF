@@ -49,6 +49,8 @@ endif()
 
 if (CBF_HAVE_MEMORY)
   set(CBF_SOURCES ${CBF_SOURCES} memory_resource.cc)
+  set(CBF_LIBS ${CBF_LIBS} ${MEMORY_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${MEMORY_INCLUDE_DIRS})
 endif()
 
 if (CBF_HAVE_XCF AND CBF_HAVE_XMLTIO)
@@ -62,6 +64,7 @@ endif()
 
 if (CBF_HAVE_EIGEN2)
   set(CBF_SOURCES ${CBF_SOURCES} generic_transform.cc)
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${EIGEN2_INC})
 endif()
 
 
