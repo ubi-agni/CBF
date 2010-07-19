@@ -8,19 +8,28 @@
   <Threshold> 0.001 </Threshold>
  </ConvergenceCriterion>
 
-
- <InitReferenceFromSensorTransform> 0 </InitReferenceFromSensorTransform>
+ <Reference xsi:type="CompositeReferenceType">
+  <Reference xsi:type="DummyReferenceType">
+   <Vector xsi:type="SimpleVectorType">
+    <Coefficient> 0.1 </Coefficient>
+    <Coefficient> 0.2 </Coefficient>
+    <Coefficient> 0.3 </Coefficient>
+   </Vector>
+  </Reference>
+  <Reference xsi:type="DummyReferenceType">
+   <Vector xsi:type="SimpleVectorType">
+    <Coefficient> -0.1 </Coefficient>
+    <Coefficient> -0.2 </Coefficient>
+    <Coefficient> -0.3 </Coefficient>
+   </Vector>
+  </Reference>
+ </Reference>
 
  <Potential xsi:type="SquarePotentialType">
   <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
-
   <Dimension> 6 </Dimension>
   <Coefficient> 0.01 </Coefficient>
  </Potential>
-
- <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
-  <DampingConstant> 0.1 </DampingConstant>
- </EffectorTransform>
 
  <SensorTransform xsi:type="KDLTreePositionSensorTransformType">
   <Tree xsi:type="TreeType">
@@ -1174,6 +1183,10 @@
   <SegmentName>Left.hand.mf1</SegmentName>
  </SensorTransform>
 
+ <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
+  <DampingConstant> 0.1 </DampingConstant>
+ </EffectorTransform>
+
  <Resource xsi:type="CompositeResourceType">
    <Resource xsi:type="DummyResourceType">
      <Vector xsi:type="BoostVectorType">
@@ -1187,22 +1200,6 @@
    </Resource>
   </Resource>
 
- <Reference xsi:type="CompositeReferenceType">
-  <Reference xsi:type="DummyReferenceType">
-   <Vector xsi:type="SimpleVectorType">
-    <Coefficient> 0.1 </Coefficient>
-    <Coefficient> 0.2 </Coefficient>
-    <Coefficient> 0.3 </Coefficient>
-   </Vector>
-  </Reference>
-  <Reference xsi:type="DummyReferenceType">
-   <Vector xsi:type="SimpleVectorType">
-    <Coefficient> -0.1 </Coefficient>
-    <Coefficient> -0.2 </Coefficient>
-    <Coefficient> -0.3 </Coefficient>
-   </Vector>
-  </Reference>
- </Reference>
  <CombinationStrategy xsi:type="AddingStrategyType"/>
 
 </Controller>

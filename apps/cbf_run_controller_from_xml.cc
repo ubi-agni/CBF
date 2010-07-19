@@ -99,6 +99,9 @@ int main(int argc, char *argv[]) {
 		i < len;
 		++i
 	) {
+		if (cb->controllers().find(controller_names[i]) == cb->controllers().end())
+			throw std::runtime_error("Controller name not found in control basis");
+
 		if (variables_map.count("steps")) {
 			for (unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); step < steps; ++step)
 				{ cb->controllers()[controller_names[i]]->step(); usleep(sleep_time); }
