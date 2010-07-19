@@ -8,6 +8,8 @@ set(CBF_VERSION_MINOR 1)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREAD OFF)
 
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -DCBF_NDEBUG")
+
 find_package(Boost 1.34.1 COMPONENTS program_options python)
 
 if(Boost_FOUND)

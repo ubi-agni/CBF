@@ -76,6 +76,12 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
+	if (!variables_map.count("controller")) {
+		std::cout << "No controller name specified" << std::endl;
+		std::cout << options_description << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
 	std::string control_basis_name = 
 		variables_map["control-basis"].as<std::string>();
 
