@@ -93,14 +93,14 @@ int main(int argc, char *argv[]) {
 		i < len;
 		++i
 	) {
-			if (variables_map.count("steps")) {
-				for (unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); step < steps; ++step)
-					{ cb->controllers()[controller_names[i]]->step(); usleep(sleep_time); }
-			} else {
-				while (cb->controllers()[controller_names[i]]->step() == false) {
-					usleep(sleep_time);
-				}
+		if (variables_map.count("steps")) {
+			for (unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); step < steps; ++step)
+				{ cb->controllers()[controller_names[i]]->step(); usleep(sleep_time); }
+		} else {
+			while (cb->controllers()[controller_names[i]]->step() == false) {
+				usleep(sleep_time);
 			}
+		}
 	}
 	return EXIT_SUCCESS;
 }
