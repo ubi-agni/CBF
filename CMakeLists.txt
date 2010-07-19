@@ -45,7 +45,7 @@ endif()
 
 pkg_check_modules(EIGEN2 eigen2)
 if (EIGEN2_FOUND)
-  set(CBF_HAVE_EIGEN2)
+  set(CBF_HAVE_EIGEN2 1)
 endif()
 
 #find_path(EIGEN2_INC eigen2/Eigen/Core)
