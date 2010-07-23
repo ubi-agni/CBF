@@ -160,24 +160,26 @@ namespace CBF {
 				This function only returns sensible values after
 				the controller has run at least once...
 			*/
-			const FloatVector &current_task_position() {
-				return m_CurrentTaskPosition; }
+			const FloatVector &current_task_position() 
+				{ return m_CurrentTaskPosition; }
 
-			ReferencePtr reference() { return m_Reference; }
+			ReferencePtr reference() 
+				{ return m_Reference; }
 	
-			std::vector<PrimitiveControllerPtr> &subordinate_controllers() {
-				return m_SubordinateControllers;	}
+			std::vector<PrimitiveControllerPtr> &subordinate_controllers() 
+				{ return m_SubordinateControllers; }
 	
-			SensorTransformPtr sensor_transform() {
-				return m_SensorTransform; }
+			SensorTransformPtr sensor_transform() 
+				{ return m_SensorTransform; }
 	
-			PotentialPtr potential() {	return m_Potential; }
+			PotentialPtr potential() 
+				{ return m_Potential; }
 	
-			EffectorTransformPtr effector_transform() {
-				return m_EffectorTransform; }
+			EffectorTransformPtr effector_transform() 
+				{ return m_EffectorTransform; }
 	
-			CombinationStrategyPtr combination_strategy() {
-				return m_CombinationStrategy; }
+			CombinationStrategyPtr combination_strategy() 
+				{ return m_CombinationStrategy; }
 	
 			Float coefficient();
 	

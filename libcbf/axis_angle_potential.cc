@@ -21,6 +21,7 @@
 #include <cbf/axis_angle_potential.h>
 #include <cbf/plugin_impl_macros.h>
 #include <cbf/quaternion.h>
+#include <cbf/utilities.h>
 
 namespace CBF {
 
@@ -32,9 +33,9 @@ namespace CBF {
 			Quaternion q3 = q1.conjugate() * q2;
 
 			//q3.axis_angle();
-			Float angle = acos(q3.w) * 2.0;
-			if (angle > M_PI) angle -= 2.0 * M_PI;
+			Float angle = normalize_angle(acos(q3.w) * 2.0);
 			angle = fabs(angle);
+
 			CBF_DEBUG("angle [distance]: " << angle)
 
 			return angle;

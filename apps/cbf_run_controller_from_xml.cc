@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 
 	if (variables_map.count("help")) {
 		std::cout << options_description << std::endl;
-		exit(EXIT_SUCCESS);
+		return(EXIT_SUCCESS);
 	}
 
 	//! sleep time in microseconds
@@ -73,13 +73,13 @@ int main(int argc, char *argv[]) {
 	if (!variables_map.count("control-basis")) {
 		std::cout << "No control basis specified" << std::endl;
 		std::cout << options_description << std::endl;
-		exit(EXIT_FAILURE);
+		return(EXIT_FAILURE);
 	}
 
 	if (!variables_map.count("controller")) {
 		std::cout << "No controller name specified" << std::endl;
 		std::cout << options_description << std::endl;
-		exit(EXIT_FAILURE);
+		return(EXIT_FAILURE);
 	}
 
 	std::string control_basis_name = 

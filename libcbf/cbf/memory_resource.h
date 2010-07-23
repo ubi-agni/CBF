@@ -40,9 +40,9 @@ namespace CBF {
 /**
 	@brief A resource that can send/retrieve values over an ActiveMemory database
 
-	uri is the URI that we expect an ActiveMemory to live at
-	xpath is the XPath expression we use to listen to events
-	path is the path we use to insert events
+	uri is the URI that we expect an ActiveMemory to live at.
+	xpath is the XPath expression we use to listen for events.
+	path is the path we use to insert events.
 */
 struct MemoryResource : public Resource {
 	MemoryResource(
@@ -60,11 +60,11 @@ struct MemoryResource : public Resource {
 
 	}
 
-	void triggered_action(const memory::interface::Event &ev) {
-
-	}
-
 	protected:
+		void triggered_action(const memory::interface::Event &ev) {
+
+		}
+
 		memory::interface::MemoryInterface::pointer m_MemoryInterface;
 		memory::interface::Subscription m_Subscription;
 };

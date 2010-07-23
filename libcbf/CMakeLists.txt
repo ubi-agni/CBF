@@ -30,6 +30,7 @@ set(CBF_SOURCES
   quaternion.cc
   difference_sensor_transform.cc
   weighted_sum_transforms.cc
+  task_space_plan.cc
   )
 
 set(CBF_LIBS "")
@@ -55,11 +56,17 @@ endif()
 
 if (CBF_HAVE_XCF AND CBF_HAVE_XMLTIO)
   set(CBF_SOURCES ${CBF_SOURCES} xcf_resource.cc)
+  set(CBF_LIBS ${CBF_LIBS} ${XCF_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${XCF_INCLUDE_DIRS})
+  set(CBF_LIBS ${CBF_LIBS} ${XMLTIO_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${XMLTIO_INCLUDE_DIRS})
 endif()
 
 
-if (CBF_HAVE_ROBOTINTERFACE)
+if (CBF_HAVE_XRI)
   set(CBF_SOURCES ${CBF_SOURCES} robotinterface_resource.cc)
+  set(CBF_LIBS ${CBF_LIBS} ${XRI_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${XRI_INCLUDE_DIRS})
 endif()
 
 if (CBF_HAVE_EIGEN2)

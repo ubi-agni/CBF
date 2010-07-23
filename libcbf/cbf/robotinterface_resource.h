@@ -106,7 +106,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 
 		std::copy(tmp.begin(), tmp.end(), m_LastPose.begin());
 
-		std::cout << "LAST POSE: " << m_LastPose << std::endl;
+		// CBF_DEBUG("LAST POSE: " << m_LastPose << std::endl)
 	}
 
 
@@ -125,13 +125,10 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		m_RobotInterface.send(m_RobotCommandSet);
 	}
 
-	virtual const FloatVector &get() {
-		return m_Result;
-	}
+	virtual const FloatVector &get() 
+		{ return m_Result; }
 
-	virtual void set(const FloatVector &arg) {
-
-	}
+	virtual void set(const FloatVector &arg) { }
 
 	virtual unsigned int dim() {
 		return m_Result.size();

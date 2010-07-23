@@ -58,6 +58,11 @@ namespace CBF {
 
 namespace ublas = boost::numeric::ublas;
 
+inline Float normalize_angle(Float angle) {
+	Float tmp = fmod(angle + M_PI, 2.0 * M_PI) - M_PI;
+	return fmod(tmp - M_PI, 2.0 * M_PI) + M_PI;
+}
+
 const Float slerp_threshold = 0.01;
 /** 
 	@brief Calculates the result of n-dimensional SLERP.

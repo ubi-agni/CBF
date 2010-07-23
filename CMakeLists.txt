@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.6)
 
 project(CBF)
 
-set(CBF_VERSION_MAJOR 0)
-set(CBF_VERSION_MINOR 1)
+set(CBF_VERSION_MAJOR 1)
+set(CBF_VERSION_MINOR 0)
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREAD OFF)
@@ -17,7 +17,7 @@ if(Boost_FOUND)
   set(CBF_HAVE_BOOST 1)
   set(CBF_HAVE_BOOST_PROGRAM_OPTIONS 1)
 else()
-  message(FATAL_ERROR "boost and boost_program_options are required for CBF")
+  message(FATAL_ERROR "boost_program_options and boost_python are required for CBF")
 endif()
 
 include(FindPackageHandleStandardArgs)
@@ -34,6 +34,11 @@ endif()
 pkg_check_modules(XCF xcf>=0.9)
 if (XCF_FOUND)
   set(CBF_HAVE_XCF 1)
+endif()
+
+pkg_check_modules(XRI xri)
+if (XRI_FOUND)
+  set(CBF_HAVE_XRI 1)
 endif()
 
 pkg_check_modules(XMLTIO xmltio>=1.4)
