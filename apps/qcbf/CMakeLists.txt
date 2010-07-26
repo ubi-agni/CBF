@@ -1,6 +1,6 @@
 if(CBF_HAVE_PYXBGEN)
   add_custom_target(
-	 cbf.py
+	 CBF_Schema_Module
 	 ALL
 	 )
 
@@ -9,6 +9,7 @@ if(CBF_HAVE_PYXBGEN)
 	 ARGS -m cbf -u ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
 	 DEPENDS ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
 	 WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/apps/qcbf
-	 TARGET cbfpoo.py
+	 TARGET CBF_Schema_Module
+	 OUTPUTS cbf.py
 	 )
 endif()
