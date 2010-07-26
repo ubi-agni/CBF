@@ -83,6 +83,14 @@ if (NOT "${XSD_BIN}" STREQUAL "XSD_BIN-NOTFOUND" AND NOT "${XSD_INC}" STREQUAL "
   endif()
 endif()
 
+message(STATUS "Looking for pyxbgen")
+find_program(PYXBGEN_BIN NAMES pyxbgen)
+if (NOT "${PYXBGEN_BIN}" STREQUAL "PYXBGEN_BIN-NOTFOUND")
+  message(STATUS "  found pyxbgen: ${PYXBGEN_BIN}")
+  set(CBF_HAVE_PYXBGEN 1)
+endif()
+
+
 configure_file(
   "${PROJECT_SOURCE_DIR}/libcbf/cbf/config.h.in"
   "${PROJECT_BINARY_DIR}/libcbf/cbf/config.h"

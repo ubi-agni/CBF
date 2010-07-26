@@ -10,3 +10,5 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
 	 ${Boost_LIBRARIES}
 	 )
 endif()
+
+add_subdirectory(qcbf)

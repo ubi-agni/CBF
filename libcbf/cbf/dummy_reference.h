@@ -56,7 +56,7 @@ namespace CBF {
 		virtual void update() { }
 	
 		virtual void set_references(const std::vector<FloatVector> &refs) {
-			if (refs.size() < 1)
+			if (refs.empty())
 				CBF_THROW_RUNTIME_ERROR("num_references < 1");
 
 			if (refs[0].size() != m_References[0].size())
