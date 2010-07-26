@@ -1,12 +1,12 @@
 if(CBF_HAVE_PYXBGEN)
   add_custom_target(
-	 cbfpoo.py
+	 cbf.py
 	 ALL
 	 )
 
   add_custom_command(
 	 COMMAND ${PYXBGEN_BIN} 
-	 ARGS -m cbfpoo -u ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
+	 ARGS -m cbf -u ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
 	 DEPENDS ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
 	 WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/apps/qcbf
 	 TARGET cbfpoo.py
