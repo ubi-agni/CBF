@@ -26,6 +26,7 @@
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
 #include <cbf/quaternion.h>
+#include <cbf/exceptions.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -104,7 +105,7 @@ namespace CBF {
 		}
 
 		virtual Float norm(const FloatVector &v) {
-			throw std::runtime_error("No sensible definition of norm possible on this space");
+			CBF_THROW_RUNTIME_ERROR("No sensible definition of norm possible on this space");
 			return ublas::norm_2(v);
 		}
 	};

@@ -37,7 +37,6 @@ namespace CBF {
 			angle = fabs(angle);
 
 			CBF_DEBUG("angle [distance]: " << angle)
-
 			return angle;
 		}
 

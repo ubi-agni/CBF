@@ -55,7 +55,7 @@ namespace CBF {
 
 		virtual void update() { }
 	
-		virtual void set_references(std::vector<FloatVector> &refs) {
+		virtual void set_references(const std::vector<FloatVector> &refs) {
 			if (refs.size() < 1)
 				CBF_THROW_RUNTIME_ERROR("num_references < 1");
 
@@ -68,7 +68,7 @@ namespace CBF {
 		/**
 			Convenience function if there's only a single reference
 		*/
-		virtual void set_reference(FloatVector &ref) {
+		virtual void set_reference(const FloatVector &ref) {
 			if (ref.size() != m_References[0].size())
 				CBF_THROW_RUNTIME_ERROR("ref dim mismatch");
 
