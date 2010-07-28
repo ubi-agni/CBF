@@ -31,7 +31,7 @@ struct XCFVectorReference : public Reference {
 	IceUtil::Monitor<IceUtil::RecMutex> m_ReferenceMonitor;
 
 	XCFVectorReference
-		(std::string server_name, unsigned int dim = 1) 
+		(const std::string &server_name, unsigned int dim = 1) 
 		: 
 		m_XCFServer(XCF::Server::create(server_name)), m_Dim(dim) 
 	{ 	
