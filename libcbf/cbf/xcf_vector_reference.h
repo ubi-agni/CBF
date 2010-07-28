@@ -41,8 +41,7 @@ struct XCFVectorReference : public Reference {
 				boost::mem_fn
 					(&XCFVectorReference::set_reference_from_xcf), 
 				this, 
-				_1,
-				_2);
+				_1);
 
 		m_XCFServer->registerMethod
 			(std::string("set_reference"), f);
@@ -58,7 +57,7 @@ struct XCFVectorReference : public Reference {
 
 	virtual unsigned int dim() { return m_Dim; }
 
-	virtual void set_reference_from_xcf(std::string &xml_in, std::string &xml_out) {
+	virtual void set_reference_from_xcf(std::string &xml_in) {
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
 		std::auto_ptr<VectorType> v = Vector(xml_in);
 		m_TempReference = create_vector(*v.get());
