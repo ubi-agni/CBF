@@ -7,12 +7,13 @@
 #include <xcf/ServerComponent.hpp>
 #include <IceUtil/Monitor.h> 
 #include <IceUtil/RecMutex.h>
-
+#include <cbf/schemas.hxx>
+#include <cbf/utilities.h>
 
 #include <boost/bind.hpp>
 
 #include <string>
-
+#include <memory>
 
 namespace CBF {
 
@@ -59,8 +60,8 @@ struct XCFVectorReference : public Reference {
 
 	virtual void set_reference_from_xcf(std::string &xml_in, std::string &xml_out) {
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
-
-		
+		std::auto_ptr<VectorType> v = Vector(xml_in);
+		m_TempReference = create_vector(*v.get());
 	}
 };
 
