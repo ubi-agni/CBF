@@ -64,6 +64,8 @@ struct XCFVectorReference : public Reference {
 	}
 };
 
+typedef boost::shared_ptr<XCFVectorReference> XCFVectorReferencePtr;
+
 } // namespace
 
 #endif
