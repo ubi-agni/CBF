@@ -6,8 +6,7 @@ namespace CBF {
 #ifdef CBF_HAVE_XSD 
 XCFVectorReference::XCFVectorReference(const XCFVectorReferenceType &xml_instance) :
 		m_XCFServer(XCF::Server::create(xml_instance.Name())), 
-		m_Dim(xml_instance.Dimension()),
-		m_TempReference(m_Dim)
+		m_Dim(xml_instance.Dimension())
 	{ 	
 		boost::function<void (std::string&, std::string&) > f =
 			boost::bind(

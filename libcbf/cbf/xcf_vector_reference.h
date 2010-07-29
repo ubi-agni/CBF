@@ -40,11 +40,8 @@ struct XCFVectorReference : public Reference {
 		(const std::string &server_name, unsigned int dim = 1) 
 		: 
 		m_XCFServer(XCF::Server::create(server_name)), 
-		m_Dim(dim),
-		m_TempReference(dim)
+		m_Dim(dim)
 	{ 	
-		m_References.resize(0);
-
 		boost::function<void (std::string&, std::string&) > f =
 			boost::bind(
 				boost::mem_fn(&XCFVectorReference::set_reference_from_xcf), 
@@ -60,8 +57,10 @@ struct XCFVectorReference : public Reference {
 	/** update is a noop in this case as updates are handled asynchronously */
 	virtual void update()  {
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
-		m_References.resize(1);
-		m_References[0] = m_TempReference;
+		if (m_TempReference.size() == m_Dim) {
+			m_References.resize(1);
+			m_References[0] = m_TempReference;
+		}
 	}
 
 	virtual unsigned int dim() { return m_Dim; }
