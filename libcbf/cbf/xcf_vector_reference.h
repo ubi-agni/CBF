@@ -3,6 +3,7 @@
 
 #include <cbf/reference.h>
 #include <cbf/types.h>
+#include <cbf/exceptions.h>
 
 #include <xcf/ServerComponent.hpp>
 #include <IceUtil/Monitor.h> 
@@ -33,13 +34,16 @@ struct XCFVectorReference : public Reference {
 	XCFVectorReference
 		(const std::string &server_name, unsigned int dim = 1) 
 		: 
-		m_XCFServer(XCF::Server::create(server_name)), m_Dim(dim) 
+		m_XCFServer(XCF::Server::create(server_name)), 
+		m_Dim(dim),
+		m_TempReference(dim)
 	{ 	
 		m_References.resize(1);
+		m_References[0].resize(dim);
+
 		boost::function<void (std::string&, std::string&) > f =
 			boost::bind(
-				boost::mem_fn
-					(&XCFVectorReference::set_reference_from_xcf), 
+				boost::mem_fn(&XCFVectorReference::set_reference_from_xcf), 
 				this, 
 				_1);
 
@@ -60,7 +64,9 @@ struct XCFVectorReference : public Reference {
 	virtual void set_reference_from_xcf(std::string &xml_in) {
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
 		std::auto_ptr<VectorType> v = Vector(xml_in);
-		m_TempReference = create_vector(*v.get());
+		m_TempReference = create_vector(*v);
+		if (m_TempReference.size() != dim())
+			CBF_THROW_RUNTIME_ERROR("dimensions of xml vector not matching the dimension of this reference");
 	}
 };
 
