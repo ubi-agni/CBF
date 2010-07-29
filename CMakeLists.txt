@@ -99,3 +99,4 @@ configure_file(
 add_subdirectory(schemas)
 add_subdirectory(libcbf)
 add_subdirectory(apps)
+add_subdirectory(tests)

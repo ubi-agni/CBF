@@ -9,9 +9,6 @@ XCFVectorReference::XCFVectorReference(const XCFVectorReferenceType &xml_instanc
 		m_Dim(xml_instance.Dimension()),
 		m_TempReference(m_Dim)
 	{ 	
-		m_References.resize(1);
-		m_References[0].resize(m_Dim);
-
 		boost::function<void (std::string&, std::string&) > f =
 			boost::bind(
 				boost::mem_fn(&XCFVectorReference::set_reference_from_xcf), 

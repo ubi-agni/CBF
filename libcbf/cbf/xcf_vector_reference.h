@@ -43,8 +43,7 @@ struct XCFVectorReference : public Reference {
 		m_Dim(dim),
 		m_TempReference(dim)
 	{ 	
-		m_References.resize(1);
-		m_References[0].resize(dim);
+		m_References.resize(0);
 
 		boost::function<void (std::string&, std::string&) > f =
 			boost::bind(
@@ -61,6 +60,7 @@ struct XCFVectorReference : public Reference {
 	/** update is a noop in this case as updates are handled asynchronously */
 	virtual void update()  {
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
+		m_References.resize(1);
 		m_References[0] = m_TempReference;
 	}
 
