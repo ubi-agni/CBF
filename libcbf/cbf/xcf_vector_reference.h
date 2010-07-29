@@ -10,15 +10,20 @@
 #include <IceUtil/RecMutex.h>
 #include <cbf/schemas.hxx>
 #include <cbf/utilities.h>
+#include <cbf/plugin_decl_macros.h>
 
 #include <boost/bind.hpp>
 
 #include <string>
 #include <memory>
 
+CBF_PLUGIN_PREAMBLE(XCFVectorReference)
+
 namespace CBF {
 
 struct XCFVectorReference : public Reference {
+	CBF_PLUGIN_DECL_METHODS(XCFVectorReference)
+
 	XCF::ServerPtr m_XCFServer;
 	unsigned int m_Dim;
 

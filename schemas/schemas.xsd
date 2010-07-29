@@ -2,7 +2,7 @@
 <xsd:schema 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
   xmlns:xi="http://www.w3.org/2001/XInclude"
-  xmlns:xsi="ttp://www.w3.org/2001/XMLSchema-instance">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
  <xsd:element name="ControlBasis" type="ControlBasisType"/>
  <xsd:complexType name="ControlBasisType">
@@ -171,6 +171,17 @@
   <xsd:sequence>
    <xsd:element name="MaxGradientStepNorm" type="xsd:float"/>
   </xsd:sequence>
+ </xsd:complexType>
+
+ <xsd:complexType name="XCFVectorReferenceType">
+  <xsd:complexContent>
+   <xsd:extension base="ReferenceType">
+    <xsd:sequence>
+     <xsd:element name="Name" type="xsd:string"/>
+     <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
  </xsd:complexType>
 
  <xsd:complexType name="DummyReferenceType">

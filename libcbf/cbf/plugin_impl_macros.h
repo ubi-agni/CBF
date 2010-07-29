@@ -29,9 +29,8 @@
 
 
 #include <cbf/config.h>
-
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/debug_macros.h>
+
 
 
 #ifdef CBF_HAVE_XSD
