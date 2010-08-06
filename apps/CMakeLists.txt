@@ -1,4 +1,5 @@
 if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
+  message(STATUS "  adding executable: cbf_run_controller")
   include_directories("${PROJECT_SOURCE_DIR}/libcbf/" ${XSD_INC})
 
   add_executable(cbf_run_controller 
@@ -9,6 +10,9 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
 	 cbf
 	 ${Boost_LIBRARIES}
 	 )
+else()
+  message(STATUS "  not adding executable cbf_run_controller because xsd or boost-program-options was not found")
 endif()
 
+message(STATUS "in subdirectory apps/qcbf:")
 add_subdirectory(qcbf)

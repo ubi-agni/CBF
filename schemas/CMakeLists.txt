@@ -1,4 +1,5 @@
 if(CBF_HAVE_XSD)
+  message(STATUS "  creating target for schemas.hxx and schemas.cxx")
   add_custom_command(
 	 COMMAND ${XSD_BIN} cxx-tree --root-element-all --generate-ostream --generate-doxygen --generate-polymorphic --polymorphic-type-all  --output-dir ${PROJECT_BINARY_DIR}/libcbf/cbf/ schemas.xsd
 	 OUTPUT ${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.hxx ${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx
@@ -17,4 +18,6 @@ if(CBF_HAVE_XSD)
 	 LIBRARY DESTINATION lib
 	 ARCHIVE DESTINATION lib/static
 	 )
+else()
+  message(STATUS "  schemas.hxx and schemas.cxx will not be created, because XSD was not found")
 endif()
