@@ -1,4 +1,4 @@
-if(CBF_HAVE_XCF)
+if(CBF_HAVE_XCF AND CBF_HAVE_XSD)
   include_directories(${PROJECT_SOURCE_DIR}/libcbf/  ${XCF_INCLUDE_DIRS} ${XSD_INC})
 
   add_executable(cbf_test_xcf_reference
