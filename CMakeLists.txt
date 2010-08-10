@@ -133,11 +133,11 @@ if(NOT "${DOXYGEN_BIN}" STREQUAL "DOXYGEN_BIN-NOTFOUND")
     ALL
     COMMAND ${DOXYGEN_BIN} Doxyfile
     COMMENT "Creating html and tex Documentation in doc/"
-  )
+	 )
   install(
     DIRECTORY doc/html doc/latex
     DESTINATION share/doc/cbf/
-   )
+    )
 else()
   message(STATUS "  doxygen not found!")
 endif()
