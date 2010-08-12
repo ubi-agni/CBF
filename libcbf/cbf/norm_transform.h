@@ -3,6 +3,7 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/plugin_decl_macros.h>
+#include <cbf/exceptions.h>
 
 CBF_PLUGIN_PREAMBLE(NormSensorTransform)
 
@@ -25,7 +26,7 @@ struct NormSensorTransform : public SensorTransform {
 	}
 
 	virtual void update() {
-
+		CBF_THROW_RUNTIME_ERROR("meeeh!!! implement me!!!");
 	}
 
 	virtual unsigned int task_dim() const { return 1u; }
