@@ -32,6 +32,7 @@ set(CBF_SOURCES
   difference_sensor_transform.cc
   weighted_sum_transforms.cc
   task_space_plan.cc
+  norm_transform.cc
   )
 
 set(CBF_LIBS "")
