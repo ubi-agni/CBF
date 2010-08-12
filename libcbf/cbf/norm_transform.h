@@ -2,6 +2,9 @@
 #define CBF_NORM_TRANSFORM_HH
 
 #include <cbf/sensor_transform.h>
+#include <cbf/plugin_decl_macros.h>
+
+CBF_PLUGIN_PREAMBLE(NormSensorTransform)
 
 namespace CBF {
 
@@ -10,6 +13,7 @@ namespace CBF {
 	of the output of another given SensorTransform.
 */
 struct NormSensorTransform : public SensorTransform {
+	CBF_PLUGIN_DECL_METHODS(NormSensorTransform)
 	/**
 		The wrapped SensorTransform
 	*/
@@ -19,6 +23,14 @@ struct NormSensorTransform : public SensorTransform {
 		m_Transform(transform) {
 
 	}
+
+	virtual void update() {
+
+	}
+
+	virtual unsigned int task_dim() const { return 1u; }
+
+	virtual unsigned int resource_dim() const { return m_Transform->resource_dim(); }
 };
 
 
