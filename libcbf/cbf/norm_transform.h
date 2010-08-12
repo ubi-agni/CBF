@@ -4,10 +4,17 @@
 #include <cbf/sensor_transform.h>
 #include <cbf/plugin_decl_macros.h>
 #include <cbf/exceptions.h>
+#include <cbf/types.h>
+#include <cbf/config.h>
+
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 
 CBF_PLUGIN_PREAMBLE(NormSensorTransform)
 
 namespace CBF {
+
+namespace ublas = boost::numeric::ublas;
 
 /**
 	This class implements a SensorTransform that calculates the norm
@@ -23,10 +30,26 @@ struct NormSensorTransform : public SensorTransform {
 	NormSensorTransform(SensorTransformPtr transform) : 
 		m_Transform(transform) {
 
+		/// The norm is a 1D number
+		m_Result.resize(1);
 	}
 
 	virtual void update() {
 		CBF_THROW_RUNTIME_ERROR("meeeh!!! implement me!!!");
+		m_Transform->update();
+		m_Result[0] = ublas::norm_2(m_Transform->result());
+
+		//FloatMatrix tmp = ublas::trans(m_Transform->result());
+
+		FloatVector res = m_Transform->result();
+		FloatMatrix jac = m_Transform->task_jacobian();
+		// m_TaskJacobian = 
+		FloatVector res2 = ublas::prod(ublas::trans(res), jac);
+
+		m_TaskJacobian = FloatMatrix(1, res2.size());
+		for (unsigned int i = 0; i < res2.size(); ++i) {
+			m_TaskJacobian(0,i) = res2(i);
+		}
 	}
 
 	virtual unsigned int task_dim() const { return 1u; }
