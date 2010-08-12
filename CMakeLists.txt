@@ -130,7 +130,6 @@ find_program(DOXYGEN_BIN NAMES doxygen)
 if(NOT "${DOXYGEN_BIN}" STREQUAL "DOXYGEN_BIN-NOTFOUND")
   message(STATUS "found Doxygen, a Documentation can be build with 'make doxy'")
   add_custom_target(doxy
-    ALL
     COMMAND ${DOXYGEN_BIN} ${PROJECT_SOURCE_DIR}/Doxyfile
     COMMENT "Creating html and tex Documentation in doc/"
 	 )

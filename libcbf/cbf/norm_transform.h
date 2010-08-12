@@ -15,6 +15,10 @@ struct NormSensorTransform : public SensorTransform {
 	*/
 	SensorTransformPtr m_Transform;
 
+	NormSensorTransform(SensorTransformPtr transform) : 
+		m_Transform(transform) {
+
+	}
 };
 
 
