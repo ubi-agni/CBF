@@ -414,6 +414,16 @@
   </xsd:complexContent>
  </xsd:complexType>
 
+ <xsd:complexType name="NormSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="SensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="SensorTransform" type="SensorTransformType"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
  <xsd:complexType name="IdentitySensorTransformType">
   <xsd:complexContent>
    <xsd:extension base="SensorTransformType">

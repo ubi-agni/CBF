@@ -11,21 +11,21 @@
 
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 1 </Coefficient>
-   <Coefficient> 0 </Coefficient>
-   <Coefficient> 0 </Coefficient>
+   <Coefficient> 1.1111111 </Coefficient>
   </Vector>
  </Reference>
 
  <Potential xsi:type="SquarePotentialType">
   <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
-  <Dimension> 3 </Dimension>
+  <Dimension> 1 </Dimension>
   <Coefficient> 0.1 </Coefficient>
  </Potential>
 
- <SensorTransform xsi:type="IdentitySensorTransformType">
-  <Dimension> 3 </Dimension>
- </SensorTransform>
+ <SensorTransform xsi:type="NormSensorTransformType"> 
+  <SensorTransform xsi:type="IdentitySensorTransformType">
+   <Dimension> 3 </Dimension>
+  </SensorTransform>
+ </SensorTransform> 
 
  <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
   <DampingConstant> 0.1 </DampingConstant>
@@ -35,9 +35,9 @@
 
  <Resource xsi:type="DummyResourceType">
   <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 0 </Coefficient>
+   <Coefficient> 10 </Coefficient>
    <Coefficient> 1 </Coefficient>
-   <Coefficient> 0 </Coefficient>
+   <Coefficient> 5 </Coefficient>
   </Vector>
  </Resource>
 

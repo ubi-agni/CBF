@@ -11,6 +11,7 @@
 #include <cbf/schemas.hxx>
 #include <cbf/utilities.h>
 #include <cbf/plugin_decl_macros.h>
+#include <cbf/schemas.hxx>
 
 #include <boost/bind.hpp>
 
