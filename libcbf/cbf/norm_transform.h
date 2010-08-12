@@ -35,16 +35,10 @@ struct NormSensorTransform : public SensorTransform {
 	}
 
 	virtual void update() {
-		CBF_THROW_RUNTIME_ERROR("meeeh!!! implement me!!!");
 		m_Transform->update();
 		m_Result[0] = ublas::norm_2(m_Transform->result());
 
-		//FloatMatrix tmp = ublas::trans(m_Transform->result());
-
-		FloatVector res = m_Transform->result();
-		FloatMatrix jac = m_Transform->task_jacobian();
-		// m_TaskJacobian = 
-		FloatVector res2 = ublas::prod(ublas::trans(res), jac);
+		FloatVector res2 = ublas::prod(ublas::trans(m_Transform->result()), m_Transform->task_jacobian());
 
 		m_TaskJacobian = FloatMatrix(1, res2.size());
 		for (unsigned int i = 0; i < res2.size(); ++i) {
