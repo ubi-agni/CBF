@@ -33,6 +33,7 @@ set(CBF_SOURCES
   weighted_sum_transforms.cc
   task_space_plan.cc
   norm_transform.cc
+  transpose_transform.cc
   )
 
 set(CBF_LIBS "")

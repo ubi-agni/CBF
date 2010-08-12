@@ -231,6 +231,15 @@
   </xsd:complexContent>
  </xsd:complexType>
 
+ <xsd:complexType name="TransposeEffectorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="EffectorTransformType">
+    <xsd:sequence>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
  <xsd:complexType name="GenericEffectorTransformType">
   <xsd:complexContent>
    <xsd:extension base="EffectorTransformType">
