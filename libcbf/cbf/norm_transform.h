@@ -32,6 +32,8 @@ struct NormSensorTransform : public SensorTransform {
 
 		/// The norm is a 1D number
 		m_Result.resize(1);
+
+		m_TaskJacobian.resize(1,transform->resource_dim());
 	}
 
 	virtual void update() {
@@ -40,7 +42,6 @@ struct NormSensorTransform : public SensorTransform {
 
 		FloatVector res2 = ublas::prod(ublas::trans(m_Transform->result()), m_Transform->task_jacobian());
 
-		m_TaskJacobian = FloatMatrix(1, res2.size());
 		for (unsigned int i = 0; i < res2.size(); ++i) {
 			m_TaskJacobian(0,i) = res2(i);
 		}

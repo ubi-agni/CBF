@@ -31,6 +31,8 @@
   <DampingConstant> 0.1 </DampingConstant>
  </EffectorTransform>
 
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
  <Resource xsi:type="DummyResourceType">
   <Vector xsi:type="SimpleVectorType">
    <Coefficient> 0 </Coefficient>
@@ -39,7 +41,6 @@
   </Vector>
  </Resource>
 
- <CombinationStrategy xsi:type="AddingStrategyType"/>
 
 </Controller>
 
