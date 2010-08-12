@@ -50,6 +50,11 @@ struct NormSensorTransform : public SensorTransform {
 	virtual unsigned int task_dim() const { return 1u; }
 
 	virtual unsigned int resource_dim() const { return m_Transform->resource_dim(); }
+
+	virtual void set_resource(ResourcePtr res) {
+		m_Transform->set_resource(res);
+		SensorTransform::set_resource(res);
+	}
 };
 
 

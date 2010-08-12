@@ -418,7 +418,7 @@
   <xsd:complexContent>
    <xsd:extension base="SensorTransformType">
     <xsd:sequence>
-     <xsd:element name="Transform" type="SensorTransformType"/>
+     <xsd:element name="SensorTransform" type="SensorTransformType"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
