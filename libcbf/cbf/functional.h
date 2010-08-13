@@ -2,9 +2,10 @@
 #define CBF_FUNCTIONAL_HH
 
 #include <cbf/sensor_transform.h>
+#include <cbf/debug_macros.h>
+
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <cbf/debug_macros.h>
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
