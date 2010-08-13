@@ -2,6 +2,8 @@ include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 
 set(CBF_SOURCES
+  sensor_transform.cc 
+  composite_transform.cc
   control_basis.cc
   controller.cc 
   composite_reference.cc
@@ -12,12 +14,10 @@ set(CBF_SOURCES
   composite_primitive_controller.cc 
   resource.cc 
   dummy_resource.cc 
-  sensor_transform.cc 
   effector_transform.cc 
   potential.cc 
   utilities.cc
   combination_strategy.cc
-  composite_transform.cc
   axis_angle_potential.cc
   axis_potential.cc
   composite_potential.cc

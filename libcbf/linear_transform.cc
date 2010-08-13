@@ -43,7 +43,10 @@ namespace CBF {
 						("[LinearSensorTransform]: Matrix is empty");
 			}
 		}
+
+		static XMLDerivedFactory<LinearSensorTransform, LinearSensorTransformType, SensorTransform, SensorTransformType> x;
 	#endif
 		
 	CBF_PLUGIN_CLASS(LinearSensorTransform, SensorTransform)
+
 } // namespace

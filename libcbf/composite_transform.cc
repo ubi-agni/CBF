@@ -114,9 +114,14 @@ namespace CBF {
 				++it
 			)
 			{
+#if 0
 				SensorTransformPtr tr(PluginPool<SensorTransform>::get_instance()->create_from_xml(*it));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
+#endif
+
+				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(*it));
+				transforms.push_back(tr);
 			}
 		
 			set_transforms(transforms);
@@ -125,5 +130,14 @@ namespace CBF {
 	#endif
 
 	CBF_PLUGIN_CLASS(CompositeSensorTransform, SensorTransform)
+
+	
+	static XMLDerivedFactory<CompositeSensorTransform, CompositeSensorTransformType, SensorTransform, SensorTransformType> x;
+#if 0
+template<> 
+	XMLDerivedFactory<CompositeSensorTransform, CompositeSensorTransformType, SensorTransform, SensorTransformType>* 
+		XMLBaseDerivedFactory<CompositeSensorTransform, CompositeSensorTransformType, SensorTransform, SensorTransformType>::m_Instance = 0;
+#endif
+
 };
 

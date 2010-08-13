@@ -4,28 +4,35 @@
 #include <cbf/sensor_transform.h>
 
 namespace CBF {
-	struct SensorTransformOperation {
-		SensorTransformOperation() { }
+	/** 
+		A base type for defining Operations on SensorTransforms
+	*/
+	struct UnarySensorTransformOperation {
+		UnarySensorTransformOperation() { }
 
 		virtual FloatVector operator()(const FloatVector &result) = 0;
 		virtual FloatMatrix operator()(const FloatMatrix &result) = 0;
 	};
-	
+
+	/**
+		A derived type that can be used to produce new UnarySensorTransformOperations
+		from template functors..
+
+		The only requirement for the two functors is that they provide
+		FloatVector operator()(const FloatVector &input)
+
+		and 
+
+		FloatMatrix operator()(const FloatMatrix &input)
+	*/
 	template <class VectorOperation, class MatrixOperation>
-	struct GenericSensorTransformOperation : public SensorTransformOperation {
+	struct GenericSensorTransformOperation : public UnarySensorTransformOperation {
 		virtual FloatVector operator()(const FloatVector &input) 
 			{ return VectorOperation()(input); }
 
 		virtual FloatMatrix operator()(const FloatMatrix &input)
 			{ return MatrixOperation()(input); }
 	};
-
-#if 0
-	template struct GenericSensorTransformOperation
-		<std::negate<FloatVector>, std::negate<FloatMatrix> >;
-#endif
-
-	
 
 	/**
 		This class provides a way to create a SensorTransform that 
