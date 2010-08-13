@@ -34,6 +34,7 @@ set(CBF_SOURCES
   task_space_plan.cc
   norm_transform.cc
   transpose_transform.cc
+  functional.cc
   )
 
 set(CBF_LIBS "")

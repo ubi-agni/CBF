@@ -33,6 +33,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <functional>
 
 class SensorTransformType;
 
@@ -177,6 +178,20 @@ namespace CBF {
 	};
 	
 	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;
+
+
+	/** 
+		This SensorTransform allows to split a sensor transform's task space
+		into blocks of different sizes. And then apply a SensorTransform to these individual 
+		sensor transform blocks..
+	struct SplitAndApplySensorTransform : public SensorTransform {
+
+	};
+
+	typedef boost::shared_ptr<SplitAndApplySensorTransform> SplitAndApplySensorTransformPtr;
+	**/
+
+	
 } // namespace
 
 #endif
