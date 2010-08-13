@@ -195,16 +195,6 @@ namespace CBF {
 			std::string m_DefaultComponentName;
 	};
 	
-	/** 
-		This SensorTransform allows to split a sensor transform's task space
-		into blocks of different sizes. And then apply a SensorTransform to these individual 
-		sensor transform blocks..
-	struct SplitAndApplySensorTransform : public SensorTransform {
-
-	};
-
-	typedef boost::shared_ptr<SplitAndApplySensorTransform> SplitAndApplySensorTransformPtr;
-	**/
 
 #ifdef CBF_HAVE_XSD
 	template struct XMLBaseFactory<SensorTransform, SensorTransformType>;

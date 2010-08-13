@@ -21,6 +21,9 @@ namespace CBF {
 
 		public:
 			std::vector<XMLDerivedFactoryBase<TBase>* > m_DerivedFactories;
+			/**
+
+			*/
 			static XMLBaseFactory *instance() { 
 				if (m_Instance) 
 					{ return m_Instance; }
@@ -33,7 +36,7 @@ namespace CBF {
 					boost::shared_ptr<TBase> p = m_DerivedFactories[i]->create(xml_instance);
 					if (p.get()) return p;
 				}
-				CBF_THROW_RUNTIME_ERROR("No creator found for this " << TBase::type_name())
+				CBF_THROW_RUNTIME_ERROR("No creator found for this " << TBase::type_name() << xml_instance)
 				return boost::shared_ptr<TBase>();
 			}
 	};
