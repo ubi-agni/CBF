@@ -75,7 +75,7 @@ namespace CBF {
 			CBF_DEBUG("range: " << current_task_pos << " " << current_task_pos + m_SensorTransforms[i]->task_dim())
 			ublas::matrix_range<FloatMatrix > mr(
 				m_TaskJacobian,
-				ublas::range(current_task_pos, m_SensorTransforms[i]->task_dim()),
+				ublas::range(current_task_pos, current_task_pos + m_SensorTransforms[i]->task_dim()),
 				ublas::range(0, resource_dim())
 			);
 
@@ -83,6 +83,8 @@ namespace CBF {
 			FloatMatrix tmp;
 			tmp = m_SensorTransforms[i]->task_jacobian();
 	
+			CBF_DEBUG("tmp " << tmp)
+
 			mr.assign(tmp);
 			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian)
 	

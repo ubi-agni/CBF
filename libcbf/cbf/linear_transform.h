@@ -40,22 +40,16 @@ typedef boost::shared_ptr<LinearSensorTransform> LinearSensorTransformPtr;
 struct LinearSensorTransform : public SensorTransform {
 	CBF_PLUGIN_DECL_METHODS(LinearSensorTransform)
 
-	FloatMatrix m_Matrix;
-
 	void update() {
-		m_Result = ublas::prod(m_Matrix, m_Resource->get());
+		m_Result = ublas::prod(m_TaskJacobian, m_Resource->get());
 	}
 
-	LinearSensorTransform() :
-		m_Matrix(ublas::identity_matrix<Float>(1))
-	{
-
+	LinearSensorTransform() {
+		m_TaskJacobian = ublas::identity_matrix<Float>(1);
 	}
 
-	LinearSensorTransform(FloatMatrix &m) :
-		m_Matrix(m)
-	{
-
+	LinearSensorTransform(FloatMatrix &m) {
+		m_TaskJacobian = m ;
 	}
 
 	/**
@@ -63,7 +57,7 @@ struct LinearSensorTransform : public SensorTransform {
 		this is bound to a resource.
 	*/
 	virtual unsigned int resource_dim() const {
-		return m_Matrix.size2();
+		return m_TaskJacobian.size2();
 	}
 
 	/**
@@ -71,7 +65,7 @@ struct LinearSensorTransform : public SensorTransform {
 		this is bound to a resource.
 	*/
 	virtual unsigned int task_dim() const {
-		return m_Matrix.size1();
+		return m_TaskJacobian.size1();
 	}
 };
 

@@ -12,7 +12,7 @@ example for a more "real life example".
 <Controller xsi:type="PrimitiveControllerType">
  <Name>foo</Name>
 
- <Coefficient> 1 </Coefficient>
+ <Coefficient> 0.5 </Coefficient>
 
  <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
   <Threshold>0.01</Threshold>
@@ -34,7 +34,6 @@ example for a more "real life example".
  </Potential>
  
  <SensorTransform xsi:type="CompositeSensorTransformType">
-
   <SensorTransform xsi:type="LinearSensorTransformType">
    <Matrix xsi:type="BoostMatrixType">
     <String> [1,3]((1,2,3)) </String>
@@ -52,7 +51,6 @@ example for a more "real life example".
     <String> [1,3]((1,3,2)) </String>
    </Matrix>
   </SensorTransform>
-
  </SensorTransform>
 
  <EffectorTransform xsi:type="TransposeEffectorTransformType"/>
