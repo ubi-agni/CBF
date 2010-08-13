@@ -41,8 +41,6 @@ namespace CBF {
 			}
 	};
 
-	
-
 	template <class T, class TType, class TBase, class TBaseType>
 	struct XMLDerivedFactory : XMLDerivedFactoryBase<TBase> {
 #if 0
