@@ -21,6 +21,7 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/sensor_transform.h>
+#include <cbf/xml_factories.h>
 
 #ifdef CBF_HAVE_XSD
 	#include <cbf/schemas.hxx>

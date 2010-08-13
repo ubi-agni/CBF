@@ -104,15 +104,6 @@ namespace CBF {
 		virtual unsigned int resource_dim() const { return m_Operand->resource_dim(); }
 	};
 
-#if 0
-	template struct OperationSensorTransform<
-		GenericSensorTransformOperation<
-			std::negate<FloatVector>,  
-			std::negate<FloatMatrix>
-		>
-	>;
-#endif
-
 	typedef struct OperationSensorTransform<
 		GenericSensorTransformOperation<
 			std::negate<FloatVector>,  

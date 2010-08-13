@@ -135,13 +135,6 @@ namespace CBF {
 
 	CBF_PLUGIN_CLASS(CompositeSensorTransform, SensorTransform)
 
-	
 	static XMLDerivedFactory<CompositeSensorTransform, CompositeSensorTransformType, SensorTransform, SensorTransformType> x;
-#if 0
-template<> 
-	XMLDerivedFactory<CompositeSensorTransform, CompositeSensorTransformType, SensorTransform, SensorTransformType>* 
-		XMLBaseDerivedFactory<CompositeSensorTransform, CompositeSensorTransformType, SensorTransform, SensorTransformType>::m_Instance = 0;
-#endif
-
 };
 

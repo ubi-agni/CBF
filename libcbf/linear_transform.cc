@@ -30,21 +30,7 @@ namespace CBF {
 		LinearSensorTransform::LinearSensorTransform(const LinearSensorTransformType &xml_instance) 
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
-#if 0
-			const MatrixType *m = &xml_instance.Matrix();
-		
-			const BoostMatrixType *m2 = 
-				dynamic_cast<const BoostMatrixType*>(m);
 
-			if (m2) {
-				std::stringstream stream(std::string(m2->String()));
-				stream >> m_TaskJacobian;
-				CBF_DEBUG(m_Matrix)
-				if ((m_Matrix.size1() == 0) && (m_Matrix.size2() == 0)) 
-					throw std::runtime_error
-						("[LinearSensorTransform]: Matrix is empty");
-			}
-#endif
 			m_TaskJacobian = create_matrix(xml_instance.Matrix());
 		}
 

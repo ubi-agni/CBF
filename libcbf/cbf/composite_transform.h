@@ -24,7 +24,6 @@
 #define CBF_COMPOSITE_TRANSFORM_HH
 
 #include <cbf/plugin_decl_macros.h>
-#include <cbf/xml_factories.h>
 #include <cbf/sensor_transform.h>
 
 #include <vector>

@@ -39,8 +39,8 @@
 class SensorTransformType;
 
 #ifdef CBF_HAVE_XSD
-#include <cbf/schemas.hxx>
 #include <cbf/xml_factories.h>
+#include <cbf/schemas.hxx>
 #endif
 
 #include <string>
