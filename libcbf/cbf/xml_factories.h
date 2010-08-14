@@ -3,6 +3,7 @@
 
 #include <cbf/exceptions.h>
 #include <cbf/schemas.hxx>
+#include <cbf/debug_macros.h>
 
 namespace CBF {
 
@@ -16,7 +17,9 @@ namespace CBF {
 	struct XMLBaseFactory {
 		protected:
 			static XMLBaseFactory *m_Instance;
-			XMLBaseFactory() { }
+			XMLBaseFactory() { 
+					CBF_DEBUG("instance (mangled type name follows): " << typeid(this).name())
+			}
 
 
 		public:
@@ -27,8 +30,9 @@ namespace CBF {
 			static XMLBaseFactory *instance() { 
 				if (m_Instance) 
 					{ return m_Instance; }
-				else 
-					{ return (m_Instance = new XMLBaseFactory<TBase, TBaseType>); }
+				else { 
+					return (m_Instance = new XMLBaseFactory<TBase, TBaseType>); 
+				}
 			}
 
 			virtual boost::shared_ptr<TBase> create(const ::xml_schema::type &xml_instance) {
@@ -36,7 +40,7 @@ namespace CBF {
 					boost::shared_ptr<TBase> p = m_DerivedFactories[i]->create(xml_instance);
 					if (p.get()) return p;
 				}
-				CBF_THROW_RUNTIME_ERROR("No creator found for this " << TBase::type_name() << xml_instance)
+				CBF_THROW_RUNTIME_ERROR("No creator found for this " << typeid(this).name() << xml_instance)
 				return boost::shared_ptr<TBase>();
 			}
 	};
@@ -47,8 +51,10 @@ namespace CBF {
 		protected:
 			static XMLDerivedFactory *m_Instance;
 #endif
-			XMLDerivedFactory() 
-				{ XMLBaseFactory<TBase, TBaseType>::instance()->m_DerivedFactories.push_back(this); }
+			XMLDerivedFactory() { 
+				CBF_DEBUG("register (mangled type name follows): " << typeid(this).name())
+				XMLBaseFactory<TBase, TBaseType>::instance()->m_DerivedFactories.push_back(this); 
+			}
 
 		public:
 #if 0

@@ -78,8 +78,6 @@ namespace CBF {
 
 		}
 
-		static std::string type_name() { return "SensorTransform"; }
-
 		/**
 			@brief A virtual desctructor to allow the clean destruction 
 			of subclass objects through a base class pointer..

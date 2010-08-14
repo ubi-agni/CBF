@@ -1,4 +1,5 @@
 #include <cbf/functional.h>
+
 namespace CBF {
 
 typedef MapGenericBlockWiseSensorTransformOperation<
@@ -7,11 +8,14 @@ typedef MapGenericBlockWiseSensorTransformOperation<
 
 
 typedef OperationSensorTransform<
-	neg
+	neg,
+	NegateOperationSensorTransformType
 > negneg;
 
 
-// static XMLDerivedFactory<negneg, CompositeSensorTransformType, SensorTransform, SensorTransformType> x;
+static XMLDerivedFactory<
+	negneg, NegateOperationSensorTransformType, SensorTransform, SensorTransformType
+> x;
 
 } // namespace
 

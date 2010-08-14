@@ -17,7 +17,8 @@ int main() {
 	OperationSensorTransform<
 		MapGenericBlockWiseSensorTransformOperation<
 			std::negate<FloatVector>, std::negate<FloatMatrix> 
-		> 
+		>,
+		NegateOperationSensorTransformType
 	> st(neg, id);
 
 	DummyResourcePtr r(new DummyResource(9));

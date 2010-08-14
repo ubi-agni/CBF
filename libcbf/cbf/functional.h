@@ -48,7 +48,7 @@ namespace CBF {
 	struct MapGenericBlockWiseSensorTransformOperation : public UnarySensorTransformOperation {
 		unsigned int blocksize;
 
-		MapGenericBlockWiseSensorTransformOperation(unsigned int blocksize) : 
+		MapGenericBlockWiseSensorTransformOperation(unsigned int blocksize = 0) : 
 			blocksize(blocksize) { }
 
 		virtual FloatVector operator()(const FloatVector &input) 
@@ -84,12 +84,19 @@ namespace CBF {
 		This class provides a way to create a SensorTransform that 
 		performs the Operation each cycle on the operand
 	*/
-	template <class Operation>
+	#ifdef CBF_HAVE_XSD
+		template <class Operation, class XMLType>
+	#else
+		template <class Operation>
+	#endif
 	struct OperationSensorTransform : public SensorTransform {
+		SensorTransformPtr m_Operand;
+		Operation m_Operation;
+
 		OperationSensorTransform(Operation &operation, SensorTransformPtr operand = SensorTransformPtr()) 
 			: m_Operand(operand), m_Operation(operation) { }
-		SensorTransformPtr m_Operand;
-		Operation &m_Operation;
+
+		OperationSensorTransform(const XMLType &xml_instance) : SensorTransform(xml_instance) { }
 
 		virtual void set_resource(ResourcePtr res) {
 			m_Operand->set_resource(res);
@@ -109,8 +116,10 @@ namespace CBF {
 		GenericSensorTransformOperation<
 			std::negate<FloatVector>,  
 			std::negate<FloatMatrix>
-		>
+		>,
+		NegateOperationSensorTransformType
 	> NegateOperationSensorTransform;
+
 
 	template <class Operation>
 	struct MapSensorTransform : public SensorTransform {
