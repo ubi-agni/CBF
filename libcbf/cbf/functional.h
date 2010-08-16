@@ -96,7 +96,12 @@ namespace CBF {
 		OperationSensorTransform(Operation &operation, SensorTransformPtr operand = SensorTransformPtr()) 
 			: m_Operand(operand), m_Operation(operation) { }
 
-		OperationSensorTransform(const XMLType &xml_instance) : SensorTransform(xml_instance) { }
+	#ifdef CBF_HAVE_XSD
+		OperationSensorTransform(const XMLType &xml_instance) : SensorTransform(xml_instance) { 
+			SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(xml_instance.Operand()));
+			m_Operand = tr;
+		}
+	#endif
 
 		virtual void set_resource(ResourcePtr res) {
 			m_Operand->set_resource(res);

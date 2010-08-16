@@ -42,7 +42,7 @@ SensorTransform::SensorTransform(const SensorTransformType &xml_instance) {
 }
 
 template<> XMLBaseFactory<SensorTransform, SensorTransformType>* 
-		XMLBaseFactory<SensorTransform, SensorTransformType>::m_Instance = 0;
+		XMLBaseFactory<SensorTransform, SensorTransformType>::m_Instance __attribute__((init_priority(300))) = 0;
 
 
 #endif
