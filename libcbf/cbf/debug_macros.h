@@ -30,9 +30,9 @@
 	#define CBF_DEBUG(arg) ;
 #else
 	#ifdef CBF_DEBUG_COLOR
-		#define CBF_DEBUG(arg) std::cerr << std::fixed << std::setprecision(14) << "\033[22;32m[" << __FILE__ << ":" << __LINE__ << " - \033[22;33m" << __FUNCTION__ << "()\033[22;32m]: \033[22;37m" << arg <<  std::endl;
+		#define CBF_DEBUG(arg) std::cerr << std::fixed << std::setprecision(14) << "\033[22;32m[" << __FILE__ << ":" << __LINE__ << " - \033[22;33m" << __FUNCTION__ << "()\033[22;32m]: \033[22;37m" << arg <<  std::endl << std::flush;
 	#else
-		#define CBF_DEBUG(arg) std::cerr << std::fixed << std::setprecision(14) << std::fixed << std::setprecision(8) << """[" << __FILE__ << ":" << __LINE__ << " - " << __FUNCTION__ << "()]: " << arg <<  std::endl;
+		#define CBF_DEBUG(arg) std::cerr << std::fixed << std::setprecision(14) << std::fixed << std::setprecision(8) << """[" << __FILE__ << ":" << __LINE__ << " - " << __FUNCTION__ << "()]: " << arg <<  std::endl << std::flush;
 	#endif
 #endif
 

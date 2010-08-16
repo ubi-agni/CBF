@@ -72,15 +72,19 @@ namespace CBF {
 			m_SensorTransforms[i]->update();
 	
 			//! Assemble total jacobian..
+			CBF_DEBUG("range: " << current_task_pos << " " << current_task_pos + m_SensorTransforms[i]->task_dim())
 			ublas::matrix_range<FloatMatrix > mr(
 				m_TaskJacobian,
 				ublas::range(current_task_pos, current_task_pos + m_SensorTransforms[i]->task_dim()),
 				ublas::range(0, resource_dim())
 			);
+
 	
 			FloatMatrix tmp;
 			tmp = m_SensorTransforms[i]->task_jacobian();
 	
+			CBF_DEBUG("tmp " << tmp)
+
 			mr.assign(tmp);
 			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian)
 	
@@ -114,9 +118,14 @@ namespace CBF {
 				++it
 			)
 			{
+#if 0
 				SensorTransformPtr tr(PluginPool<SensorTransform>::get_instance()->create_from_xml(*it));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
+#endif
+
+				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(*it));
+				transforms.push_back(tr);
 			}
 		
 			set_transforms(transforms);
@@ -125,5 +134,7 @@ namespace CBF {
 	#endif
 
 	CBF_PLUGIN_CLASS(CompositeSensorTransform, SensorTransform)
+
+	static XMLDerivedFactory<CompositeSensorTransform, CompositeSensorTransformType, SensorTransform, SensorTransformType> x;
 };
 

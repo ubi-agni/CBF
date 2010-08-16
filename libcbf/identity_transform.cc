@@ -41,6 +41,7 @@ namespace CBF {
 			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!")
 			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(m_Dim,m_Dim);
 		}
+
 	#endif
 	
 	CBF_PLUGIN_CLASS(IdentitySensorTransform, SensorTransform)

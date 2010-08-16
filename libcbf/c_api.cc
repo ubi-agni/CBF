@@ -23,7 +23,7 @@
 #include <cbf/c_api.h>
 
 #include <cbf/config.h>
-#include <schemas.hxx>
+#include <cbf/schemas.hxx>
 #include <cbf/controller.h>
 #include <cbf/primitive_controller.h>
 #include <cbf/dummy_resource.h>

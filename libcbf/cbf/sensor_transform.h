@@ -33,13 +33,26 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <functional>
+#include <map>
 
 class SensorTransformType;
+
+#ifdef CBF_HAVE_XSD
+#include <cbf/xml_factories.h>
+#include <cbf/schemas.hxx>
+#endif
+
+#include <string>
 
 namespace CBF {
 	
 	namespace ublas = boost::numeric::ublas;
-	
+
+	struct SensorTransform;
+	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;
+
+
 	/**
 		@brief A SensorTransform maps resource values into the task space. 
 
@@ -60,6 +73,10 @@ namespace CBF {
 		}
 
 		SensorTransform(const SensorTransformType &xml_instance);	
+
+		static SensorTransformPtr create_from_xml(const SensorTransformType &xml_instance) {
+
+		}
 
 		/**
 			@brief A virtual desctructor to allow the clean destruction 
@@ -176,7 +193,11 @@ namespace CBF {
 			std::string m_DefaultComponentName;
 	};
 	
-	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;
+
+#ifdef CBF_HAVE_XSD
+	template struct XMLBaseFactory<SensorTransform, SensorTransformType>;
+#endif
+	
 } // namespace
 
 #endif

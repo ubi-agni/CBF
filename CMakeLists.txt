@@ -100,16 +100,25 @@ else()
   message(STATUS "  pyxbgen not found")
 endif()
 
+message(STATUS "Looking for git")
+find_program(GIT_BIN NAMES git)
+if (NOT "${GIT_BIN}" STREQUAL "GIT_BIN-NOTFOUND")
+  message(STATUS "  found git: ${GIT_BIN}")
+  set(CBF_HAVE_GIT 1)
+else()
+  message(STATUS "  git not found!")
+endif()
+
 message(STATUS "Looking for doxygen")
 find_program(DOXYGEN_BIN NAMES doxygen)
 if(NOT "${DOXYGEN_BIN}" STREQUAL "DOXYGEN_BIN-NOTFOUND")
   find_path(DOXYFILE Doxyfile ${PROJECT_SOURCE_DIR})
   if(NOT "${DOXYFILE}" STREQUAL "DOXYFILE-NOTFOUND")
-    message(STATUS "found Doxygen, a Documentation can be build with 'make doxy'")
+    message(STATUS "found Doxygen, a documentation will be build")
     add_custom_target(doxy
       ALL
-      COMMAND ${DOXYGEN_BIN} "${DOXYFILE}/Doxyfile"
-      COMMENT "Creating html and tex Documentation in doc/"
+      COMMAND ${DOXYGEN_BIN} ${DOXYFILE}/Doxyfile
+      COMMENT "Creating html and tex documentation in doc/"
     )
     install(
       DIRECTORY doc/html doc/latex

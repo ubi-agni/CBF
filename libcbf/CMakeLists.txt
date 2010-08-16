@@ -4,6 +4,8 @@ include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 
 set(CBF_SOURCES
+  sensor_transform.cc 
+  composite_transform.cc
   control_basis.cc
   controller.cc 
   composite_reference.cc
@@ -14,12 +16,10 @@ set(CBF_SOURCES
   composite_primitive_controller.cc 
   resource.cc 
   dummy_resource.cc 
-  sensor_transform.cc 
   effector_transform.cc 
   potential.cc 
   utilities.cc
   combination_strategy.cc
-  composite_transform.cc
   axis_angle_potential.cc
   axis_potential.cc
   composite_potential.cc
@@ -34,6 +34,9 @@ set(CBF_SOURCES
   difference_sensor_transform.cc
   weighted_sum_transforms.cc
   task_space_plan.cc
+  norm_transform.cc
+  transpose_transform.cc
+  functional.cc
   )
 
 set(CBF_LIBS "")
@@ -43,7 +46,9 @@ set(CBF_LINKDIRS "")
 
 if(CBF_HAVE_KDL)
   set(CBF_SOURCES ${CBF_SOURCES} kdl_transforms.cc)
-  set(CBF_SOURCES ${CBF_SOURCES} c_api.cc)
+  if(CBF_HAVE_XSD)
+    set(CBF_SOURCES ${CBF_SOURCES} c_api.cc)
+  endif()
   set(CBF_LIBS ${CBF_LIBS} ${KDL_LDFLAGS})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${KDL_INCLUDE_DIRS})
   set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_BINARY_DIR}/libcbf/cbf/")
@@ -65,8 +70,10 @@ else()
   message(STATUS "  excluding memory_ressource.cc because memory was not found")
 endif()
 
-if (CBF_HAVE_XCF AND CBF_HAVE_XMLTIO)
-  set(CBF_SOURCES ${CBF_SOURCES} xcf_vector_reference.cc)
+if (CBF_HAVE_XCF)
+  if (CBF_HAVE_XSD)
+    set(CBF_SOURCES ${CBF_SOURCES} xcf_vector_reference.cc)
+  endif()
   set(CBF_LIBS ${CBF_LIBS} ${XCF_LDFLAGS})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${XCF_INCLUDE_DIRS})
   if (CBF_HAVE_XMLTIO)

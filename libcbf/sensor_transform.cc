@@ -21,6 +21,7 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/sensor_transform.h>
+#include <cbf/xml_factories.h>
 
 #ifdef CBF_HAVE_XSD
 	#include <cbf/schemas.hxx>
@@ -39,6 +40,11 @@ SensorTransform::SensorTransform(const SensorTransformType &xml_instance) {
 			m_ComponentNames.push_back(*it);
 	}
 }
+
+template<> XMLBaseFactory<SensorTransform, SensorTransformType>* 
+		XMLBaseFactory<SensorTransform, SensorTransformType>::m_Instance = 0;
+
+
 #endif
 
 } // namespace

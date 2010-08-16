@@ -22,6 +22,7 @@
 
 #include <cbf/linear_transform.h>
 #include <cbf/plugin_macros.h>
+#include <cbf/utilities.h>
 
 namespace CBF {
 
@@ -29,21 +30,13 @@ namespace CBF {
 		LinearSensorTransform::LinearSensorTransform(const LinearSensorTransformType &xml_instance) 
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
-			const MatrixType *m = &xml_instance.Matrix();
-		
-			const BoostMatrixType *m2 = 
-				dynamic_cast<const BoostMatrixType*>(m);
 
-			if (m2) {
-				std::stringstream stream(std::string(m2->String()));
-				stream >> m_Matrix;
-				CBF_DEBUG(m_Matrix)
-				if ((m_Matrix.size1() == 0) && (m_Matrix.size2() == 0)) 
-					throw std::runtime_error
-						("[LinearSensorTransform]: Matrix is empty");
-			}
+			m_TaskJacobian = create_matrix(xml_instance.Matrix());
 		}
+
+		static XMLDerivedFactory<LinearSensorTransform, LinearSensorTransformType, SensorTransform, SensorTransformType> x;
 	#endif
 		
 	CBF_PLUGIN_CLASS(LinearSensorTransform, SensorTransform)
+
 } // namespace
