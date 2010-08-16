@@ -7,60 +7,60 @@ if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
 
   message(STATUS "  adding executable cbf_test_kdl_transforms")
   add_executable(cbf_test_kdl_transforms
-	cbf_test_kdl_transforms.cc
-	)
+    cbf_test_kdl_transforms.cc
+    )
 
   target_link_libraries(cbf_test_kdl_transforms
-	cbf
-	)
+    cbf
+    )
 
   message(STATUS "  adding executable cbf_simple_test")
   add_executable(cbf_simple_test
-	cbf_simple_test.cc
-	)
+    cbf_simple_test.cc
+    )
 
   target_link_libraries(cbf_simple_test
-	cbf
-	)
+    cbf
+    )
 
   message(STATUS "  adding executable cbf_test_axis_potential")
   add_executable(cbf_test_axis_potential
-	cbf_test_axis_potential.cc
-	)
+    cbf_test_axis_potential.cc
+    )
 
   target_link_libraries(cbf_test_axis_potential
-	cbf
-	)
+    cbf
+    )
 
   message(STATUS "  adding executable cbf_test_axis_potential2")
   add_executable(cbf_test_axis_potential2
-	cbf_test_axis_potential2.cc
-	)
+    cbf_test_axis_potential2.cc
+    )
 
   target_link_libraries(cbf_test_axis_potential2
-	cbf
-	)
+    cbf
+    )
 
   if(${CBF_HAVE_KDLCHAINVIZ})
     message(STATUS "adding executable cbf_test_kdl_transforms_view")
     add_executable(cbf_test_kdl_transforms_view
-	cbf_test_kdl_transforms_view.cc
-	)
+      cbf_test_kdl_transforms_view.cc
+      )
 
     target_link_libraries(
-	cbf
-	KDLCHAINVIZ
-	QKDLCHAINVIZ
-	QTCORE
-	QTGUI
-	QTOPENGL
-	OROCOS-KDL
-	)
+      cbf
+      KDLCHAINVIZ
+      QKDLCHAINVIZ
+      QTCORE
+      QTGUI
+      QTOPENGL
+      OROCOS-KDL
+      )
 
     if(${HAVE_SPACEMOUSE})
       target_link_libraries(cbf_test_kdl_transforms_view
-	SPACEMOUSE
-	)
+        SPACEMOUSE
+        )
     else()
       message(STATUS "  linking cbf_test_kdl_transforms without Spacemouse")
     endif()
