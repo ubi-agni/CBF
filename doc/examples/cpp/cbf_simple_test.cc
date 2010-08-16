@@ -32,7 +32,7 @@ int main() {
 
 	//! Create a PrimitiveController...
  	PrimitiveControllerPtr c
-		(new PrimitiveController(
+		(new CBF::PrimitiveController(
 			dr,
 			PotentialPtr(new SquarePotential(3, 0.1)),
 			SensorTransformPtr(new IdentitySensorTransform(3)),
