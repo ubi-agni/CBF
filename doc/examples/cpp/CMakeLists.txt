@@ -8,7 +8,7 @@ include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 include_directories("${PROJECT_BINARY_DIR}/libcbf/")
  
 if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
- include_directories(AFTER ${KDL_INCLUDE_DIRS})
+  include_directories(AFTER ${KDL_INCLUDE_DIRS})
 
   message(STATUS "  adding executable cbf_test_kdl_transforms")
   add_executable(cbf_test_kdl_transforms

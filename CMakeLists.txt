@@ -112,20 +112,15 @@ endif()
 message(STATUS "Looking for doxygen")
 find_program(DOXYGEN_BIN NAMES doxygen)
 if(NOT "${DOXYGEN_BIN}" STREQUAL "DOXYGEN_BIN-NOTFOUND")
-  find_path(DOXYFILE Doxyfile ${PROJECT_SOURCE_DIR})
-  if(NOT "${DOXYFILE}" STREQUAL "DOXYFILE-NOTFOUND")
-    message(STATUS "found Doxygen, a documentation will be build")
-    add_custom_target(doxy
-      COMMAND ${DOXYGEN_BIN} ${DOXYFILE}/Doxyfile
-      COMMENT "Creating html and tex documentation in doc/"
-    )
-    install(
-      DIRECTORY doc/html doc/latex
-      DESTINATION share/doc/cbf/
-    )
-  else()
-    message(STATUS "found doxygen but could not find Doxyfile")
-  endif()
+  message(STATUS "found Doxygen, a documentation can be build with 'make doxy'")
+  add_custom_target(doxy
+    COMMAND ${DOXYGEN_BIN} ${PROJECT_BINARY_DIR}/Doxyfile
+    COMMENT "Creating html and tex documentation in doc/"
+  )
+  install(
+    DIRECTORY ${PROJECT_BINARY_DIR}/doc/html ${PROJECT_BINARY_DIR}/doc/latex
+    DESTINATION share/doc/cbf/
+  )
 else()
   message(STATUS "  doxygen not found, documentation will not be available")
 endif()
@@ -135,6 +130,11 @@ configure_file(
   "${PROJECT_SOURCE_DIR}/libcbf/cbf/config.h.in"
   "${PROJECT_BINARY_DIR}/libcbf/cbf/config.h"
   )
+
+configure_file(
+  "${PROJECT_SOURCE_DIR}/Doxyfile.in"
+  "${PROJECT_BINARY_DIR}/Doxyfile"
+  ) 
 
 add_subdirectory(schemas)
 add_subdirectory(libcbf)
