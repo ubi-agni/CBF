@@ -473,7 +473,7 @@
   <xsd:complexContent>
    <xsd:extension base="SensorTransformType">
     <xsd:sequence>
-     <xsd:element name="BlockSize" type="xsd:nonNegativeInteger"/>
+     <xsd:element name="Blocksize" type="xsd:nonNegativeInteger"/>
      <xsd:element name="Operand" type="SensorTransformType"/>
     </xsd:sequence>
    </xsd:extension>

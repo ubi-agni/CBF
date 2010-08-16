@@ -19,6 +19,7 @@
 */
 
 #ifndef CBF_DEBUG_MACROS_HH
+#define CBF_DEBUG_MACROS_HH
 
 #include <cbf/config.h>
 
@@ -34,6 +35,26 @@
 	#else
 		#define CBF_DEBUG(arg) std::cerr << std::fixed << std::setprecision(14) << std::fixed << std::setprecision(8) << """[" << __FILE__ << ":" << __LINE__ << " - " << __FUNCTION__ << "()]: " << arg <<  std::endl << std::flush;
 	#endif
+#endif
+
+
+
+#ifdef __GNUC__
+	#undef CBF_UNMANGLE
+	#include <cxxabi.h>
+	#include <string>
+
+	inline std::string gcc_unmangle(const char *typen) {
+		int status;
+		char *tmp = abi::__cxa_demangle(typen, 0, 0, &status);
+		std::string ret(tmp);
+		free(tmp);
+		return ret;
+	}
+
+	#define CBF_UNMANGLE(X) (gcc_unmangle(X))
+#else
+	#define CBF_UNMANGLE(X) (X)
 #endif
 
 #endif

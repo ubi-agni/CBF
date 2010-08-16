@@ -45,5 +45,7 @@ namespace CBF {
 	#endif
 	
 	CBF_PLUGIN_CLASS(IdentitySensorTransform, SensorTransform)
+
+	static XMLDerivedFactory<IdentitySensorTransform, IdentitySensorTransformType, SensorTransform, SensorTransformType> x;
 } // namespace
 

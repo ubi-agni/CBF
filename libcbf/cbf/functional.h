@@ -46,34 +46,38 @@ namespace CBF {
 	*/
 	template <class VectorOperation, class MatrixOperation>
 	struct MapGenericBlockWiseSensorTransformOperation : public UnarySensorTransformOperation {
-		unsigned int blocksize;
+		unsigned int m_Blocksize;
 
 		MapGenericBlockWiseSensorTransformOperation(unsigned int blocksize = 0) : 
-			blocksize(blocksize) { }
+			m_Blocksize(blocksize) { }
 
 		virtual FloatVector operator()(const FloatVector &input) 
 		{
-			CBF_DEBUG("do some stuff")
+			CBF_DEBUG("Apply Operation on vector")
 			FloatVector tmp(input.size());
-			for (unsigned int i = 0, rows = input.size(); i < rows; i += blocksize) {
-				CBF_DEBUG(i << " " << blocksize)
-				ublas::vector_range<FloatVector> vr(tmp, ublas::range(i, i+blocksize));
-				ublas::vector_range<const FloatVector> vir(input, ublas::range(i, i+blocksize));
+			for (unsigned int i = 0, rows = input.size(); i < rows; i += m_Blocksize) {
+				CBF_DEBUG(i << " " << m_Blocksize)
+				ublas::vector_range<FloatVector> vr(tmp, ublas::range(i, i+m_Blocksize));
+				ublas::vector_range<const FloatVector> vir(input, ublas::range(i, i+m_Blocksize));
 				vr.assign(VectorOperation()(vir));
 			}
+			CBF_DEBUG("res in: " << input)
+			CBF_DEBUG("res out: " << tmp)
 			return tmp;
 		}
 
 		virtual FloatMatrix operator()(const FloatMatrix &input)
 		{
-			return MatrixOperation()(input); 
+			CBF_DEBUG("Apply Operation on matrix")
 			FloatMatrix tmp(input.size1(), input.size2());
-			for (unsigned int i = 0, rows = input.size1();  i < rows; i += blocksize) {
-				CBF_DEBUG(i << " " << blocksize)
-				ublas::matrix_range<FloatMatrix> vr(tmp, ublas::range(i, i+blocksize), ublas::range(0, tmp.size2()));
-				ublas::matrix_range<const FloatMatrix> vir(input, ublas::range(i, i+blocksize),  ublas::range(0, tmp.size2()));
+			for (unsigned int i = 0, rows = input.size1();  i < rows; i += m_Blocksize) {
+				CBF_DEBUG(i << " " << m_Blocksize)
+				ublas::matrix_range<FloatMatrix> vr(tmp, ublas::range(i, i+m_Blocksize), ublas::range(0, tmp.size2()));
+				ublas::matrix_range<const FloatMatrix> vir(input, ublas::range(i, i+m_Blocksize),  ublas::range(0, tmp.size2()));
 				vr.assign(MatrixOperation()(vir));
 			}
+			CBF_DEBUG("jac in: " << input)
+			CBF_DEBUG("jac out: " << tmp)
 			return tmp;
 		}
 	};
@@ -100,6 +104,7 @@ namespace CBF {
 		OperationSensorTransform(const XMLType &xml_instance) : SensorTransform(xml_instance) { 
 			SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(xml_instance.Operand()));
 			m_Operand = tr;
+			m_Operation = Operation(xml_instance.Blocksize());
 		}
 	#endif
 
@@ -109,7 +114,10 @@ namespace CBF {
 
 		virtual void update() {
 			m_Operand->update();
+			CBF_DEBUG("Applying operation on vector")
 			m_Result = m_Operation(m_Operand->result());
+
+			CBF_DEBUG("Applying operation on matrix")
 			m_TaskJacobian = m_Operation(m_Operand->task_jacobian());
 		}
 

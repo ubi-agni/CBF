@@ -18,9 +18,8 @@ namespace CBF {
 		protected:
 			static XMLBaseFactory *m_Instance;
 			XMLBaseFactory() { 
-					CBF_DEBUG("instance (mangled type name follows): " << typeid(this).name())
+					CBF_DEBUG("instance (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
 			}
-
 
 		public:
 			std::vector<XMLDerivedFactoryBase<TBase>* > m_DerivedFactories;
@@ -30,9 +29,7 @@ namespace CBF {
 			static XMLBaseFactory *instance() { 
 				if (m_Instance) 
 					{ return m_Instance; }
-				else { 
-					return (m_Instance = new XMLBaseFactory<TBase, TBaseType>); 
-				}
+				return (m_Instance = new XMLBaseFactory<TBase, TBaseType>); 
 			}
 
 			virtual boost::shared_ptr<TBase> create(const ::xml_schema::type &xml_instance) {
@@ -40,38 +37,29 @@ namespace CBF {
 					boost::shared_ptr<TBase> p = m_DerivedFactories[i]->create(xml_instance);
 					if (p.get()) return p;
 				}
-				CBF_THROW_RUNTIME_ERROR("No creator found for this " << typeid(this).name() << xml_instance)
+				CBF_THROW_RUNTIME_ERROR("No creator found for this " << CBF_UNMANGLE(typeid(this).name()) << xml_instance)
 				return boost::shared_ptr<TBase>();
 			}
 	};
 
 	template <class T, class TType, class TBase, class TBaseType>
 	struct XMLDerivedFactory : XMLDerivedFactoryBase<TBase> {
-#if 0
-		protected:
-			static XMLDerivedFactory *m_Instance;
-#endif
 			XMLDerivedFactory() { 
-				CBF_DEBUG("register (mangled type name follows): " << typeid(this).name())
+				CBF_DEBUG("register (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
 				XMLBaseFactory<TBase, TBaseType>::instance()->m_DerivedFactories.push_back(this); 
 			}
 
 		public:
-#if 0
-		static XMLDerivedFactory *instance() { 
-			if (m_Instance) { return m_Instance; }
-			else { return (m_Instance = new XMLDerivedFactory<T, TType, TBase, TBaseType>); }
-		}
-#endif
-
-		virtual boost::shared_ptr<TBase> create(const ::xml_schema::type &xml_instance) {
-			const TType* r = dynamic_cast<const TType*>(&xml_instance);
-			if (r) {
-				return boost::shared_ptr<TBase>(new T(*r));
+			virtual boost::shared_ptr<TBase> create(const ::xml_schema::type &xml_instance) {
+				CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(typeid(this).name()))
+				const TType* r = dynamic_cast<const TType*>(&xml_instance);
+				if (r) {
+					CBF_DEBUG("yes, i am the one")
+					return boost::shared_ptr<TBase>(new T(*r));
+				}
+				CBF_DEBUG("no i am not the one")
+				return boost::shared_ptr<TBase>();
 			}
-			return boost::shared_ptr<TBase>();
-		}
-		
 	};
 
 
