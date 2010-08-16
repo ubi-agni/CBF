@@ -1,3 +1,5 @@
+message(STATUS "In subdirectory apps/qcbf:")
+
 #if(CBF_HAVE_PYXBGEN)
 #  add_custom_target(
 #	 CBF_Schema_Module
@@ -14,7 +16,7 @@
 #endif()
 #
 if(CBF_HAVE_PYXBGEN)
-
+  message(STATUS "  creating target for cbf.py from schemas.xsd")
   add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/apps/qcbf/cbf.py
     COMMAND ${PYXBGEN_BIN} -m cbf -u ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
@@ -26,5 +28,6 @@ if(CBF_HAVE_PYXBGEN)
     ALL
     DEPENDS ${PROJECT_BINARY_DIR}/apps/qcbf/cbf.py
     )
-
+else()
+  message(STATUS "  cbf.py will not be created, because pyxbgen was not found")
 endif()

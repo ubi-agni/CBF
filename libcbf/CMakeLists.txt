@@ -1,4 +1,7 @@
+message(STATUS "In subdirectory libcbf:")
+
 include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
+include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 
 set(CBF_SOURCES
   control_basis.cc
@@ -43,9 +46,9 @@ if(CBF_HAVE_KDL)
   set(CBF_SOURCES ${CBF_SOURCES} c_api.cc)
   set(CBF_LIBS ${CBF_LIBS} ${KDL_LDFLAGS})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${KDL_INCLUDE_DIRS})
-  set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_SOURCE_DIR}/libcbf/cbf/")
+  set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_BINARY_DIR}/libcbf/cbf/")
 else()
-  message(STATUS "  excluding kdl_transforms.cc and c_api.cc because KDL wasa not found")
+  message(STATUS "  excluding kdl_transforms.cc and c_api.cc because KDL was not found")
 endif()
 
 if (CBF_HAVE_SPACEMOUSE)

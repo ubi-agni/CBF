@@ -1,3 +1,5 @@
+message(STATUS "In subdirectory schemas:")
+
 if(CBF_HAVE_XSD)
   message(STATUS "  creating target for schemas.hxx and schemas.cxx")
   add_custom_command(
