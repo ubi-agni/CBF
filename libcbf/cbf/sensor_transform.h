@@ -197,7 +197,7 @@ namespace CBF {
 #ifdef CBF_HAVE_XSD
 	template struct XMLBaseFactory<SensorTransform, SensorTransformType>;
 #endif
-	
+
 } // namespace
 
 #endif

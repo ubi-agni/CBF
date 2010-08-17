@@ -84,6 +84,18 @@ namespace CBF {
 	};
 	
 	typedef boost::shared_ptr<CompositeSensorTransform> CompositeSensorTransformPtr;
+
+	/**
+		This Sensor Transform allows to view a SensorTransform with a large
+		task space as a CompositeSensorTransform allowing to apply a
+		UnarySensorTransformOperation to each block..
+	*/
+	struct AsCompositeSensorTransform : public SensorTransform {
+		//! The transform we are wrapping
+		SensorTransformPtr m_Transform;
+
+		
+	};
 	
 } // Namespace
 

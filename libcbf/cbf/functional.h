@@ -39,17 +39,27 @@ namespace CBF {
 			{ return MatrixOperation()(input); }
 	};
 
+	
 
 	/**
 		If the task space of the sensor transform is built from same sized blocks
 		this this class allows to apply a function to the individual blocks
 	*/
 	template <class VectorOperation, class MatrixOperation>
-	struct MapGenericBlockWiseSensorTransformOperation : public UnarySensorTransformOperation {
+	struct MapGenericBlockWiseSensorTransformOperation  {
 		unsigned int m_Blocksize;
 
-		MapGenericBlockWiseSensorTransformOperation(unsigned int blocksize = 0) : 
-			m_Blocksize(blocksize) { }
+		unsigned int m_TaskDim;
+		unsigned int m_ResourceDim;
+
+		MapGenericBlockWiseSensorTransformOperation(
+			unsigned int blocksize = 0,
+			unsigned int task_dim = 1,
+			unsigned int resource_dim = 1
+		) : 
+			m_Blocksize(blocksize),
+			m_TaskDim(task_dim),
+			m_ResourceDim(resource_dim) { }
 
 		virtual FloatVector operator()(const FloatVector &input) 
 		{
@@ -80,8 +90,71 @@ namespace CBF {
 			CBF_DEBUG("jac out: " << tmp)
 			return tmp;
 		}
+
+		unsigned int task_dim() { return 1; }
 	};
 
+#if 0
+	/**
+		If the task space of the sensor transform is built from same sized blocks
+		this this class allows to apply a function to the individual blocks and 
+		accumulate the result. The resulting taskspace has the dimension of
+		blocksize..
+
+		The InitialVector and InitialMatrix are the accumulation basis (e.g. the
+		zero vector and zero matrix for a summing operation)
+
+		VectorOperation and MatrixOperation need to be binary functions that
+		take two vectors (matrices) and return a single vector (matrix)
+
+		The Vector and MatrixOperation take the accumulator as first argument
+		and the to be accumulated element as second argument..
+	*/
+	template <class VectorOperation, class MatrixOperation>
+	struct AccumulateGenericBlockWiseSensorTransformOperation  {
+		unsigned int m_Blocksize;
+		FloatVector m_InitialVector;
+		FloatMatrix m_InitialMatrix;
+
+		AccumulateGenericBlockWiseSensorTransformOperation(
+			unsigned int blocksize = 0,
+			FloatVector initial_vector,
+			FloatMatrix initial_matrix
+		) : 
+			m_Blocksize(blocksize),
+			m_InitialVector(initial_vector),
+			m_InitialMatrix(initial_matrix) 
+		{ }
+
+		virtual FloatVector operator()(const FloatVector &input) 
+		{
+			CBF_DEBUG("Apply Operation on vector")
+			FloatVector tmp = m_InitialVector;
+			for (unsigned int i = 0, rows = input.size(); i < rows; i += m_Blocksize) {
+				CBF_DEBUG(i << " " << m_Blocksize)
+				ublas::vector_range<const FloatVector> vir(input, ublas::range(i, i+m_Blocksize));
+				tmp = VectorOperation(tmp, vir);
+			}
+			CBF_DEBUG("res in: " << input)
+			CBF_DEBUG("res out: " << tmp)
+			return tmp;
+		}
+
+		virtual FloatMatrix operator()(const FloatMatrix &input)
+		{
+			CBF_DEBUG("Apply Operation on matrix")
+			FloatMatrix tmp = m_InitialMatrix;
+			for (unsigned int i = 0, rows = input.size1();  i < rows; i += m_Blocksize) {
+				CBF_DEBUG(i << " " << m_Blocksize)
+				ublas::matrix_range<const FloatMatrix> vir(input, ublas::range(i, i+m_Blocksize),  ublas::range(0, tmp.size2()));
+				tmp = MatrixOperation(tmp, vir);
+			}
+			CBF_DEBUG("jac in: " << input)
+			CBF_DEBUG("jac out: " << tmp)
+			return tmp;
+		}
+	};
+#endif
 
 
 	/**
@@ -125,15 +198,6 @@ namespace CBF {
 		virtual unsigned int resource_dim() const { return m_Operand->resource_dim(); }
 	};
 
-	typedef struct OperationSensorTransform<
-		GenericSensorTransformOperation<
-			std::negate<FloatVector>,  
-			std::negate<FloatMatrix>
-		>,
-		NegateOperationSensorTransformType
-	> NegateOperationSensorTransform;
-
-
 	template <class Operation>
 	struct MapSensorTransform : public SensorTransform {
 		typedef std::vector<SensorTransformPtr> OperandsVector;
@@ -145,6 +209,7 @@ namespace CBF {
 			}
 		}
 	};
+
 } // namespace
 
 #endif

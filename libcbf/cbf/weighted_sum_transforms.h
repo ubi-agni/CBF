@@ -106,8 +106,6 @@ struct WeightedSumSensorTransform : public SensorTransform {
 		protected:
 			std::vector<SensorTransformPtr> m_Transforms;
 			FloatVector m_Weights;
-
-
 };
 
 typedef boost::shared_ptr<WeightedSumSensorTransform>

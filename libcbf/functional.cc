@@ -4,17 +4,20 @@ namespace CBF {
 
 typedef MapGenericBlockWiseSensorTransformOperation<
 	std::negate<FloatVector>, std::negate<FloatMatrix> 
-> neg;
+> NegateBlockWiseSensorTransformOperation;
 
 
 typedef OperationSensorTransform<
-	neg,
+	NegateBlockWiseSensorTransformOperation,
 	NegateOperationSensorTransformType
-> negneg;
+> NegateOperationSensorTransform;
 
 
 static XMLDerivedFactory<
-	negneg, NegateOperationSensorTransformType, SensorTransform, SensorTransformType
+	NegateOperationSensorTransform, 
+	NegateOperationSensorTransformType, 
+	SensorTransform, 
+	SensorTransformType
 > x;
 
 } // namespace
