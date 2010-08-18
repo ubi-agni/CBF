@@ -159,11 +159,7 @@ namespace CBF {
 		This class provides a way to create a SensorTransform that 
 		performs the Operation each cycle on the operand
 	*/
-	#ifdef CBF_HAVE_XSD
-		template <class Operation, class XMLType>
-	#else
-		template <class Operation>
-	#endif
+	template <class Operation>
 	struct OperationSensorTransform : public SensorTransform {
 		SensorTransformPtr m_Operand;
 		Operation m_Operation;
@@ -171,13 +167,14 @@ namespace CBF {
 		OperationSensorTransform(Operation &operation, SensorTransformPtr operand = SensorTransformPtr()) 
 			: m_Operand(operand), m_Operation(operation) { }
 
-	#ifdef CBF_HAVE_XSD
-		OperationSensorTransform(const XMLType &xml_instance) : SensorTransform(xml_instance) { 
- 			SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(xml_instance.Operand()));
-			m_Operand = tr;
-			m_Operation = Operation(xml_instance.Blocksize());
-		}
-	#endif
+		#ifdef CBF_HAVE_XSD
+			template<class XMLType>
+			OperationSensorTransform(const XMLType &xml_instance) : SensorTransform(xml_instance) { 
+ 				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(xml_instance.Operand()));
+				m_Operand = tr;
+				m_Operation = Operation(xml_instance.Blocksize());
+			}
+		#endif
 
 		virtual void set_resource(ResourcePtr res) {
 			m_Operand->set_resource(res);
@@ -195,7 +192,6 @@ namespace CBF {
 		virtual unsigned int task_dim() const { return m_Operand->task_dim(); }
 		virtual unsigned int resource_dim() const { return m_Operand->resource_dim(); }
 	};
-
 
 } // namespace
 

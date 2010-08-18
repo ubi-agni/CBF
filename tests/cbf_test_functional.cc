@@ -8,17 +8,18 @@
 using namespace CBF;
 
 int main() {
-	MapBlockWiseSensorTransformOperation
-		<std::negate<FloatVector>, std::negate<FloatMatrix> >
-			neg(3);
+	MapBlockWiseSensorTransformOperation<
+		std::negate<FloatVector>, 
+		std::negate<FloatMatrix>
+	> neg(3);
 
 	SensorTransformPtr id(new IdentitySensorTransform(9));	
 
 	OperationSensorTransform<
 		MapBlockWiseSensorTransformOperation<
-			std::negate<FloatVector>, std::negate<FloatMatrix> 
-		>,
-		NegateOperationSensorTransformType
+			std::negate<FloatVector>, 
+			std::negate<FloatMatrix> 
+		>
 	> st(neg, id);
 
 	DummyResourcePtr r(new DummyResource(9));

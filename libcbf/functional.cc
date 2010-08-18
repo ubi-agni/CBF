@@ -9,27 +9,26 @@ typedef MapBlockWiseSensorTransformOperation<
 
 
 typedef OperationSensorTransform<
-	NegateBlockWiseSensorTransformOperation,
-	NegateOperationSensorTransformType
+	NegateBlockWiseSensorTransformOperation
 > NegateOperationSensorTransform;
 
 #ifdef CBF_HAVE_XSD
-template <> OperationSensorTransform<
-	NegateBlockWiseSensorTransformOperation,
-	NegateOperationSensorTransformType
->::OperationSensorTransform(const NegateOperationSensorTransformType &xml_instance) {
-	CBF_DEBUG("MWAHAHHAHAHAHHAHHH!!!")
-}
+	template<> template<> OperationSensorTransform
+		<NegateBlockWiseSensorTransformOperation>
+	::OperationSensorTransform
+		(const NegateOperationSensorTransformType &xml_instance) 
+		{ CBF_DEBUG("MWAHAHHAHAHAHHAHHH!!!"); }
 #endif
 
 
-
-static XMLDerivedFactory<
-	NegateOperationSensorTransform, 
-	NegateOperationSensorTransformType, 
-	SensorTransform, 
-	SensorTransformType
-> x;
+#ifdef CBF_HAVE_XSD
+	static XMLDerivedFactory<
+		NegateOperationSensorTransform, 
+		NegateOperationSensorTransformType, 
+		SensorTransform, 
+		SensorTransformType
+	> x;
+#endif
 
 } // namespace
 
