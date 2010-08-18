@@ -8,14 +8,14 @@
 using namespace CBF;
 
 int main() {
-	MapGenericBlockWiseSensorTransformOperation
+	MapBlockWiseSensorTransformOperation
 		<std::negate<FloatVector>, std::negate<FloatMatrix> >
 			neg(3);
 
 	SensorTransformPtr id(new IdentitySensorTransform(9));	
 
 	OperationSensorTransform<
-		MapGenericBlockWiseSensorTransformOperation<
+		MapBlockWiseSensorTransformOperation<
 			std::negate<FloatVector>, std::negate<FloatMatrix> 
 		>,
 		NegateOperationSensorTransformType

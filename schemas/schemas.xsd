@@ -4,11 +4,16 @@
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+ <xsd:complexType name="CBFObject" abstract="true"/>
+ <xsd:element name="Object" type="CBFObject"/>
+
  <xsd:element name="ControlBasis" type="ControlBasisType"/>
  <xsd:complexType name="ControlBasisType">
-  <xsd:sequence>
-   <xsd:element name="Controller" type="ControllerType" minOccurs="0" maxOccurs="unbounded"/>
-  </xsd:sequence>
+  <xsd:complexContent> <xsd:extension base="CBFObject">
+   <xsd:sequence>
+    <xsd:element name="Controller" type="ControllerType" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+  </xsd:extension> </xsd:complexContent>
  </xsd:complexType>
 
  <xsd:element name="Controller" type="ControllerType"/>

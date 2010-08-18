@@ -46,13 +46,13 @@ namespace CBF {
 		this this class allows to apply a function to the individual blocks
 	*/
 	template <class VectorOperation, class MatrixOperation>
-	struct MapGenericBlockWiseSensorTransformOperation  {
+	struct MapBlockWiseSensorTransformOperation  {
 		unsigned int m_Blocksize;
 
 		unsigned int m_TaskDim;
 		unsigned int m_ResourceDim;
 
-		MapGenericBlockWiseSensorTransformOperation(
+		MapBlockWiseSensorTransformOperation(
 			unsigned int blocksize = 0,
 			unsigned int task_dim = 1,
 			unsigned int resource_dim = 1
@@ -94,7 +94,6 @@ namespace CBF {
 		unsigned int task_dim() { return 1; }
 	};
 
-#if 0
 	/**
 		If the task space of the sensor transform is built from same sized blocks
 		this this class allows to apply a function to the individual blocks and 
@@ -111,15 +110,15 @@ namespace CBF {
 		and the to be accumulated element as second argument..
 	*/
 	template <class VectorOperation, class MatrixOperation>
-	struct AccumulateGenericBlockWiseSensorTransformOperation  {
+	struct AccumulateBlockWiseSensorTransformOperation  {
 		unsigned int m_Blocksize;
 		FloatVector m_InitialVector;
 		FloatMatrix m_InitialMatrix;
 
-		AccumulateGenericBlockWiseSensorTransformOperation(
+		AccumulateBlockWiseSensorTransformOperation(
 			unsigned int blocksize = 0,
-			FloatVector initial_vector,
-			FloatMatrix initial_matrix
+			FloatVector initial_vector = FloatVector(),
+			FloatMatrix initial_matrix = FloatMatrix()
 		) : 
 			m_Blocksize(blocksize),
 			m_InitialVector(initial_vector),
@@ -154,7 +153,6 @@ namespace CBF {
 			return tmp;
 		}
 	};
-#endif
 
 
 	/**
@@ -175,7 +173,7 @@ namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
 		OperationSensorTransform(const XMLType &xml_instance) : SensorTransform(xml_instance) { 
-			SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(xml_instance.Operand()));
+ 			SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(xml_instance.Operand()));
 			m_Operand = tr;
 			m_Operation = Operation(xml_instance.Blocksize());
 		}
@@ -198,17 +196,6 @@ namespace CBF {
 		virtual unsigned int resource_dim() const { return m_Operand->resource_dim(); }
 	};
 
-	template <class Operation>
-	struct MapSensorTransform : public SensorTransform {
-		typedef std::vector<SensorTransformPtr> OperandsVector;
-		OperandsVector m_Operands;
-
-		virtual void update() {
-			for (OperandsVector::iterator it = m_Operands.begin; it != m_Operands.end(); ++it) {
-				m_Result = Operation((*it)->result(), (*it)->task_jacobian);
-			}
-		}
-	};
 
 } // namespace
 
