@@ -4,6 +4,7 @@
 #include <cbf/exceptions.h>
 #include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
+#include <cbf/config.h>
 
 namespace CBF {
 
