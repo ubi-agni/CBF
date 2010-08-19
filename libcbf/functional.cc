@@ -2,28 +2,24 @@
 
 namespace CBF {
 
-typedef MapBlockWiseSensorTransformOperation<
-	std::negate<FloatVector>, 
-	std::negate<FloatMatrix> 
-> NegateBlockWiseSensorTransformOperation;
-
-
-typedef OperationSensorTransform<
-	NegateBlockWiseSensorTransformOperation
+typedef ApplyOperationSensorTransform<
+	std::negate<FloatVector>,
+	std::negate<FloatMatrix>
 > NegateOperationSensorTransform;
 
 #ifdef CBF_HAVE_XSD
-	template<> template<> OperationSensorTransform
-		<NegateBlockWiseSensorTransformOperation>
-	::OperationSensorTransform
+#if 0
+	template<> template<> ApplyOperationSensorTransform<
+		std::negate<FloatVector>,
+		std::negate<FloatMatrix>
+	>
+	::ApplyOperationSensorTransform
 		(const NegateOperationSensorTransformType &xml_instance) 
 		{ CBF_DEBUG("MWAHAHHAHAHAHHAHHH!!!"); }
 #endif
 
-
-#ifdef CBF_HAVE_XSD
 	static XMLDerivedFactory<
-		NegateOperationSensorTransform, 
+		NegateOperationSensorTransform,
 		NegateOperationSensorTransformType, 
 		SensorTransform, 
 		SensorTransformType
