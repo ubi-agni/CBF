@@ -504,6 +504,17 @@
   </xsd:complexContent>
  </xsd:complexType>
 
+ <xsd:complexType name="MultiplyOperationSensorTransformType">
+  <xsd:complexContent>
+   <xsd:extension base="OperationSensorTransformType">
+    <xsd:sequence>
+     <xsd:element name="Factor" type="xsd:float"/>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+
  <xsd:complexType name="CompositeSensorTransformType">
   <xsd:complexContent>
    <xsd:extension base="SensorTransformType">

@@ -2,28 +2,51 @@
 
 namespace CBF {
 
-typedef ApplyOperationSensorTransform<
-	std::negate<FloatVector>,
-	std::negate<FloatMatrix>
-> NegateOperationSensorTransform;
 
 #ifdef CBF_HAVE_XSD
-#if 0
+
 	template<> template<> ApplyOperationSensorTransform<
-		std::negate<FloatVector>,
-		std::negate<FloatMatrix>
+		std::binder2nd<multiplies<FloatVector, double> >,
+		std::binder2nd<multiplies<FloatMatrix, double> >
 	>
 	::ApplyOperationSensorTransform
-		(const NegateOperationSensorTransformType &xml_instance) 
-		{ CBF_DEBUG("MWAHAHHAHAHAHHAHHH!!!"); }
-#endif
+		(const MultiplyOperationSensorTransformType &xml_instance) :
+		m_VectorOperation(
+			std::bind2nd(
+				multiplies<FloatVector, double>(),
+				xml_instance.Factor()
+			)
+		),
+		m_MatrixOperation(
+			std::bind2nd(
+				multiplies<FloatMatrix, double>(),
+				xml_instance.Factor()
+			)
+		) { 
+			m_Operand = XMLBaseFactory<
+				SensorTransform, SensorTransformType
+			>::instance()->create(xml_instance.Operand());
+		}
+
+
+
+
+
 
 	static XMLDerivedFactory<
 		NegateOperationSensorTransform,
 		NegateOperationSensorTransformType, 
 		SensorTransform, 
 		SensorTransformType
-	> x;
+	> x1;
+
+	static XMLDerivedFactory<
+		MultiplyOperationSensorTransform,
+		MultiplyOperationSensorTransformType, 
+		SensorTransform, 
+		SensorTransformType
+	> x2;
+
 #endif
 
 } // namespace

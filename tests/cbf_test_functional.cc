@@ -7,13 +7,6 @@
 
 using namespace CBF;
 
-template<typename T, typename U> 
-struct multiplies { 
-	typedef T first_argument_type;
-	typedef U second_argument_type;
-	typedef T result_type;
-	T operator()(T const& t, U const& u) const { return t * u; } 
-};
 
 int main() {
 	SensorTransformPtr id(new IdentitySensorTransform(9));	
@@ -54,5 +47,21 @@ int main() {
 	std::cout << "s2" << std::endl;
 	std::cout << "result   " << s2->result() << std::endl;
 	std::cout << "jacobian " << s2->task_jacobian() << std::endl;
+
+	SensorTransformPtr s3(
+		new MultiplyOperationSensorTransform(
+			id, 
+			std::bind2nd(multiplies<FloatVector, double>(), 1.3),
+			std::bind2nd(multiplies<FloatMatrix, double>(), 1.4)
+		)
+	);
+
+	s3->set_resource(r);
+	s3->update();
+
+	std::cout << "s3" << std::endl;
+	std::cout << "result   " << s3->result() << std::endl;
+	std::cout << "jacobian " << s3->task_jacobian() << std::endl;
+
 
 }
