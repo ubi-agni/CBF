@@ -348,11 +348,6 @@ make_BlockWiseInnerProductSensorTransform(
 }
 
 
-
-/**
-	A ultility template used to create SensorTransforms that multiply
-	with matrixes, vectors, etc..
-*/
 template<typename T, typename U> 
 struct multiplies { 
 	typedef T first_argument_type;
@@ -361,10 +356,8 @@ struct multiplies {
 	T operator()(T const& t, U const& u) const { return t * u; } 
 };
 
-/**
-	A SensorTransform that negates the result of its operand (and therefore the jacobian
-	too)
-*/
+
+
 typedef ApplyOperationSensorTransform<
 	std::negate<FloatVector>,
 	std::negate<FloatMatrix>
@@ -374,6 +367,11 @@ typedef ApplyOperationSensorTransform<
 	std::binder2nd<multiplies<FloatVector, double> >,
 	std::binder2nd<multiplies<FloatMatrix, double> >
 > MultiplyOperationSensorTransform;
+
+typedef BlockWiseInnerProductSensorTransform<
+	multiplies<FloatVector, double>,
+	multiplies<FloatMatrix, double>
+> BlockWiseWeightedSumSensorTransform;
 
 
 } // namespace
