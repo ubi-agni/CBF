@@ -22,6 +22,7 @@
 #define CBF_ROBOTINTERFACE_RESOURCE_HH
 
 #include <cbf/config.h>
+#include <cbf/debug_macros.h>
 #include <cbf/resource.h>
 #include <cbf/plugin_decl_macros.h>
 
@@ -53,7 +54,9 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		unsigned int dimension = 0
 	)
 	{
+    CBF_DEBUG("pre")
 		init(memory_uri, robot_name, dimension);
+    CBF_DEBUG("post")
 	}
 
 	void init(
@@ -61,6 +64,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		const std::string &robot_name,
 		unsigned int dimension
 	) {
+    CBF_DEBUG("init start")
 		m_RobotName = robot_name;
 		m_RobotInterface.connect(memory_uri),
 
@@ -85,10 +89,12 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		);
 
 		m_LastPose = m_Result;
+    CBF_DEBUG("init end")
 	}
 
 
 	virtual void handle(const robotinterface::RobotEvent *e) {
+    CBF_DEBUG("handle")
 		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
 
 		const robotinterface::PoseEvent *pe = 
@@ -106,17 +112,19 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 
 		std::copy(tmp.begin(), tmp.end(), m_LastPose.begin());
 
-		// CBF_DEBUG("LAST POSE: " << m_LastPose << std::endl)
+		CBF_DEBUG("LAST POSE: " << m_LastPose << std::endl)
 	}
 
 
 	virtual void update() {
+    CBF_DEBUG("update")
 		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
 
 		m_Result = m_LastPose;		
 	}
 
 	virtual void add(const FloatVector &arg) {
+    CBF_DEBUG("add")
 		FloatVector tmp = m_Result + arg;
 		m_RobotCommandSet 
 			<< robotinterface::cmd::clear()
