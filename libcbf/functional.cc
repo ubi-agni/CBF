@@ -47,12 +47,14 @@ namespace CBF {
 		SensorTransformType
 	> x2;
 
-	static XMLDerivedFactory<
-		BlockWiseWeightedSumSensorTransform,
-		BlockWiseWeightedSumSensorTransformType, 
-		SensorTransform, 
-		SensorTransformType
-	> x3;
+	#if 0
+		static XMLDerivedFactory<
+			BlockWiseWeightedSumSensorTransform,
+			BlockWiseWeightedSumSensorTransformType, 
+			SensorTransform, 
+			SensorTransformType
+		> x3;
+	#endif
 
 #endif
 

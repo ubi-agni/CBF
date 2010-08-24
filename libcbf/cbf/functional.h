@@ -203,7 +203,7 @@ make_ApplyOperationBlockWiseSensorTransform(
 }
 
 
-
+#if 0
 /**
 	A SensorTransform that applies the operations to row wise blocks
 	of its operands' output. This is useful e.g. if the task space 
@@ -256,7 +256,7 @@ struct BlockWiseInnerProductSensorTransform : public SensorTransform {
 				XMLBaseFactory<
 					SensorTransform, 
 					SensorTransformType
-				>::instance()->create(xml_instance.Operand1()); 
+				>::instance()->create(xml_instance.Operand()); 
 			m_Operand2 = 
 				XMLBaseFactory<
 					SensorTransform, 
@@ -346,7 +346,7 @@ make_BlockWiseInnerProductSensorTransform(
 		task_dim
 	);
 }
-
+#endif
 
 template<typename T, typename U> 
 struct multiplies { 
@@ -368,11 +368,12 @@ typedef ApplyOperationSensorTransform<
 	std::binder2nd<multiplies<FloatMatrix, double> >
 > MultiplyOperationSensorTransform;
 
+#if 0
 typedef BlockWiseInnerProductSensorTransform<
 	multiplies<FloatVector, double>,
 	multiplies<FloatMatrix, double>
 > BlockWiseWeightedSumSensorTransform;
-
+#endif
 
 } // namespace
 

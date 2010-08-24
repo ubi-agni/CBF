@@ -498,6 +498,7 @@
   <xsd:complexContent>
    <xsd:extension base="OperationSensorTransformType">
     <xsd:sequence>
+     <xsd:element name="Operand2" type="SensorTransformType"/>
      <xsd:element name="Blocksize" type="xsd:nonNegativeInteger"/>
     </xsd:sequence>
    </xsd:extension>
@@ -526,7 +527,7 @@
 
  <xsd:complexType name="BlockWiseWeightedSumSensorTransformType">
   <xsd:complexContent>
-   <xsd:extension base="BlockWiseOperationSensorTransformType">
+   <xsd:extension base="BlockWiseInnerProductSensorTransformType">
     <xsd:sequence>
      <xsd:element name="Weights" type="VectorType"/>
     </xsd:sequence>
