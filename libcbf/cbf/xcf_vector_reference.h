@@ -22,6 +22,14 @@ CBF_PLUGIN_PREAMBLE(XCFVectorReference)
 
 namespace CBF {
 
+/**
+	@brief This reference exposes the set_reference method via 
+	an XCF server. This can be used to set the reference
+	of a controller over the network..
+
+	The set_reference method expects an xml document matching the 
+	VectorType schema [or one of its derived types]
+*/
 struct XCFVectorReference : public Reference {
 	CBF_PLUGIN_DECL_METHODS(XCFVectorReference)
 
@@ -31,12 +39,16 @@ struct XCFVectorReference : public Reference {
 	/** 
 		This member is used as a protected resource to transfer the
 		reference values from the XCF server thread to the thread of
-		the main 
+		the main
 	*/
 	FloatVector m_TempReference;
 
 	IceUtil::Monitor<IceUtil::RecMutex> m_ReferenceMonitor;
 
+	/**
+		Creates an XCFReference registering the server named server_name
+		and exposing the method set_reference
+	*/
 	XCFVectorReference
 		(const std::string &server_name, unsigned int dim = 1) 
 		: 
@@ -66,6 +78,9 @@ struct XCFVectorReference : public Reference {
 
 	virtual unsigned int dim() { return m_Dim; }
 
+	/**
+		This method is exposed to XCF as "set_reference"
+	*/
 	virtual void set_reference_from_xcf(std::string &xml_in) {
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
 		std::auto_ptr<VectorType> v = Vector(xml_in);
