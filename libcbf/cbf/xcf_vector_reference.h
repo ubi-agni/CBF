@@ -4,6 +4,7 @@
 #include <cbf/reference.h>
 #include <cbf/types.h>
 #include <cbf/exceptions.h>
+#include <cbf/debug_macros.h>
 
 #include <xcf/ServerComponent.hpp>
 #include <IceUtil/Monitor.h> 
@@ -47,7 +48,9 @@ struct XCFVectorReference : public Reference {
 
 	/**
 		Creates an XCFReference registering the server named server_name
-		and exposing the method set_reference
+		and exposing the method set_reference. The constructor 
+		also expects a dimension argument. Later RMIs are checked
+		for matching dimensionality.
 	*/
 	XCFVectorReference
 		(const std::string &server_name, unsigned int dim = 1) 
@@ -55,11 +58,14 @@ struct XCFVectorReference : public Reference {
 		m_XCFServer(XCF::Server::create(server_name)), 
 		m_Dim(dim)
 	{ 	
-		boost::function<void (std::string&, std::string&) > f =
-			boost::bind(
-				boost::mem_fn(&XCFVectorReference::set_reference_from_xcf), 
-				this, 
-				_1);
+		boost::function<void (std::string&, std::string&) > f;
+
+		f = boost::bind(
+			boost::mem_fn(&XCFVectorReference::set_reference_from_xcf), 
+			this,
+			_1,
+			_2
+		);
 
 		m_XCFServer->registerMethod
 			(std::string("set_reference"), f);
@@ -81,12 +87,22 @@ struct XCFVectorReference : public Reference {
 	/**
 		This method is exposed to XCF as "set_reference"
 	*/
-	virtual void set_reference_from_xcf(std::string &xml_in) {
+	virtual void set_reference_from_xcf(std::string &xml_in, std::string &xml_out) {
+		CBF_DEBUG("in")
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
+		CBF_DEBUG("locked")
+
+		CBF_DEBUG("doc: " << xml_in)
 		std::auto_ptr<VectorType> v = Vector(xml_in);
+		CBF_DEBUG("create vector")
 		m_TempReference = create_vector(*v);
-		if (m_TempReference.size() != dim())
-			CBF_THROW_RUNTIME_ERROR("dimensions of xml vector not matching the dimension of this reference");
+
+		CBF_DEBUG("vector created")
+		if (m_TempReference.size() != dim()) {
+			CBF_DEBUG("meeeh!!!")
+			CBF_THROW_RUNTIME_ERROR("Dimensions of xml vector not matching the dimension of this reference");
+		}
+		CBF_DEBUG("out")
 	}
 };
 

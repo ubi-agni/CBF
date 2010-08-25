@@ -12,7 +12,8 @@ XCFVectorReference::XCFVectorReference(const XCFVectorReferenceType &xml_instanc
 			boost::bind(
 				boost::mem_fn(&XCFVectorReference::set_reference_from_xcf), 
 				this, 
-				_1);
+				_1,
+				_2);
 
 		m_XCFServer->registerMethod
 			(std::string("set_reference"), f);
