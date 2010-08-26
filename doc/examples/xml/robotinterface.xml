@@ -11,12 +11,12 @@
 
  <Reference xsi:type="DummyReferenceType">
   <Vector xsi:type="BoostVectorType">
-   <String>[7](1.18682,1.18682,0.00000,-1.04720,-1.30900,-1.39626,0.00000)</String>
+   <String>[7](0.18682,1.18682,0.00000,-1.04720,-1.30900,-1.39626,0.00000)</String>
   </Vector>
  </Reference>
 
  <Potential xsi:type="SquarePotentialType">
-  <MaxGradientStepNorm> 0.1 </MaxGradientStepNorm>
+  <MaxGradientStepNorm> 0.01 </MaxGradientStepNorm>
   <Dimension> 7 </Dimension>
   <Coefficient> 0.4 </Coefficient>
  </Potential>
@@ -30,8 +30,8 @@
  <CombinationStrategy xsi:type="AddingStrategyType"/>
 
  <Resource xsi:type="RobotInterfaceResourceType">
-  <SendMemoryName>xcf:mem-arm</MemoryName>
-  <RecvMemoryName>xcf:mem-arm</MemoryName>
+  <SendMemoryName>xcf:mem-arm</SendMemoryName>
+  <RecvMemoryName>xcf:mem-arm</RecvMemoryName>
   <RobotName>LeftArm</RobotName>
   <NumberOfJoints> 7 </NumberOfJoints>
  </Resource>
