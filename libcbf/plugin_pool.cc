@@ -38,33 +38,13 @@
 
 #ifdef CBF_HAVE_XSD
 	#include <cbf/schemas.hxx>
+	#include <cbf/xsd_error_handler.h>
 #endif
 
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
 
-	/**
-		A helper class used only by the read_from_xml_file function
-	*/
-	class ParsingErrorHandler : public xml_schema::error_handler
-	{
-		virtual bool handle (const std::basic_string<char>& id,
-			unsigned long line,
-			unsigned long column,
-			severity,
-			const std::basic_string<char>& message) {
-				std::cerr 
-					<< "[ParsingErrorHandler]: \"" 
-					<< message <<"\"" 
-					<< " in line: " << line 
-					<< ", column: " << column 
-					<< std::endl;
-
-				return false;
-			}
-	};
-	
 	
 	/**
 		A utility function to get an xml document which can then be passed
@@ -72,7 +52,7 @@ namespace CBF {
 	*/
 	template <class ComponentType, class XMLType>
 	boost::shared_ptr<ComponentType> create_from_file(const std::string &filename) {
-		ParsingErrorHandler err_handler;
+		XSDErrorHandler err_handler;
 		try {
 			std::auto_ptr<XMLType> xml_instance
 				(::ControlBasis
@@ -87,7 +67,6 @@ namespace CBF {
 			std::cerr << "Error parsing document: " << e << std::endl << std::flush;
 			throw;
 		}	
-		//! Finally let's create the controller instance..
 	}
 
 

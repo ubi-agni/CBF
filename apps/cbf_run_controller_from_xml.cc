@@ -21,6 +21,7 @@
 #include <cbf/plugin_pool.h>
 #include <cbf/controller.h>
 #include <cbf/control_basis.h>
+#include <cbf/xsd_error_handler.h>
 
 #include <string>
 #include <stdexcept>
@@ -88,9 +89,11 @@ int main(int argc, char *argv[]) {
 	std::vector<std::string> controller_names = 
 		variables_map["controller"].as<std::vector<std::string> >();
 
+	CBF::XSDErrorHandler err_handler;
+
 	std::auto_ptr<ControlBasisType> cbt
-		(ControlBasis
-			(control_basis_name, xml_schema::flags::dont_validate));
+		(::ControlBasis
+			(control_basis_name, err_handler, xml_schema::flags::dont_validate));
 
 	CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));
 

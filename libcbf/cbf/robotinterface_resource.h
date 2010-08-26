@@ -73,7 +73,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 	) {
     CBF_DEBUG("init start")
 		m_RobotName = robot_name;
-		m_RobotInterface.connect(send_memory_uri),
+		m_RobotInterface.connect(send_memory_uri, recv_memory_uri),
 
 		m_Result = FloatVector(dimension);
 		m_LastPose = FloatVector(dimension);

@@ -26,6 +26,12 @@
 
 namespace CBF {
 
+/**
+	This resource can be used to remotely access a resource
+	that is accessible as an XCF remote server.
+
+	TODO: implement!!
+*/
 struct XCFResource : public Resource {
 
 };
