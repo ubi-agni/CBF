@@ -8,7 +8,7 @@ namespace CBF {
 	CBF_PLUGIN_CLASS(RobotInterfaceResource, Resource)
 
 	RobotInterfaceResource::RobotInterfaceResource(const RobotInterfaceResourceType &xml_instance) {
-		init(xml_instance.MemoryName(), xml_instance.RobotName(), xml_instance.NumberOfJoints());
+		init(xml_instance.SendMemoryName(), xml_instance.RecvMemoryName(), xml_instance.RobotName(), xml_instance.NumberOfJoints());
 	}
 
 #endif

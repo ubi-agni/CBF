@@ -49,18 +49,25 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 	CBF_PLUGIN_DECL_METHODS(RobotInterfaceResource)
 
 	RobotInterfaceResource(
-		const std::string &memory_uri = "", 
+		const std::string &send_memory_uri = "", 
+		const std::string &recv_memory_uri = "", 
 		const std::string &robot_name = "",
 		unsigned int dimension = 0
 	)
 	{
     CBF_DEBUG("pre")
-		init(memory_uri, robot_name, dimension);
+		init(
+			send_memory_uri, 
+			recv_memory_uri, 
+			robot_name, 
+			dimension
+		);
     CBF_DEBUG("post")
 	}
 
 	void init(
-		const std::string &memory_uri, 
+		const std::string &send_memory_uri, 
+		const std::string &recv_memory_uri, 
 		const std::string &robot_name,
 		unsigned int dimension
 	) {

@@ -727,7 +727,8 @@
   <xsd:complexContent>
    <xsd:extension base = "ResourceType">
     <xsd:sequence>
-     <xsd:element name="MemoryName" type="xsd:string"/>
+     <xsd:element name="SendMemoryName" type="xsd:string"/>
+     <xsd:element name="RecvMemoryName" type="xsd:string"/>
      <xsd:element name="RobotName" type="xsd:string"/>
      <xsd:element name="NumberOfJoints" type="xsd:nonNegativeInteger"/>
     </xsd:sequence>
