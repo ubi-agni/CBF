@@ -1,6 +1,7 @@
 #include <cbf/xcf_vector_reference.h>
 
 #include <iostream>
+#include <unistd.h>
 
 using namespace CBF;
 
@@ -11,7 +12,9 @@ int main() {
 		r->update();
 
 		if (r->get().size() != 0)
-			std::cout << r->get()[0] << std::endl;
+			std::cout << "current reference: " << r->get()[0] << std::endl;
+
+		usleep(500000);
 	}
 
 }

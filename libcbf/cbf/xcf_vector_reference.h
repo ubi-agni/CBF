@@ -93,7 +93,8 @@ struct XCFVectorReference : public Reference {
 		CBF_DEBUG("locked")
 
 		CBF_DEBUG("doc: " << xml_in)
-		std::auto_ptr<VectorType> v = Vector(xml_in);
+		std::istringstream s(xml_in);
+		std::auto_ptr<VectorType> v = Vector(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector")
 		m_TempReference = create_vector(*v);
 
