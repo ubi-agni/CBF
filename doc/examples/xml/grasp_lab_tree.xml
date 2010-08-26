@@ -1,37 +1,3 @@
-<?xml version="1.0"?>
-<ControlBasis>
-<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
- <Name>Tree</Name>
- <Coefficient> 1 </Coefficient>
-
- <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
-  <Threshold> 0.001 </Threshold>
- </ConvergenceCriterion>
-
- <Reference xsi:type="CompositeReferenceType">
-  <Reference xsi:type="DummyReferenceType">
-   <Vector xsi:type="SimpleVectorType">
-    <Coefficient> 0.1 </Coefficient>
-    <Coefficient> 0.2 </Coefficient>
-    <Coefficient> 0.3 </Coefficient>
-   </Vector>
-  </Reference>
-  <Reference xsi:type="DummyReferenceType">
-   <Vector xsi:type="SimpleVectorType">
-    <Coefficient> -0.1 </Coefficient>
-    <Coefficient> -0.2 </Coefficient>
-    <Coefficient> -0.3 </Coefficient>
-   </Vector>
-  </Reference>
- </Reference>
-
- <Potential xsi:type="SquarePotentialType">
-  <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
-  <Dimension> 6 </Dimension>
-  <Coefficient> 0.01 </Coefficient>
- </Potential>
-
- <SensorTransform xsi:type="KDLTreePositionSensorTransformType">
   <Tree xsi:type="TreeType">
    <Name>arms</Name>
      <Segment xsi:type="TreeSegmentType">
@@ -1179,28 +1145,3 @@
      </Segment>
   </Tree>
 
-  <SegmentName>Left.hand.ff1</SegmentName>
-  <SegmentName>Left.hand.mf1</SegmentName>
- </SensorTransform>
-
- <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
-  <DampingConstant> 0.1 </DampingConstant>
- </EffectorTransform>
-
- <Resource xsi:type="CompositeResourceType">
-   <Resource xsi:type="DummyResourceType">
-     <Vector xsi:type="BoostVectorType">
-      <String>[60](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
-     </Vector>
-   </Resource>
-   <Resource xsi:type="DummyResourceType">
-     <Vector xsi:type="BoostVectorType">
-      <String>[2](0,0)</String>
-     </Vector>
-   </Resource>
-  </Resource>
-
- <CombinationStrategy xsi:type="AddingStrategyType"/>
-
-</Controller>
-</ControlBasis>
