@@ -30,6 +30,9 @@ namespace CBF {
 
 	The set_reference method expects an xml document matching the 
 	VectorType schema [or one of its derived types]
+
+	See the test examples test/cbf_test_xcf_vector_resource_client.cc
+	to see how to remotely call this method
 */
 struct XCFVectorReference : public Reference {
 	CBF_PLUGIN_DECL_METHODS(XCFVectorReference)
