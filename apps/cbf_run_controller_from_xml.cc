@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 	options_description.add_options() 
 		("help", "produce help message")
 		("sleep-time", po::value<unsigned int>(), "time to sleep between cycles in microseconds")
-		("steps", po::value<unsigned int>(), "run exact number of steps")
+		("steps", po::value<unsigned int>(), "run exact number of steps. 0 means: never stop")
 		("control-basis", po::value<std::string>(), "XML file containing controller specifications")
 		("controller", po::value<std::vector<std::string> >(), "Name of a controller to run (can be used more than once)")
 		;
