@@ -44,6 +44,16 @@ set(CBF_LIBS "")
 set(CBF_INCLUDES "")
 set(CBF_LINKDIRS "")
 
+if(CBF_HAVE_XSD)
+  link_directories("${PROJECT_BINARY_DIR}/schemas")
+  set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_BIN_DIR}/libcbf" ${XSD_INC})
+  set(CBF_LIBS ${CBF_LIBS} cbf_schemas ${XERCESC_LIB})
+  set(CBF_SOURCES ${CBF_SOURCES} plugin_pool.cc)
+else()
+  message(STATUS "  excluding plugin_pool.cc because xsd was not found")
+endif()
+
+
 if(CBF_HAVE_KDL)
   set(CBF_SOURCES ${CBF_SOURCES} kdl_transforms.cc)
   if(CBF_HAVE_XSD)
@@ -102,15 +112,6 @@ message(STATUS "  excluding generic_transform.cc because eigen2 was not found")
 endif()
 
 
-
-if(CBF_HAVE_XSD)
-  link_directories("${PROJECT_BINARY_DIR}/schemas")
-  set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_BIN_DIR}/libcbf" ${XSD_INC})
-  set(CBF_LIBS ${CBF_LIBS} cbf_schemas ${XERCESC_LIB})
-  set(CBF_SOURCES ${CBF_SOURCES} plugin_pool.cc)
-else()
-  message(STATUS "  excluding plugin_pool.cc because xsd was not found")
-endif()
 
 include_directories(${CBF_INCLUDES})
 

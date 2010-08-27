@@ -12,12 +12,26 @@ transforms to control position and orientation simultaneously.
   ]
 >
 
+<ControlBasis>
 <Controller 
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:type="PrimitiveControllerType"
  xmlns:xi="http://www.w3.org/2001/XInclude">
+
+ <Name>foo</Name>
+
  <Coefficient>1</Coefficient>
 
+ <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
+  <Threshold>0.001</Threshold>
+ </ConvergenceCriterion>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="BoostVectorType">
+   <!-- <String> [6](-0.4,-0.3,0.6,1.5708,0.0,0.0) </String> -->
+   <String> [6](-0.20,-0.7,0.4,-3.1416,0.0,0.0)</String>
+  </Vector>
+ </Reference>
 
  <Potential xsi:type="CompositePotentialType">
   <Potential xsi:type="SquarePotentialType">
@@ -33,8 +47,6 @@ transforms to control position and orientation simultaneously.
   </Potential>
  </Potential>
 
- <EffectorTransform xsi:type="GenericEffectorTransformType"/>
-
  <SensorTransform xsi:type="CompositeSensorTransformType">
 
   <SensorTransform xsi:type="KDLChainPositionSensorTransformType">
@@ -47,19 +59,8 @@ transforms to control position and orientation simultaneously.
 
  </SensorTransform> 
 
- <Resource xsi:type="DummyResourceType">
-  <Dimension> 7 </Dimension>
-  <Vector xsi:type="BoostVectorType">
-   <String>[7](1.12163358,1.74562789,0.03026525,0.95642562,-0.04284181,2.35137672,1.08619065)</String>
-  </Vector>
- </Resource>
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
 
- <Reference xsi:type="DummyReferenceType">
-  <Vector xsi:type="BoostVectorType">
-   <!-- <String> [6](-0.4,-0.3,0.6,1.5708,0.0,0.0) </String> -->
-   <String> [6](-0.20,-0.7,0.4,-3.1416,0.0,0.0)</String>
-  </Vector>
- </Reference>
 
  
  <PrimitiveController 
@@ -68,33 +69,43 @@ transforms to control position and orientation simultaneously.
     xmlns:xi="http://www.w3.org/2001/XInclude">
    <Coefficient>1</Coefficient>
 
-   <Potential xsi:type="SquarePotentialType">
-     <Dimension> 7 </Dimension>
-     <Coefficient> 0.1 </Coefficient>
-     <MaxGradientStepNorm> 0.02 </MaxGradientStepNorm>
-   </Potential>
-
-   <EffectorTransform xsi:type="GenericEffectorTransformType"/>
-
-   <SensorTransform xsi:type="IdentitySensorTransformType">
-     <Dimension>7</Dimension>
-   </SensorTransform>
-
-   <Resource xsi:type="DummyResourceType">
-     <Dimension> 7 </Dimension>
-   </Resource>
-
    <Reference xsi:type="DummyReferenceType">
      <Vector xsi:type="BoostVectorType">
        <String>[7](0.0,0.0,0.0,0.0,0.0,0.0,0.0)</String>
      </Vector>
    </Reference>
 
+   <Potential xsi:type="SquarePotentialType">
+     <Dimension> 7 </Dimension>
+     <Coefficient> 0.1 </Coefficient>
+     <MaxGradientStepNorm> 0.02 </MaxGradientStepNorm>
+   </Potential>
+
+   <SensorTransform xsi:type="IdentitySensorTransformType">
+     <Dimension>7</Dimension>
+   </SensorTransform>
+
+   <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
    <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+   <Resource xsi:type="DummyResourceType">
+     <Dimension> 7 </Dimension>
+   </Resource>
+
  </PrimitiveController>
 
 
  <CombinationStrategy xsi:type="AddingStrategyType"/>
-</Controller>
 
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 7 </Dimension>
+  <Vector xsi:type="BoostVectorType">
+   <String>[7](1.12163358,1.74562789,0.03026525,0.95642562,-0.04284181,2.35137672,1.08619065)</String>
+  </Vector>
+ </Resource>
+
+
+</Controller>
+</ControlBasis>
 
