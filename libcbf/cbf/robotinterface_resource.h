@@ -71,23 +71,20 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		const std::string &robot_name,
 		unsigned int dimension
 	) {
-    CBF_DEBUG("init start")
+    CBF_DEBUG("init start: " << robot_name)
 		m_RobotName = robot_name;
 		m_RobotInterface.connect(send_memory_uri, recv_memory_uri),
 
 		m_Result = FloatVector(dimension);
 		m_LastPose = FloatVector(dimension);
 
-		m_RobotInterface.subscribe(
-			robotinterface::RobotInterface::INSERT | robotinterface::RobotInterface::REPLACE,
-			"/EVENT[@name='WorldModelUpdate']/ROBOT[@id='" + robot_name + "']",
-			this
-		);
-
 		m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name, true, true);
 		m_RobotCommandSet.defaults(robot_name) << robotinterface::cmd::moveMode("stp", "joint");
 
-		robotinterface::RobotState state = m_RobotInterface.query(robot_name);
+		CBF_DEBUG("query")
+		robotinterface::RobotState state = m_RobotInterface.query(
+			robot_name, robotinterface::RobotState::QUERY_POSTURE
+		);
 
 		std::copy(
 			state.getPosture().begin(), 
@@ -96,6 +93,12 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		);
 
 		m_LastPose = m_Result;
+
+		m_RobotInterface.subscribe(
+			robotinterface::RobotInterface::INSERT | robotinterface::RobotInterface::REPLACE,
+			"/EVENT[@name='WorldModelUpdate']/ROBOT[@id='" + robot_name + "']",
+			this
+		);
     CBF_DEBUG("init end")
 	}
 

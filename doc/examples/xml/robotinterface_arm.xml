@@ -12,24 +12,19 @@
  <Reference xsi:type="CompositeReferenceType">
   <Reference xsi:type="DummyReferenceType">
    <Vector xsi:type="BoostVectorType">
-    <String>[7](0.18682,1.18682,0.00000,-1.04720,-1.30900,-1.39626,0.00000)</String>
-   </Vector>
-  </Reference>
-  <Reference xsi:type="DummyReferenceType">
-   <Vector xsi:type="BoostVectorType">
-    <String>[24](22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082)</String>
+    <String>[7](-0.18682,-1.18682,0.00000,-1.04720,-1.30900,-1.39626,0.00000)</String>
    </Vector>
   </Reference>
  </Reference>
 
  <Potential xsi:type="SquarePotentialType">
   <MaxGradientStepNorm> 0.01 </MaxGradientStepNorm>
-  <Dimension> 31 </Dimension>
+  <Dimension> 7 </Dimension>
   <Coefficient> 0.4 </Coefficient>
  </Potential>
 
  <SensorTransform xsi:type="IdentitySensorTransformType">
-  <Dimension> 31 </Dimension>
+  <Dimension> 7 </Dimension>
  </SensorTransform>
 
  <EffectorTransform xsi:type="GenericEffectorTransformType"/>
@@ -42,12 +37,6 @@
    <RecvMemoryName>xcf:mem-arm</RecvMemoryName>
    <RobotName>LeftArm</RobotName>
    <NumberOfJoints> 7 </NumberOfJoints>
-  </Resource>
-  <Resource xsi:type="RobotInterfaceResourceType">
-   <SendMemoryName>xcf:mem-hand</SendMemoryName>
-   <RecvMemoryName>xcf:mem-hand</RecvMemoryName>
-   <RobotName>LeftHand</RobotName>
-   <NumberOfJoints> 24 </NumberOfJoints>
   </Resource>
  </Resource>
 

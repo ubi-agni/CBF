@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 	po::options_description options_description("Allowed options");
 	options_description.add_options() 
 		("help", "produce help message")
-		("sleep-time", po::value<unsigned int>(), "time to sleep between cycles in microseconds")
+		("sleep-time", po::value<unsigned int>(), "time to sleep between cycles in milliseconds")
 		("steps", po::value<unsigned int>(), "run exact number of steps. 0 means: never stop")
 		("control-basis", po::value<std::string>(), "XML file containing controller specification(s)")
 		("controller", po::value<std::vector<std::string> >(), "Name of a controller to run (can be used more than once)")
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 	unsigned int sleep_time = 0;
 
 	if (variables_map.count("sleep-time"))
-		sleep_time = variables_map["sleep-time"].as<int>();
+		sleep_time = variables_map["sleep-time"].as<unsigned int>();
 
 	if (!variables_map.count("control-basis")) {
 		std::cout << "No control basis specified" << std::endl;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 				(steps == 0)  || step < steps; 
 				++step
 			)
-				{ cb->controllers()[controller_names[i]]->step(); usleep(sleep_time); }
+				{ cb->controllers()[controller_names[i]]->step(); usleep((long long int)sleep_time * 1000); }
 		} else {
 			while (cb->controllers()[controller_names[i]]->step() == false) {
 				usleep(sleep_time);
