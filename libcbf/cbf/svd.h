@@ -18,6 +18,9 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
+#ifndef CBF_SVD_HH
+#define CBF_SVD_HH
+
 #include <cbf/types.h>
 
 namespace CBF {
@@ -38,7 +41,8 @@ namespace CBF {
      * 
      *  Changed for CBF-matrix-compatibility
      */
-static int svd(int withu, int withv, Float eps, Float tol, const FloatMatrix &a,
+int svd(int withu, int withv, Float eps, Float tol, const FloatMatrix &a,
                FloatMatrix &q, FloatMatrix &u , FloatMatrix &v);
 } //namespace
 
+#endif

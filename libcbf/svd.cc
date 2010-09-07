@@ -22,8 +22,8 @@
 
 namespace CBF {
 
-static int svd(int withu, int withv, Float eps, Float tol, const FloatMatrix &a,
-               FloatMatrix &q, FloatMatrix &u ,FloatMatrix &v){
+int svd(int withu, int withv, Float eps, Float tol, const FloatMatrix &a,
+               FloatMatrix &q,FloatMatrix &u ,FloatMatrix &v){
 
   int i,j,k,l(0),l1,iter,retval;
   Float c,f,g,h,s,x,y,z;
