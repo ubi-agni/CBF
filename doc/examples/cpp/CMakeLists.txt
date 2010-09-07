@@ -6,7 +6,7 @@ endif()
 
 include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 include_directories("${PROJECT_BINARY_DIR}/libcbf/")
- 
+
 if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
   include_directories(AFTER ${KDL_INCLUDE_DIRS})
 
@@ -81,3 +81,5 @@ else()
   message(STATUS "  -cbf_test_kdl_transforms_view")
   message(STATUS "  because Kdl or Eigen2 was not found")
 endif()
+
+

@@ -125,7 +125,6 @@ else()
   message(STATUS "  doxygen not found, documentation will not be available")
 endif()
 
-
 configure_file(
   "${PROJECT_SOURCE_DIR}/libcbf/cbf/config.h.in"
   "${PROJECT_BINARY_DIR}/libcbf/cbf/config.h"

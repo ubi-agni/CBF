@@ -39,6 +39,6 @@ namespace CBF {
      *  Changed for CBF-matrix-compatibility
      */
 static int svd(int withu, int withv, Float eps, Float tol, const FloatMatrix &a,
-               FloatMatrix &q, FloatMatrix &u , FloatMatrix &v){
+               FloatMatrix &q, FloatMatrix &u , FloatMatrix &v);
 } //namespace
 
