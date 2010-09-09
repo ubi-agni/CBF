@@ -33,33 +33,46 @@ find_package_handle_standard_args(PythonInterp "Found Python" python2)
 
 find_package(PkgConfig)
 
+message(STATUS "Looking for KDL")
 pkg_check_modules(KDL orocos-kdl>=1.0)
 if (KDL_FOUND)
+  message(STATUS "  found")
   set(CBF_HAVE_KDL 1)
 endif()
 
+message(STATUS "Looking for XCF")
 pkg_check_modules(XCF xcf>=0.9)
 if (XCF_FOUND)
+  message(STATUS "  found")
   set(CBF_HAVE_XCF 1)
 endif()
 
+message(STATUS "Looking for XRI")
 pkg_check_modules(XRI xri)
 if (XRI_FOUND)
-  set(CBF_HAVE_XRI 1)
+  message(STATUS "  found")
+  #set(CBF_HAVE_XRI 1)
 endif()
 
+# Not using XMLTIO atm since it breaks external entities
+message(STATUS "Looking for XMLTIO")
 pkg_check_modules(XMLTIO xmltio>=1.4)
 if (XMLTIO_FOUND)
+  message(STATUS "  found")
   set(CBF_HAVE_XMLTIO 1)
 endif()
 
+message(STATUS "Looking for MEMORY")
 pkg_check_modules(MEMORY Memory>=0.21)
 if (MEMORY_FOUND)
+  message(STATUS "  found")
   set(CBF_HAVE_MEMORY 1)
 endif()
 
+message(STATUS "Looking for EIGEN2")
 pkg_check_modules(EIGEN2 eigen2)
 if (EIGEN2_FOUND)
+  message(STATUS "  found")
   set(CBF_HAVE_EIGEN2 1)
 endif()
 

@@ -3,7 +3,7 @@
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
  <Name>foo</Name>
 
- <Coefficient> 1 </Coefficient>
+ <Coefficient> 0.1</Coefficient>
 
  <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
   <Threshold> 0.001 </Threshold>
@@ -12,15 +12,15 @@
  <Reference xsi:type="CompositeReferenceType">
   <Reference xsi:type="DummyReferenceType">
    <Vector xsi:type="BoostVectorType">
-    <String>[24](22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082)</String>
+    <String>[24](1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)</String>
    </Vector>
   </Reference>
  </Reference>
 
  <Potential xsi:type="SquarePotentialType">
-  <MaxGradientStepNorm> 0.1 </MaxGradientStepNorm>
+  <MaxGradientStepNorm> 10.0 </MaxGradientStepNorm>
   <Dimension> 24 </Dimension>
-  <Coefficient> 0.4 </Coefficient>
+  <Coefficient> 1 </Coefficient>
  </Potential>
 
  <SensorTransform xsi:type="IdentitySensorTransformType">
@@ -31,14 +31,12 @@
 
  <CombinationStrategy xsi:type="AddingStrategyType"/>
 
- <Resource xsi:type="CompositeResourceType">
   <Resource xsi:type="RobotInterfaceResourceType">
-   <SendMemoryName>xcf:mem-hand</SendMemoryName>
-   <RecvMemoryName>xcf:mem-hand</RecvMemoryName>
+   <SendMemoryName>xcf:wb</SendMemoryName>
+   <RecvMemoryName>xcf:wb</RecvMemoryName>
    <RobotName>LeftHand</RobotName>
    <NumberOfJoints> 24 </NumberOfJoints>
   </Resource>
- </Resource>
 
 </Controller>
 </ControlBasis>

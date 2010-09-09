@@ -110,11 +110,13 @@ int main(int argc, char *argv[]) {
 				unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); 
 				(steps == 0)  || step < steps; 
 				++step
-			)
-				{ cb->controllers()[controller_names[i]]->step(); usleep((long long int)sleep_time * 1000); }
+			) { 
+				cb->controllers()[controller_names[i]]->step(); 
+				usleep((long long int)sleep_time * 1000); 
+			}
 		} else {
 			while (cb->controllers()[controller_names[i]]->step() == false) {
-				usleep(sleep_time);
+				usleep(sleep_time * 1000);
 			}
 		}
 	}

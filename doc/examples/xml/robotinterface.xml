@@ -12,7 +12,17 @@
  <Reference xsi:type="CompositeReferenceType">
   <Reference xsi:type="DummyReferenceType">
    <Vector xsi:type="BoostVectorType">
-    <String>[7](0.18682,1.18682,0.00000,-1.04720,-1.30900,-1.39626,0.00000)</String>
+    <String>[7](0.98655,1.10836,0.13932,-1.47222,-1.25995,-1.35481,0.53420)</String>
+   </Vector>
+  </Reference>
+  <Reference xsi:type="DummyReferenceType">
+   <Vector xsi:type="BoostVectorType">
+    <String>[24](22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082)</String>
+   </Vector>
+  </Reference>
+  <Reference xsi:type="DummyReferenceType">
+   <Vector xsi:type="BoostVectorType">
+    <String>[7](0.98655,1.10836,0.13932,-1.47222,-1.25995,-1.35481,0.53420)</String>
    </Vector>
   </Reference>
   <Reference xsi:type="DummyReferenceType">
@@ -23,13 +33,13 @@
  </Reference>
 
  <Potential xsi:type="SquarePotentialType">
-  <MaxGradientStepNorm> 0.01 </MaxGradientStepNorm>
-  <Dimension> 31 </Dimension>
+  <MaxGradientStepNorm> 10 </MaxGradientStepNorm>
+  <Dimension> 62 </Dimension>
   <Coefficient> 0.4 </Coefficient>
  </Potential>
 
  <SensorTransform xsi:type="IdentitySensorTransformType">
-  <Dimension> 31 </Dimension>
+  <Dimension> 62 </Dimension>
  </SensorTransform>
 
  <EffectorTransform xsi:type="GenericEffectorTransformType"/>
@@ -38,17 +48,30 @@
 
  <Resource xsi:type="CompositeResourceType">
   <Resource xsi:type="RobotInterfaceResourceType">
-   <SendMemoryName>xcf:mem-arm</SendMemoryName>
-   <RecvMemoryName>xcf:mem-arm</RecvMemoryName>
+   <SendMemoryName>xcf:wb</SendMemoryName>
+   <RecvMemoryName>xcf:wb</RecvMemoryName>
    <RobotName>LeftArm</RobotName>
    <NumberOfJoints> 7 </NumberOfJoints>
   </Resource>
   <Resource xsi:type="RobotInterfaceResourceType">
-   <SendMemoryName>xcf:mem-hand</SendMemoryName>
-   <RecvMemoryName>xcf:mem-hand</RecvMemoryName>
+   <SendMemoryName>xcf:wb</SendMemoryName>
+   <RecvMemoryName>xcf:wb</RecvMemoryName>
    <RobotName>LeftHand</RobotName>
    <NumberOfJoints> 24 </NumberOfJoints>
   </Resource>
+  <Resource xsi:type="RobotInterfaceResourceType">
+   <SendMemoryName>xcf:wb</SendMemoryName>
+   <RecvMemoryName>xcf:wb</RecvMemoryName>
+   <RobotName>RightArm</RobotName>
+   <NumberOfJoints> 7 </NumberOfJoints>
+  </Resource>
+  <Resource xsi:type="RobotInterfaceResourceType">
+   <SendMemoryName>xcf:wb</SendMemoryName>
+   <RecvMemoryName>xcf:wb</RecvMemoryName>
+   <RobotName>RightHand</RobotName>
+   <NumberOfJoints> 24 </NumberOfJoints>
+  </Resource>
+
  </Resource>
 
 </Controller>

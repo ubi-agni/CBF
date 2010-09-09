@@ -33,8 +33,8 @@
 
  <Resource xsi:type="CompositeResourceType">
   <Resource xsi:type="RobotInterfaceResourceType">
-   <SendMemoryName>xcf:mem-arm</SendMemoryName>
-   <RecvMemoryName>xcf:mem-arm</RecvMemoryName>
+   <SendMemoryName>xcf:wb</SendMemoryName>
+   <RecvMemoryName>xcf:wb</RecvMemoryName>
    <RobotName>LeftArm</RobotName>
    <NumberOfJoints> 7 </NumberOfJoints>
   </Resource>

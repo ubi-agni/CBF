@@ -25,6 +25,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/resource.h>
 #include <cbf/plugin_decl_macros.h>
+#include <cbf/exceptions.h>
 
 #include <boost/thread.hpp>
 
@@ -71,7 +72,9 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		const std::string &robot_name,
 		unsigned int dimension
 	) {
-    CBF_DEBUG("init start: " << robot_name)
+		CBF_DEBUG("init start: " << robot_name)
+		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+
 		m_RobotName = robot_name;
 		m_RobotInterface.connect(send_memory_uri, recv_memory_uri),
 
@@ -99,12 +102,14 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 			"/EVENT[@name='WorldModelUpdate']/ROBOT[@id='" + robot_name + "']",
 			this
 		);
-    CBF_DEBUG("init end")
+		CBF_DEBUG("init end")
 	}
 
 
 	virtual void handle(const robotinterface::RobotEvent *e) {
     CBF_DEBUG("handle")
+
+		// CBF_DEBUG("xml: " << e->getXML())
 		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
 
 		const robotinterface::PoseEvent *pe = 
@@ -113,7 +118,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		if (pe == 0) 
 			throw std::runtime_error("Unexpected Event Type: Expected PoseEvent");
 
-		const std::vector<float> &tmp = pe->getPose(robotinterface::PoseEvent::POSTURE);
+		const std::vector<float> &tmp = pe->getPose(robotinterface::PoseEvent::POSTURE, m_RobotName);
 
 		// std::cout << "dimesion: " << tmp.size() << std::endl;
 
@@ -134,8 +139,8 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 	}
 
 	virtual void add(const FloatVector &arg) {
-    CBF_DEBUG("add")
 		FloatVector tmp = m_Result + arg;
+		CBF_DEBUG("add tmp: " << tmp)
 		m_RobotCommandSet 
 			<< robotinterface::cmd::clear()
 			<< robotinterface::cmd::posture(tmp.begin(), tmp.end(), "rad");
@@ -144,11 +149,18 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 	}
 
 	virtual const FloatVector &get() 
-		{ return m_Result; }
+	{ 
+		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+		return m_Result; 
+	}
 
-	virtual void set(const FloatVector &arg) { }
+	virtual void set(const FloatVector &arg) { 
+		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+		CBF_THROW_RUNTIME_ERROR("this doesn't make sense")
+	}
 
 	virtual unsigned int dim() {
+		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
 		return m_Result.size();
 	}
 
