@@ -37,6 +37,7 @@ set(CBF_SOURCES
   norm_transform.cc
   transpose_transform.cc
   functional.cc
+  svd.cc
   )
 
 set(CBF_LIBS "")
