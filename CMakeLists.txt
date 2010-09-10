@@ -51,7 +51,7 @@ message(STATUS "Looking for XRI")
 pkg_check_modules(XRI xri)
 if (XRI_FOUND)
   message(STATUS "  found")
-  #set(CBF_HAVE_XRI 1)
+  set(CBF_HAVE_XRI 1)
 endif()
 
 # Not using XMLTIO atm since it breaks external entities

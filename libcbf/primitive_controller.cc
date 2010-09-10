@@ -179,6 +179,9 @@ namespace CBF {
 	bool PrimitiveController::check_convergence() {
 		Float stepnorm = ublas::norm_2(m_Result);
 
+		if (m_Reference->get().size() == 0)
+			return false;
+
 		Float min_dist = m_Potential->distance(m_CurrentTaskPosition, m_Reference->get()[0]);
 		for (unsigned int i = 1, len = m_Reference->get().size(); i < len; ++i) {
 			Float cur_dist = 	m_Potential->distance(m_CurrentTaskPosition, m_Reference->get()[i]);

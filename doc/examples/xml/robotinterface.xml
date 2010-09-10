@@ -8,7 +8,7 @@
  <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
   <Threshold> 0.001 </Threshold>
  </ConvergenceCriterion>
-
+<!--
  <Reference xsi:type="CompositeReferenceType">
   <Reference xsi:type="DummyReferenceType">
    <Vector xsi:type="BoostVectorType">
@@ -30,6 +30,11 @@
     <String>[24](22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082,22.082)</String>
    </Vector>
   </Reference>
+ </Reference>
+-->
+ <Reference xsi:type="XCFVectorReferenceType">
+  <Name>controller</Name>
+  <Dimension>62</Dimension>
  </Reference>
 
  <Potential xsi:type="SquarePotentialType">

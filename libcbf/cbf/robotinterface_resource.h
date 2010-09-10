@@ -81,7 +81,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		m_Result = FloatVector(dimension);
 		m_LastPose = FloatVector(dimension);
 
-		m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name, true, true);
+		m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name);
 		m_RobotCommandSet.defaults(robot_name) << robotinterface::cmd::moveMode("stp", "joint");
 
 		CBF_DEBUG("query")
