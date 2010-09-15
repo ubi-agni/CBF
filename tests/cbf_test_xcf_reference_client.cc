@@ -60,9 +60,10 @@ int main(int argc, char **argv) {
 		BoostVectorType v(vector_string.str());
 
 		std::ostringstream s;
+		//s << v;
 		Vector (s, v);
 
-		CBF_DEBUG(s.str())
+		CBF_DEBUG("document: " << s.str())
 
 		std::string out;
 
