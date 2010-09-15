@@ -61,6 +61,10 @@ struct XCFVectorReference : public Reference {
 		m_XCFServer(XCF::Server::create(server_name)), 
 		m_Dim(dim)
 	{ 	
+		init();
+	}
+
+	void init() {
 		boost::function<void (std::string&, std::string&) > f;
 
 		f = boost::bind(
@@ -72,6 +76,16 @@ struct XCFVectorReference : public Reference {
 
 		m_XCFServer->registerMethod
 			(std::string("set_reference"), f);
+
+		f = boost::bind(
+			boost::mem_fn(&XCFVectorReference::get_dimension_from_xcf), 
+			this,
+			_1,
+			_2
+		);
+
+		m_XCFServer->registerMethod
+			(std::string("get_dimension"), f);
 
 		m_XCFServer->run(true);
 	}
@@ -86,6 +100,21 @@ struct XCFVectorReference : public Reference {
 	}
 
 	virtual unsigned int dim() { return m_Dim; }
+
+	virtual void get_dimension_from_xcf(std::string &xml_in, std::string &xml_out) {
+		std::stringstream vector_string;
+
+		vector_string << "[1](" << dim() << ")";
+
+		BoostVectorType v(vector_string.str());
+
+		std::ostringstream s;
+		Vector (s, v);
+
+		CBF_DEBUG("dimension xcf" << s.str())
+
+		xml_out = s.str();
+	}
 
 	/**
 		This method is exposed to XCF as "set_reference"

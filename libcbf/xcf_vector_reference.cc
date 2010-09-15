@@ -8,17 +8,7 @@ XCFVectorReference::XCFVectorReference(const XCFVectorReferenceType &xml_instanc
 		m_XCFServer(XCF::Server::create(xml_instance.Name())), 
 		m_Dim(xml_instance.Dimension())
 	{ 	
-		boost::function<void (std::string&, std::string&) > f =
-			boost::bind(
-				boost::mem_fn(&XCFVectorReference::set_reference_from_xcf), 
-				this, 
-				_1,
-				_2);
-
-		m_XCFServer->registerMethod
-			(std::string("set_reference"), f);
-
-		m_XCFServer->run(true);
+		init();
 	}
 #endif
 

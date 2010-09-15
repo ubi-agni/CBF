@@ -2,26 +2,39 @@
 #include <xcf/RemoteServer.hpp>
 #include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
+#include <cbf/utilities.h>
+#include <boost/numeric/ublas/io.hpp>
 
 #include <string>
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
+#include <memory>
 
 using namespace CBF;
 
 int main(int argc, char **argv) {
-	if (argc < 3) {
-		std::cout << "Usage: cbf_test_xcf_reference_client name dimension" << std::endl;
+	if (argc < 2) {
+		std::cout << "Usage: cbf_test_xcf_reference_client name" << std::endl;
 		exit (EXIT_FAILURE);
 	}
 
 	CBF_DEBUG("creating remote server object")
 	XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(argv[1]);
 
-	std::stringstream str(argv[2]);
+	std::string dim_string;
+	_remoteServer->callMethod("get_dimension", "", dim_string);
+	CBF_DEBUG("dimension_xml: " << dim_string)
+
+	std::istringstream vv_stream(dim_string);
+
+	std::auto_ptr<VectorType> dim_v = Vector(vv_stream, xml_schema::flags::dont_validate);
+	CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
+	CBF_DEBUG("dim_vv: " << dim_vv)
+	
 	unsigned int dim;
-	str >> dim;
+
+	dim = dim_vv[0];
 
 	while(true) {
 		std::cout << "Enter " << dim << " values" << std::endl;

@@ -231,6 +231,7 @@ ublas::vector<Float> create_vector(const VectorType &xml_instance) {
 
 	if (boost_vector) {
 		std::stringstream stream(boost_vector->String());
+		CBF_DEBUG("string: " << stream.str())
 		ublas::vector<Float> v;
 		stream >> v;
 		if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
