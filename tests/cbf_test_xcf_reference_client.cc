@@ -39,18 +39,12 @@ int main(int argc, char **argv) {
 	while(true) {
 		std::cout << "Enter " << dim << " values" << std::endl;
 
-		std::string temp;
-		std::cin >> temp;
-
-		std::cout << "Entered: " << temp << std::endl;
-		
 		std::stringstream vector_string;
-		std::stringstream user_input(temp);
 
 		vector_string << "[" << dim << "](";
 		for (unsigned int i = 0; i < dim; ++i) {
 			float tmp;
-			user_input >> tmp;
+			std::cin >> tmp;
 			vector_string << tmp;
 			if (i != dim - 1) vector_string << ",";
 		}

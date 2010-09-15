@@ -81,7 +81,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		m_Result = FloatVector(dimension);
 		m_LastPose = FloatVector(dimension);
 
-		m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name);
+		m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name, true, true);
 		m_RobotCommandSet.defaults(robot_name) << robotinterface::cmd::moveMode("stp", "joint");
 
 		CBF_DEBUG("query")
@@ -107,7 +107,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 
 
 	virtual void handle(const robotinterface::RobotEvent *e) {
-    CBF_DEBUG("handle")
+		//CBF_DEBUG("handle")
 
 		// CBF_DEBUG("xml: " << e->getXML())
 		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
@@ -127,7 +127,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 
 		std::copy(tmp.begin(), tmp.end(), m_LastPose.begin());
 
-		CBF_DEBUG("LAST POSE: " << m_LastPose << std::endl)
+		//CBF_DEBUG("LAST POSE: " << m_LastPose << std::endl)
 	}
 
 
