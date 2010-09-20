@@ -42,3 +42,5 @@ cbf_test_functional.cc
 target_link_libraries(cbf_test_functional
   cbf
   )
+
+add_subdirectory(gui)
