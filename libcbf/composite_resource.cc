@@ -43,6 +43,7 @@ namespace CBF {
 			set_resources(resources);
 			CBF_DEBUG("dim: " << dim());
 	}
+	static XMLDerivedFactory<CompositeResource, CBFSchema::CompositeResource, Resource, CBFSchema::Resource> x;
 
 #endif
 

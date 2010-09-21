@@ -20,7 +20,6 @@
 
 #include <cbf/dummy_resource.h>
 #include <cbf/debug_macros.h>
-#include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_factories.h>
 
@@ -47,8 +46,9 @@ namespace CBF {
 			CBF_DEBUG("current values: " << m_Variables)
 		
 		}
+
+		static XMLDerivedFactory<DummyResource, CBFSchema::DummyResource, Resource, CBFSchema::Resource> x;
 	#endif
 	
-	CBF_PLUGIN_CLASS(DummyResource, Resource)
 } //namespace
 

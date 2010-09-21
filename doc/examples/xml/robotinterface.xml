@@ -2,62 +2,62 @@
 <cbf:ControlBasis
 	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBFSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <cbf:Controller
+  <Controller
 	  xsi:type="cbf:PrimitiveController">
-	 <cbf:Name>foo</cbf:Name>
+	 <Name>foo</Name>
 	 <Coefficient>1</Coefficient>
-	 <cbf:ConvergenceCriterion 
+	 <ConvergenceCriterion 
 		 xsi:type="cbf:TaskSpaceDistanceThreshold">
 		<Threshold> 0.001 </Threshold>
-	 </cbf:ConvergenceCriterion>
-	 <cbf:Reference xsi:type="cbf:XCFVectorReference">
+	 </ConvergenceCriterion>
+	 <Reference xsi:type="cbf:XCFVectorReference">
 		<Name>controller</Name>
 		<Dimension>62</Dimension>
-	 </cbf:Reference>
-	 <cbf:Potential
+	 </Reference>
+	 <Potential
 		 xsi:type="cbf:SquarePotential">
 		<MaxGradientStepNorm> 10 </MaxGradientStepNorm>
 		<Dimension> 62 </Dimension>
 		<Coefficient> 0.4 </Coefficient>
-	 </cbf:Potential>
-	 <cbf:SensorTransform
+	 </Potential>
+	 <SensorTransform
 		 xsi:type="cbf:IdentitySensorTransform">
 		<Dimension> 62 </Dimension>
-	 </cbf:SensorTransform>
-	 <cbf:EffectorTransform 
+	 </SensorTransform>
+	 <EffectorTransform 
 		 xsi:type="cbf:GenericEffectorTransform"/>
-	 <cbf:CombinationStrategy
+	 <CombinationStrategy
 		 xsi:type="cbf:AddingStrategy"/>
-	 <cbf:Resource
+	 <Resource
 		 xsi:type="cbf:CompositeResource">
-		<cbf:Resource
+		<Resource
 			xsi:type="cbf:RobotInterfaceResource">
 		  <SendMemoryName>xcf:wb</SendMemoryName>
 		  <RecvMemoryName>xcf:wb</RecvMemoryName>
 		  <RobotName>LeftArm</RobotName>
 		  <NumberOfJoints> 7 </NumberOfJoints>
-		</cbf:Resource>
-		<cbf:Resource 
+		</Resource>
+		<Resource 
 			xsi:type="cbf:RobotInterfaceResource">
 		  <SendMemoryName>xcf:wb</SendMemoryName>
 		  <RecvMemoryName>xcf:wb</RecvMemoryName>
 		  <RobotName>LeftHand</RobotName>
 		  <NumberOfJoints> 24 </NumberOfJoints>
-		</cbf:Resource>
-		<cbf:Resource
+		</Resource>
+		<Resource
 			xsi:type="cbf:RobotInterfaceResource">
 		  <SendMemoryName>xcf:wb</SendMemoryName>
 		  <RecvMemoryName>xcf:wb</RecvMemoryName>
 		  <RobotName>RightArm</RobotName>
 		  <NumberOfJoints> 7 </NumberOfJoints>
-		</cbf:Resource>
-		<cbf:Resource
+		</Resource>
+		<Resource
 			xsi:type="cbf:RobotInterfaceResource">
 		  <SendMemoryName>xcf:wb</SendMemoryName>
 		  <RecvMemoryName>xcf:wb</RecvMemoryName>
 		  <RobotName>RightHand</RobotName>
 		  <NumberOfJoints> 24 </NumberOfJoints>
-		</cbf:Resource>
-	 </cbf:Resource>
-  </cbf:Controller>
+		</Resource>
+	 </Resource>
+  </Controller>
 </cbf:ControlBasis>

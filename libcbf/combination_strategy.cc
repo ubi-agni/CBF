@@ -31,8 +31,10 @@ namespace CBF {
 			CBF_DEBUG("yay!!")
 		}
 
-	template<> XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>* 
-		XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>::m_Instance = 0;
+		template<> XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>* 
+			XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>::m_Instance = 0;
+
+		static XMLDerivedFactory<AddingStrategy, CBFSchema::AddingStrategy, CombinationStrategy, CBFSchema::CombinationStrategy> x;
 	#endif
 
 } // namespace
