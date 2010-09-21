@@ -1,8 +1,5 @@
 #include <cbf/masking_resource.h>
-
-#ifdef CBF_HAVE_XSD
-	#include <cbf/schemas.hxx>
-#endif
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
@@ -10,7 +7,7 @@ namespace CBF {
 
 MaskingResource::MaskingResource(const CBFSchema::MaskingResource &xml_instance) {
 	ResourcePtr resource 
-		= PluginPool<Resource>::get_instance()->create_from_xml
+		= XMLBaseFactory<Resource, CBFSchema::Resource>::instance()->create
 			(xml_instance.Resource1());
 
 	std::vector<unsigned int> indexes;
@@ -26,10 +23,6 @@ MaskingResource::MaskingResource(const CBFSchema::MaskingResource &xml_instance)
 	set_resource_and_indexes(resource, indexes);
 }
 
-
 #endif
-
-CBF_PLUGIN_CLASS(MaskingResource, Resource)
-
 
 } // namespace

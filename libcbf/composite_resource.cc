@@ -19,13 +19,11 @@
 */
 
 #include <cbf/composite_resource.h>
-#include <cbf/plugin_impl_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	CBF_PLUGIN_CLASS(CompositeResource, Resource)
-
 	CompositeResource::CompositeResource(const CBFSchema::CompositeResource &xml_instance) {
 			std::vector<ResourcePtr> resources;
 		
@@ -37,13 +35,13 @@ namespace CBF {
 				++it
 			)
 			{
-				ResourcePtr tr(PluginPool<Resource>::get_instance()->create_from_xml(*it));
+				ResourcePtr tr(XMLBaseFactory<Resource, CBFSchema::Resource>::instance()->create(*it));
 				resources.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}
 		
 			set_resources(resources);
-			CBF_DEBUG("dim: " << dim())
+			CBF_DEBUG("dim: " << dim());
 	}
 
 #endif

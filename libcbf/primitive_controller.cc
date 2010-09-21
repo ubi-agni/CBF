@@ -246,18 +246,18 @@ namespace CBF {
 		
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");
-			// m_Potential = PluginPool<Potential>::get_instance()->create_from_xml(xml_instance.Potential());
+			// m_Potential = XMLBaseFactory<Potential, CBFSchema::Potential>::instance()->create(xml_instance.Potential());
 			m_Potential = XMLBaseFactory<Potential, ::CBFSchema::Potential>::instance()->create(xml_instance.Potential());
 
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating sensor transform...")
-			m_SensorTransform = PluginPool<SensorTransform>::get_instance()->create_from_xml(xml_instance.SensorTransform());
+			m_SensorTransform = XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::instance()->create(xml_instance.SensorTransform());
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating effector transform...")
-			m_EffectorTransform = PluginPool<EffectorTransform>::get_instance()->create_from_xml(xml_instance.EffectorTransform());
+			m_EffectorTransform = XMLBaseFactory<EffectorTransform, CBFSchema::EffectorTransform>::instance()->create(xml_instance.EffectorTransform());
 			m_EffectorTransform->set_sensor_transform(m_SensorTransform);
 		
 			//CBF_DEBUG(m_SensorTransform.get())
@@ -273,7 +273,7 @@ namespace CBF {
 				CBF_DEBUG("Creating subordinate controller...")
 				CBF_DEBUG("------------------------")
 				//! First we see whether we can construct a controller from the xml_document
-				ControllerPtr controller = PluginPool<Controller>::get_instance()->create_from_xml(*it);
+				ControllerPtr controller = XMLBaseFactory<Controller, CBFSchema::Controller>::instance()->create(*it);
 				if (controller.get() == 0) {
 					throw std::logic_error("This should not happen");
 				} else {
@@ -295,7 +295,7 @@ namespace CBF {
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating resource...")
-			ResourcePtr res = PluginPool<Resource>::get_instance()->create_from_xml(xml_instance.Resource());
+			ResourcePtr res = XMLBaseFactory<Resource, CBFSchema::Resource>::instance()->create(xml_instance.Resource());
 			//! And bind to it...
 			CBF_DEBUG("Binding to resource...")
 
@@ -305,12 +305,12 @@ namespace CBF {
 			//! Create a resource if given...
 			CBF_DEBUG("Creating combination strategy...")
 			m_CombinationStrategy = 
-				PluginPool<CombinationStrategy>::get_instance()->create_from_xml(xml_instance.CombinationStrategy());
+				XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>::instance()->create(xml_instance.CombinationStrategy());
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating reference...")
 			m_Reference = 
-				PluginPool<Reference>::get_instance()->create_from_xml(xml_instance.Reference());
+				XMLBaseFactory<Reference, CBFSchema::Reference>::instance()->create(xml_instance.Reference());
 
 			check_dimensions();
 		}

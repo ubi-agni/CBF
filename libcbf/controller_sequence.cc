@@ -39,7 +39,7 @@ namespace CBF {
 				++it
 			)
 			{
-					ControllerPtr controller(PluginPool<Controller>::get_instance()->create_from_xml(*it));
+					ControllerPtr controller(XMLBaseFactory<Controller, CBFSchema::Controller>::instance()->create(*it));
 					m_Controllers.push_back(controller);
 			}
 		

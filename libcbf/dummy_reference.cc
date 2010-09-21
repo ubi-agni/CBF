@@ -58,7 +58,6 @@ namespace CBF {
 	}
 	#endif
 
-	CBF_PLUGIN_CLASS(DummyReference, Reference)
 } // namespace
 
 

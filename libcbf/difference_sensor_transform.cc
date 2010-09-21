@@ -38,7 +38,7 @@ namespace CBF {
 				++it
 			)
 			{
-				SensorTransformPtr tr(PluginPool<SensorTransform>::get_instance()->create_from_xml(*it));
+				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::instance()->create(*it));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}

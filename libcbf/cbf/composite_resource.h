@@ -24,7 +24,6 @@
 #define CBF_COMP_RESOURCE_HH
 
 #include <cbf/config.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/resource.h>
 
 #include <vector>

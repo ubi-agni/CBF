@@ -1,10 +1,7 @@
 #include <cbf/control_basis.h>
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
-
-#ifdef CBF_HAVE_XSD
-	#include <cbf/schemas.hxx>
-#endif
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
@@ -18,7 +15,7 @@ namespace CBF {
 			++it)
 		{
 			ControllerPtr c = 
-				PluginPool<Controller>::get_instance()->create_from_xml(*it);
+				XMLBaseFactory<Controller, CBFSchema::Controller>::instance()->create(*it);
 
 			if (m_Controllers.find(c->name()) != m_Controllers.end()) {
 				CBF_THROW_RUNTIME_ERROR("Name: " << c->name() << " already in basis");

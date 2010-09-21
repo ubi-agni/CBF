@@ -64,14 +64,13 @@ namespace CBF {
 			it != xml_instance.Potential1().end();
 			++it)
 			{
-				PotentialPtr pot = PluginPool<Potential>::get_instance()->create_from_xml(*it);
+				PotentialPtr pot = XMLBaseFactory<Potential, CBFSchema::Potential>::instance()->create(*it);
 				tmp.push_back(pot);
 			}
 		set_potentials(tmp);
 
 		//m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
-	CBF_PLUGIN_CLASS(CompositePotential, Potential)
 #endif
 
 } // namespace

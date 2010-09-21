@@ -37,6 +37,4 @@ namespace CBF {
 		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
 	#endif
 		
-	CBF_PLUGIN_CLASS(LinearSensorTransform, SensorTransform)
-
 } // namespace
