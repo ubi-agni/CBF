@@ -1,4 +1,5 @@
 #include <cbf/xcf_vector_reference.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
@@ -9,8 +10,10 @@ XCFVectorReference::XCFVectorReference(const CBFSchema::XCFVectorReference &xml_
 	{ 	
 		init();
 	}
-#endif
 
+	static XMLDerivedFactory<XCFVectorReference, CBFSchema::XCFVectorReference, Reference, CBFSchema::Reference> x;
+
+#endif
 } // namespace
 
 

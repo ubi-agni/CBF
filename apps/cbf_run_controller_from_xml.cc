@@ -20,6 +20,7 @@
 
 #include <cbf/controller.h>
 #include <cbf/control_basis.h>
+#include <cbf/debug_macros.h>
 #include <cbf/xsd_error_handler.h>
 
 #include <string>
@@ -55,13 +56,13 @@ int main(int argc, char *argv[]) {
 		)
 		(
 			"control-basis", 
-			po::value<std::vector<std::string> >(), 
-			"XML file containing controller specification(s) (can be used more than once)"
+			po::value<std::string>(), 
+			"XML file containing controller specification(s)"
 		)
 		(
 			"controller", 
-			po::value<std::vector<std::string> >(), 
-			"Name of a controller to run (can be used more than once)"
+			po::value<std::string>(), 
+			"Name of a controller to run"
 		)
 		;
 
@@ -104,40 +105,40 @@ int main(int argc, char *argv[]) {
 	std::string control_basis_name = 
 		variables_map["control-basis"].as<std::string>();
 
-	std::vector<std::string> controller_names = 
-		variables_map["controller"].as<std::vector<std::string> >();
+	std::string controller_name = 
+		variables_map["controller"].as<std::string>();
 
 	CBF::XSDErrorHandler err_handler;
 
-	std::auto_ptr<CBFSchema::ControlBasis> cbt
-		(CBFSchema::ControlBasis_
-			(control_basis_name, err_handler, xml_schema::flags::dont_validate));
+	CBF_DEBUG("parsing XML")
+	try {
+		std::auto_ptr<CBFSchema::ControlBasis> cbt
+			(CBFSchema::ControlBasis_
+				(control_basis_name, err_handler, xml_schema::flags::dont_validate));
 
-	CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));
-
-	for (
-		unsigned int i = 0, len = controller_names.size();
-		i < len;
-		++i
-	) {
-		if (cb->controllers().find(controller_names[i]) == cb->controllers().end())
+		CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));
+	
+		if (cb->controllers().find(controller_name) == cb->controllers().end())
 			throw std::runtime_error("Controller name not found in control basis");
-
+	
 		if (variables_map.count("steps")) {
 			for (
 				unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); 
 				(steps == 0)  || step < steps; 
 				++step
 			) { 
-				cb->controllers()[controller_names[i]]->step(); 
+				cb->controllers()[controller_name]->step(); 
 				usleep((long long int)sleep_time * 1000); 
 			}
 		} else {
-			while (cb->controllers()[controller_names[i]]->step() == false) {
+			while (cb->controllers()[controller_name]->step() == false) {
 				usleep(sleep_time * 1000);
 			}
 		}
+	} catch (const xml_schema::exception& e) {
+		std::cout << e << std::endl;
 	}
+
 	return EXIT_SUCCESS;
 }
 

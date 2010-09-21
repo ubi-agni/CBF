@@ -1,6 +1,8 @@
 #ifndef CBF_XSD_ERROR_HANDLER_HH
 #define CBF_XSD_ERROR_HANDLER_HH
 
+#include <cbf/config.h>
+
 #ifdef CBF_HAVE_XSD
 	#include <cbf/schemas.hxx>
 #endif
@@ -8,7 +10,6 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-
 	/**
 		This error handler can be used in conjunction with
 		the generated serialization/deserialization methods
