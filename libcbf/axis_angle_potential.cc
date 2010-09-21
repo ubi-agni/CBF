@@ -78,13 +78,13 @@ namespace CBF {
 
 
 	#ifdef CBF_HAVE_XSD
-		AxisAnglePotential::AxisAnglePotential(const ::AxisAnglePotential &xml_instance) :
+		AxisAnglePotential::AxisAnglePotential(const CBFSchema::AxisAnglePotential &xml_instance) :
 			Potential(xml_instance) {
 			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!")
 			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
 			m_Coefficient = xml_instance.Coefficient();
 		}
 
-		static XMLDerivedFactory<AxisAnglePotential, ::AxisAnglePotential, Potential, ::Potential> x;
+		static XMLDerivedFactory<AxisAnglePotential, CBFSchema::AxisAnglePotential, Potential, CBFSchema::Potential> x;
 	#endif
 } // namespace

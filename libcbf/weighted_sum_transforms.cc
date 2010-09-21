@@ -26,14 +26,14 @@
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		WeightedSumSensorTransform::WeightedSumSensorTransform(const ::WeightedSumSensorTransform &xml_instance)
+		WeightedSumSensorTransform::WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance)
 		{
 			CBF_DEBUG("yay!!!");
 		
 			std::vector<SensorTransformPtr> transforms;
 		
 			//! Instantiate the subordinate transforms
-			::WeightedSumSensorTransform::SensorTransform1_const_iterator it;
+			CBFSchema::WeightedSumSensorTransform::SensorTransform1_const_iterator it;
 			for (
 				it = xml_instance.SensorTransform1().begin(); 
 				it != xml_instance.SensorTransform1().end();

@@ -23,9 +23,6 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/types.h>
 #include <cbf/debug_macros.h>
-#include <cbf/generic_transform.h>
-#include <cbf/plugin_pool.h>
-#include <cbf/dummy_reference.h>
 #include <cbf/exceptions.h>
 #include <cbf/xml_factories.h>
 
@@ -225,19 +222,19 @@ namespace CBF {
 				CBF_THROW_RUNTIME_ERROR("Missing ConvergenceCriterion");
 
 			for (
-				::PrimitiveController::ConvergenceCriterion_const_iterator it = 
+				::CBFSchema::PrimitiveController::ConvergenceCriterion_const_iterator it = 
 					xml_instance.ConvergenceCriterion().begin();
 				it != xml_instance.ConvergenceCriterion().end();
 				++it
 			) {
-				const ::TaskSpaceDistanceThreshold *d = dynamic_cast<const CBFSchema::TaskSpaceDistanceThreshold *>(&(*it));
+				const ::CBFSchema::TaskSpaceDistanceThreshold *d = dynamic_cast<const ::CBFSchema::TaskSpaceDistanceThreshold *>(&(*it));
 				if (d != 0) {
 					m_ConvergenceCriterion |= TASK_SPACE_DISTANCE_THRESHOLD;
 					m_TaskSpaceDistanceThreshold = d->Threshold();
 					CBF_DEBUG("TaskSpaceDistanceThreshold " << m_TaskSpaceDistanceThreshold)
 					continue;
 				}
-				const ::ResourceStepNormThreshold *s = dynamic_cast<const CBFSchema::ResourceStepNormThreshold *>(&(*it));
+				const ::CBFSchema::ResourceStepNormThreshold *s = dynamic_cast<const ::CBFSchema::ResourceStepNormThreshold *>(&(*it));
 				if (s != 0) {
 					m_ConvergenceCriterion |= RESOURCE_STEP_THRESHOLD;
 					m_ResourceStepNormThreshold = s->Threshold();
@@ -250,7 +247,7 @@ namespace CBF {
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");
 			// m_Potential = PluginPool<Potential>::get_instance()->create_from_xml(xml_instance.Potential());
-			m_Potential = XMLBaseFactory<Potential, ::Potential>::instance()->create(xml_instance.Potential());
+			m_Potential = XMLBaseFactory<Potential, ::CBFSchema::Potential>::instance()->create(xml_instance.Potential());
 
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating sensor transform...")
@@ -268,7 +265,7 @@ namespace CBF {
 			//! Instantiate the subordinate controllers
 			CBF_DEBUG("Creating subordinate controller(s)...")
 			for (
-				::PrimitiveController::PrimitiveController1_const_iterator it = xml_instance.PrimitiveController1().begin(); 
+				::CBFSchema::PrimitiveController::PrimitiveController1_const_iterator it = xml_instance.PrimitiveController1().begin(); 
 				it != xml_instance.PrimitiveController1().end();
 				++it
 			)
@@ -318,7 +315,7 @@ namespace CBF {
 			check_dimensions();
 		}
 
-		static XMLDerivedFactory<PrimitiveController, ::PrimitiveController, Controller, ::Controller> x;
+		static XMLDerivedFactory<PrimitiveController, ::CBFSchema::PrimitiveController, Controller, ::CBFSchema::Controller> x;
 		
 	#endif
 

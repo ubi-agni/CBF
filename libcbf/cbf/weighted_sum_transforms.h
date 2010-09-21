@@ -44,7 +44,7 @@ namespace ublas = boost::numeric::ublas;
 */
 	
 struct WeightedSumSensorTransform : public SensorTransform {
-	WeightedSumSensorTransform(const ::WeightedSumSensorTransform &xml_instance);
+	WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance);
 
 	WeightedSumSensorTransform(
 		std::vector<SensorTransformPtr> transforms 

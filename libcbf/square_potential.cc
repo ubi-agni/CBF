@@ -60,7 +60,7 @@ namespace CBF {
 
 
 #ifdef CBF_HAVE_XSD
-	SquarePotential::SquarePotential(const ::SquarePotential &xml_instance) :
+	SquarePotential::SquarePotential(const CBFSchema::SquarePotential &xml_instance) :
 		Potential(xml_instance) 
 	{
 		CBF_DEBUG("[SquarePotential(const SquaredPotentialType &xml_instance)]: yay!")
@@ -72,7 +72,7 @@ namespace CBF {
 		// m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
 
-	static XMLDerivedFactory<SquarePotential, ::SquarePotential, Potential, ::Potential> x;
+	static XMLDerivedFactory<SquarePotential, CBFSchema::SquarePotential, Potential, CBFSchema::Potential> x;
 	
 #endif
 } // namespace

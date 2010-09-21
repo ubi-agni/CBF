@@ -41,12 +41,12 @@
 #include <riPoseEvent.h>
 
 
-class RobotInterfaceResource;
+namespace CBFSchema { class RobotInterfaceResource; }
 
 namespace CBF {
 
 struct RobotInterfaceResource : public Resource, public robotinterface::EventHandler {
-	RobotInterfaceResource (const ::RobotInterfaceResource &xml_instance);
+	RobotInterfaceResource (const CBFSchema::RobotInterfaceResource &xml_instance);
 
 	RobotInterfaceResource(
 		const std::string &send_memory_uri = "", 

@@ -152,18 +152,18 @@ void DampedWeightedGenericEffectorTransform::update() {
 
 
 #ifdef CBF_HAVE_XSD
-	GenericEffectorTransform::GenericEffectorTransform(const ::GenericEffectorTransform &xml_instance)
+	GenericEffectorTransform::GenericEffectorTransform(const CBFSchema::GenericEffectorTransform &xml_instance)
 	{
 	
 	}
 	
 
-	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const ::DampedGenericEffectorTransform &xml_instance)
+	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const CBFSchema::DampedGenericEffectorTransform &xml_instance)
 	{
 		m_DampingConstant = (xml_instance.DampingConstant());
 	}
 
-	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const ::DampedWeightedGenericEffectorTransform &xml_instance)
+	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance)
 	{
 	
 	}

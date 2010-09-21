@@ -20,7 +20,7 @@ namespace ublas = boost::numeric::ublas;
 	of the output of another given SensorTransform.
 */
 struct NormSensorTransform : public SensorTransform {
-	NormSensorTransform(const ::NormSensorTransform &xml_instance);
+	NormSensorTransform(const CBFSchema::NormSensorTransform &xml_instance);
 
 	/**
 		The wrapped SensorTransform

@@ -30,7 +30,7 @@
 #include <vector>
 #include <algorithm>
 
-class CompositeResource;
+namespace CBFSchema { class CompositeResource; }
 
 namespace CBF {
 
@@ -44,7 +44,7 @@ struct CompositeResource : public Resource
 		FloatVector m_ResourceValues;
 
 	public:
-		CompositeResource(const ::CompositeResource &xml_instance);
+		CompositeResource(const CBFSchema::CompositeResource &xml_instance);
 
 		CompositeResource(std::vector<ResourcePtr> resources = std::vector<ResourcePtr>()) {
 			set_resources(resources);

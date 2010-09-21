@@ -23,7 +23,7 @@
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		DifferenceSensorTransform::DifferenceSensorTransform(const ::DifferenceSensorTransform &xml_instance) :
+		DifferenceSensorTransform::DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance) :
 			SensorTransform(xml_instance)
 		{
 			CBF_DEBUG("yay!!!");
@@ -31,7 +31,7 @@ namespace CBF {
 			std::vector<SensorTransformPtr> transforms;
 		
 			//! Instantiate the subordinate transforms
-			::DifferenceSensorTransform::SensorTransform1_const_iterator it;
+			CBFSchema::DifferenceSensorTransform::SensorTransform1_const_iterator it;
 			for (
 				it = xml_instance.SensorTransform1().begin(); 
 				it != xml_instance.SensorTransform1().end();

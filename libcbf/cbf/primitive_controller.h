@@ -36,15 +36,14 @@
 #include <cbf/reference.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/combination_strategy.h>
-#include <cbf/xml_factories.h>
 
-class PrimitiveController;
+namespace CBFSchema { class PrimitiveController; }
 
 namespace CBF {
+
+	/** Forward declaration for subordinate controllers */
 	class PrimitiveController;
 	typedef boost::shared_ptr<PrimitiveController> PrimitiveControllerPtr;
-
-	struct PrimitiveController;
 
 	/**
 		@brief The "primitive" controller is the 
@@ -62,7 +61,7 @@ namespace CBF {
 		projected into the null space of this controller.
 	*/
 	struct PrimitiveController : public Controller {
-		PrimitiveController(const ::PrimitiveController &xml_instance);
+		PrimitiveController(const CBFSchema::PrimitiveController &xml_instance);
 
 		/**
 			@brief Create a controller with the members 

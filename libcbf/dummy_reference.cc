@@ -29,13 +29,13 @@
 namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
-	DummyReference::DummyReference(const ::DummyReference &xml_instance) {
+	DummyReference::DummyReference(const CBFSchema::DummyReference &xml_instance) {
 		CBF_DEBUG("constructing")
 
 		//! Set references..
 		CBF_DEBUG("Setting Reference(s)...")
 		for (
-			::DummyReference::Vector_const_iterator it = 
+			CBFSchema::DummyReference::Vector_const_iterator it = 
 				xml_instance.Vector().begin(); 
 			it != xml_instance.Vector().end();
 			++it

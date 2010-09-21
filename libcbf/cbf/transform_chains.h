@@ -45,7 +45,7 @@ namespace CBF {
 		of that one serves as input to m_SensorTransforms[1] and so on.
 	*/
 	struct SensorTransformChain : public SensorTransform {
-		SensorTransformChain(const ::SensorTransformChain &xml_instance);
+		SensorTransformChain(const CBFSchema::SensorTransformChain &xml_instance);
 	
 		FloatMatrix m_Jacobian;
 	

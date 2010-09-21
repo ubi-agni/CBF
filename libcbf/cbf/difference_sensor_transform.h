@@ -36,7 +36,7 @@ namespace CBF {
 		operating on the same resources..
 	*/
 	struct DifferenceSensorTransform : public SensorTransform {
-		DifferenceSensorTransform(const ::DifferenceSensorTransform &xml_instance);
+		DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance);
 
 		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr())
 		{

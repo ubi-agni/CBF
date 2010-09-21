@@ -40,7 +40,7 @@ namespace CBF {
 		direction and length of the axis.
 	*/
 	struct AxisAnglePotential : public Potential {
-		AxisAnglePotential(const ::AxisAnglePotential &xml_instance);
+		AxisAnglePotential(const CBFSchema::AxisAnglePotential &xml_instance);
 
 		//! @brief  This coefficient determines the rate of convergence. Choose between 0 and 1.
 		Float m_Coefficient;

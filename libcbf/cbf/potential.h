@@ -21,6 +21,7 @@
 #ifndef CONTROL_BASIS_POTENTIAL_HH
 #define CONTROL_BASIS_POTENTIAL_HH
 
+#include <cbf/config.h>
 #include <cbf/types.h>
 #include <cbf/utilities.h>
 #include <cbf/plugin_decl_macros.h>
@@ -45,7 +46,7 @@ struct Potential {
 	bool m_ClampGradientStepNorm;
 	Float m_MaxGradientStepNorm;
 
-	Potential(const ::Potential &xml_instance);
+	Potential(const CBFSchema::Potential &xml_instance);
 
 	Potential(
 		bool clamp_gradient_step_norm = false,
@@ -101,7 +102,7 @@ struct Potential {
 typedef boost::shared_ptr<Potential> PotentialPtr;
 
 #ifdef CBF_HAVE_XSD
-	template struct XMLBaseFactory<Potential, ::Potential>;
+	template struct XMLBaseFactory<Potential, CBFSchema::Potential>;
 #endif
 
 

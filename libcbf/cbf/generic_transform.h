@@ -29,9 +29,11 @@
 
 #include <boost/numeric/ublas/io.hpp>
 
-class GenericEffectorTransform;
-class DampedGenericEffectorTransform;
-class DampedWeightedGenericEffectorTransform;
+namespace CBFSchema {
+	class GenericEffectorTransform;
+	class DampedGenericEffectorTransform;
+	class DampedWeightedGenericEffectorTransform;
+}
 
 namespace CBF {
 
@@ -39,7 +41,7 @@ namespace CBF {
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
 	*/
 	struct GenericEffectorTransform : public EffectorTransform {
-		GenericEffectorTransform (const ::GenericEffectorTransform &xml_instance);
+		GenericEffectorTransform (const CBFSchema::GenericEffectorTransform &xml_instance);
 
 		GenericEffectorTransform() { }
 	
@@ -65,7 +67,7 @@ namespace CBF {
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
 	*/
 	struct DampedGenericEffectorTransform : public EffectorTransform {
-		DampedGenericEffectorTransform (const ::DampedGenericEffectorTransform &xml_instnace);
+		DampedGenericEffectorTransform (const CBFSchema::DampedGenericEffectorTransform &xml_instnace);
 	
 		virtual void update();
 	
@@ -101,7 +103,7 @@ namespace CBF {
 		TODO: Implement!!!
 	*/
 	struct DampedWeightedGenericEffectorTransform : public EffectorTransform {
-		DampedWeightedGenericEffectorTransform (const ::DampedWeightedGenericEffectorTransform &xml_instance);
+		DampedWeightedGenericEffectorTransform (const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance);
 
 		protected:	
 	 		FloatMatrix m_Weights;

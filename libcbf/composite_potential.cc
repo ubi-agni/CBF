@@ -54,14 +54,14 @@ namespace CBF {
 	}
 
 #ifdef CBF_HAVE_XSD
-	CompositePotential::CompositePotential(const ::CompositePotential &xml_instance) :
+	CompositePotential::CompositePotential(const CBFSchema::CompositePotential &xml_instance) :
 		Potential(xml_instance) 
 	{
 		CBF_DEBUG("[CompositePotential(const CompositePotentialType &xml_instance)]: yay!")
 		//std::cout << "Coefficient: " << xml_instance.Coefficient() << std::endl;
 		std::vector<PotentialPtr> tmp;
 		for (
-			::CompositePotential::Potential1_const_iterator it = xml_instance.Potential1().begin();
+			CBFSchema::CompositePotential::Potential1_const_iterator it = xml_instance.Potential1().begin();
 			it != xml_instance.Potential1().end();
 			++it)
 			{

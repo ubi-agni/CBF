@@ -40,7 +40,7 @@ namespace CBF {
 		and does n-dimensional SLERP to calculate an update step..
 	*/
 	struct AxisPotential : public Potential {
-		AxisPotential(const ::AxisPotential &xml_instance);
+		AxisPotential(const CBFSchema::AxisPotential &xml_instance);
 
 		bool m_Converged;
 		int m_Dimension;

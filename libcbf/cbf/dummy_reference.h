@@ -32,12 +32,12 @@
 
 #include <stdexcept>
 
-class DummyReference;
+namespace CBFSchema { class DummyReference; }
 
 namespace CBF {
 
 	struct DummyReference : public Reference {
-		DummyReference(const ::DummyReference &xml_instance);
+		DummyReference(const CBFSchema::DummyReference &xml_instance);
 
 		DummyReference(unsigned int num_references = 1, unsigned int dim = 1)
 		{

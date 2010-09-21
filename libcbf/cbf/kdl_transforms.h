@@ -97,7 +97,7 @@ namespace CBF {
 				(boost::shared_ptr<KDL::Chain> chain);
 	
 			//! This constructor is only implemented when XSD support is enabled..
-			BaseKDLChainSensorTransform(const ::ChainBase &xml_chain_instance, const ::SensorTransform &xml_st_instance);
+			BaseKDLChainSensorTransform(const CBFSchema::ChainBase &xml_chain_instance, const CBFSchema::SensorTransform &xml_st_instance);
 	
 			/**
 				For all derived types the resource dim is always the same: the number of joints
@@ -127,7 +127,7 @@ namespace CBF {
 	*/
 	struct KDLChainPositionSensorTransform : public BaseKDLChainSensorTransform
 	{
-		KDLChainPositionSensorTransform(const ::KDLChainPositionSensorTransform &xml_instance);
+		KDLChainPositionSensorTransform(const CBFSchema::KDLChainPositionSensorTransform &xml_instance);
 	
 		KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain);
 
@@ -154,7 +154,7 @@ namespace CBF {
 	*/
 	struct KDLChainAxisAngleSensorTransform : public BaseKDLChainSensorTransform
 	{
-		KDLChainAxisAngleSensorTransform (const ::KDLChainAxisAngleSensorTransform &xml_instance);
+		KDLChainAxisAngleSensorTransform (const CBFSchema::KDLChainAxisAngleSensorTransform &xml_instance);
 	
 		KDLChainAxisAngleSensorTransform(
 			boost::shared_ptr<KDL::Chain> chain
@@ -210,7 +210,7 @@ namespace CBF {
 				(boost::shared_ptr<KDL::Tree> tree, const std::vector<std::string> &segment_names);
 	
 			//! This constructor is only implemented when XSD support is enabled..
-			BaseKDLTreeSensorTransform(const ::TreeBase &xml_tree_instance, const ::SensorTransform &xml_st_instance);
+			BaseKDLTreeSensorTransform(const CBFSchema::TreeBase &xml_tree_instance, const CBFSchema::SensorTransform &xml_st_instance);
 	
 			/**
 				For all derived types the resource dim is always the same: the number of joints
@@ -240,7 +240,7 @@ namespace CBF {
 	*/
 	struct KDLTreePositionSensorTransform : public BaseKDLTreeSensorTransform
 	{
-		KDLTreePositionSensorTransform(const ::KDLTreePositionSensorTransform &xml_instance);
+		KDLTreePositionSensorTransform(const CBFSchema::KDLTreePositionSensorTransform &xml_instance);
 	
 		KDLTreePositionSensorTransform(
 			boost::shared_ptr<KDL::Tree> tree, 
@@ -270,7 +270,7 @@ namespace CBF {
 	*/
 	struct KDLTreeAxisAngleSensorTransform : public BaseKDLTreeSensorTransform
 	{
-		KDLTreeAxisAngleSensorTransform(const ::KDLTreeAxisAngleSensorTransform &xml_instance);
+		KDLTreeAxisAngleSensorTransform(const CBFSchema::KDLTreeAxisAngleSensorTransform &xml_instance);
 	
 		KDLTreeAxisAngleSensorTransform(
 			boost::shared_ptr<KDL::Tree> tree, 

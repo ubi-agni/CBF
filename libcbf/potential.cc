@@ -24,14 +24,13 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	Potential::Potential(const ::Potential &xml_instance) {
+	Potential::Potential(const CBFSchema::Potential &xml_instance) {
 		CBF_DEBUG("Constructor")
 		m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
 	}
 
-	template<> XMLBaseFactory<Potential, ::Potential>* 
-		XMLBaseFactory<Potential, ::Potential>::m_Instance = 0;
-
+	template<> XMLBaseFactory<Potential, CBFSchema::Potential>* 
+		XMLBaseFactory<Potential, CBFSchema::Potential>::m_Instance = 0;
 #endif
 
 } // namespace

@@ -25,7 +25,7 @@
 #include <cbf/types.h>
 #include <cbf/resource.h>
 
-class DummyResource;
+namespace CBFSchema { class DummyResource; }
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
@@ -34,7 +34,7 @@ namespace CBF {
 		@brief A resource that does nothing but hold the current value
 	*/
 	struct DummyResource : public Resource {
-		DummyResource(const ::DummyResource &xml_instance);
+		DummyResource(const CBFSchema::DummyResource &xml_instance);
 
 		FloatVector m_Variables;
 

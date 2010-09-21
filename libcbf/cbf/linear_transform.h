@@ -38,7 +38,7 @@ typedef boost::shared_ptr<LinearSensorTransform> LinearSensorTransformPtr;
 	@brief A linear sensor transform
 */
 struct LinearSensorTransform : public SensorTransform {
-	LinearSensorTransform (const ::LinearSensorTransform &xml_instance);
+	LinearSensorTransform (const CBFSchema::LinearSensorTransform &xml_instance);
 
 	void update() {
 		m_Result = ublas::prod(m_TaskJacobian, m_Resource->get());

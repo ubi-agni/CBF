@@ -23,13 +23,13 @@
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		SensorTransformChain::SensorTransformChain(const ::SensorTransformChain &xml_instance) {
+		SensorTransformChain::SensorTransformChain(const CBFSchema::SensorTransformChain &xml_instance) {
 			CBF_DEBUG("[SensorTransformChain(const SensorTransformChainType &xml_instance)]: yay!!!");
 		
 			std::vector<SensorTransformPtr> transforms;
 		
 			//! Instantiate the subordinate transforms
-			::SensorTransformChain::SensorTransform1_const_iterator it;
+			CBFSchema::SensorTransformChain::SensorTransform1_const_iterator it;
 			for (
 				it = xml_instance.SensorTransform1().begin(); 
 				it != xml_instance.SensorTransform1().end();

@@ -52,7 +52,7 @@ namespace ublas = boost::numeric::ublas;
 	of two rather different spaces (position and orientation for example).
 */
 struct CompositePotential : public Potential {
-	CompositePotential(const ::CompositePotential &xml_instance);
+	CompositePotential(const CBFSchema::CompositePotential &xml_instance);
 
 	/**
 		@brief The potentials which are combined into a bigger one..

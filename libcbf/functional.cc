@@ -10,7 +10,7 @@ namespace CBF {
 		std::binder2nd<multiplies<FloatMatrix, double> >
 	>
 	::ApplyOperationSensorTransform
-		(const ::MultiplyOperationSensorTransform &xml_instance) :
+		(const CBFSchema::MultiplyOperationSensorTransform &xml_instance) :
 		m_VectorOperation(
 			std::bind2nd(
 				multiplies<FloatVector, double>(),
@@ -30,16 +30,16 @@ namespace CBF {
 
 	static XMLDerivedFactory<
 		NegateOperationSensorTransform,
-		::NegateOperationSensorTransform, 
+		CBFSchema::NegateOperationSensorTransform, 
 		SensorTransform, 
-		::SensorTransform
+		CBFSchema::SensorTransform
 	> x1;
 
 	static XMLDerivedFactory<
 		MultiplyOperationSensorTransform,
-		::MultiplyOperationSensorTransform, 
+		CBFSchema::MultiplyOperationSensorTransform, 
 		SensorTransform, 
-		::SensorTransform
+		CBFSchema::SensorTransform
 	> x2;
 #endif
 

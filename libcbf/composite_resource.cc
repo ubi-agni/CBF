@@ -26,11 +26,11 @@ namespace CBF {
 #ifdef CBF_HAVE_XSD
 	CBF_PLUGIN_CLASS(CompositeResource, Resource)
 
-	CompositeResource::CompositeResource(const ::CompositeResource &xml_instance) {
+	CompositeResource::CompositeResource(const CBFSchema::CompositeResource &xml_instance) {
 			std::vector<ResourcePtr> resources;
 		
 			//! Instantiate the subordinate resources
-			::CompositeResource::Resource1_const_iterator it;
+			CBFSchema::CompositeResource::Resource1_const_iterator it;
 			for (
 				it = xml_instance.Resource1().begin(); 
 				it != xml_instance.Resource1().end();

@@ -28,14 +28,14 @@
 namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
-		LinearSensorTransform::LinearSensorTransform(const ::LinearSensorTransform &xml_instance) 
+		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance) 
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
 
 			m_TaskJacobian = create_matrix(xml_instance.Matrix());
 		}
 
-		static XMLDerivedFactory<LinearSensorTransform, ::LinearSensorTransform, SensorTransform, ::SensorTransform> x;
+		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
 	#endif
 		
 	CBF_PLUGIN_CLASS(LinearSensorTransform, SensorTransform)
