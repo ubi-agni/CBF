@@ -1,5 +1,4 @@
 #include <cbf/control_basis.h>
-#include <cbf/plugin_pool.h>
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
 

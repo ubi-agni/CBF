@@ -21,7 +21,6 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/linear_transform.h>
-#include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_factories.h>
 

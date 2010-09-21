@@ -1,6 +1,4 @@
 #include <cbf/masking_resource.h>
-#include <cbf/plugin_impl_macros.h>
-#include <cbf/plugin_pool.h>
 
 #ifdef CBF_HAVE_XSD
 	#include <cbf/schemas.hxx>

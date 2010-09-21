@@ -19,7 +19,6 @@
 */
 
 #include <cbf/potential.h>
-#include <cbf/plugin_macros.h>
 
 namespace CBF {
 

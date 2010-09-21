@@ -19,7 +19,6 @@
 */
 
 #include <cbf/axis_angle_potential.h>
-#include <cbf/plugin_impl_macros.h>
 #include <cbf/quaternion.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_factories.h>

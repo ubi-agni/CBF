@@ -19,7 +19,6 @@
 */
 
 #include <cbf/identity_transform.h>
-#include <cbf/plugin_macros.h>
 #include <cbf/debug_macros.h>
 #include <cbf/xml_factories.h>
 

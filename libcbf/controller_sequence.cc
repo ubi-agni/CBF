@@ -19,7 +19,6 @@
 */
 
 #include <cbf/controller_sequence.h>
-#include <cbf/plugin_macros.h>
 #include <iostream>
 
 #ifdef CBF_HAVE_XSD

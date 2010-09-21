@@ -19,7 +19,6 @@
 */
 
 #include <cbf/axis_potential.h>
-#include <cbf/plugin_impl_macros.h>
 #include <cbf/xml_factories.h>
 
 namespace CBF {

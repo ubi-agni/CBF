@@ -18,9 +18,8 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-#include <cbf/composite_potential.h>
 #include <cbf/config.h>
-#include <cbf/plugin_impl_macros.h>
+#include <cbf/composite_potential.h>
 #include <cbf/xml_factories.h>
 
 namespace CBF {

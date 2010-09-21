@@ -19,7 +19,6 @@
 */
 
 #include <cbf/pa10_joint_resource.h>
-#include <cbf/plugin_macros.h>
 
 namespace CBF {
 	
@@ -44,8 +43,6 @@ namespace CBF {
 	
 	}
 	#endif
-	
-	CBF_PLUGIN_CLASS(PA10JointResource, Resource)
 	
 } // namespace
 

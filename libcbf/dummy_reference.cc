@@ -22,7 +22,6 @@
 
 #include <cbf/config.h>
 #include <cbf/dummy_reference.h>
-#include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_factories.h>
 
