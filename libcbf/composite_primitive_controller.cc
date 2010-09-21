@@ -1,20 +1,17 @@
 #include <cbf/composite_primitive_controller.h>
 
-#ifdef CBF_HAVE_XSD
-	#include <cbf/schemas.hxx>
-#endif
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
-#ifdef CBF_HAVE_XSD
-
-CompositePrimitiveController::CompositePrimitiveController(const CompositePrimitiveControllerType &xml_instance) 
-
-{
+	#ifdef CBF_HAVE_XSD
 	
-}
-
-#endif
-
+		CompositePrimitiveController::CompositePrimitiveController(const CBFSchema::CompositePrimitiveController &xml_instance) 
+		{
+			
+		}
+		
+	#endif
+	
 } // namespace
 

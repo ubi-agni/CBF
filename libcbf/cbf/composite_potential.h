@@ -27,7 +27,6 @@
 #include <cbf/types.h>
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/exceptions.h>
 
 #include <boost/shared_ptr.hpp>
@@ -35,114 +34,112 @@
 #include <vector>
 #include <stdexcept>
 
-
-
-class CompositePotential;
+namespace CBFSchema { class CompositePotential; }
 
 namespace CBF {
 
-namespace ublas = boost::numeric::ublas;
-
-
-/**
-	@brief The composite potential can be used to combine individual potentials
-	into a single one.
-
-	This is useful e.g. when the task space is a product
-	of two rather different spaces (position and orientation for example).
-*/
-struct CompositePotential : public Potential {
-	CompositePotential(const CBFSchema::CompositePotential &xml_instance);
-
+	namespace ublas = boost::numeric::ublas;
+	
+	
 	/**
-		@brief The potentials which are combined into a bigger one..
+		@brief The composite potential can be used to combine individual potentials
+		into a single one.
+	
+		This is useful e.g. when the task space is a product
+		of two rather different spaces (position and orientation for example).
 	*/
-	std::vector<PotentialPtr> m_Potentials;
-
-	//! @brief Buffers which are instance variables for efficiency reasons
-	std::vector<FloatVector > m_in_buffers;
-
-	//! @brief Buffers which are instance variables for efficiency reasons
-	std::vector<FloatVector > m_out_buffers;
-
-	//! @brief Buffers which are instance variables for efficiency reasons
-	std::vector<FloatVector > m_ref_buffers;
-
-	unsigned int m_Dim;
-
-	CompositePotential(std::vector<PotentialPtr> potentials = std::vector<PotentialPtr>()) {
-		set_potentials(potentials);
-	}
-
-	CompositePotential(PotentialPtr p1, PotentialPtr p2) {
-		std::vector<PotentialPtr> v;
-		v.push_back(p1);
-		v.push_back(p2);
-
-		set_potentials(v);
-	}
-
-	/**
-		@brief Set the potentials to combine..
-	*/
-	void set_potentials(std::vector<PotentialPtr> &potentials) 
-	{
-		m_Potentials = potentials;
-		m_in_buffers.resize(potentials.size());
-		m_out_buffers.resize(potentials.size());
-		m_ref_buffers.resize(potentials.size());
-		m_Dim = 0;
-
-		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-			m_Dim += m_Potentials[i]->dim();
-			m_in_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
-			m_out_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
-			m_ref_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+	struct CompositePotential : public Potential {
+		CompositePotential(const CBFSchema::CompositePotential &xml_instance);
+	
+		/**
+			@brief The potentials which are combined into a bigger one..
+		*/
+		std::vector<PotentialPtr> m_Potentials;
+	
+		//! @brief Buffers which are instance variables for efficiency reasons
+		std::vector<FloatVector > m_in_buffers;
+	
+		//! @brief Buffers which are instance variables for efficiency reasons
+		std::vector<FloatVector > m_out_buffers;
+	
+		//! @brief Buffers which are instance variables for efficiency reasons
+		std::vector<FloatVector > m_ref_buffers;
+	
+		unsigned int m_Dim;
+	
+		CompositePotential(std::vector<PotentialPtr> potentials = std::vector<PotentialPtr>()) {
+			set_potentials(potentials);
 		}
-	}
-
-	virtual void gradient (
-		FloatVector &result, 
-		const std::vector<FloatVector > &references, 
-		const FloatVector &input
-	);
-
-	/**
-		We don't know how to combine the norms of the different potentials
-		so we return 0..
-	*/
-	virtual Float norm(const FloatVector &v) {
-		CBF_THROW_RUNTIME_ERROR("[CompositePotential]: Don't know how to calculate norm. TODO: fix!!");
-		return 0;
-	}
-
-	virtual Float distance(const FloatVector &v1, const FloatVector &v2) {
-		CBF_THROW_RUNTIME_ERROR("[CompositePotential]: Don't know how to calculate distances. TODO: fix!!");
-		return 0;
-	}
-
-#if 0
-	/** 
-		This implementation test if all of the potentials are converged and only then
-		returns true
-	*/
-	virtual bool converged() const {
-		for (unsigned int i = 0; i < m_Potentials.size(); ++i)
-			if (m_Potentials[i]->converged() == false)
-				return false;
-
-		return true;
-	}
-#endif
-
-	virtual unsigned int dim() const {
-		return m_Dim;
-	}
-
-};
-
-typedef boost::shared_ptr<CompositePotential> CompositePotentialPtr;
-
+	
+		CompositePotential(PotentialPtr p1, PotentialPtr p2) {
+			std::vector<PotentialPtr> v;
+			v.push_back(p1);
+			v.push_back(p2);
+	
+			set_potentials(v);
+		}
+	
+		/**
+			@brief Set the potentials to combine..
+		*/
+		void set_potentials(std::vector<PotentialPtr> &potentials) 
+		{
+			m_Potentials = potentials;
+			m_in_buffers.resize(potentials.size());
+			m_out_buffers.resize(potentials.size());
+			m_ref_buffers.resize(potentials.size());
+			m_Dim = 0;
+	
+			for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
+				m_Dim += m_Potentials[i]->dim();
+				m_in_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+				m_out_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+				m_ref_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+			}
+		}
+	
+		virtual void gradient (
+			FloatVector &result, 
+			const std::vector<FloatVector > &references, 
+			const FloatVector &input
+		);
+	
+		/**
+			We don't know how to combine the norms of the different potentials
+			so we return 0..
+		*/
+		virtual Float norm(const FloatVector &v) {
+			CBF_THROW_RUNTIME_ERROR("[CompositePotential]: Don't know how to calculate norm. TODO: fix!!");
+			return 0;
+		}
+	
+		virtual Float distance(const FloatVector &v1, const FloatVector &v2) {
+			CBF_THROW_RUNTIME_ERROR("[CompositePotential]: Don't know how to calculate distances. TODO: fix!!");
+			return 0;
+		}
+	
+	#if 0
+		/** 
+			This implementation test if all of the potentials are converged and only then
+			returns true
+		*/
+		virtual bool converged() const {
+			for (unsigned int i = 0; i < m_Potentials.size(); ++i)
+				if (m_Potentials[i]->converged() == false)
+					return false;
+	
+			return true;
+		}
+	#endif
+	
+		virtual unsigned int dim() const {
+			return m_Dim;
+		}
+	
+	};
+	
+	typedef boost::shared_ptr<CompositePotential> CompositePotentialPtr;
+	
 } // namespace
 
 #endif

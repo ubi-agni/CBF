@@ -29,12 +29,11 @@
 #include <cbf/dummy_resource.h>
 #include <cbf/debug_macros.h>
 #include <cbf/dummy_reference.h>
+#include <cbf/xml_factories.h>
+
 #include <algorithm>
 #include <cstdlib>
 
-#ifdef CBF_HAVE_XSD
-	#include <cbf/schemas.hxx>
-#endif
 
 void cbf_init() {
 

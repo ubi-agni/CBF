@@ -28,7 +28,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-class AxisAnglePotential;
+namespace CBFSchema { class AxisAnglePotential; }
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;

@@ -23,7 +23,6 @@
 #ifndef CBF_COMBINATION_STRATEGY_HH
 #define CBF_COMBINATION_STRATEGY_HH
 
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/types.h>
 
 #include <boost/shared_ptr.hpp>
@@ -80,12 +79,6 @@ struct AddingStrategy : public CombinationStrategy {
 };
 
 typedef boost::shared_ptr<AddingStrategy> AddingStrategyPtr;
-
-struct WinnerTakesAllStrategy {
-	// CBF_PLUGIN_CONSTRUCTOR(WinnerTakesAllStrategy)
-
-};
-
 
 } // namespace
 

@@ -23,13 +23,12 @@
 #ifndef CBF_COMPOSITE_TRANSFORM_HH
 #define CBF_COMPOSITE_TRANSFORM_HH
 
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/sensor_transform.h>
 
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
 
-class CompositeSensorTransform;
+namespace CBFSchema { class CompositeSensorTransform; }
 
 namespace CBF {
 	

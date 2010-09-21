@@ -21,7 +21,6 @@
 #ifndef CBF_PA10_RESOURCE_HH
 #define CBF_PA10_RESOURCE_HH
 
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/resource.h>
 
 #include "pa10/pa.h"
@@ -33,14 +32,14 @@
 #include <map>
 #include <stdexcept>
 
-CBF_PLUGIN_PREAMBLE(PA10JointResource)
+namespace CBFSchema { class PA10JointResource; } 
 
 namespace CBF {
 	
 	namespace ublas = boost::numeric::ublas;
 	
 	struct PA10JointResource : public Resource {
-		CBF_PLUGIN_DECL_METHODS(PA10JointResource)
+		PA10JointResource(const CBFSchema::PA10JointResource &xml_instance);
 	
 		PA10JointResource(ARM arm = ARM0) :
 			m_Arm(arm)
@@ -95,7 +94,6 @@ namespace CBF {
 		static Helper m_Helper;
 	};
 	
-	class PA10JointResource;
 	typedef boost::shared_ptr<PA10JointResource> PA10JointResourcePtr;
 } // namespace
 

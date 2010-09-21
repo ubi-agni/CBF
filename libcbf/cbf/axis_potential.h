@@ -30,7 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-class AxisPotential;
+namespace CBFSchema { class AxisPotential; }
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;

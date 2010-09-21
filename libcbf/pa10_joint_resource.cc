@@ -38,10 +38,10 @@ namespace CBF {
 	
 	
 	#ifdef CBF_HAVE_XSD
-	PA10JointResource::PA10JointResource(const PA10JointResourceType &xml_instance)
-	{
+		PA10JointResource::PA10JointResource(const CBFSchema::PA10JointResource &xml_instance)
+		{
 	
-	}
+		}
 	#endif
 	
 } // namespace

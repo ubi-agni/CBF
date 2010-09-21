@@ -19,7 +19,7 @@
 */
 
 #include <cbf/transform_chains.h>
-#include <cbf/plugin_impl_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD

@@ -22,7 +22,6 @@
 #define CONTROL_BASIS_SENSOR_TRANSFORM_HH
 
 #include <cbf/config.h>
-
 #include <cbf/types.h>
 #include <cbf/resource.h>
 
@@ -35,22 +34,13 @@
 #include <stdexcept>
 #include <functional>
 #include <map>
-
-class SensorTransformType;
-
-#ifdef CBF_HAVE_XSD
-	#include <cbf/xml_factories.h>
-	#include <cbf/schemas.hxx>
-#endif
-
 #include <string>
+
+namespace CBFSchema { class SensorTransform; }
 
 namespace CBF {
 	
 	namespace ublas = boost::numeric::ublas;
-
-	struct SensorTransform;
-	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;
 
 
 	/**
@@ -72,9 +62,7 @@ namespace CBF {
 	
 		}
 
-		#ifdef CBF_HAVE_XSD
-			SensorTransform(const CBFSchema::SensorTransform &xml_instance);
-		#endif
+		SensorTransform(const CBFSchema::SensorTransform &xml_instance);
 
 		/**
 			@brief A virtual desctructor to allow the clean destruction 
@@ -190,11 +178,8 @@ namespace CBF {
 
 			std::string m_DefaultComponentName;
 	};
-	
 
-#ifdef CBF_HAVE_XSD
-	template struct XMLBaseFactory<SensorTransform, SensorTransformType>;
-#endif
+	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;
 
 } // namespace
 

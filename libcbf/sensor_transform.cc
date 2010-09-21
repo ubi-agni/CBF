@@ -23,28 +23,23 @@
 #include <cbf/sensor_transform.h>
 #include <cbf/xml_factories.h>
 
-#ifdef CBF_HAVE_XSD
-	#include <cbf/schemas.hxx>
-#endif
-
 #include <iostream>
 
 namespace CBF {
-
-#ifdef CBF_HAVE_XSD
-SensorTransform::SensorTransform(const CBFSchema::SensorTransform &xml_instance) {
-	for (
-		CBFSchema::SensorTransform::ComponentName_sequence::const_iterator it = xml_instance.ComponentName().begin();
-		it != xml_instance.ComponentName().end();
-		++it) {
-			m_ComponentNames.push_back(*it);
-	}
-}
-
-template<> XMLBaseFactory<SensorTransform, SensorTransformType>* 
-		XMLBaseFactory<SensorTransform, SensorTransformType>::m_Instance = 0;
-
-#endif
+	
+	#ifdef CBF_HAVE_XSD
+		SensorTransform::SensorTransform(const CBFSchema::SensorTransform &xml_instance) {
+			for (
+				CBFSchema::SensorTransform::ComponentName_sequence::const_iterator it = xml_instance.ComponentName().begin();
+				it != xml_instance.ComponentName().end();
+				++it) {
+					m_ComponentNames.push_back(*it);
+			}
+		}
+		
+		template<> XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>* 
+				XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::m_Instance = 0;
+	#endif
 
 } // namespace
 

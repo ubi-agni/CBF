@@ -24,7 +24,6 @@
 #define CBF_CONTROLLER_SEQUENCE_HH
 
 #include <cbf/config.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/controller.h>
 
 #include <vector>

@@ -54,7 +54,6 @@ if (XRI_FOUND)
   set(CBF_HAVE_XRI 1)
 endif()
 
-# Not using XMLTIO atm since it breaks external entities
 message(STATUS "Looking for XMLTIO")
 pkg_check_modules(XMLTIO xmltio>=1.4)
 if (XMLTIO_FOUND)

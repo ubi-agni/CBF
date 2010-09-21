@@ -32,7 +32,7 @@
 #include <cbf/dummy_resource.h>
 #include <cbf/utilities.h>
 
-class SensorTransformChain;
+namespace CBFSchema { class SensorTransformChain; }
 
 namespace CBF {
 	

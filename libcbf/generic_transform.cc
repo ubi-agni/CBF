@@ -19,6 +19,8 @@
 */
 
 #include <cbf/generic_transform.h>
+#include <cbf/debug_macros.h>
+#include <cbf/xml_factories.h>
 
 #ifndef CBF_HAVE_EIGEN2
   #include <cbf/svd.h>

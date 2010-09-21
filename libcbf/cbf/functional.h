@@ -6,7 +6,6 @@
 
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-
 #include <cbf/xml_factories.h>
 
 namespace CBF {
@@ -50,7 +49,7 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 			m_Operand = 
 				XMLBaseFactory<
 					SensorTransform, 
-					SensorTransformType
+					CBFSchema::SensorTransform
 				>::instance()->create(xml_instance.Operand()); 
 
 			init_results(m_Operand);
@@ -135,7 +134,7 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 			m_Operand = 
 				XMLBaseFactory<
 					SensorTransform, 
-					SensorTransformType
+					CBFSchema::SensorTransform
 				>::instance()->create(xml_instance.Operand()); 
 			m_Blocksize = xml_instance.Blocksize();
 			init_results(m_Operand);

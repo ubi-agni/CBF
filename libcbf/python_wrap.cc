@@ -18,14 +18,14 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-#include <Python.h>
-#include <boost/python.hpp>
-
 #include <cbf/python_wrap.h>
 #include <cbf/debug_macros.h>
-#include <cbf/plugin_impl_macros.h>
+#include <cbf/xml_factories.h>
 
 #include <string>
+
+#include <Python.h>
+#include <boost/python.hpp>
 
 namespace CBF {
 	

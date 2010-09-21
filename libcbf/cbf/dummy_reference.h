@@ -25,7 +25,6 @@
 
 #include <cbf/reference.h>
 #include <cbf/types.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/exceptions.h>
 
 #include <boost/numeric/ublas/vector.hpp>

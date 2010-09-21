@@ -21,10 +21,9 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/controller.h>
-
-#include <stdexcept>
-#include <string>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
-	
+	template<> XMLBaseFactory<Controller, CBFSchema::Controller>* 
+		XMLBaseFactory<Controller, CBFSchema::Controller>::m_Instance = 0;	
 } // namespace

@@ -23,11 +23,9 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
-
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/utilities.h>
 
-class LinearSensorTransform;
+namespace CBFSchema { class LinearSensorTransform; }
 
 namespace CBF {
 

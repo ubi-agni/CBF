@@ -22,12 +22,11 @@
 #define CBF_DIFFERENCE_SENSOR_TRANSFORM
 
 #include <cbf/sensor_transform.h>
-#include <cbf/plugin_decl_macros.h>
 
 #include <vector>
 #include <cassert>
 
-class DifferenceSensorTransform;
+namespace CBFSchema { class DifferenceSensorTransform; }
 
 namespace CBF {
 

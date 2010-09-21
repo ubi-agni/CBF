@@ -3,11 +3,10 @@
 
 #include <cbf/controller.h>
 #include <cbf/primitive_controller.h>
-#include <cbf/plugin_decl_macros.h>
 
 #include <boost/shared_ptr.hpp>
 
-CBF_PLUGIN_PREAMBLE(CompositePrimitiveController);
+namespace CBFSchema { class CompositePrimitiveController; }
 
 namespace CBF {
 
@@ -17,7 +16,7 @@ namespace CBF {
 	individual components..
 */
 struct CompositePrimitiveController : public Controller {
-	CBF_PLUGIN_DECL_METHODS(CompositePrimitiveController);
+	CompositePrimitiveController(const CBFSchema::CompositePrimitiveController &xml_instance);
 
 	CompositePrimitiveController
 		( const std::vector<PrimitiveControllerPtr> controllers ) 

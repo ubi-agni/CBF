@@ -5,20 +5,20 @@
 #include <cbf/types.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
+#include <cbf/schemas.hxx>
+#include <cbf/utilities.h>
+#include <cbf/schemas.hxx>
 
 #include <xcf/ServerComponent.hpp>
 #include <IceUtil/Monitor.h> 
 #include <IceUtil/RecMutex.h>
-#include <cbf/schemas.hxx>
-#include <cbf/utilities.h>
-#include <cbf/schemas.hxx>
 
 #include <boost/bind.hpp>
 
 #include <string>
 #include <memory>
 
-class XCFVectorReference;
+namespace CBFSchema { class XCFVectorReference; }
 
 namespace CBF {
 

@@ -24,12 +24,11 @@
 #include <cbf/config.h>
 #include <cbf/types.h>
 #include <cbf/utilities.h>
-#include <cbf/plugin_decl_macros.h>
-#include <cbf/xml_factories.h>
+#include <cbf/debug_macros.h>
 
 #include <boost/shared_ptr.hpp>
 
-class Potential;
+namespace CBFSchema { class Potential; }
 
 namespace CBF {
 
@@ -101,10 +100,11 @@ struct Potential {
 
 typedef boost::shared_ptr<Potential> PotentialPtr;
 
+#if 0
 #ifdef CBF_HAVE_XSD
 	template struct XMLBaseFactory<Potential, CBFSchema::Potential>;
 #endif
-
+#endif
 
 
 } // namespace

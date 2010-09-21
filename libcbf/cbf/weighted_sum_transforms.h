@@ -32,7 +32,7 @@
 #include <stdexcept>
 #include <cassert>
 
-class WeightedSumSensorTransform;
+namespace CBFSchema { class WeightedSumSensorTransform; }
 
 namespace CBF {
 

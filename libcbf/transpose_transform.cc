@@ -1,14 +1,12 @@
 #include <cbf/transpose_transform.h>
-#include <cbf/plugin_impl_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
-CBF_PLUGIN_CLASS(TransposeEffectorTransform, EffectorTransform)
-
 #ifdef CBF_HAVE_XSD
-TransposeEffectorTransform::TransposeEffectorTransform(const TransposeEffectorTransformType &xml_instance) {
+	TransposeEffectorTransform::TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance) {
 
-}
+	}
 #endif
 
 } // namespace

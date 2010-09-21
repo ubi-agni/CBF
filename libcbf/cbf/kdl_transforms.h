@@ -52,13 +52,15 @@ namespace KDL {
 
 //! Forward declarations for XML instance types
 // CBF_PLUGIN_PREAMBLE EffectorTransformType;
-class KDLChainPositionSensorTransform;
-class KDLChainAxisAngleSensorTransform;
-class KDLTreePositionSensorTransform;
-class KDLTreeAxisAngleSensorTransform;
+namespace CBFSchema { 
+	class KDLChainPositionSensorTransform;
+	class KDLChainAxisAngleSensorTransform;
+	class KDLTreePositionSensorTransform;
+	class KDLTreeAxisAngleSensorTransform;
 
-class ChainBaseType;
-class TreeBaseType;
+	class ChainBase;
+	class TreeBase;
+}
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;

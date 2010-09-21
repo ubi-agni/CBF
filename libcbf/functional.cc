@@ -24,7 +24,7 @@ namespace CBF {
 			)
 		) { 
 			m_Operand = XMLBaseFactory<
-				SensorTransform, SensorTransformType
+				SensorTransform, CBFSchema::SensorTransform
 			>::instance()->create(xml_instance.Operand());
 		}
 

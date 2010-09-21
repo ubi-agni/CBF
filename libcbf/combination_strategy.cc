@@ -30,6 +30,9 @@ namespace CBF {
 		AddingStrategy::AddingStrategy(const CBFSchema::AddingStrategy &xml_instance) {
 			CBF_DEBUG("yay!!")
 		}
+
+	template<> XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>* 
+		XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>::m_Instance = 0;
 	#endif
 
 } // namespace
