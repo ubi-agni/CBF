@@ -19,8 +19,8 @@
 */
 
 #include <cbf/composite_reference.h>
-#include <cbf/plugin_impl_macros.h>
 #include <cbf/debug_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
@@ -36,20 +36,18 @@ namespace CBF {
 
 
 #ifdef CBF_HAVE_XSD
-	CBF_PLUGIN_CLASS(CompositeReference, Reference)
-
-	CompositeReference::CompositeReference(const CompositeReferenceType &xml_instance) {
+	CompositeReference::CompositeReference(const CBFSchema::CompositeReference &xml_instance) {
 			std::vector<ReferencePtr> references;
 		
 			//! Instantiate the subordinate references
-			CompositeReferenceType::Reference_const_iterator it;
+			CBFSchema::CompositeReference::Reference1_const_iterator it;
 			for (
-				it = xml_instance.Reference().begin(); 
-				it != xml_instance.Reference().end();
+				it = xml_instance.Reference1().begin(); 
+				it != xml_instance.Reference1().end();
 				++it
 			)
 			{
-				ReferencePtr tr(PluginPool<Reference>::get_instance()->create_from_xml(*it));
+				ReferencePtr tr = XMLBaseFactory<Reference, CBFSchema::Reference>::instance()->create(*it);
 				references.push_back(tr);
 				//tr->set_reference(ReferencePtr(new DummyReference(tr->get_reference_dim())));
 			}

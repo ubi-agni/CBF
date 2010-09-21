@@ -24,17 +24,18 @@
 #include <cbf/dummy_reference.h>
 #include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
-	DummyReference::DummyReference(const DummyReferenceType &xml_instance) {
+	DummyReference::DummyReference(const ::DummyReference &xml_instance) {
 		CBF_DEBUG("constructing")
 
 		//! Set references..
 		CBF_DEBUG("Setting Reference(s)...")
 		for (
-			DummyReferenceType::Vector_const_iterator it = 
+			::DummyReference::Vector_const_iterator it = 
 				xml_instance.Vector().begin(); 
 			it != xml_instance.Vector().end();
 			++it

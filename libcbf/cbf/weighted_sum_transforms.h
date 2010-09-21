@@ -22,7 +22,6 @@
 #define CBF_WEIGHTED_SUM_TRANSFORMS_HH
 
 #include <cbf/sensor_transform.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/types.h>
 
 #include <boost/numeric/ublas/matrix.hpp>
@@ -33,8 +32,7 @@
 #include <stdexcept>
 #include <cassert>
 
-CBF_PLUGIN_PREAMBLE(WeightedSumSensorTransform)
-
+class WeightedSumSensorTransform;
 
 namespace CBF {
 
@@ -46,66 +44,65 @@ namespace ublas = boost::numeric::ublas;
 */
 	
 struct WeightedSumSensorTransform : public SensorTransform {
-		CBF_PLUGIN_DECL_METHODS(WeightedSumSensorTransform)
+	WeightedSumSensorTransform(const ::WeightedSumSensorTransform &xml_instance);
 
+	WeightedSumSensorTransform(
+		std::vector<SensorTransformPtr> transforms 
+			= std::vector<SensorTransformPtr>(), 
+		FloatVector weights 
+			= ublas::zero_vector<Float>()
+	) {
+		set_transforms(transforms);
+		set_weights(weights);
+	}
 
-		WeightedSumSensorTransform(
-			std::vector<SensorTransformPtr> transforms 
-				= std::vector<SensorTransformPtr>(), 
-			FloatVector weights 
-				= ublas::zero_vector<Float>()
-		) {
-			set_transforms(transforms);
-			set_weights(weights);
+	void set_weights(const FloatVector &weights) {
+		m_Weights = weights;
+	}
+
+	void set_transforms(std::vector<SensorTransformPtr> &transforms) {
+		m_Transforms = transforms;
+
+		//! Set the result and task jacobian matrixes to the right sizes...
+		m_TaskJacobian = ublas::zero_matrix<Float>(transforms[0]->task_dim(), transforms[0]->resource_dim());
+		m_Result = ublas::zero_vector<Float>(transforms[0]->task_dim());
+	}
+
+	void set_resource(ResourcePtr resource) {
+		for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
+			m_Transforms[i]->set_resource(resource);
+		}
+		m_Resource = resource;
+	}
+
+	void update() {
+		assert(m_Transforms.size() > 1);
+		assert(m_Transforms.size() == m_Weights.size());
+
+		for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
+			m_Transforms[i]->update();
 		}
 
-		void set_weights(const FloatVector &weights) {
-			m_Weights = weights;
+		m_TaskJacobian = ublas::zero_matrix<Float>(m_Transforms[0]->task_dim(), m_Transforms[0]->resource_dim());
+		m_Result = ublas::zero_vector<Float>(m_Transforms[0]->task_dim());
+
+		for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
+			m_TaskJacobian += m_Weights[i] * m_Transforms[i]->task_jacobian();
+			m_Result += m_Weights[i] * m_Transforms[i]->result();
 		}
+	}
 
-		void set_transforms(std::vector<SensorTransformPtr> &transforms) {
-			m_Transforms = transforms;
+	// As both sensor transforms are required to have the same resource dimensionality, it does not matter
+	// which one we return
+	unsigned int resource_dim() const { return m_Transforms[0]->resource_dim(); }
 
-			//! Set the result and task jacobian matrixes to the right sizes...
-			m_TaskJacobian = ublas::zero_matrix<Float>(transforms[0]->task_dim(), transforms[0]->resource_dim());
-			m_Result = ublas::zero_vector<Float>(transforms[0]->task_dim());
-		}
+	// As both sensor transforms are required to have the same task dimensionality, it does not matter
+	// which one we return
+	unsigned int task_dim() const { return m_Transforms[0]->task_dim(); }
 
-		void set_resource(ResourcePtr resource) {
-			for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
-				m_Transforms[i]->set_resource(resource);
-			}
-			m_Resource = resource;
-		}
-
-		void update() {
-			assert(m_Transforms.size() > 1);
-			assert(m_Transforms.size() == m_Weights.size());
-
-			for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
-				m_Transforms[i]->update();
-			}
-
-			m_TaskJacobian = ublas::zero_matrix<Float>(m_Transforms[0]->task_dim(), m_Transforms[0]->resource_dim());
-			m_Result = ublas::zero_vector<Float>(m_Transforms[0]->task_dim());
-
-			for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
-				m_TaskJacobian += m_Weights[i] * m_Transforms[i]->task_jacobian();
-				m_Result += m_Weights[i] * m_Transforms[i]->result();
-			}
-		}
-
-		// As both sensor transforms are required to have the same resource dimensionality, it does not matter
-		// which one we return
-		unsigned int resource_dim() const { return m_Transforms[0]->resource_dim(); }
-
-		// As both sensor transforms are required to have the same task dimensionality, it does not matter
-		// which one we return
-		unsigned int task_dim() const { return m_Transforms[0]->task_dim(); }
-
-		protected:
-			std::vector<SensorTransformPtr> m_Transforms;
-			FloatVector m_Weights;
+	protected:
+		std::vector<SensorTransformPtr> m_Transforms;
+		FloatVector m_Weights;
 };
 
 typedef boost::shared_ptr<WeightedSumSensorTransform>

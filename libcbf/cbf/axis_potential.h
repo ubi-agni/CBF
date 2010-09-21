@@ -30,7 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-CBF_PLUGIN_PREAMBLE(AxisPotential)
+class AxisPotential;
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
@@ -40,7 +40,7 @@ namespace CBF {
 		and does n-dimensional SLERP to calculate an update step..
 	*/
 	struct AxisPotential : public Potential {
-		CBF_PLUGIN_DECL_METHODS(AxisPotential)
+		AxisPotential(const ::AxisPotential &xml_instance);
 
 		bool m_Converged;
 		int m_Dimension;

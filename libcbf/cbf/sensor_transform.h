@@ -39,8 +39,8 @@
 class SensorTransformType;
 
 #ifdef CBF_HAVE_XSD
-#include <cbf/xml_factories.h>
-#include <cbf/schemas.hxx>
+	#include <cbf/xml_factories.h>
+	#include <cbf/schemas.hxx>
 #endif
 
 #include <string>
@@ -72,11 +72,9 @@ namespace CBF {
 	
 		}
 
-		SensorTransform(const SensorTransformType &xml_instance);	
-
-		static SensorTransformPtr create_from_xml(const SensorTransformType &xml_instance) {
-
-		}
+		#ifdef CBF_HAVE_XSD
+			SensorTransform(const CBFSchema::SensorTransform &xml_instance);
+		#endif
 
 		/**
 			@brief A virtual desctructor to allow the clean destruction 

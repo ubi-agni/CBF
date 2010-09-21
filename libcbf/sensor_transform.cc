@@ -32,9 +32,9 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-SensorTransform::SensorTransform(const SensorTransformType &xml_instance) {
+SensorTransform::SensorTransform(const CBFSchema::SensorTransform &xml_instance) {
 	for (
-		SensorTransformType::ComponentName_sequence::const_iterator it = xml_instance.ComponentName().begin();
+		CBFSchema::SensorTransform::ComponentName_sequence::const_iterator it = xml_instance.ComponentName().begin();
 		it != xml_instance.ComponentName().end();
 		++it) {
 			m_ComponentNames.push_back(*it);

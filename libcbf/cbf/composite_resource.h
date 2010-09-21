@@ -30,7 +30,7 @@
 #include <vector>
 #include <algorithm>
 
-CBF_PLUGIN_PREAMBLE(CompositeResource)
+class CompositeResource;
 
 namespace CBF {
 
@@ -44,7 +44,7 @@ struct CompositeResource : public Resource
 		FloatVector m_ResourceValues;
 
 	public:
-		CBF_PLUGIN_DECL_METHODS(CompositeResource)
+		CompositeResource(const ::CompositeResource &xml_instance);
 
 		CompositeResource(std::vector<ResourcePtr> resources = std::vector<ResourcePtr>()) {
 			set_resources(resources);

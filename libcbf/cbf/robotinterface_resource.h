@@ -24,7 +24,6 @@
 #include <cbf/config.h>
 #include <cbf/debug_macros.h>
 #include <cbf/resource.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/exceptions.h>
 
 #include <boost/thread.hpp>
@@ -42,12 +41,12 @@
 #include <riPoseEvent.h>
 
 
-CBF_PLUGIN_PREAMBLE(RobotInterfaceResource)
+class RobotInterfaceResource;
 
 namespace CBF {
 
 struct RobotInterfaceResource : public Resource, public robotinterface::EventHandler {
-	CBF_PLUGIN_DECL_METHODS(RobotInterfaceResource)
+	RobotInterfaceResource (const ::RobotInterfaceResource &xml_instance);
 
 	RobotInterfaceResource(
 		const std::string &send_memory_uri = "", 

@@ -9,9 +9,9 @@ using namespace CBF;
 
 
 int main() {
-	SensorTransformPtr id(new IdentitySensorTransform(9));	
+	SensorTransformPtr id(new CBF::IdentitySensorTransform(9));	
 
-	DummyResourcePtr r(new DummyResource(9));
+	DummyResourcePtr r(new CBF::DummyResource(9));
 
 	FloatVector vec(9);
 	vec[0] = 1; vec[8] = -1;

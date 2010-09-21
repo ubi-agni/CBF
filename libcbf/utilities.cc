@@ -209,13 +209,13 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 #endif
 
 #ifdef CBF_HAVE_XSD
-ublas::vector<Float> create_vector(const VectorType &xml_instance) {
-	const SimpleVectorType *simple_vector = dynamic_cast<const SimpleVectorType*>(&xml_instance);
+ublas::vector<Float> create_vector(const ::Vector &xml_instance) {
+	const ::SimpleVector *simple_vector = dynamic_cast<const ::SimpleVector*>(&xml_instance);
 
 	if (simple_vector) {
 		std::vector<Float> tmp;
 		for (
-			SimpleVectorType::Coefficient_const_iterator it = (*simple_vector).Coefficient().begin();
+			::SimpleVector::Coefficient_const_iterator it = (*simple_vector).Coefficient().begin();
 			it != (*simple_vector).Coefficient().end();
 			++it
 		)
@@ -227,7 +227,7 @@ ublas::vector<Float> create_vector(const VectorType &xml_instance) {
 		return ret;
 	}
 
-	const BoostVectorType *boost_vector = dynamic_cast<const BoostVectorType*>(&xml_instance);
+	const ::BoostVector *boost_vector = dynamic_cast<const ::BoostVector*>(&xml_instance);
 
 	if (boost_vector) {
 		std::stringstream stream(boost_vector->String());
@@ -243,11 +243,11 @@ ublas::vector<Float> create_vector(const VectorType &xml_instance) {
 }
 
 
-FloatMatrix create_matrix(const MatrixType &xml_instance)
+FloatMatrix create_matrix(const ::Matrix &xml_instance)
 {
-	const MatrixType *m = &xml_instance;
+	const ::Matrix *m = &xml_instance;
 
-	const BoostMatrixType *m2 = dynamic_cast<const BoostMatrixType*>(m);
+	const ::BoostMatrix *m2 = dynamic_cast<const ::BoostMatrix*>(m);
 	if (m2) {
 		FloatMatrix matrix;
 		std::stringstream stream(std::string(m2->String()));
@@ -266,7 +266,7 @@ FloatMatrix create_matrix(const MatrixType &xml_instance)
 #ifdef CBF_HAVE_XSD
 #ifdef CBF_HAVE_KDL
 
-boost::shared_ptr<KDL::Segment> create_segment(const SegmentType &xml_instance) {
+boost::shared_ptr<KDL::Segment> create_segment(const ::Segment &xml_instance) {
 	boost::shared_ptr<KDL::Frame> frame = create_frame(xml_instance.Frame());
 	boost::shared_ptr<KDL::Joint> joint = create_joint(xml_instance.Joint());
 
@@ -279,9 +279,9 @@ boost::shared_ptr<KDL::Segment> create_segment(const SegmentType &xml_instance) 
 	return boost::shared_ptr<KDL::Segment>(new KDL::Segment(xml_instance.Name(), *joint, *frame));
 }
 
-boost::shared_ptr<KDL::Frame> create_frame(const FrameType &xml_instance) {
+boost::shared_ptr<KDL::Frame> create_frame(const ::Frame &xml_instance) {
 	boost::shared_ptr<KDL::Frame> frame(new KDL::Frame);
-	const MatrixFrameType *matrix_frame_instance = dynamic_cast<const MatrixFrameType*>(&(xml_instance));
+	const ::MatrixFrame *matrix_frame_instance = dynamic_cast<const ::MatrixFrame*>(&(xml_instance));
 
 	if (matrix_frame_instance != 0)
 	{
@@ -310,7 +310,7 @@ boost::shared_ptr<KDL::Frame> create_frame(const FrameType &xml_instance) {
 	return frame;
 }
 
-boost::shared_ptr<KDL::Joint> create_joint(const JointType &xml_instance) {
+boost::shared_ptr<KDL::Joint> create_joint(const ::Joint &xml_instance) {
 	boost::shared_ptr<KDL::Joint> joint;
 
 	if (xml_instance.Type() == "Rotational") {
@@ -338,18 +338,18 @@ boost::shared_ptr<KDL::Joint> create_joint(const JointType &xml_instance) {
 	return joint;
 }
 
-boost::shared_ptr<KDL::Chain> create_chain(const ChainBaseType &xml_instance) {
+boost::shared_ptr<KDL::Chain> create_chain(const ::ChainBase &xml_instance) {
 	boost::shared_ptr<KDL::Chain> chain(new KDL::Chain);
 
 	//! Check what kind of chain we have:
 
-	const ChainType *chain_instance  = dynamic_cast<const ChainType*>(&xml_instance);
+	const ::Chain *chain_instance  = dynamic_cast<const ::Chain*>(&xml_instance);
 
 	if (chain_instance == 0)
 		throw std::runtime_error("Chain type not handled yet..");
 
 	for (
-		ChainType::Segment_const_iterator it =(*chain_instance).Segment().begin(); 
+		::Chain::Segment_const_iterator it =(*chain_instance).Segment().begin(); 
 		it != (*chain_instance).Segment().end();
 		++it
 	)
@@ -364,33 +364,33 @@ boost::shared_ptr<KDL::Chain> create_chain(const ChainBaseType &xml_instance) {
 	return chain;
 }
 
-void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &current_hook_name, const TreeSegmentType &xml_instance) {
+void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &current_hook_name, const ::TreeSegment &xml_instance) {
 	boost::shared_ptr<KDL::Segment> segment = create_segment(xml_instance);
 
 	if (tree->addSegment(*segment, current_hook_name) == false)
 		throw std::runtime_error("Adding segment to tree failed");
 
 	for (
-		TreeSegmentType::Segment_const_iterator it =(xml_instance).Segment().begin(); 
-		it != (xml_instance).Segment().end();
+		::TreeSegment::Segment1_const_iterator it =(xml_instance).Segment1().begin(); 
+		it != (xml_instance).Segment1().end();
 		++it
 	) {
 		tree_add_segment(tree, xml_instance.Name(), *it);
 	}
 }
 
-boost::shared_ptr<KDL::Tree> create_tree(const TreeBaseType &xml_instance) {
+boost::shared_ptr<KDL::Tree> create_tree(const ::TreeBase &xml_instance) {
 	boost::shared_ptr<KDL::Tree> tree(new KDL::Tree);
 
 	//! Check what kind of tree we have:
 
-	const TreeType *tree_instance  = dynamic_cast<const TreeType*>(&xml_instance);
+	const ::Tree *tree_instance  = dynamic_cast<const Tree*>(&xml_instance);
 
 	if (tree_instance == 0)
 		throw std::runtime_error("Tree type not handled yet..");
 
 	for (
-		TreeType::Segment_const_iterator it =(*tree_instance).Segment().begin(); 
+		::Tree::Segment_const_iterator it =(*tree_instance).Segment().begin(); 
 		it != (*tree_instance).Segment().end();
 		++it
 	)

@@ -2,7 +2,6 @@
 #define CBF_NORM_TRANSFORM_HH
 
 #include <cbf/sensor_transform.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/exceptions.h>
 #include <cbf/types.h>
 #include <cbf/config.h>
@@ -10,7 +9,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 
-CBF_PLUGIN_PREAMBLE(NormSensorTransform)
+class NormSensorTransform;
 
 namespace CBF {
 
@@ -21,7 +20,8 @@ namespace ublas = boost::numeric::ublas;
 	of the output of another given SensorTransform.
 */
 struct NormSensorTransform : public SensorTransform {
-	CBF_PLUGIN_DECL_METHODS(NormSensorTransform)
+	NormSensorTransform(const ::NormSensorTransform &xml_instance);
+
 	/**
 		The wrapped SensorTransform
 	*/

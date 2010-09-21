@@ -29,11 +29,10 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/utilities.h>
 
-CBF_PLUGIN_PREAMBLE(SensorTransformChain)
+class SensorTransformChain;
 
 namespace CBF {
 	
@@ -46,7 +45,7 @@ namespace CBF {
 		of that one serves as input to m_SensorTransforms[1] and so on.
 	*/
 	struct SensorTransformChain : public SensorTransform {
-		CBF_PLUGIN_DECL_METHODS(SensorTransformChain)
+		SensorTransformChain(const ::SensorTransformChain &xml_instance);
 	
 		FloatMatrix m_Jacobian;
 	

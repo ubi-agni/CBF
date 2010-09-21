@@ -36,8 +36,9 @@
 #include <cbf/reference.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/combination_strategy.h>
+#include <cbf/xml_factories.h>
 
-CBF_PLUGIN_PREAMBLE(PrimitiveController)
+class PrimitiveController;
 
 namespace CBF {
 	class PrimitiveController;
@@ -61,7 +62,7 @@ namespace CBF {
 		projected into the null space of this controller.
 	*/
 	struct PrimitiveController : public Controller {
-		CBF_PLUGIN_DECL_METHODS(PrimitiveController)
+		PrimitiveController(const ::PrimitiveController &xml_instance);
 
 		/**
 			@brief Create a controller with the members 

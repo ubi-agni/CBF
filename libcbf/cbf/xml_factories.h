@@ -6,14 +6,24 @@
 #include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
 
+#ifdef CBF_HAVE_XSD
+	#include <cbf/schemas.hxx>
+#endif
+
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
+	/**
+		This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
+	*/
 	template <class TBase>
 	struct XMLDerivedFactoryBase {
 		virtual boost::shared_ptr<TBase> create(const ::xml_schema::type &xml_instance) = 0;
 	};
 
+	/**
+		This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
+	*/
 	template <class TBase, class TBaseType>
 	struct XMLBaseFactory {
 		protected:
@@ -45,10 +55,13 @@ namespace CBF {
 			}
 	};
 
+	/**
+		This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
+	*/
 	template <class T, class TType, class TBase, class TBaseType>
 	struct XMLDerivedFactory : XMLDerivedFactoryBase<TBase> {
 			XMLDerivedFactory() { 
-				CBF_DEBUG("register (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
+				CBF_DEBUG("registering (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
 				XMLBaseFactory<TBase, TBaseType>::instance()->m_DerivedFactories.push_back(this); 
 			}
 

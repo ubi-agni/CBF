@@ -18,7 +18,6 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-#include <cbf/plugin_pool.h>
 #include <cbf/controller.h>
 #include <cbf/control_basis.h>
 #include <cbf/xsd_error_handler.h>
@@ -40,11 +39,30 @@ namespace po = boost::program_options;
 int main(int argc, char *argv[]) {
 	po::options_description options_description("Allowed options");
 	options_description.add_options() 
-		("help", "produce help message")
-		("sleep-time", po::value<unsigned int>(), "time to sleep between cycles in milliseconds")
-		("steps", po::value<unsigned int>(), "run exact number of steps. 0 means: never stop")
-		("control-basis", po::value<std::string>(), "XML file containing controller specification(s)")
-		("controller", po::value<std::vector<std::string> >(), "Name of a controller to run (can be used more than once)")
+		(
+			"help", 
+			"produce help message"
+		)
+		(
+			"sleep-time", 
+			po::value<unsigned int>(), 
+			"time to sleep between cycles in milliseconds"
+		)
+		(
+			"steps", 
+			po::value<unsigned int>(), 
+			"run exact number of steps. 0 means: never stop"
+		)
+		(
+			"control-basis", 
+			po::value<std::vector<std::string> >(), 
+			"XML file containing controller specification(s) (can be used more than once)"
+		)
+		(
+			"controller", 
+			po::value<std::vector<std::string> >(), 
+			"Name of a controller to run (can be used more than once)"
+		)
 		;
 
 	po::variables_map variables_map;
@@ -91,8 +109,8 @@ int main(int argc, char *argv[]) {
 
 	CBF::XSDErrorHandler err_handler;
 
-	std::auto_ptr<ControlBasisType> cbt
-		(::ControlBasis
+	std::auto_ptr< ::ControlBasis> cbt
+		(::ControlBasis_
 			(control_basis_name, err_handler, xml_schema::flags::dont_validate));
 
 	CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));

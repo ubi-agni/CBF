@@ -27,7 +27,7 @@
 #include <cbf/plugin_decl_macros.h>
 #include <cbf/utilities.h>
 
-CBF_PLUGIN_PREAMBLE(LinearSensorTransform)
+class LinearSensorTransform;
 
 namespace CBF {
 
@@ -38,7 +38,7 @@ typedef boost::shared_ptr<LinearSensorTransform> LinearSensorTransformPtr;
 	@brief A linear sensor transform
 */
 struct LinearSensorTransform : public SensorTransform {
-	CBF_PLUGIN_DECL_METHODS(LinearSensorTransform)
+	LinearSensorTransform (const ::LinearSensorTransform &xml_instance);
 
 	void update() {
 		m_Result = ublas::prod(m_TaskJacobian, m_Resource->get());

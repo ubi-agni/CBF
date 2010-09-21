@@ -21,7 +21,6 @@
 #ifndef CBF_BASE_CONTROLLER_HH
 #define CBF_BASE_CONTROLLER_HH
 
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/types.h>
 
 #include <cstdlib>

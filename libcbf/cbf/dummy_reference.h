@@ -32,12 +32,12 @@
 
 #include <stdexcept>
 
-CBF_PLUGIN_PREAMBLE(DummyReference)
+class DummyReference;
 
 namespace CBF {
 
 	struct DummyReference : public Reference {
-		CBF_PLUGIN_DECL_METHODS(DummyReference)
+		DummyReference(const ::DummyReference &xml_instance);
 
 		DummyReference(unsigned int num_references = 1, unsigned int dim = 1)
 		{

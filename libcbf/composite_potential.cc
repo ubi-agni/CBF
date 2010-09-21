@@ -21,6 +21,7 @@
 #include <cbf/composite_potential.h>
 #include <cbf/config.h>
 #include <cbf/plugin_impl_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
@@ -53,15 +54,15 @@ namespace CBF {
 	}
 
 #ifdef CBF_HAVE_XSD
-	CompositePotential::CompositePotential(const CompositePotentialType &xml_instance) :
+	CompositePotential::CompositePotential(const ::CompositePotential &xml_instance) :
 		Potential(xml_instance) 
 	{
 		CBF_DEBUG("[CompositePotential(const CompositePotentialType &xml_instance)]: yay!")
 		//std::cout << "Coefficient: " << xml_instance.Coefficient() << std::endl;
 		std::vector<PotentialPtr> tmp;
 		for (
-			CompositePotentialType::Potential_const_iterator it = xml_instance.Potential().begin();
-			it != xml_instance.Potential().end();
+			::CompositePotential::Potential1_const_iterator it = xml_instance.Potential1().begin();
+			it != xml_instance.Potential1().end();
 			++it)
 			{
 				PotentialPtr pot = PluginPool<Potential>::get_instance()->create_from_xml(*it);

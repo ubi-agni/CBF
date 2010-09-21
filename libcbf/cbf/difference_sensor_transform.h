@@ -27,7 +27,7 @@
 #include <vector>
 #include <cassert>
 
-CBF_PLUGIN_PREAMBLE(DifferenceSensorTransform)
+class DifferenceSensorTransform;
 
 namespace CBF {
 
@@ -36,7 +36,7 @@ namespace CBF {
 		operating on the same resources..
 	*/
 	struct DifferenceSensorTransform : public SensorTransform {
-		CBF_PLUGIN_DECL_METHODS(DifferenceSensorTransform)
+		DifferenceSensorTransform(const ::DifferenceSensorTransform &xml_instance);
 
 		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr())
 		{

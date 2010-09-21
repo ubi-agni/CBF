@@ -37,7 +37,7 @@
 
 
 
-CBF_PLUGIN_PREAMBLE(CompositePotential)
+class CompositePotential;
 
 namespace CBF {
 
@@ -52,7 +52,7 @@ namespace ublas = boost::numeric::ublas;
 	of two rather different spaces (position and orientation for example).
 */
 struct CompositePotential : public Potential {
-	CBF_PLUGIN_DECL_METHODS(CompositePotential)
+	CompositePotential(const ::CompositePotential &xml_instance);
 
 	/**
 		@brief The potentials which are combined into a bigger one..

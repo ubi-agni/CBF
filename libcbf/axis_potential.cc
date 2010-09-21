@@ -20,10 +20,11 @@
 
 #include <cbf/axis_potential.h>
 #include <cbf/plugin_impl_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		AxisPotential::AxisPotential(const AxisPotentialType &xml_instance) :
+		AxisPotential::AxisPotential(const ::AxisPotential &xml_instance) :
 			Potential(xml_instance) {
 			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!")
 			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
@@ -31,5 +32,4 @@ namespace CBF {
 		}
 	#endif
 	
-	CBF_PLUGIN_CLASS(AxisPotential, Potential)
 } // namespace

@@ -24,10 +24,11 @@
 #include <cbf/types.h>
 #include <cbf/utilities.h>
 #include <cbf/plugin_decl_macros.h>
+#include <cbf/xml_factories.h>
 
 #include <boost/shared_ptr.hpp>
 
-CBF_PLUGIN_PREAMBLE(Potential)
+class Potential;
 
 namespace CBF {
 
@@ -44,7 +45,7 @@ struct Potential {
 	bool m_ClampGradientStepNorm;
 	Float m_MaxGradientStepNorm;
 
-	CBF_PLUGIN_DECL_METHODS(Potential)
+	Potential(const ::Potential &xml_instance);
 
 	Potential(
 		bool clamp_gradient_step_norm = false,
@@ -98,6 +99,12 @@ struct Potential {
 };
 
 typedef boost::shared_ptr<Potential> PotentialPtr;
+
+#ifdef CBF_HAVE_XSD
+	template struct XMLBaseFactory<Potential, ::Potential>;
+#endif
+
+
 
 } // namespace
 

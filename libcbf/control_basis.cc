@@ -10,10 +10,10 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	ControlBasis::ControlBasis(const ControlBasisType &xml_instance) {
+	ControlBasis::ControlBasis(const CBFSchema::ControlBasis &xml_instance) {
 		CBF_DEBUG("Building Control Basis")
 		for (
-			ControlBasisType::Controller_const_iterator it = 
+			CBFSchema::ControlBasis::Controller_const_iterator it = 
 				xml_instance.Controller().begin();
 			it != xml_instance.Controller().end();
 			++it)

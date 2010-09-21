@@ -3,12 +3,11 @@
 
 #include <cbf/config.h>
 #include <cbf/resource.h>
-#include <cbf/plugin_decl_macros.h>
 
 #include <vector>
 #include <stdexcept>
 
-CBF_PLUGIN_PREAMBLE(MaskingResource)
+namespace CBFSchema { class MaskingResource; }
 
 namespace CBF {
 
@@ -20,7 +19,7 @@ namespace CBF {
 */
 
 struct MaskingResource : public Resource {
-	CBF_PLUGIN_DECL_METHODS(MaskingResource)
+	MaskingResource(const CBFSchema::MaskingResource &xml_instance);
 
 	MaskingResource(ResourcePtr masked_resource, std::vector<unsigned int> indexes)
 	{

@@ -26,14 +26,12 @@
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 #include <cbf/utilities.h>
-#include <cbf/plugin_decl_macros.h>
-
 
 #include <boost/numeric/ublas/io.hpp>
 
-CBF_PLUGIN_PREAMBLE(GenericEffectorTransform)
-CBF_PLUGIN_PREAMBLE(DampedGenericEffectorTransform)
-CBF_PLUGIN_PREAMBLE(DampedWeightedGenericEffectorTransform)
+class GenericEffectorTransform;
+class DampedGenericEffectorTransform;
+class DampedWeightedGenericEffectorTransform;
 
 namespace CBF {
 
@@ -41,7 +39,7 @@ namespace CBF {
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
 	*/
 	struct GenericEffectorTransform : public EffectorTransform {
-		CBF_PLUGIN_DECL_METHODS(GenericEffectorTransform)
+		GenericEffectorTransform (const ::GenericEffectorTransform &xml_instance);
 
 		GenericEffectorTransform() { }
 	
@@ -67,7 +65,7 @@ namespace CBF {
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
 	*/
 	struct DampedGenericEffectorTransform : public EffectorTransform {
-		CBF_PLUGIN_DECL_METHODS(DampedGenericEffectorTransform)
+		DampedGenericEffectorTransform (const ::DampedGenericEffectorTransform &xml_instnace);
 	
 		virtual void update();
 	
@@ -103,7 +101,7 @@ namespace CBF {
 		TODO: Implement!!!
 	*/
 	struct DampedWeightedGenericEffectorTransform : public EffectorTransform {
-		CBF_PLUGIN_DECL_METHODS(DampedWeightedGenericEffectorTransform)
+		DampedWeightedGenericEffectorTransform (const ::DampedWeightedGenericEffectorTransform &xml_instance);
 
 		protected:	
 	 		FloatMatrix m_Weights;

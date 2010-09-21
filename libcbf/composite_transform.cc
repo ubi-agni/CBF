@@ -103,7 +103,7 @@ namespace CBF {
 	}
 	
 	#ifdef CBF_HAVE_XSD
-		CompositeSensorTransform::CompositeSensorTransform(const CompositeSensorTransformType &xml_instance) :
+		CompositeSensorTransform::CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance) :
 			SensorTransform(xml_instance)
 		{
 			CBF_DEBUG("yay!!!");
@@ -111,30 +111,21 @@ namespace CBF {
 			std::vector<SensorTransformPtr> transforms;
 		
 			//! Instantiate the subordinate transforms
-			SensorTransformChainType::SensorTransform_const_iterator it;
+			CBFSchema::CompositeSensorTransform::SensorTransform1_const_iterator it;
 			for (
-				it = xml_instance.SensorTransform().begin(); 
-				it != xml_instance.SensorTransform().end();
+				it = xml_instance.SensorTransform1().begin(); 
+				it != xml_instance.SensorTransform1().end();
 				++it
 			)
 			{
-#if 0
-				SensorTransformPtr tr(PluginPool<SensorTransform>::get_instance()->create_from_xml(*it));
-				transforms.push_back(tr);
-				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
-#endif
-
-				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, SensorTransformType>::instance()->create(*it));
+				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::instance()->create(*it));
 				transforms.push_back(tr);
 			}
 		
 			set_transforms(transforms);
 		}
 		
+		static XMLDerivedFactory<CompositeSensorTransform, CBFSchema::CompositeSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
 	#endif
-
-	CBF_PLUGIN_CLASS(CompositeSensorTransform, SensorTransform)
-
-	static XMLDerivedFactory<CompositeSensorTransform, CompositeSensorTransformType, SensorTransform, SensorTransformType> x;
 };
 

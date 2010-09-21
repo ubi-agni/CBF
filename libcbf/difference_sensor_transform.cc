@@ -19,12 +19,11 @@
 */
 
 #include <cbf/difference_sensor_transform.h>
-
-#include <cbf/plugin_impl_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		DifferenceSensorTransform::DifferenceSensorTransform(const DifferenceSensorTransformType &xml_instance) :
+		DifferenceSensorTransform::DifferenceSensorTransform(const ::DifferenceSensorTransform &xml_instance) :
 			SensorTransform(xml_instance)
 		{
 			CBF_DEBUG("yay!!!");
@@ -32,10 +31,10 @@ namespace CBF {
 			std::vector<SensorTransformPtr> transforms;
 		
 			//! Instantiate the subordinate transforms
-			SensorTransformChainType::SensorTransform_const_iterator it;
+			::DifferenceSensorTransform::SensorTransform1_const_iterator it;
 			for (
-				it = xml_instance.SensorTransform().begin(); 
-				it != xml_instance.SensorTransform().end();
+				it = xml_instance.SensorTransform1().begin(); 
+				it != xml_instance.SensorTransform1().end();
 				++it
 			)
 			{
@@ -57,8 +56,5 @@ namespace CBF {
 		}
 		
 	#endif
-
-	CBF_PLUGIN_CLASS(DifferenceSensorTransform, SensorTransform)
-
 } // namespace
 

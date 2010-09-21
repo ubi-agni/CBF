@@ -32,6 +32,10 @@
 #include <algorithm>
 #include <cstdlib>
 
+#ifdef CBF_HAVE_XSD
+	#include <cbf/schemas.hxx>
+#endif
+
 void cbf_init() {
 
 }
@@ -48,8 +52,8 @@ cbf_controller_create_from_file(
 
 		CBF_DEBUG("[create_controller_from_file]: Creating ControllerType instance")
 		//! Create ControllerType instance from xml file...
-		std::auto_ptr<ControlBasisType> xml_instance (
-			ControlBasis(
+		std::auto_ptr< ::ControlBasis> xml_instance (
+			::ControlBasis_(
 				filename,
 				xml_schema::flags::dont_validate
 			)

@@ -19,7 +19,6 @@
 */
 
 #include <cbf/generic_transform.h>
-#include <cbf/plugin_macros.h>
 
 #ifndef CBF_HAVE_EIGEN2
   #include <cbf/svd.h>
@@ -153,27 +152,22 @@ void DampedWeightedGenericEffectorTransform::update() {
 
 
 #ifdef CBF_HAVE_XSD
-	GenericEffectorTransform::GenericEffectorTransform(const GenericEffectorTransformType &xml_instance)
+	GenericEffectorTransform::GenericEffectorTransform(const ::GenericEffectorTransform &xml_instance)
 	{
 	
 	}
 	
 
-	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const DampedGenericEffectorTransformType &xml_instance)
+	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const ::DampedGenericEffectorTransform &xml_instance)
 	{
 		m_DampingConstant = (xml_instance.DampingConstant());
 	}
 
-	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const DampedWeightedGenericEffectorTransformType &xml_instance)
+	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const ::DampedWeightedGenericEffectorTransform &xml_instance)
 	{
 	
 	}
 #endif
-
-CBF_PLUGIN_CLASS(GenericEffectorTransform, EffectorTransform)
-CBF_PLUGIN_CLASS(DampedGenericEffectorTransform, EffectorTransform)
-CBF_PLUGIN_CLASS(DampedWeightedGenericEffectorTransform, EffectorTransform)
-
 
 } // namespace
 
