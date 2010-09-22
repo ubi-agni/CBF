@@ -25,19 +25,18 @@
 
 #include <cbf/reference.h>
 #include <cbf/types.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/exceptions.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 
 #include <stdexcept>
 
-CBF_PLUGIN_PREAMBLE(DummyReference)
+namespace CBFSchema { class DummyReference; }
 
 namespace CBF {
 
 	struct DummyReference : public Reference {
-		CBF_PLUGIN_DECL_METHODS(DummyReference)
+		DummyReference(const CBFSchema::DummyReference &xml_instance);
 
 		DummyReference(unsigned int num_references = 1, unsigned int dim = 1)
 		{

@@ -22,12 +22,11 @@
 #define CBF_DIFFERENCE_SENSOR_TRANSFORM
 
 #include <cbf/sensor_transform.h>
-#include <cbf/plugin_decl_macros.h>
 
 #include <vector>
 #include <cassert>
 
-CBF_PLUGIN_PREAMBLE(DifferenceSensorTransform)
+namespace CBFSchema { class DifferenceSensorTransform; }
 
 namespace CBF {
 
@@ -36,7 +35,7 @@ namespace CBF {
 		operating on the same resources..
 	*/
 	struct DifferenceSensorTransform : public SensorTransform {
-		CBF_PLUGIN_DECL_METHODS(DifferenceSensorTransform)
+		DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance);
 
 		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr())
 		{

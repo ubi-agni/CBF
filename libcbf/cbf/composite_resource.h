@@ -24,13 +24,12 @@
 #define CBF_COMP_RESOURCE_HH
 
 #include <cbf/config.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/resource.h>
 
 #include <vector>
 #include <algorithm>
 
-CBF_PLUGIN_PREAMBLE(CompositeResource)
+namespace CBFSchema { class CompositeResource; }
 
 namespace CBF {
 
@@ -44,7 +43,7 @@ struct CompositeResource : public Resource
 		FloatVector m_ResourceValues;
 
 	public:
-		CBF_PLUGIN_DECL_METHODS(CompositeResource)
+		CompositeResource(const CBFSchema::CompositeResource &xml_instance);
 
 		CompositeResource(std::vector<ResourcePtr> resources = std::vector<ResourcePtr>()) {
 			set_resources(resources);

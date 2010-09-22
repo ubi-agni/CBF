@@ -23,13 +23,13 @@
 #ifndef CBF_CONTROLLER_SEQUENCE_HH
 #define CBF_CONTROLLER_SEQUENCE_HH
 
-#include <cbf/plugin_decl_macros.h>
+#include <cbf/config.h>
 #include <cbf/controller.h>
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-CBF_PLUGIN_PREAMBLE(ControllerSequence)
+namespace CBFSchema { class ControllerSequence; }
 
 namespace CBF {
 	
@@ -39,7 +39,7 @@ namespace CBF {
 		This controller can be used to execute sequences of controllers. Each controller in the sequence is run until finished. When the last controller finished, the ControllerSequence finished, too.
 	*/
 	struct ControllerSequence : public Controller {
-		CBF_PLUGIN_DECL_METHODS(ControllerSequence)
+		ControllerSequence (const CBFSchema::ControllerSequence &xml_instance);
 
 		std::vector<ControllerPtr> m_Controllers;
 		std::vector<ControllerPtr>::iterator m_Iterator;

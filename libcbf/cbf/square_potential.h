@@ -27,12 +27,10 @@
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
 #include <cbf/config.h>
-#include <cbf/plugin_decl_macros.h>
 
 #include <boost/shared_ptr.hpp>
 
-
-CBF_PLUGIN_PREAMBLE(SquarePotential)
+namespace CBFSchema { class SquarePotential; }
 
 namespace CBF {
 
@@ -42,7 +40,7 @@ namespace ublas = boost::numeric::ublas;
 	@brief A squared potential functions
 */
 struct SquarePotential : public Potential {
-	CBF_PLUGIN_DECL_METHODS(SquarePotential)
+	SquarePotential(const CBFSchema::SquarePotential &xml_instance);
 
 	Float m_Coefficient;
 

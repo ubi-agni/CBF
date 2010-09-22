@@ -21,8 +21,10 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/reference.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
-
+	template<> XMLBaseFactory<Reference, CBFSchema::Reference>* 
+		XMLBaseFactory<Reference, CBFSchema::Reference>::m_Instance = 0;
 } // namespace
 

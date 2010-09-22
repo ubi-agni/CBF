@@ -21,24 +21,21 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/combination_strategy.h>
-
-#include <boost/numeric/ublas/vector.hpp>
-
 #include <cbf/debug_macros.h>
-#include <cbf/plugin_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
-	namespace ublas = boost::numeric::ublas;
-
 	#ifdef CBF_HAVE_XSD
-		AddingStrategy::AddingStrategy(const AddingStrategyType &xml_instance) {
+		AddingStrategy::AddingStrategy(const CBFSchema::AddingStrategy &xml_instance) {
 			CBF_DEBUG("yay!!")
 		}
+
+		template<> XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>* 
+			XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>::m_Instance = 0;
+
+		static XMLDerivedFactory<AddingStrategy, CBFSchema::AddingStrategy, CombinationStrategy, CBFSchema::CombinationStrategy> x;
 	#endif
 
-
-	CBF_PLUGIN_CLASS(AddingStrategy, CombinationStrategy)
-	// CBF_PLUGIN_CLASS(WinnerTakesAllStrategy, CombinationStrategy)
 } // namespace
 

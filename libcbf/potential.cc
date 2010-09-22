@@ -19,15 +19,18 @@
 */
 
 #include <cbf/potential.h>
-#include <cbf/plugin_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
-	#ifdef CBF_HAVE_XSD
-	Potential::Potential(const PotentialType &xml_instance) {
+#ifdef CBF_HAVE_XSD
+	Potential::Potential(const CBFSchema::Potential &xml_instance) {
 		CBF_DEBUG("Constructor")
-
 		m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
 	}
-	#endif
+
+	template<> XMLBaseFactory<Potential, CBFSchema::Potential>* 
+		XMLBaseFactory<Potential, CBFSchema::Potential>::m_Instance = 0;
+#endif
+
 } // namespace

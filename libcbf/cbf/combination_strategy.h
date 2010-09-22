@@ -23,7 +23,6 @@
 #ifndef CBF_COMBINATION_STRATEGY_HH
 #define CBF_COMBINATION_STRATEGY_HH
 
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/types.h>
 
 #include <boost/shared_ptr.hpp>
@@ -32,13 +31,15 @@
 #include <vector>
 #include <string>
 
-CBF_PLUGIN_PREAMBLE(AddingStrategy)
+namespace CBFSchema { 
+	class CombinationStrategy;
+	class AddingStrategy; 
+}
 
 namespace CBF {
 
 namespace ublas = boost::numeric::ublas;
 
-class CombinationStrategy;
 
 
 /**
@@ -56,8 +57,7 @@ struct CombinationStrategy {
 	) = 0;
 };
 
-class AddingStrategy;
-typedef boost::shared_ptr<AddingStrategy> AddingStrategyPtr;
+typedef boost::shared_ptr<CombinationStrategy> CombinationStrategyPtr;
 
 
 /**
@@ -65,12 +65,9 @@ typedef boost::shared_ptr<AddingStrategy> AddingStrategyPtr;
 	result vector beforehand yourself if needed..
 */
 struct AddingStrategy : public CombinationStrategy {
-	CBF_PLUGIN_DECL_METHODS(AddingStrategy)
+	AddingStrategy (const ::CBFSchema::AddingStrategy &xml_instance);
 
-	AddingStrategy()
-	{
-
-	}
+	AddingStrategy() { }
 
 	virtual void exec(
 		FloatVector &result, 
@@ -81,12 +78,7 @@ struct AddingStrategy : public CombinationStrategy {
 	}
 };
 
-struct WinnerTakesAllStrategy {
-	// CBF_PLUGIN_CONSTRUCTOR(WinnerTakesAllStrategy)
-
-};
-
-typedef boost::shared_ptr<CombinationStrategy> CombinationStrategyPtr;
+typedef boost::shared_ptr<AddingStrategy> AddingStrategyPtr;
 
 } // namespace
 

@@ -25,11 +25,10 @@
 #include <cbf/types.h>
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
-#include <cbf/plugin_decl_macros.h>
 
 #include <boost/shared_ptr.hpp>
 
-CBF_PLUGIN_PREAMBLE(AxisAnglePotential)
+namespace CBFSchema { class AxisAnglePotential; }
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
@@ -41,7 +40,8 @@ namespace CBF {
 		direction and length of the axis.
 	*/
 	struct AxisAnglePotential : public Potential {
-		CBF_PLUGIN_DECL_METHODS(AxisAnglePotential)
+		AxisAnglePotential(const CBFSchema::AxisAnglePotential &xml_instance);
+
 		//! @brief  This coefficient determines the rate of convergence. Choose between 0 and 1.
 		Float m_Coefficient;
 

@@ -23,11 +23,8 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/types.h>
 #include <cbf/debug_macros.h>
-#include <cbf/generic_transform.h>
-#include <cbf/plugin_macros.h>
-#include <cbf/plugin_pool.h>
-#include <cbf/dummy_reference.h>
 #include <cbf/exceptions.h>
+#include <cbf/xml_factories.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -208,7 +205,7 @@ namespace CBF {
 	}
 	
 	#ifdef CBF_HAVE_XSD
-		PrimitiveController::PrimitiveController(const PrimitiveControllerType &xml_instance) :
+		PrimitiveController::PrimitiveController(const CBFSchema::PrimitiveController &xml_instance) :
 			m_Coefficient(1.0)
 		
 		{
@@ -225,19 +222,19 @@ namespace CBF {
 				CBF_THROW_RUNTIME_ERROR("Missing ConvergenceCriterion");
 
 			for (
-				PrimitiveControllerType::ConvergenceCriterion_const_iterator it = 
+				::CBFSchema::PrimitiveController::ConvergenceCriterion_const_iterator it = 
 					xml_instance.ConvergenceCriterion().begin();
 				it != xml_instance.ConvergenceCriterion().end();
 				++it
 			) {
-				const TaskSpaceDistanceThresholdType *d = dynamic_cast<const TaskSpaceDistanceThresholdType *>(&(*it));
+				const ::CBFSchema::TaskSpaceDistanceThreshold *d = dynamic_cast<const ::CBFSchema::TaskSpaceDistanceThreshold *>(&(*it));
 				if (d != 0) {
 					m_ConvergenceCriterion |= TASK_SPACE_DISTANCE_THRESHOLD;
 					m_TaskSpaceDistanceThreshold = d->Threshold();
 					CBF_DEBUG("TaskSpaceDistanceThreshold " << m_TaskSpaceDistanceThreshold)
 					continue;
 				}
-				const ResourceStepNormThresholdType *s = dynamic_cast<const ResourceStepNormThresholdType *>(&(*it));
+				const ::CBFSchema::ResourceStepNormThreshold *s = dynamic_cast<const ::CBFSchema::ResourceStepNormThreshold *>(&(*it));
 				if (s != 0) {
 					m_ConvergenceCriterion |= RESOURCE_STEP_THRESHOLD;
 					m_ResourceStepNormThreshold = s->Threshold();
@@ -249,17 +246,18 @@ namespace CBF {
 		
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");
-			m_Potential = PluginPool<Potential>::get_instance()->create_from_xml(xml_instance.Potential());
+			// m_Potential = XMLBaseFactory<Potential, CBFSchema::Potential>::instance()->create(xml_instance.Potential());
+			m_Potential = XMLBaseFactory<Potential, ::CBFSchema::Potential>::instance()->create(xml_instance.Potential());
 
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating sensor transform...")
-			m_SensorTransform = PluginPool<SensorTransform>::get_instance()->create_from_xml(xml_instance.SensorTransform());
+			m_SensorTransform = XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::instance()->create(xml_instance.SensorTransform());
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating effector transform...")
-			m_EffectorTransform = PluginPool<EffectorTransform>::get_instance()->create_from_xml(xml_instance.EffectorTransform());
+			m_EffectorTransform = XMLBaseFactory<EffectorTransform, CBFSchema::EffectorTransform>::instance()->create(xml_instance.EffectorTransform());
 			m_EffectorTransform->set_sensor_transform(m_SensorTransform);
 		
 			//CBF_DEBUG(m_SensorTransform.get())
@@ -267,15 +265,15 @@ namespace CBF {
 			//! Instantiate the subordinate controllers
 			CBF_DEBUG("Creating subordinate controller(s)...")
 			for (
-				PrimitiveControllerType::PrimitiveController_const_iterator it = xml_instance.PrimitiveController().begin(); 
-				it != xml_instance.PrimitiveController().end();
+				::CBFSchema::PrimitiveController::PrimitiveController1_const_iterator it = xml_instance.PrimitiveController1().begin(); 
+				it != xml_instance.PrimitiveController1().end();
 				++it
 			)
 			{
 				CBF_DEBUG("Creating subordinate controller...")
 				CBF_DEBUG("------------------------")
 				//! First we see whether we can construct a controller from the xml_document
-				ControllerPtr controller = PluginPool<Controller>::get_instance()->create_from_xml(*it);
+				ControllerPtr controller = XMLBaseFactory<Controller, CBFSchema::Controller>::instance()->create(*it);
 				if (controller.get() == 0) {
 					throw std::logic_error("This should not happen");
 				} else {
@@ -297,7 +295,7 @@ namespace CBF {
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating resource...")
-			ResourcePtr res = PluginPool<Resource>::get_instance()->create_from_xml(xml_instance.Resource());
+			ResourcePtr res = XMLBaseFactory<Resource, CBFSchema::Resource>::instance()->create(xml_instance.Resource());
 			//! And bind to it...
 			CBF_DEBUG("Binding to resource...")
 
@@ -307,19 +305,20 @@ namespace CBF {
 			//! Create a resource if given...
 			CBF_DEBUG("Creating combination strategy...")
 			m_CombinationStrategy = 
-				PluginPool<CombinationStrategy>::get_instance()->create_from_xml(xml_instance.CombinationStrategy());
+				XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>::instance()->create(xml_instance.CombinationStrategy());
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating reference...")
 			m_Reference = 
-				PluginPool<Reference>::get_instance()->create_from_xml(xml_instance.Reference());
+				XMLBaseFactory<Reference, CBFSchema::Reference>::instance()->create(xml_instance.Reference());
 
 			check_dimensions();
 		}
+
+		static XMLDerivedFactory<PrimitiveController, ::CBFSchema::PrimitiveController, Controller, ::CBFSchema::Controller> x;
 		
 	#endif
-	
-	CBF_PLUGIN_CLASS(PrimitiveController,Controller)
+
 } // namespace 
 
 

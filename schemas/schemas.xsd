@@ -1,102 +1,98 @@
 <?xml version="1.0"?>
 <xsd:schema 
+  xmlns:CBFSchema="http://www.cit-ec.uni-bielefeld.de/CBFSchema"
+  targetNamespace="http://www.cit-ec.uni-bielefeld.de/CBFSchema"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
  <xsd:complexType name="CBFObject" abstract="true"/>
- <xsd:element name="Object" type="CBFObject"/>
+ <xsd:element name="Object" type="CBFSchema:CBFObject"/>
 
- <xsd:element name="ControlBasis" type="ControlBasisType"/>
- <xsd:complexType name="ControlBasisType">
-  <xsd:complexContent> <xsd:extension base="CBFObject">
+ <xsd:complexType name="ControlBasis">
+  <xsd:complexContent> <xsd:extension base="CBFSchema:CBFObject">
    <xsd:sequence>
-    <xsd:element name="Controller" type="ControllerType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="Controller" type="CBFSchema:Controller" minOccurs="0" maxOccurs="unbounded"/>
    </xsd:sequence>
   </xsd:extension> </xsd:complexContent>
  </xsd:complexType>
+ <xsd:element name="ControlBasis" type="CBFSchema:ControlBasis"/>
 
- <xsd:element name="Controller" type="ControllerType"/>
- <xsd:complexType abstract="true" name="ControllerType">
+ <xsd:complexType abstract="true" name="Controller">
   <xsd:sequence>
    <xsd:element name="Name" type="xsd:string"/>
   </xsd:sequence>
  </xsd:complexType>
+ <xsd:element name="Controller" type="CBFSchema:Controller"/>
 
- <xsd:element name="Reference" type="ReferenceType"/>
- <xsd:complexType name="ReferenceType" abstract="true"/>
+ <xsd:complexType name="Reference" abstract="true"/>
+ <xsd:element name="Reference" type="CBFSchema:Reference"/>
 
- <xsd:element name="SensorTransform" type="SensorTransformType"/>
- <xsd:complexType name="SensorTransformType" abstract="true">
+ <xsd:complexType name="SensorTransform" abstract="true">
   <xsd:sequence>
    <xsd:element name="ComponentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
   </xsd:sequence>
  </xsd:complexType>
+ <xsd:element name="SensorTransform" type="CBFSchema:SensorTransform"/>
 
- <xsd:element name="EffectorTransform" type="EffectorTransformType"/>
- <xsd:complexType name="EffectorTransformType" abstract="true">
+ <xsd:complexType name="EffectorTransform" abstract="true">
   <xsd:sequence/>
  </xsd:complexType>
+ <xsd:element name="EffectorTransform" type="CBFSchema:EffectorTransform"/>
 
- <xsd:element name="CombinationStrategy" type="CombinationStrategyType"/>
- <xsd:complexType name="CombinationStrategyType" abstract="true"/>
+ <xsd:complexType name="CombinationStrategy" abstract="true"/>
+ <xsd:element name="CombinationStrategy" type="CBFSchema:CombinationStrategy"/>
 
- <xsd:element name="Resource" type="ResourceType"/>
- <xsd:complexType name="ResourceType" abstract="true">
+ <xsd:complexType name="Resource" abstract="true">
   <xsd:sequence>
   </xsd:sequence>
  </xsd:complexType>
+ <xsd:element name="Resource" type="CBFSchema:Resource"/>
 
 
- <xsd:element name="ControllerSequence" type="ControllerSequenceType"/>
- <xsd:complexType name="ControllerSequenceType">
+ <xsd:complexType name="ControllerSequence">
   <xsd:complexContent>
-   <xsd:extension base="ControllerType">
+   <xsd:extension base="CBFSchema:Controller">
     <xsd:sequence>
-     <xsd:element name="Controller" type="ControllerType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Controller" type="CBFSchema:Controller" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
+ <xsd:element name="ControllerSequence" type="CBFSchema:ControllerSequence"/>
 
- <xsd:element name="PrimitiveController" type="PrimitiveControllerType"/>
- <xsd:complexType name="PrimitiveControllerType">
+ <xsd:complexType name="PrimitiveController">
   <xsd:complexContent>
-   <xsd:extension base="ControllerType">
+   <xsd:extension base="CBFSchema:Controller">
     <xsd:sequence>
       <xsd:element name="Coefficient" type="xsd:float"/>
-
-      <xsd:element name="ConvergenceCriterion" type="ConvergenceCriterionType" minOccurs="1" maxOccurs="unbounded"/>
-
-      <xsd:element name="Reference" type="ReferenceType"/>
-
-      <xsd:element name="Potential" type="PotentialType"/>
-
-      <xsd:element name="SensorTransform" type="SensorTransformType"/>
-      <xsd:element name="EffectorTransform" type="EffectorTransformType"/>
-
-      <xsd:element name="PrimitiveController" type="PrimitiveControllerType" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="CombinationStrategy" type="CombinationStrategyType"/>
-
-      <xsd:element name="Resource" type="ResourceType"/>
+      <xsd:element name="ConvergenceCriterion" type="CBFSchema:ConvergenceCriterion" minOccurs="1" maxOccurs="unbounded"/>
+      <xsd:element name="Reference" type="CBFSchema:Reference"/>
+      <xsd:element name="Potential" type="CBFSchema:Potential"/>
+      <xsd:element name="SensorTransform" type="CBFSchema:SensorTransform"/>
+      <xsd:element name="EffectorTransform" type="CBFSchema:EffectorTransform"/>
+      <xsd:element name="PrimitiveController" type="CBFSchema:PrimitiveController" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="CombinationStrategy" type="CBFSchema:CombinationStrategy"/>
+      <xsd:element name="Resource" type="CBFSchema:Resource"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
+ <xsd:element name="PrimitiveController" type="CBFSchema:PrimitiveController"/>
 
- <xsd:complexType name="CompositePrimitiveControllerType">
+ <xsd:complexType name="CompositePrimitiveController">
   <xsd:complexContent>
-   <xsd:extension base="PrimitiveControllerType">
+   <xsd:extension base="CBFSchema:PrimitiveController">
     <xsd:sequence>
-     <xsd:element name="Controller" type="PrimitiveControllerType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Controller" type="CBFSchema:PrimitiveController" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="AvoidSingularitiesControllerType">
+ <xsd:complexType name="AvoidSingularitiesController">
   <xsd:complexContent>
-   <xsd:extension base="PrimitiveControllerType">
+   <xsd:extension base="CBFSchema:PrimitiveController">
     <xsd:sequence>
      <xsd:element name="SamplingStep" type="xsd:float" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
@@ -105,13 +101,13 @@
  </xsd:complexType>
 
 
- <xsd:element name="Vector" type="VectorType"/>
- <xsd:complexType name="VectorType" abstract="true">
+ <xsd:element name="Vector" type="CBFSchema:Vector"/>
+ <xsd:complexType name="Vector" abstract="true">
  </xsd:complexType>
 
- <xsd:complexType name="SimpleVectorType">
+ <xsd:complexType name="SimpleVector">
   <xsd:complexContent>
-   <xsd:extension base="VectorType"> 
+   <xsd:extension base="CBFSchema:Vector"> 
     <xsd:sequence>
      <xsd:element name="Coefficient" type="xsd:float" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
@@ -119,9 +115,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="BoostVectorType">
+ <xsd:complexType name="BoostVector">
   <xsd:complexContent>
-   <xsd:extension base="VectorType"> 
+   <xsd:extension base="CBFSchema:Vector"> 
     <xsd:sequence>
      <xsd:element name="String" type="xsd:string"/>
     </xsd:sequence>
@@ -129,9 +125,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="EulerToAxisAngleType">
+ <xsd:complexType name="EulerToAxisAngle">
   <xsd:complexContent>
-   <xsd:extension base="VectorType"> 
+   <xsd:extension base="CBFSchema:Vector"> 
     <xsd:sequence>
      <xsd:element name="String" type="xsd:string"/>
     </xsd:sequence>
@@ -140,20 +136,20 @@
  </xsd:complexType>
 
 
- <xsd:complexType name="AddingStrategyType">
+ <xsd:complexType name="AddingStrategy">
   <xsd:complexContent>
-   <xsd:extension base="CombinationStrategyType">
+   <xsd:extension base="CBFSchema:CombinationStrategy">
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="ConvergenceCriterionType" abstract="true">
+ <xsd:complexType name="ConvergenceCriterion" abstract="true">
    <xsd:sequence/>
  </xsd:complexType>
 
- <xsd:complexType name="TaskSpaceDistanceThresholdType">
+ <xsd:complexType name="TaskSpaceDistanceThreshold">
   <xsd:complexContent>
-   <xsd:extension base="ConvergenceCriterionType">
+   <xsd:extension base="CBFSchema:ConvergenceCriterion">
     <xsd:sequence>
      <xsd:element name="Threshold" type="xsd:float"/>
     </xsd:sequence>
@@ -161,9 +157,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="ResourceStepNormThresholdType">
+ <xsd:complexType name="ResourceStepNormThreshold">
   <xsd:complexContent>
-   <xsd:extension base="ConvergenceCriterionType">
+   <xsd:extension base="CBFSchema:ConvergenceCriterion">
     <xsd:sequence>
      <xsd:element name="Threshold" type="xsd:float"/>
     </xsd:sequence>
@@ -171,16 +167,16 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:element name="Potential" type="PotentialType"/>
- <xsd:complexType abstract="true" name="PotentialType">
+ <xsd:element name="Potential" type="CBFSchema:Potential"/>
+ <xsd:complexType abstract="true" name="Potential">
   <xsd:sequence>
    <xsd:element name="MaxGradientStepNorm" type="xsd:float"/>
   </xsd:sequence>
  </xsd:complexType>
 
- <xsd:complexType name="XCFVectorReferenceType">
+ <xsd:complexType name="XCFVectorReference">
   <xsd:complexContent>
-   <xsd:extension base="ReferenceType">
+   <xsd:extension base="CBFSchema:Reference">
     <xsd:sequence>
      <xsd:element name="Name" type="xsd:string"/>
      <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
@@ -189,74 +185,74 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="DummyReferenceType">
+ <xsd:complexType name="DummyReference">
   <xsd:complexContent>
-   <xsd:extension base="ReferenceType">
+   <xsd:extension base="CBFSchema:Reference">
     <xsd:sequence>
-     <xsd:element name="Vector" type="VectorType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Vector" type="CBFSchema:Vector" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="SpaceNaviReferenceType">
+ <xsd:complexType name="SpaceNaviReference">
   <xsd:complexContent>
-   <xsd:extension base="ReferenceType">
+   <xsd:extension base="CBFSchema:Reference">
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="CartesianReferenceType">
+ <xsd:complexType name="CartesianReference">
   <xsd:complexContent>
-   <xsd:extension base="ReferenceType">
+   <xsd:extension base="CBFSchema:Reference">
     <xsd:sequence>
-     <xsd:element name="Vector" type="VectorType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Vector" type="CBFSchema:Vector" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="CompositeReferenceType">
+ <xsd:complexType name="CompositeReference">
   <xsd:complexContent>
-   <xsd:extension base="ReferenceType">
+   <xsd:extension base="CBFSchema:Reference">
     <xsd:sequence>
-     <xsd:element name="Reference" type="ReferenceType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Reference" type="CBFSchema:Reference" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="CompositeResourceType">
+ <xsd:complexType name="CompositeResource">
   <xsd:complexContent>
-   <xsd:extension base="ResourceType">
+   <xsd:extension base="CBFSchema:Resource">
     <xsd:sequence>
-     <xsd:element name="Resource" type="ResourceType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Resource" type="CBFSchema:Resource" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="TransposeEffectorTransformType">
+ <xsd:complexType name="TransposeEffectorTransform">
   <xsd:complexContent>
-   <xsd:extension base="EffectorTransformType">
-    <xsd:sequence>
-    </xsd:sequence>
-   </xsd:extension>
-  </xsd:complexContent>
- </xsd:complexType>
-
- <xsd:complexType name="GenericEffectorTransformType">
-  <xsd:complexContent>
-   <xsd:extension base="EffectorTransformType">
+   <xsd:extension base="CBFSchema:EffectorTransform">
     <xsd:sequence>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="DampedGenericEffectorTransformType">
+ <xsd:complexType name="GenericEffectorTransform">
   <xsd:complexContent>
-   <xsd:extension base="EffectorTransformType">
+   <xsd:extension base="CBFSchema:EffectorTransform">
+    <xsd:sequence>
+    </xsd:sequence>
+   </xsd:extension>
+  </xsd:complexContent>
+ </xsd:complexType>
+
+ <xsd:complexType name="DampedGenericEffectorTransform">
+  <xsd:complexContent>
+   <xsd:extension base="CBFSchema:EffectorTransform">
     <xsd:sequence>
      <xsd:element name="DampingConstant" type="xsd:float"/>
     </xsd:sequence>
@@ -264,20 +260,20 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="DampedWeightedGenericEffectorTransformType">
+ <xsd:complexType name="DampedWeightedGenericEffectorTransform">
   <xsd:complexContent>
-   <xsd:extension base="EffectorTransformType">
+   <xsd:extension base="CBFSchema:EffectorTransform">
     <xsd:sequence>
-     <xsd:element name="Weights" type="MatrixType"/>
+     <xsd:element name="Weights" type="CBFSchema:Matrix"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
-<xsd:complexType name="IdentityEffectorTransformType">
+<xsd:complexType name="IdentityEffectorTransform">
   <xsd:complexContent>
-   <xsd:extension base="EffectorTransformType">
+   <xsd:extension base="CBFSchema:EffectorTransform">
     <xsd:sequence>
      <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
     </xsd:sequence>
@@ -285,52 +281,52 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="EffectorTransformChainType">
+ <xsd:complexType name="EffectorTransformChain">
   <xsd:complexContent>
-   <xsd:extension base="EffectorTransformType">
+   <xsd:extension base="CBFSchema:EffectorTransform">
     <xsd:sequence>
-     <xsd:element name="EffectorTransform" type="EffectorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="EffectorTransform" type="CBFSchema:EffectorTransform" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="LinearEffectorTransformType">
+ <xsd:complexType name="LinearEffectorTransform">
    <xsd:complexContent>
-   <xsd:extension base="EffectorTransformType">
+   <xsd:extension base="CBFSchema:EffectorTransform">
     <xsd:sequence>
-     <xsd:element name="Matrix" type="MatrixType"/>
+     <xsd:element name="Matrix" type="CBFSchema:Matrix"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="TreeBaseType" abstract="true">
+ <xsd:complexType name="TreeBase" abstract="true">
   <xsd:sequence>
    <xsd:element name="Name" type="xsd:string"/>
   </xsd:sequence>
  </xsd:complexType>
 
- <xsd:complexType name="TreeType">
+ <xsd:complexType name="Tree">
   <xsd:complexContent>
-   <xsd:extension base="TreeBaseType">
+   <xsd:extension base="CBFSchema:TreeBase">
     <xsd:sequence>
-     <xsd:element name="Segment" type="TreeSegmentType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Segment" type="CBFSchema:TreeSegment" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="ChainBaseType" abstract="true">
+ <xsd:complexType name="ChainBase" abstract="true">
   <xsd:sequence>
    <xsd:element name="Name" type="xsd:string"/>
   </xsd:sequence>
  </xsd:complexType>
 
- <xsd:complexType name="ChainReferenceType">
+ <xsd:complexType name="ChainReference">
   <xsd:complexContent>
-   <xsd:extension base="ChainBaseType">
+   <xsd:extension base="CBFSchema:ChainBase">
     <xsd:sequence>
      <xsd:element name="Reference" type="xsd:string"/>
     </xsd:sequence>
@@ -338,62 +334,62 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="ChainType">
+ <xsd:complexType name="Chain">
   <xsd:complexContent>
-   <xsd:extension base="ChainBaseType">
+   <xsd:extension base="CBFSchema:ChainBase">
     <xsd:sequence>
-     <xsd:element name="Segment" type="SegmentType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Segment" type="CBFSchema:Segment" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="TreeSegmentType">
+ <xsd:complexType name="TreeSegment">
   <xsd:complexContent>
-   <xsd:extension base="SegmentType">
+   <xsd:extension base="CBFSchema:Segment">
     <xsd:sequence>
-     <xsd:element name="Segment" type="TreeSegmentType" minOccurs="0" maxOccurs="unbounded"/>
+     <xsd:element name="Segment" type="CBFSchema:TreeSegment" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="SegmentType">
+ <xsd:complexType name="Segment">
   <xsd:sequence>
    <xsd:element name="Name" type="xsd:string"/>
-   <xsd:element name="Frame" type="FrameType"/>
-   <xsd:element name="Joint" type="JointType"/>
+   <xsd:element name="Frame" type="CBFSchema:Frame"/>
+   <xsd:element name="Joint" type="CBFSchema:Joint"/>
   </xsd:sequence>
  </xsd:complexType>
 
- <xsd:complexType name="FrameType" abstract="true">
+ <xsd:complexType name="Frame" abstract="true">
   <xsd:sequence>
   </xsd:sequence>
  </xsd:complexType>
 
- <xsd:complexType name="MatrixFrameType">
+ <xsd:complexType name="MatrixFrame">
   <xsd:complexContent>
-   <xsd:extension base="FrameType">
+   <xsd:extension base="CBFSchema:Frame">
     <xsd:sequence>
-     <xsd:element name="Matrix" type="MatrixType"/>
+     <xsd:element name="Matrix" type="CBFSchema:Matrix"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="TranslationFrameType">
+ <xsd:complexType name="TranslationFrame">
   <xsd:complexContent>
-   <xsd:extension base="FrameType">
+   <xsd:extension base="CBFSchema:Frame">
     <xsd:sequence>
-     <xsd:element name="Vector" type="VectorType"/>
+     <xsd:element name="Vector" type="CBFSchema:Vector"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="JointType">
+ <xsd:complexType name="Joint">
   <xsd:sequence>
    <!-- This can be either "Rotational", "Translational" or "None" -->
    <xsd:element name="Type" type="xsd:string" minOccurs="1" maxOccurs="1"/>
@@ -403,14 +399,14 @@
   </xsd:sequence>
  </xsd:complexType>
 
- <xsd:complexType name="MatrixType" abstract="true">
+ <xsd:complexType name="Matrix" abstract="true">
   <xsd:sequence>
   </xsd:sequence>
  </xsd:complexType>
 
- <xsd:complexType name="BoostMatrixType">
+ <xsd:complexType name="BoostMatrix">
   <xsd:complexContent>
-   <xsd:extension base="MatrixType">
+   <xsd:extension base="CBFSchema:Matrix">
     <xsd:sequence>
      <xsd:element name="String" type="xsd:string"/>
     </xsd:sequence>
@@ -418,29 +414,29 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="BoostTranslationMatrixType">
+ <xsd:complexType name="BoostTranslationMatrix">
   <xsd:complexContent>
-   <xsd:extension base="MatrixType">
+   <xsd:extension base="CBFSchema:Matrix">
     <xsd:sequence>
-     <xsd:element name="TranslationVector" type="BoostVectorType"/>
+     <xsd:element name="TranslationVector" type="CBFSchema:BoostVector"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="NormSensorTransformType">
+ <xsd:complexType name="NormSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="SensorTransform" type="SensorTransformType"/>
+     <xsd:element name="SensorTransform" type="CBFSchema:SensorTransform"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="IdentitySensorTransformType">
+ <xsd:complexType name="IdentitySensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
      <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
     </xsd:sequence>
@@ -448,9 +444,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="PythonSensorTransformType">
+ <xsd:complexType name="PythonSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
      <xsd:element name="TaskDimension"  type="xsd:nonNegativeInteger"/>
      <xsd:element name="ResourceDimension"  type="xsd:nonNegativeInteger"/>
@@ -463,30 +459,30 @@
  </xsd:complexType>
 
 
- <xsd:complexType name="SensorTransformChainType">
+ <xsd:complexType name="SensorTransformChain">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="SensorTransform" type="CBFSchema:SensorTransform" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="OperationSensorTransformType" abstract="true">
+ <xsd:complexType name="OperationSensorTransform" abstract="true">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="Operand" type="SensorTransformType"/>
+     <xsd:element name="Operand" type="CBFSchema:SensorTransform"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="BlockWiseOperationSensorTransformType" abstract="true">
+ <xsd:complexType name="BlockWiseOperationSensorTransform" abstract="true">
   <xsd:complexContent>
-   <xsd:extension base="OperationSensorTransformType">
+   <xsd:extension base="CBFSchema:OperationSensorTransform">
     <xsd:sequence>
      <xsd:element name="Blocksize" type="xsd:nonNegativeInteger"/>
     </xsd:sequence>
@@ -494,11 +490,11 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="BlockWiseInnerProductSensorTransformType" abstract="true">
+ <xsd:complexType name="BlockWiseInnerProductSensorTransform" abstract="true">
   <xsd:complexContent>
-   <xsd:extension base="OperationSensorTransformType">
+   <xsd:extension base="CBFSchema:OperationSensorTransform">
     <xsd:sequence>
-     <xsd:element name="Operand2" type="SensorTransformType"/>
+     <xsd:element name="Operand2" type="CBFSchema:SensorTransform"/>
      <xsd:element name="Blocksize" type="xsd:nonNegativeInteger"/>
     </xsd:sequence>
    </xsd:extension>
@@ -506,18 +502,18 @@
  </xsd:complexType>
 
 
- <xsd:complexType name="NegateOperationSensorTransformType">
+ <xsd:complexType name="NegateOperationSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="OperationSensorTransformType">
+   <xsd:extension base="CBFSchema:OperationSensorTransform">
     <xsd:sequence>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="MultiplyOperationSensorTransformType">
+ <xsd:complexType name="MultiplyOperationSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="OperationSensorTransformType">
+   <xsd:extension base="CBFSchema:OperationSensorTransform">
     <xsd:sequence>
      <xsd:element name="Factor" type="xsd:float"/>
     </xsd:sequence>
@@ -525,56 +521,56 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="BlockWiseWeightedSumSensorTransformType">
+ <xsd:complexType name="BlockWiseWeightedSumSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="BlockWiseInnerProductSensorTransformType">
+   <xsd:extension base="CBFSchema:BlockWiseInnerProductSensorTransform">
     <xsd:sequence>
-     <xsd:element name="Weights" type="VectorType"/>
+     <xsd:element name="Weights" type="CBFSchema:Vector"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="CompositeSensorTransformType">
+ <xsd:complexType name="CompositeSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="SensorTransform" type="CBFSchema:SensorTransform" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="DifferenceSensorTransformType">
+ <xsd:complexType name="DifferenceSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="SensorTransform" type="SensorTransformType" minOccurs="2" maxOccurs="2"/>
+     <xsd:element name="SensorTransform" type="CBFSchema:SensorTransform" minOccurs="2" maxOccurs="2"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="WeightedSumSensorTransformType">
+ <xsd:complexType name="WeightedSumSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="SensorTransform" type="SensorTransformType" minOccurs="1" maxOccurs="unbounded"/>
-     <xsd:element name="Weights" type="VectorType" minOccurs="1" maxOccurs="1"/>
+     <xsd:element name="SensorTransform" type="CBFSchema:SensorTransform" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Weights" type="CBFSchema:Vector" minOccurs="1" maxOccurs="1"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="KDLTreePositionSensorTransformType">
+ <xsd:complexType name="KDLTreePositionSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="Tree" type="TreeBaseType"/>
+     <xsd:element name="Tree" type="CBFSchema:TreeBase"/>
      <xsd:element name="SegmentName" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
@@ -582,11 +578,11 @@
  </xsd:complexType>
 
 
- <xsd:complexType name="KDLTreeAxisAngleSensorTransformType">
+ <xsd:complexType name="KDLTreeAxisAngleSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="Tree" type="TreeBaseType"/>
+     <xsd:element name="Tree" type="CBFSchema:TreeBase"/>
      <xsd:element name="SegmentName" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
@@ -596,50 +592,50 @@
 
 
 
- <xsd:complexType name="KDLChainPositionSensorTransformType">
+ <xsd:complexType name="KDLChainPositionSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="Chain" type="ChainBaseType"/>
+     <xsd:element name="Chain" type="CBFSchema:ChainBase"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
 
- <xsd:complexType name="KDLChainAxisAngleSensorTransformType">
+ <xsd:complexType name="KDLChainAxisAngleSensorTransform">
   <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="Chain" type="ChainBaseType"/>
+     <xsd:element name="Chain" type="CBFSchema:ChainBase"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="LinearSensorTransformType">
+ <xsd:complexType name="LinearSensorTransform">
    <xsd:complexContent>
-   <xsd:extension base="SensorTransformType">
+   <xsd:extension base="CBFSchema:SensorTransform">
     <xsd:sequence>
-     <xsd:element name="Matrix" type="MatrixType"/>
+     <xsd:element name="Matrix" type="CBFSchema:Matrix"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="CompositePotentialType">
+ <xsd:complexType name="CompositePotential">
   <xsd:complexContent>
-   <xsd:extension base="PotentialType">
+   <xsd:extension base="CBFSchema:Potential">
     <xsd:sequence>
-     <xsd:element name="Potential" type="PotentialType" minOccurs="1" maxOccurs="unbounded"/>
+     <xsd:element name="Potential" type="CBFSchema:Potential" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="SquarePotentialType">
+ <xsd:complexType name="SquarePotential">
   <xsd:complexContent>
-   <xsd:extension base="PotentialType">
+   <xsd:extension base="CBFSchema:Potential">
     <xsd:sequence>
      <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
      <xsd:element name="Coefficient" type="xsd:float"/>
@@ -648,9 +644,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="PythonPotentialType">
+ <xsd:complexType name="PythonPotential">
   <xsd:complexContent>
-   <xsd:extension base="PotentialType">
+   <xsd:extension base="CBFSchema:Potential">
     <xsd:sequence>
      <xsd:element name="Dimension"  type="xsd:nonNegativeInteger"/>
      <xsd:element name="InitScript" type="xsd:string"/>
@@ -661,9 +657,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="QuaternionPotentialType">
+ <xsd:complexType name="QuaternionPotential">
   <xsd:complexContent>
-   <xsd:extension base="PotentialType">
+   <xsd:extension base="CBFSchema:Potential">
     <xsd:sequence>
      <xsd:element name="Coefficient" type="xsd:float"/>
     </xsd:sequence>
@@ -671,9 +667,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="AxisAnglePotentialType">
+ <xsd:complexType name="AxisAnglePotential">
   <xsd:complexContent>
-   <xsd:extension base="PotentialType">
+   <xsd:extension base="CBFSchema:Potential">
     <xsd:sequence>
      <xsd:element name="Coefficient" type="xsd:float"/>
     </xsd:sequence>
@@ -681,9 +677,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="AxisPotentialType">
+ <xsd:complexType name="AxisPotential">
   <xsd:complexContent>
-   <xsd:extension base="PotentialType">
+   <xsd:extension base="CBFSchema:Potential">
     <xsd:sequence>
      <xsd:element name="Coefficient" type="xsd:float"/>
     </xsd:sequence>
@@ -691,9 +687,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="NavigationFunctionPotentialType">
+ <xsd:complexType name="NavigationFunctionPotential">
   <xsd:complexContent>
-   <xsd:extension base="PotentialType">
+   <xsd:extension base="CBFSchema:Potential">
     <xsd:sequence>
      <xsd:element name="Coefficient" type="xsd:float"/>
     </xsd:sequence>
@@ -701,21 +697,21 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="DummyResourceType">
+ <xsd:complexType name="DummyResource">
   <xsd:complexContent>
-   <xsd:extension base = "ResourceType">
+   <xsd:extension base="CBFSchema:Resource">
     <xsd:sequence>
-     <xsd:element name="Vector" type="VectorType"/>
+     <xsd:element name="Vector" type="CBFSchema:Vector"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="MaskingResourceType">
+ <xsd:complexType name="MaskingResource">
   <xsd:complexContent>
-   <xsd:extension base = "ResourceType">
+   <xsd:extension base="CBFSchema:Resource">
     <xsd:sequence>
-     <xsd:element name="Resource" type="ResourceType"/>
+     <xsd:element name="Resource" type="CBFSchema:Resource"/>
      <!-- Specify the components you want as integers -->
      <xsd:element name="Index" type="xsd:nonNegativeInteger" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
@@ -723,9 +719,9 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="RobotInterfaceResourceType">
+ <xsd:complexType name="RobotInterfaceResource">
   <xsd:complexContent>
-   <xsd:extension base = "ResourceType">
+   <xsd:extension base="CBFSchema:Resource">
     <xsd:sequence>
      <xsd:element name="SendMemoryName" type="xsd:string"/>
      <xsd:element name="RecvMemoryName" type="xsd:string"/>
@@ -736,19 +732,19 @@
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="PrimitiveControllerResourceType">
+ <xsd:complexType name="PrimitiveControllerResource">
   <xsd:complexContent>
-   <xsd:extension base = "ResourceType">
+   <xsd:extension base="CBFSchema:Resource">
     <xsd:sequence>
-     <xsd:element name="PrimitiveController" type="PrimitiveControllerType"/>
+     <xsd:element name="PrimitiveController" type="CBFSchema:PrimitiveController"/>
     </xsd:sequence>
    </xsd:extension>
   </xsd:complexContent>
  </xsd:complexType>
 
- <xsd:complexType name="PA10JointResourceType">
+ <xsd:complexType name="PA10JointResource">
   <xsd:complexContent>
-   <xsd:extension base = "ResourceType">
+   <xsd:extension base="CBFSchema:Resource">
     <xsd:sequence>
      <xsd:element name="Arm" type="xsd:nonNegativeInteger"/>
     </xsd:sequence>

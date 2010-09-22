@@ -21,8 +21,6 @@
 #ifndef CBF_KDL_TRANSFORMS_HH
 #define CBF_KDL_TRANSFORMS_HH
 
-#include <cbf/plugin_decl_macros.h>
-
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -54,13 +52,15 @@ namespace KDL {
 
 //! Forward declarations for XML instance types
 // CBF_PLUGIN_PREAMBLE EffectorTransformType;
-CBF_PLUGIN_PREAMBLE(KDLChainPositionSensorTransform)
-CBF_PLUGIN_PREAMBLE(KDLChainAxisAngleSensorTransform)
-CBF_PLUGIN_PREAMBLE(KDLTreePositionSensorTransform)
-CBF_PLUGIN_PREAMBLE(KDLTreeAxisAngleSensorTransform)
+namespace CBFSchema { 
+	class KDLChainPositionSensorTransform;
+	class KDLChainAxisAngleSensorTransform;
+	class KDLTreePositionSensorTransform;
+	class KDLTreeAxisAngleSensorTransform;
 
-class ChainBaseType;
-class TreeBaseType;
+	class ChainBase;
+	class TreeBase;
+}
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
@@ -99,7 +99,7 @@ namespace CBF {
 				(boost::shared_ptr<KDL::Chain> chain);
 	
 			//! This constructor is only implemented when XSD support is enabled..
-			BaseKDLChainSensorTransform(const ChainBaseType &xml_chain_instance, const SensorTransformType &xml_st_instance);
+			BaseKDLChainSensorTransform(const CBFSchema::ChainBase &xml_chain_instance, const CBFSchema::SensorTransform &xml_st_instance);
 	
 			/**
 				For all derived types the resource dim is always the same: the number of joints
@@ -129,7 +129,7 @@ namespace CBF {
 	*/
 	struct KDLChainPositionSensorTransform : public BaseKDLChainSensorTransform
 	{
-		CBF_PLUGIN_DECL_METHODS(KDLChainPositionSensorTransform)
+		KDLChainPositionSensorTransform(const CBFSchema::KDLChainPositionSensorTransform &xml_instance);
 	
 		KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain);
 
@@ -156,7 +156,7 @@ namespace CBF {
 	*/
 	struct KDLChainAxisAngleSensorTransform : public BaseKDLChainSensorTransform
 	{
-		CBF_PLUGIN_DECL_METHODS(KDLChainAxisAngleSensorTransform)
+		KDLChainAxisAngleSensorTransform (const CBFSchema::KDLChainAxisAngleSensorTransform &xml_instance);
 	
 		KDLChainAxisAngleSensorTransform(
 			boost::shared_ptr<KDL::Chain> chain
@@ -212,7 +212,7 @@ namespace CBF {
 				(boost::shared_ptr<KDL::Tree> tree, const std::vector<std::string> &segment_names);
 	
 			//! This constructor is only implemented when XSD support is enabled..
-			BaseKDLTreeSensorTransform(const TreeBaseType &xml_tree_instance, const SensorTransformType &xml_st_instance);
+			BaseKDLTreeSensorTransform(const CBFSchema::TreeBase &xml_tree_instance, const CBFSchema::SensorTransform &xml_st_instance);
 	
 			/**
 				For all derived types the resource dim is always the same: the number of joints
@@ -242,7 +242,7 @@ namespace CBF {
 	*/
 	struct KDLTreePositionSensorTransform : public BaseKDLTreeSensorTransform
 	{
-		CBF_PLUGIN_DECL_METHODS(KDLTreePositionSensorTransform)
+		KDLTreePositionSensorTransform(const CBFSchema::KDLTreePositionSensorTransform &xml_instance);
 	
 		KDLTreePositionSensorTransform(
 			boost::shared_ptr<KDL::Tree> tree, 
@@ -272,7 +272,7 @@ namespace CBF {
 	*/
 	struct KDLTreeAxisAngleSensorTransform : public BaseKDLTreeSensorTransform
 	{
-		CBF_PLUGIN_DECL_METHODS(KDLTreeAxisAngleSensorTransform)
+		KDLTreeAxisAngleSensorTransform(const CBFSchema::KDLTreeAxisAngleSensorTransform &xml_instance);
 	
 		KDLTreeAxisAngleSensorTransform(
 			boost::shared_ptr<KDL::Tree> tree, 

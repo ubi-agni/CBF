@@ -20,6 +20,7 @@
 
 #include <cbf/square_potential.h>
 #include <cbf/plugin_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
@@ -59,8 +60,7 @@ namespace CBF {
 
 
 #ifdef CBF_HAVE_XSD
-
-	SquarePotential::SquarePotential(const SquarePotentialType &xml_instance) :
+	SquarePotential::SquarePotential(const CBFSchema::SquarePotential &xml_instance) :
 		Potential(xml_instance) 
 	{
 		CBF_DEBUG("[SquarePotential(const SquaredPotentialType &xml_instance)]: yay!")
@@ -72,7 +72,7 @@ namespace CBF {
 		// m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
 
-	CBF_PLUGIN_CLASS(SquarePotential, Potential)
+	static XMLDerivedFactory<SquarePotential, CBFSchema::SquarePotential, Potential, CBFSchema::Potential> x;
 	
 #endif
 } // namespace

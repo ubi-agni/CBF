@@ -1,16 +1,16 @@
 #include <cbf/functional.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
 
 #ifdef CBF_HAVE_XSD
-
 	template<> template<> ApplyOperationSensorTransform<
 		std::binder2nd<multiplies<FloatVector, double> >,
 		std::binder2nd<multiplies<FloatMatrix, double> >
 	>
 	::ApplyOperationSensorTransform
-		(const MultiplyOperationSensorTransformType &xml_instance) :
+		(const CBFSchema::MultiplyOperationSensorTransform &xml_instance) :
 		m_VectorOperation(
 			std::bind2nd(
 				multiplies<FloatVector, double>(),
@@ -24,38 +24,23 @@ namespace CBF {
 			)
 		) { 
 			m_Operand = XMLBaseFactory<
-				SensorTransform, SensorTransformType
+				SensorTransform, CBFSchema::SensorTransform
 			>::instance()->create(xml_instance.Operand());
 		}
 
-
-
-
-
-
 	static XMLDerivedFactory<
 		NegateOperationSensorTransform,
-		NegateOperationSensorTransformType, 
+		CBFSchema::NegateOperationSensorTransform, 
 		SensorTransform, 
-		SensorTransformType
+		CBFSchema::SensorTransform
 	> x1;
 
 	static XMLDerivedFactory<
 		MultiplyOperationSensorTransform,
-		MultiplyOperationSensorTransformType, 
+		CBFSchema::MultiplyOperationSensorTransform, 
 		SensorTransform, 
-		SensorTransformType
+		CBFSchema::SensorTransform
 	> x2;
-
-	#if 0
-		static XMLDerivedFactory<
-			BlockWiseWeightedSumSensorTransform,
-			BlockWiseWeightedSumSensorTransformType, 
-			SensorTransform, 
-			SensorTransformType
-		> x3;
-	#endif
-
 #endif
 
 } // namespace

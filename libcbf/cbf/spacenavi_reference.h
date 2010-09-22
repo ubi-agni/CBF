@@ -35,14 +35,14 @@
 #include <cbf/types.h>
 #include <cbf/plugin_decl_macros.h>
 
-CBF_PLUGIN_PREAMBLE(SpaceNaviReference)
+namespace CBFSchema { class SpaceNaviReference; }
 
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
 	
 	/** @brief: A reference that takes its information from a SpaceMouse */
 	struct SpaceNaviReference : public Reference {
-		CBF_PLUGIN_DECL_METHODS(SpaceNaviReference)
+		SpaceNaviReference(const CBFSchema::SpaceNaviReference &xml_instance);
 	
 		SpaceNaviReference()
 		{

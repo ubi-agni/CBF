@@ -19,7 +19,6 @@
 */
 
 #include <cbf/pa10_joint_resource.h>
-#include <cbf/plugin_macros.h>
 
 namespace CBF {
 	
@@ -39,13 +38,11 @@ namespace CBF {
 	
 	
 	#ifdef CBF_HAVE_XSD
-	PA10JointResource::PA10JointResource(const PA10JointResourceType &xml_instance)
-	{
+		PA10JointResource::PA10JointResource(const CBFSchema::PA10JointResource &xml_instance)
+		{
 	
-	}
+		}
 	#endif
-	
-	CBF_PLUGIN_CLASS(PA10JointResource, Resource)
 	
 } // namespace
 

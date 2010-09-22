@@ -1,15 +1,16 @@
 #include <cbf/robotinterface_resource.h>
-#include <cbf/plugin_impl_macros.h>
-
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	CBF_PLUGIN_CLASS(RobotInterfaceResource, Resource)
-
-	RobotInterfaceResource::RobotInterfaceResource(const RobotInterfaceResourceType &xml_instance) {
+	RobotInterfaceResource::RobotInterfaceResource(const CBFSchema::RobotInterfaceResource &xml_instance) {
 		init(xml_instance.SendMemoryName(), xml_instance.RecvMemoryName(), xml_instance.RobotName(), xml_instance.NumberOfJoints());
 	}
+
+
+	static XMLDerivedFactory<RobotInterfaceResource, CBFSchema::RobotInterfaceResource, Resource, CBFSchema::Resource> x;
+
 
 #endif
 

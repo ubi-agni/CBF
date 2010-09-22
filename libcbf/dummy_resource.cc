@@ -20,8 +20,8 @@
 
 #include <cbf/dummy_resource.h>
 #include <cbf/debug_macros.h>
-#include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
+#include <cbf/xml_factories.h>
 
 #include <string>
 #include <iostream>
@@ -40,14 +40,15 @@ namespace CBF {
 
 
 	#ifdef CBF_HAVE_XSD
-		DummyResource::DummyResource(const DummyResourceType &xml_instance)
+		DummyResource::DummyResource(const CBFSchema::DummyResource &xml_instance)
 		{
 			m_Variables = create_vector(xml_instance.Vector());
 			CBF_DEBUG("current values: " << m_Variables)
 		
 		}
+
+		static XMLDerivedFactory<DummyResource, CBFSchema::DummyResource, Resource, CBFSchema::Resource> x;
 	#endif
 	
-	CBF_PLUGIN_CLASS(DummyResource, Resource)
 } //namespace
 

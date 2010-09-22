@@ -21,22 +21,20 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/linear_transform.h>
-#include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
-		LinearSensorTransform::LinearSensorTransform(const LinearSensorTransformType &xml_instance) 
+		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance) 
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
 
 			m_TaskJacobian = create_matrix(xml_instance.Matrix());
 		}
 
-		static XMLDerivedFactory<LinearSensorTransform, LinearSensorTransformType, SensorTransform, SensorTransformType> x;
+		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
 	#endif
 		
-	CBF_PLUGIN_CLASS(LinearSensorTransform, SensorTransform)
-
 } // namespace

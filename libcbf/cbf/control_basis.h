@@ -8,16 +8,15 @@
 #include <boost/shared_ptr.hpp>
 
 #include <cbf/controller.h>
-#include <cbf/plugin_decl_macros.h>
 
-CBF_PLUGIN_PREAMBLE(ControlBasis)
+namespace CBFSchema { class ControlBasis; }
 
 namespace CBF {
 
 struct ControlBasis {
-	CBF_PLUGIN_DECL_METHODS(ControlBasis)
-
 	ControlBasis () { }
+
+	ControlBasis(const CBFSchema::ControlBasis &xml_instance);
 	
 	typedef std::map<std::string, ControllerPtr> ControllerMap;
 	ControllerMap m_Controllers;

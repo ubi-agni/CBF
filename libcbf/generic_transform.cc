@@ -19,7 +19,8 @@
 */
 
 #include <cbf/generic_transform.h>
-#include <cbf/plugin_macros.h>
+#include <cbf/debug_macros.h>
+#include <cbf/xml_factories.h>
 
 #ifndef CBF_HAVE_EIGEN2
   #include <cbf/svd.h>
@@ -153,27 +154,25 @@ void DampedWeightedGenericEffectorTransform::update() {
 
 
 #ifdef CBF_HAVE_XSD
-	GenericEffectorTransform::GenericEffectorTransform(const GenericEffectorTransformType &xml_instance)
+	GenericEffectorTransform::GenericEffectorTransform(const CBFSchema::GenericEffectorTransform &xml_instance)
 	{
 	
 	}
 	
 
-	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const DampedGenericEffectorTransformType &xml_instance)
+	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const CBFSchema::DampedGenericEffectorTransform &xml_instance)
 	{
 		m_DampingConstant = (xml_instance.DampingConstant());
 	}
 
-	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const DampedWeightedGenericEffectorTransformType &xml_instance)
+	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance)
 	{
 	
 	}
+
+	static XMLDerivedFactory<GenericEffectorTransform, CBFSchema::GenericEffectorTransform, EffectorTransform, CBFSchema::EffectorTransform> x;
+
 #endif
-
-CBF_PLUGIN_CLASS(GenericEffectorTransform, EffectorTransform)
-CBF_PLUGIN_CLASS(DampedGenericEffectorTransform, EffectorTransform)
-CBF_PLUGIN_CLASS(DampedWeightedGenericEffectorTransform, EffectorTransform)
-
 
 } // namespace
 

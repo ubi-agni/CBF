@@ -24,13 +24,12 @@
 #define CBF_COMP_REFERENCE_HH
 
 #include <cbf/config.h>
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/reference.h>
 
 #include <vector>
 #include <algorithm>
 
-CBF_PLUGIN_PREAMBLE(CompositeReference)
+namespace CBFSchema { class CompositeReference; }
 
 namespace CBF {
 
@@ -49,7 +48,7 @@ struct CompositeReference : public Reference
 		std::vector<FloatVector> m_EmptyReferenceValues;
 
 	public:
-		CBF_PLUGIN_DECL_METHODS(CompositeReference)
+		CompositeReference(const CBFSchema::CompositeReference &xml_instance);
 
 		CompositeReference(std::vector<ReferencePtr> references = std::vector<ReferencePtr>()) {
 			set_references(references);

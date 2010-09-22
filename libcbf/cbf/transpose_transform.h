@@ -2,14 +2,13 @@
 #define CBF_TRANSPOSE_TRANSFORM_HH
 
 #include <cbf/effector_transform.h>
-#include <cbf/plugin_decl_macros.h>
 
-CBF_PLUGIN_PREAMBLE(TransposeEffectorTransform)
+namespace CBFSchema { class TransposeEffectorTransform; }
 
 namespace CBF {
 
 struct TransposeEffectorTransform : public EffectorTransform {
-	CBF_PLUGIN_DECL_METHODS(TransposeEffectorTransform)
+	TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance);
 
 	virtual void update() {
 		m_InverseTaskJacobian = ublas::trans(m_SensorTransform->task_jacobian());

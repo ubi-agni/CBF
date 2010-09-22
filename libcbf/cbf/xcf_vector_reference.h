@@ -5,21 +5,20 @@
 #include <cbf/types.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
+#include <cbf/schemas.hxx>
+#include <cbf/utilities.h>
+#include <cbf/schemas.hxx>
 
 #include <xcf/ServerComponent.hpp>
 #include <IceUtil/Monitor.h> 
 #include <IceUtil/RecMutex.h>
-#include <cbf/schemas.hxx>
-#include <cbf/utilities.h>
-#include <cbf/plugin_decl_macros.h>
-#include <cbf/schemas.hxx>
 
 #include <boost/bind.hpp>
 
 #include <string>
 #include <memory>
 
-CBF_PLUGIN_PREAMBLE(XCFVectorReference)
+namespace CBFSchema { class XCFVectorReference; }
 
 namespace CBF {
 
@@ -35,7 +34,7 @@ namespace CBF {
 	to see how to remotely call this method
 */
 struct XCFVectorReference : public Reference {
-	CBF_PLUGIN_DECL_METHODS(XCFVectorReference)
+	XCFVectorReference(const CBFSchema::XCFVectorReference &xml_instance);
 
 	XCF::ServerPtr m_XCFServer;
 	unsigned int m_Dim;
@@ -106,10 +105,10 @@ struct XCFVectorReference : public Reference {
 
 		vector_string << "[1](" << dim() << ")";
 
-		BoostVectorType v(vector_string.str());
+		CBFSchema::BoostVector v(vector_string.str());
 
 		std::ostringstream s;
-		Vector (s, v);
+		CBFSchema::Vector_ (s, v);
 
 		CBF_DEBUG("dimension xcf" << s.str())
 
@@ -126,7 +125,7 @@ struct XCFVectorReference : public Reference {
 
 		CBF_DEBUG("doc: " << xml_in)
 		std::istringstream s(xml_in);
-		std::auto_ptr<VectorType> v = Vector(s, xml_schema::flags::dont_validate);
+		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector")
 		m_TempReference = create_vector(*v);
 

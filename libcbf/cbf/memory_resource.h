@@ -23,8 +23,6 @@
 
 #include <cbf/config.h>
 #include <cbf/resource.h>
-#include <cbf/plugin_decl_macros.h>
-
 
 #include <Memory/Condition.hpp>
 #include <Memory/Subscription.hpp>

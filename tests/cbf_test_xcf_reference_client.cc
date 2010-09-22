@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 
 	std::istringstream vv_stream(dim_string);
 
-	std::auto_ptr<VectorType> dim_v = Vector(vv_stream, xml_schema::flags::dont_validate);
+	std::auto_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
 	CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
 	CBF_DEBUG("dim_vv: " << dim_vv)
 	
@@ -51,11 +51,11 @@ int main(int argc, char **argv) {
 		vector_string << ")";
 
 		CBF_DEBUG("creating vector doc")
-		BoostVectorType v(vector_string.str());
+		CBFSchema::BoostVector v(vector_string.str());
 
 		std::ostringstream s;
 		//s << v;
-		Vector (s, v);
+		CBFSchema::Vector_ (s, v);
 
 		CBF_DEBUG("document: " << s.str())
 

@@ -23,13 +23,12 @@
 #ifndef CBF_COMPOSITE_TRANSFORM_HH
 #define CBF_COMPOSITE_TRANSFORM_HH
 
-#include <cbf/plugin_decl_macros.h>
 #include <cbf/sensor_transform.h>
 
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
 
-CBF_PLUGIN_PREAMBLE(CompositeSensorTransform)
+namespace CBFSchema { class CompositeSensorTransform; }
 
 namespace CBF {
 	
@@ -50,16 +49,15 @@ namespace CBF {
 		positive non zero number of transforms...
 	*/
 	struct CompositeSensorTransform : public SensorTransform {
-		CBF_PLUGIN_DECL_METHODS(CompositeSensorTransform)
-
 		protected:
 			std::vector<SensorTransformPtr> m_SensorTransforms;
-
 	
 		public:
 			CompositeSensorTransform(std::vector<SensorTransformPtr> transforms = std::vector<SensorTransformPtr>()) {
 				set_transforms(transforms);
 			}
+
+			CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance);
 
 			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2) {
 				std::vector<SensorTransformPtr> v;

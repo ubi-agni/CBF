@@ -29,8 +29,11 @@
 #include <cbf/dummy_resource.h>
 #include <cbf/debug_macros.h>
 #include <cbf/dummy_reference.h>
+#include <cbf/xml_factories.h>
+
 #include <algorithm>
 #include <cstdlib>
+
 
 void cbf_init() {
 
@@ -48,8 +51,8 @@ cbf_controller_create_from_file(
 
 		CBF_DEBUG("[create_controller_from_file]: Creating ControllerType instance")
 		//! Create ControllerType instance from xml file...
-		std::auto_ptr<ControlBasisType> xml_instance (
-			ControlBasis(
+		std::auto_ptr< CBFSchema::ControlBasis> xml_instance (
+			CBFSchema::ControlBasis_(
 				filename,
 				xml_schema::flags::dont_validate
 			)
@@ -59,7 +62,7 @@ cbf_controller_create_from_file(
 
 		//! Finally let's create the controller instance..
 		CBF::ControllerPtr controller = 
-			CBF::PluginPool<CBF::Controller>::get_instance()->create_from_xml(*xml_instance);
+			CBF::XMLBaseFactory<CBF::Controller, CBFSchema::Controller>::instance()->create(*xml_instance);
 
 		CBF_DEBUG("[create_controller_from_file]: Checking if it's a PrimitiveController")
 		//! Checking whether the created controller is a PrimitiveController.
