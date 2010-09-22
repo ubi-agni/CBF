@@ -8,7 +8,7 @@ if(QTGUI_FOUND)
 
   QT4_WRAP_CPP(MOC_SOURCES test_xcf_reference_client_gui.h)
   add_executable(test_gui
-	main.cc ${MOC_SOURCES} test_xcf_reference_client_gui.cc
+	test_xcf_reference_client_gui.cc ${MOC_SOURCES}
 	)
 
   target_link_libraries(test_gui
