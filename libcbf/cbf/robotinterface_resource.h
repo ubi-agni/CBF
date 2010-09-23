@@ -83,7 +83,7 @@ struct RobotInterfaceResource : public Resource, public robotinterface::EventHan
 		m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name, true, true);
 		m_RobotCommandSet.defaults(robot_name) << robotinterface::cmd::moveMode("stp", "joint");
 
-		CBF_DEBUG("query")
+		CBF_DEBUG("querying position of robot: " << robot_name)
 		robotinterface::RobotState state = m_RobotInterface.query(
 			robot_name, robotinterface::RobotState::QUERY_POSTURE
 		);
