@@ -4,7 +4,7 @@ include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 
 set(CBF_SOURCES
-  cbf_object.cc
+  object.cc
   sensor_transform.cc 
   composite_transform.cc
   control_basis.cc

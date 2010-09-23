@@ -6,46 +6,72 @@
 	xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <xsd:complexType name="CBFObject" abstract="true"/>
-  <xsd:element name="Object" type="CBF:CBFObject"/>
+  <xsd:complexType name="Object" abstract="true">
+	 <xsd:sequence>
+		<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="Object" type="CBF:Object"/>
 
   <xsd:complexType name="ControlBasis">
-	 <xsd:complexContent> <xsd:extension base="CBF:CBFObject">
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
 		  <xsd:sequence>
 			 <xsd:element name="Controller" type="CBF:Controller" minOccurs="0" maxOccurs="unbounded"/>
 		  </xsd:sequence>
-	 </xsd:extension> </xsd:complexContent>
+		</xsd:extension> 
+	 </xsd:complexContent>
   </xsd:complexType>
   <xsd:element name="ControlBasis" type="CBF:ControlBasis"/>
 
   <xsd:complexType abstract="true" name="Controller">
-	 <xsd:sequence>
-		<xsd:element name="Name" type="xsd:string"/>
-	 </xsd:sequence>
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
   <xsd:element name="Controller" type="CBF:Controller"/>
 
-  <xsd:complexType name="Reference" abstract="true"/>
+  <xsd:complexType name="Reference" abstract="true">
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
+		</xsd:extension> 
+	 </xsd:complexContent>
+  </xsd:complexType>
   <xsd:element name="Reference" type="CBF:Reference"/>
 
   <xsd:complexType name="SensorTransform" abstract="true">
-	 <xsd:sequence>
-		<xsd:element name="ComponentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-	 </xsd:sequence>
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
+		  <xsd:sequence>
+			 <xsd:element name="ComponentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		  </xsd:sequence>
+		</xsd:extension> 
+	 </xsd:complexContent>
   </xsd:complexType>
   <xsd:element name="SensorTransform" type="CBF:SensorTransform"/>
-
+  
   <xsd:complexType name="EffectorTransform" abstract="true">
-	 <xsd:sequence/>
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
+		</xsd:extension> 
+	 </xsd:complexContent>
   </xsd:complexType>
   <xsd:element name="EffectorTransform" type="CBF:EffectorTransform"/>
 
-  <xsd:complexType name="CombinationStrategy" abstract="true"/>
+  <xsd:complexType name="CombinationStrategy" abstract="true">
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
+		</xsd:extension> 
+	 </xsd:complexContent>
+  </xsd:complexType>
   <xsd:element name="CombinationStrategy" type="CBF:CombinationStrategy"/>
 
   <xsd:complexType name="Resource" abstract="true">
-	 <xsd:sequence>
-	 </xsd:sequence>
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
+		</xsd:extension> 
+	 </xsd:complexContent>
   </xsd:complexType>
   <xsd:element name="Resource" type="CBF:Resource"/>
 
@@ -144,7 +170,10 @@
   </xsd:complexType>
 
   <xsd:complexType name="ConvergenceCriterion" abstract="true">
-    <xsd:sequence/>
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
+		</xsd:extension> 
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="TaskSpaceDistanceThreshold">
@@ -178,7 +207,7 @@
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Reference">
 		  <xsd:sequence>
-			 <xsd:element name="Name" type="xsd:string"/>
+			 <xsd:element name="ServerName" type="xsd:string"/>
 			 <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
 		  </xsd:sequence>
 		</xsd:extension>

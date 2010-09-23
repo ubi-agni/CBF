@@ -5,7 +5,7 @@
 
 namespace CBF {
 
-struct CBFObject {
+struct Object {
 
 };
 
