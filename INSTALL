@@ -1,53 +1,16 @@
-Note that you need a working Python installation for the build
-scripts to work..
+- Requirements: CMake
 
-1. ./waf configure
+- How to build the software:
 
-  Note: If you want a release build, add the --optimize option to the 
-above waf command. E.g.: 
+We recommend you create a build/ subdir in the tree. Then change into that directory and run e.g.
 
-./waf configure --optimize
+cmake ../
 
-2. If necessary install other software and go back to 1. Also you might want 
-to define the environment variables PKG_CONFIG_PATH, CXXFLAGS or LINKFLAGS 
-if you have prerequisites installed in non-standard places. If you need 
-more verbose output than running waf directly gives you, try running
+Where ../ is the relative path to the root of the CBF source tree. Then run
 
-./waf -vv
+make
 
-  This should show you the precise commands run in each compilation step.. 
-You can also try taking a look at the file
+and hopefully the software is built allright :D Install with 
 
-build/config.log
-
-  Which should provide details on why a certain test might have failed. If you 
-want to build the html and latex documentation, too, run waf with 
-the --build-docs option.
-
-NOTE: If you want to avoid having to set your LD_LIBRARY_PATH when 
-using libcbf in case that some of the dependencies are not installed
-in standard system places, then use the -Wl,-rpath,<PATH> option in the
-LINKFLAGS additionally to the -L option. Replace <PATH> with the path
-where the dependency is to be found.
-
-
-3. ./waf 
-
-  If this fails, go back to step 2. If you have XSD support this might fail
-  with some esoteric error messages. Just rerun ./waf. If the error
-  does not go away, go back to step 2.
-
-4. ./waf install
-
-  If you don't want to install the software yet you can find the build (including 
-the docs) in
-
-./build/default
-
-  The docs are in
-
-./build/default/doc
-
-  This includes only the built docs, like the HTML and LaTeX documentation. 
-The examples are still to be found in ./test and ./doc/examples
+make install
 
