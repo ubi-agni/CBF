@@ -20,7 +20,6 @@
 
 #include <cbf/composite_transform.h>
 #include <cbf/debug_macros.h>
-#include <cbf/plugin_impl_macros.h>
 #include <cbf/xml_factories.h>
 
 #include <boost/numeric/ublas/matrix_proxy.hpp>

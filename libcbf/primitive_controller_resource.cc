@@ -21,7 +21,7 @@
 #include <cbf/primitive_controller_resource.h>
 
 #include <cbf/debug_macros.h>
-#include <cbf/plugin_impl_macros.h>
+#include <cbf/xml_factories.h>
 
 
 namespace CBF {

@@ -33,7 +33,6 @@
 
 #include <cbf/reference.h>
 #include <cbf/types.h>
-#include <cbf/plugin_decl_macros.h>
 
 namespace CBFSchema { class SpaceNaviReference; }
 

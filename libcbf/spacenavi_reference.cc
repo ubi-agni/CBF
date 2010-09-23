@@ -21,7 +21,7 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/spacenavi_reference.h>
-#include <cbf/plugin_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
