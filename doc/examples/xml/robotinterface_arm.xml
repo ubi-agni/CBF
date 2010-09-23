@@ -1,38 +1,40 @@
 <?xml version="1.0"?>
-<ControlBasis>
-<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+<cbf:ControlBasis
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBFSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
  <Name>foo</Name>
 
  <Coefficient> 1 </Coefficient>
 
- <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
+ <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
   <Threshold> 0.001 </Threshold>
  </ConvergenceCriterion>
 
- <Reference xsi:type="CompositeReferenceType">
-  <Reference xsi:type="DummyReferenceType">
-   <Vector xsi:type="BoostVectorType">
+ <Reference xsi:type="cbf:CompositeReference">
+  <Reference xsi:type="cbf:DummyReference">
+   <Vector xsi:type="cbf:BoostVector">
     <String>[7](-0.18682,-1.18682,0.00000,-1.04720,-1.30900,-1.39626,0.00000)</String>
    </Vector>
   </Reference>
  </Reference>
 
- <Potential xsi:type="SquarePotentialType">
+ <Potential xsi:type="cbf:SquarePotential">
   <MaxGradientStepNorm> 0.01 </MaxGradientStepNorm>
   <Dimension> 7 </Dimension>
-  <Coefficient> 0.4 </Coefficient>
+  <Coefficient> 1 </Coefficient>
  </Potential>
 
- <SensorTransform xsi:type="IdentitySensorTransformType">
+ <SensorTransform xsi:type="cbf:IdentitySensorTransform">
   <Dimension> 7 </Dimension>
  </SensorTransform>
 
- <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+ <EffectorTransform xsi:type="cbf:GenericEffectorTransform"/>
 
- <CombinationStrategy xsi:type="AddingStrategyType"/>
+ <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
 
- <Resource xsi:type="CompositeResourceType">
-  <Resource xsi:type="RobotInterfaceResourceType">
+ <Resource xsi:type="cbf:CompositeResource">
+  <Resource xsi:type="cbf:RobotInterfaceResource">
    <SendMemoryName>xcf:wb</SendMemoryName>
    <RecvMemoryName>xcf:wb</RecvMemoryName>
    <RobotName>LeftArm</RobotName>
@@ -41,4 +43,4 @@
  </Resource>
 
 </Controller>
-</ControlBasis>
+</cbf:ControlBasis>

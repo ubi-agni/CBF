@@ -43,6 +43,9 @@ namespace CBF {
 		
 			set_transforms(transforms);
 		}
+
+		static XMLDerivedFactory<SensorTransformChain, CBFSchema::SensorTransformChain, SensorTransform, CBFSchema::SensorTransform> x;
+
 	#endif
 };
 

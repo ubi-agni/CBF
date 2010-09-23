@@ -7,6 +7,9 @@ namespace CBF {
 	TransposeEffectorTransform::TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance) {
 
 	}
+
+	static XMLDerivedFactory<TransposeEffectorTransform, CBFSchema::TransposeEffectorTransform, EffectorTransform, CBFSchema::EffectorTransform> x;
+
 #endif
 
 } // namespace

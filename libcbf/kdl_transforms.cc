@@ -349,6 +349,35 @@ namespace CBF {
 		{
 
 		}
+
+		static XMLDerivedFactory<
+			KDLChainPositionSensorTransform, 
+			CBFSchema::KDLChainPositionSensorTransform, 
+			SensorTransform, 
+			CBFSchema::SensorTransform> 
+		x1;
+
+		static XMLDerivedFactory<
+			KDLChainAxisAngleSensorTransform, 
+			CBFSchema::KDLChainAxisAngleSensorTransform, 
+			SensorTransform, 
+			CBFSchema::SensorTransform> 
+		x2;
+
+		static XMLDerivedFactory<
+			KDLTreePositionSensorTransform, 
+			CBFSchema::KDLTreePositionSensorTransform, 
+			SensorTransform, 
+			CBFSchema::SensorTransform> 
+		x3;
+
+		static XMLDerivedFactory<
+			KDLTreeAxisAngleSensorTransform, 
+			CBFSchema::KDLTreeAxisAngleSensorTransform, 
+			SensorTransform, 
+			CBFSchema::SensorTransform> 
+		x4;
+
 	#endif
 
 } // namespace

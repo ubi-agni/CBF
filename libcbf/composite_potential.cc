@@ -71,6 +71,13 @@ namespace CBF {
 
 		//m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
+
+	static XMLDerivedFactory<
+		CompositePotential, 
+		CBFSchema::CompositePotential, 
+		Potential, 
+		CBFSchema::Potential> 
+	x1;
 #endif
 
 } // namespace

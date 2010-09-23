@@ -35,6 +35,8 @@ namespace CBF {
 		}	
 	#endif
 	
-	CBF_PLUGIN_CLASS(PrimitiveControllerResource, Resource)
+	static XMLDerivedFactory<PrimitiveControllerResource, CBFSchema::PrimitiveControllerResource, Resource, CBFSchema::Resource> x;
+
+
 } // namespace
 

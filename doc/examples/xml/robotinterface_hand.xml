@@ -1,37 +1,39 @@
 <?xml version="1.0"?>
-<ControlBasis>
-<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+<cbf:ControlBasis
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBFSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
  <Name>foo</Name>
 
  <Coefficient> 0.1</Coefficient>
 
- <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
+ <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
   <Threshold> 0.001 </Threshold>
  </ConvergenceCriterion>
 
- <Reference xsi:type="CompositeReferenceType">
-  <Reference xsi:type="DummyReferenceType">
-   <Vector xsi:type="BoostVectorType">
+ <Reference xsi:type="cbf:CompositeReference">
+  <Reference xsi:type="cbf:DummyReference">
+   <Vector xsi:type="cbf:BoostVector">
     <String>[24](1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)</String>
    </Vector>
   </Reference>
  </Reference>
 
- <Potential xsi:type="SquarePotentialType">
+ <Potential xsi:type="cbf:SquarePotential">
   <MaxGradientStepNorm> 10.0 </MaxGradientStepNorm>
   <Dimension> 24 </Dimension>
   <Coefficient> 1 </Coefficient>
  </Potential>
 
- <SensorTransform xsi:type="IdentitySensorTransformType">
+ <SensorTransform xsi:type="cbf:IdentitySensorTransform">
   <Dimension> 24 </Dimension>
  </SensorTransform>
 
- <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+ <EffectorTransform xsi:type="cbf:GenericEffectorTransform"/>
 
- <CombinationStrategy xsi:type="AddingStrategyType"/>
+ <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
 
-  <Resource xsi:type="RobotInterfaceResourceType">
+  <Resource xsi:type="cbf:RobotInterfaceResource">
    <SendMemoryName>xcf:wb</SendMemoryName>
    <RecvMemoryName>xcf:wb</RecvMemoryName>
    <RobotName>LeftHand</RobotName>
@@ -39,4 +41,4 @@
   </Resource>
 
 </Controller>
-</ControlBasis>
+</cbf:ControlBasis>

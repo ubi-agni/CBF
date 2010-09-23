@@ -42,6 +42,7 @@ namespace CBF {
 		{
 	
 		}
+		static XMLDerivedFactory<PA10JointResource, CBFSchema::PA10JointResource, Resource, CBFSchema::Resource> x;
 	#endif
 	
 } // namespace

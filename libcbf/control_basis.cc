@@ -25,6 +25,13 @@ namespace CBF {
 		}
 	}
 
+	static XMLDerivedFactory<
+		ControlBasis, 
+		CBFSchema::ControlBasis, 
+		CBFObject, 
+		CBFSchema::CBFObject> 
+	x1;
+
 #endif
 
 } // namespace

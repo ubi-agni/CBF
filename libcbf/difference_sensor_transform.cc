@@ -54,6 +54,13 @@ namespace CBF {
 
 			set_transforms(transforms[0], transforms[1]);
 		}
+
+		static XMLDerivedFactory<
+			DifferenceSensorTransform, 
+			CBFSchema::DifferenceSensorTransform, 
+			SensorTransform, 
+			CBFSchema::SensorTransform
+		> x;
 		
 	#endif
 } // namespace

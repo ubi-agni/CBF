@@ -5,6 +5,7 @@
 #include <cbf/exceptions.h>
 #include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
+#include <boost/shared_ptr.hpp>
 
 #ifdef CBF_HAVE_XSD
 	#include <cbf/schemas.hxx>

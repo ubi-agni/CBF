@@ -19,8 +19,6 @@
 */
 
 #include <cbf/weighted_sum_transforms.h>
-
-#include <cbf/plugin_impl_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_factories.h>
 
@@ -55,9 +53,11 @@ namespace CBF {
 				throw std::runtime_error ("[WeightedSumSensorTransform]: Mismatching number of weights and transforms");
 		}
 		
+		static XMLDerivedFactory<WeightedSumSensorTransform, CBFSchema::WeightedSumSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
+
 	#endif
 
-	CBF_PLUGIN_CLASS(WeightedSumSensorTransform, SensorTransform)
+
 
 } // namespace
 

@@ -26,7 +26,6 @@
 #include <cbf/xml_factories.h>
 
 namespace CBF {
-
 	#ifdef CBF_HAVE_XSD
 	DummyReference::DummyReference(const CBFSchema::DummyReference &xml_instance) {
 		CBF_DEBUG("constructing")
@@ -56,8 +55,9 @@ namespace CBF {
 			//m_SubordinateControllers.push_back(controller);
 		}
 	}
-	#endif
 
+	static XMLDerivedFactory<DummyReference, CBFSchema::DummyReference, Reference, CBFSchema::Reference> x;
+	#endif
 } // namespace
 
 

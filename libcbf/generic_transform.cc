@@ -170,7 +170,26 @@ void DampedWeightedGenericEffectorTransform::update() {
 	
 	}
 
-	static XMLDerivedFactory<GenericEffectorTransform, CBFSchema::GenericEffectorTransform, EffectorTransform, CBFSchema::EffectorTransform> x;
+	static XMLDerivedFactory<
+		GenericEffectorTransform, 
+		CBFSchema::GenericEffectorTransform, 
+		EffectorTransform, 
+		CBFSchema::EffectorTransform
+	> x1;
+
+	static XMLDerivedFactory<
+		DampedGenericEffectorTransform, 
+		CBFSchema::DampedGenericEffectorTransform, 
+		EffectorTransform, 
+		CBFSchema::EffectorTransform
+	> x2;
+
+	static XMLDerivedFactory<
+		DampedWeightedGenericEffectorTransform, 
+		CBFSchema::DampedWeightedGenericEffectorTransform, 
+		EffectorTransform, 
+		CBFSchema::EffectorTransform
+	> x3;
 
 #endif
 

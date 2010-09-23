@@ -92,7 +92,7 @@ namespace CBF {
 		/**
 			Returns the resource dim of the first sensor transform in the chain
 		*/
-		virtual unsigned get_resource_dim() {
+		virtual unsigned resource_dim() const {
 			if (m_SensorTransforms.size() == 0) throw std::runtime_error("[SensorTransformChain]: Empty!!");
 	
 			return (*m_SensorTransforms.begin())->resource_dim();
@@ -101,7 +101,7 @@ namespace CBF {
 		/**
 			Returns the task dim of the last transform in the chain.
 		*/
-		virtual unsigned int get_task_dim() {
+		virtual unsigned int task_dim() const {
 			if (m_SensorTransforms.size() == 0) throw std::runtime_error("[SensorTransformChain]: Empty!!");
 	
 			return (*--(m_SensorTransforms.end()))->task_dim();

@@ -23,6 +23,8 @@ MaskingResource::MaskingResource(const CBFSchema::MaskingResource &xml_instance)
 	set_resource_and_indexes(resource, indexes);
 }
 
+static XMLDerivedFactory<MaskingResource, CBFSchema::MaskingResource, Resource, CBFSchema::Resource> x;
+
 #endif
 
 } // namespace

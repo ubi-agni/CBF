@@ -10,8 +10,6 @@ namespace CBF {
 
 
 	static XMLDerivedFactory<RobotInterfaceResource, CBFSchema::RobotInterfaceResource, Resource, CBFSchema::Resource> x;
-
-
 #endif
 
 } // namespace
