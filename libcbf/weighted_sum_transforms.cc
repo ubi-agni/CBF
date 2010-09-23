@@ -20,7 +20,7 @@
 
 #include <cbf/weighted_sum_transforms.h>
 #include <cbf/utilities.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD

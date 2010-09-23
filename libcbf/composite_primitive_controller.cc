@@ -1,6 +1,6 @@
 #include <cbf/composite_primitive_controller.h>
 
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD

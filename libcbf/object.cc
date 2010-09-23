@@ -1,5 +1,5 @@
 #include <cbf/object.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 

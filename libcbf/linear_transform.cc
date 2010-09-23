@@ -22,7 +22,7 @@
 
 #include <cbf/linear_transform.h>
 #include <cbf/utilities.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 

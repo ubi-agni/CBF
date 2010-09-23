@@ -19,7 +19,7 @@
 */
 
 #include <cbf/effector_transform.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 	template<> XMLBaseFactory<EffectorTransform, CBFSchema::EffectorTransform>* 

@@ -19,7 +19,7 @@
 */
 
 #include <cbf/composite_resource.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 

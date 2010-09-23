@@ -21,7 +21,7 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/reference.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 	template<> XMLBaseFactory<Reference, CBFSchema::Reference>* 

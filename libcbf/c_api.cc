@@ -29,7 +29,7 @@
 #include <cbf/dummy_resource.h>
 #include <cbf/debug_macros.h>
 #include <cbf/dummy_reference.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 #include <algorithm>
 #include <cstdlib>

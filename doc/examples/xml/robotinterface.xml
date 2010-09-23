@@ -11,7 +11,7 @@
 		<Threshold> 0.001 </Threshold>
 	 </ConvergenceCriterion>
 	 <Reference xsi:type="cbf:XCFVectorReference">
-		<Name>controller</Name>
+		<ServerName>controller</ServerName>
 		<Dimension>62</Dimension>
 	 </Reference>
 	 <Potential

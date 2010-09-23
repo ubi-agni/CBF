@@ -1,5 +1,5 @@
 #include <cbf/robotinterface_resource.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 
@@ -7,7 +7,6 @@ namespace CBF {
 	RobotInterfaceResource::RobotInterfaceResource(const CBFSchema::RobotInterfaceResource &xml_instance) {
 		init(xml_instance.SendMemoryName(), xml_instance.RecvMemoryName(), xml_instance.RobotName(), xml_instance.NumberOfJoints());
 	}
-
 
 	static XMLDerivedFactory<RobotInterfaceResource, CBFSchema::RobotInterfaceResource, Resource, CBFSchema::Resource> x;
 #endif

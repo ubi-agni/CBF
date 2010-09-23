@@ -21,7 +21,7 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/resource.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 
