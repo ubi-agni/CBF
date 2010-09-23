@@ -1,44 +1,44 @@
 <?xml version="1.0"?>
 <cbf:ControlBasis
-	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBFSchema"
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
- <Name>foo</Name>
+  <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
+	 <Name>foo</Name>
 
- <Coefficient> 0.1</Coefficient>
+	 <Coefficient> 0.1</Coefficient>
 
- <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
-  <Threshold> 0.001 </Threshold>
- </ConvergenceCriterion>
+	 <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
+		<Threshold> 0.001 </Threshold>
+	 </ConvergenceCriterion>
 
- <Reference xsi:type="cbf:CompositeReference">
-  <Reference xsi:type="cbf:DummyReference">
-   <Vector xsi:type="cbf:BoostVector">
-    <String>[24](1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)</String>
-   </Vector>
-  </Reference>
- </Reference>
+	 <Reference xsi:type="cbf:CompositeReference">
+		<Reference xsi:type="cbf:DummyReference">
+		  <Vector xsi:type="cbf:BoostVector">
+			 <String>[24](1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)</String>
+		  </Vector>
+		</Reference>
+	 </Reference>
 
- <Potential xsi:type="cbf:SquarePotential">
-  <MaxGradientStepNorm> 10.0 </MaxGradientStepNorm>
-  <Dimension> 24 </Dimension>
-  <Coefficient> 1 </Coefficient>
- </Potential>
+	 <Potential xsi:type="cbf:SquarePotential">
+		<MaxGradientStepNorm> 10.0 </MaxGradientStepNorm>
+		<Dimension> 24 </Dimension>
+		<Coefficient> 1 </Coefficient>
+	 </Potential>
 
- <SensorTransform xsi:type="cbf:IdentitySensorTransform">
-  <Dimension> 24 </Dimension>
- </SensorTransform>
+	 <SensorTransform xsi:type="cbf:IdentitySensorTransform">
+		<Dimension> 24 </Dimension>
+	 </SensorTransform>
 
- <EffectorTransform xsi:type="cbf:GenericEffectorTransform"/>
+	 <EffectorTransform xsi:type="cbf:GenericEffectorTransform"/>
 
- <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
+	 <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
 
-  <Resource xsi:type="cbf:RobotInterfaceResource">
-   <SendMemoryName>xcf:wb</SendMemoryName>
-   <RecvMemoryName>xcf:wb</RecvMemoryName>
-   <RobotName>LeftHand</RobotName>
-   <NumberOfJoints> 24 </NumberOfJoints>
-  </Resource>
+	 <Resource xsi:type="cbf:RobotInterfaceResource">
+		<SendMemoryName>xcf:wb</SendMemoryName>
+		<RecvMemoryName>xcf:wb</RecvMemoryName>
+		<RobotName>LeftHand</RobotName>
+		<NumberOfJoints> 24 </NumberOfJoints>
+	 </Resource>
 
-</Controller>
+  </Controller>
 </cbf:ControlBasis>

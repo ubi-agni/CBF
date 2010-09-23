@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <cbf:ControlBasis
-	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBFSchema"
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Controller
 	  xsi:type="cbf:PrimitiveController">
