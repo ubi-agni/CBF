@@ -1,5 +1,5 @@
-#ifndef TEST_XCF_REFERENCE_CLIENT_GUI_HH
-#define TEST_XCF_REFERENCE_CLIENT_GUI_HH
+#ifndef CBF_Q_XCF_VECTOR_REFERENCE_CLIENT_HH
+#define CBF_Q_XCF_VECTOR_REFERENCE_CLIENT_HH
 
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
@@ -8,7 +8,9 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QGridLayout>
 #include <QtGui/QDoubleSpinBox>
+#include <QtGui/QCheckBox>
 #include <QtCore/QObject>
+
 
 #include <xcf/RemoteServer.hpp>
 
@@ -28,6 +30,7 @@ class Test_xcf_reference_client_gui : public QObject{
 	QPushButton *exitbutton;
 	QPushButton *sendbutton;
 	QGridLayout *layout;
+	QCheckBox *alwaysSend;
 	unsigned int connected;
 
 	XCF::RemoteServerPtr _remoteServer;
@@ -46,6 +49,7 @@ class Test_xcf_reference_client_gui : public QObject{
 	public slots:
 	void okay();
 	void send();
+	void changeSendMode();
 };
 
 #endif

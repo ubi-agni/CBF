@@ -1,4 +1,4 @@
-#include <tests/gui/test_xcf_reference_client_gui.h>
+#include <cbf_q_xcf_vector_reference_client.h>
 
 #include <cbf/types.h>
 #include <xcf/RemoteServer.hpp>
@@ -60,7 +60,7 @@ void Test_xcf_reference_client_gui::connect(){
 			label -> setText("connecting...");
 			CBF_DEBUG("creating remote server object")
 			std::cout << "connecting to " << input << std::endl;
-			_remoteServer = XCF::RemoteServer::create(input.c_str());
+			/*_remoteServer = XCF::RemoteServer::create(input.c_str());
 
 			std::string dim_string;
 			_remoteServer->callMethod("get_dimension", "", dim_string);
@@ -72,7 +72,7 @@ void Test_xcf_reference_client_gui::connect(){
 			CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
 			CBF_DEBUG("dim_vv: " << dim_vv)
 
-			dim = dim_vv[0];
+			dim = dim_vv[0];*/dim = 5;
 			connected = 1;
 			enter_input_mode();
 		} catch(...){
@@ -119,16 +119,20 @@ void Test_xcf_reference_client_gui::enter_input_mode(){
 
 	}
 
+	alwaysSend = new QCheckBox("Send every change", input_window);
+	QObject::connect(alwaysSend, SIGNAL(clicked()), this, SLOT(changeSendMode()));
+	iwin_layout -> addWidget(alwaysSend, i+2, 0, 1, 4);
+
 	sendbutton = new QPushButton("Send", input_window);
 	QObject::connect(sendbutton, SIGNAL(clicked()), this, SLOT(send()));
+	iwin_layout -> addWidget(sendbutton, i+3, 0, 1, 4);
 
-	iwin_layout -> addWidget(sendbutton, i+2, 0, 1, 4);
 	input_window -> setLayout(iwin_layout);
 	layout -> addWidget(input_window, 3, 0, 1, 3);
 }
 
 void Test_xcf_reference_client_gui::send(){
-	std::cout << "sending: ";
+	std::cout << "sending:";
 	std::stringstream vector_string;
 	vector_string << "[" << dim <<"](";
 	for (unsigned int i = 0; i < dim; i++) {
@@ -138,7 +142,7 @@ void Test_xcf_reference_client_gui::send(){
 	vector_string << ")";
 	std::cout << vector_string.str() << std::endl;
 	
-	CBF_DEBUG("creating vector doc")
+	/*CBF_DEBUG("creating vector doc")
 	CBFSchema::BoostVector v(vector_string.str());
 
 	std::ostringstream s;
@@ -151,4 +155,20 @@ void Test_xcf_reference_client_gui::send(){
 
 	CBF_DEBUG("calling remote method")
 	_remoteServer->callMethod("set_reference", s.str(), out);
+	*/
+}
+
+void Test_xcf_reference_client_gui::changeSendMode(){
+	double val;	
+	if(alwaysSend -> isChecked()){
+		for (unsigned int i = 0; i < dim; i++) {
+			QObject::connect((*spinboxes)[i], 
+			SIGNAL(valueChanged(double)), this, SLOT(send()));
+		}
+	} else {
+		for (unsigned int i = 0; i < dim; i++) {
+			QObject::disconnect((*spinboxes)[i], 
+			SIGNAL(valueChanged(double)), this, SLOT(send()));
+		}
+	}
 }
