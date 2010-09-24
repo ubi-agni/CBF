@@ -1,9 +1,8 @@
 #include <cbf/composite_primitive_controller.h>
 
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
-
 	#ifdef CBF_HAVE_XSD
 	
 		CompositePrimitiveController::CompositePrimitiveController(const CBFSchema::CompositePrimitiveController &xml_instance) 
@@ -11,7 +10,12 @@ namespace CBF {
 			
 		}
 		
+		static XMLDerivedFactory<
+			CompositePrimitiveController, 
+			CBFSchema::CompositePrimitiveController, 
+			Controller, 
+			CBFSchema::Controller> 
+		x1;
 	#endif
-	
 } // namespace
 

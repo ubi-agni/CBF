@@ -22,7 +22,7 @@
 
 #include <cbf/combination_strategy.h>
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 

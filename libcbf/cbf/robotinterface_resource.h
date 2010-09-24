@@ -45,138 +45,138 @@ namespace CBFSchema { class RobotInterfaceResource; }
 
 namespace CBF {
 
-struct RobotInterfaceResource : public Resource, public robotinterface::EventHandler {
-	RobotInterfaceResource (const CBFSchema::RobotInterfaceResource &xml_instance);
-
-	RobotInterfaceResource(
-		const std::string &send_memory_uri = "", 
-		const std::string &recv_memory_uri = "", 
-		const std::string &robot_name = "",
-		unsigned int dimension = 0
-	)
-	{
-    CBF_DEBUG("pre")
-		init(
-			send_memory_uri, 
-			recv_memory_uri, 
-			robot_name, 
-			dimension
-		);
-    CBF_DEBUG("post")
-	}
-
-	void init(
-		const std::string &send_memory_uri, 
-		const std::string &recv_memory_uri, 
-		const std::string &robot_name,
-		unsigned int dimension
-	) {
-		CBF_DEBUG("init start: " << robot_name)
-		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
-
-		m_RobotName = robot_name;
-		m_RobotInterface.connect(send_memory_uri, recv_memory_uri),
-
-		m_Result = FloatVector(dimension);
-		m_LastPose = FloatVector(dimension);
-
-		m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name, true, true);
-		m_RobotCommandSet.defaults(robot_name) << robotinterface::cmd::moveMode("stp", "joint");
-
-		CBF_DEBUG("query")
-		robotinterface::RobotState state = m_RobotInterface.query(
-			robot_name, robotinterface::RobotState::QUERY_POSTURE
-		);
-
-		std::copy(
-			state.getPosture().begin(), 
-			state.getPosture().end(),
-			m_Result.begin()
-		);
-
-		m_LastPose = m_Result;
-
-		m_RobotInterface.subscribe(
-			robotinterface::RobotInterface::INSERT | robotinterface::RobotInterface::REPLACE,
-			"/EVENT[@name='WorldModelUpdate']/ROBOT[@id='" + robot_name + "']",
-			this
-		);
-		CBF_DEBUG("init end")
-	}
-
-
-	virtual void handle(const robotinterface::RobotEvent *e) {
-		//CBF_DEBUG("handle")
-
-		// CBF_DEBUG("xml: " << e->getXML())
-		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
-
-		const robotinterface::PoseEvent *pe = 
-			dynamic_cast<const robotinterface::PoseEvent*>(e);
-
-		if (pe == 0) 
-			throw std::runtime_error("Unexpected Event Type: Expected PoseEvent");
-
-		const std::vector<float> &tmp = pe->getPose(robotinterface::PoseEvent::POSTURE, m_RobotName);
-
-		// std::cout << "dimesion: " << tmp.size() << std::endl;
-
-		if (tmp.size() != m_LastPose.size())
-			throw std::runtime_error("Dimension mismatch");
-
-		std::copy(tmp.begin(), tmp.end(), m_LastPose.begin());
-
-		//CBF_DEBUG("LAST POSE: " << m_LastPose << std::endl)
-	}
-
-
-	virtual void update() {
-    CBF_DEBUG("update")
-		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
-
-		m_Result = m_LastPose;		
-	}
-
-	virtual void add(const FloatVector &arg) {
-		FloatVector tmp = m_Result + arg;
-		CBF_DEBUG("add tmp: " << tmp)
-		m_RobotCommandSet 
-			<< robotinterface::cmd::clear()
-			<< robotinterface::cmd::posture(tmp.begin(), tmp.end(), "rad");
-
-		m_RobotInterface.send(m_RobotCommandSet);
-	}
-
-	virtual const FloatVector &get() 
-	{ 
-		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
-		return m_Result; 
-	}
-
-	virtual void set(const FloatVector &arg) { 
-		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
-		CBF_THROW_RUNTIME_ERROR("this doesn't make sense")
-	}
-
-	virtual unsigned int dim() {
-		boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
-		return m_Result.size();
-	}
-
-	protected:
-		robotinterface::RobotInterface m_RobotInterface;	
-		robotinterface::RobotCommandSet m_RobotCommandSet;
-
-		std::string m_RobotName;
-
-		FloatVector m_Result;
-		FloatVector m_LastPose;
-
-		boost::recursive_mutex m_ResultMutex;		
-};
-
-typedef boost::shared_ptr<RobotInterfaceResource> RobotInterfaceResourcePtr;
-
+	struct RobotInterfaceResource : public Resource, public robotinterface::EventHandler {
+		RobotInterfaceResource (const CBFSchema::RobotInterfaceResource &xml_instance);
+	
+		RobotInterfaceResource(
+			const std::string &send_memory_uri = "", 
+			const std::string &recv_memory_uri = "", 
+			const std::string &robot_name = "",
+			unsigned int dimension = 0
+		)
+		{
+	    CBF_DEBUG("pre")
+			init(
+				send_memory_uri, 
+				recv_memory_uri, 
+				robot_name, 
+				dimension
+			);
+	    CBF_DEBUG("post")
+		}
+	
+		void init(
+			const std::string &send_memory_uri, 
+			const std::string &recv_memory_uri, 
+			const std::string &robot_name,
+			unsigned int dimension
+		) {
+			CBF_DEBUG("init start: " << robot_name)
+			boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+	
+			m_RobotName = robot_name;
+			m_RobotInterface.connect(send_memory_uri, recv_memory_uri),
+	
+			m_Result = FloatVector(dimension);
+			m_LastPose = FloatVector(dimension);
+	
+			m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name, true, true);
+			m_RobotCommandSet.defaults(robot_name) << robotinterface::cmd::moveMode("stp", "joint");
+	
+			CBF_DEBUG("querying position of robot: " << robot_name)
+			robotinterface::RobotState state = m_RobotInterface.query(
+				robot_name, robotinterface::RobotState::QUERY_POSTURE
+			);
+	
+			std::copy(
+				state.getPosture().begin(), 
+				state.getPosture().end(),
+				m_Result.begin()
+			);
+	
+			m_LastPose = m_Result;
+	
+			m_RobotInterface.subscribe(
+				robotinterface::RobotInterface::INSERT | robotinterface::RobotInterface::REPLACE,
+				"/EVENT[@name='WorldModelUpdate']/ROBOT[@id='" + robot_name + "']",
+				this
+			);
+			CBF_DEBUG("init end")
+		}
+	
+	
+		virtual void handle(const robotinterface::RobotEvent *e) {
+			//CBF_DEBUG("handle")
+	
+			// CBF_DEBUG("xml: " << e->getXML())
+			boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+	
+			const robotinterface::PoseEvent *pe = 
+				dynamic_cast<const robotinterface::PoseEvent*>(e);
+	
+			if (pe == 0) 
+				throw std::runtime_error("Unexpected Event Type: Expected PoseEvent");
+	
+			const std::vector<float> &tmp = pe->getPose(robotinterface::PoseEvent::POSTURE, m_RobotName);
+	
+			// std::cout << "dimesion: " << tmp.size() << std::endl;
+	
+			if (tmp.size() != m_LastPose.size())
+				throw std::runtime_error("Dimension mismatch");
+	
+			std::copy(tmp.begin(), tmp.end(), m_LastPose.begin());
+	
+			//CBF_DEBUG("LAST POSE: " << m_LastPose << std::endl)
+		}
+	
+	
+		virtual void update() {
+	    CBF_DEBUG("update")
+			boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+	
+			m_Result = m_LastPose;		
+		}
+	
+		virtual void add(const FloatVector &arg) {
+			FloatVector tmp = m_Result + arg;
+			CBF_DEBUG("add tmp: " << tmp)
+			m_RobotCommandSet 
+				<< robotinterface::cmd::clear()
+				<< robotinterface::cmd::posture(tmp.begin(), tmp.end(), "rad");
+	
+			m_RobotInterface.send(m_RobotCommandSet);
+		}
+	
+		virtual const FloatVector &get() 
+		{ 
+			boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+			return m_Result; 
+		}
+	
+		virtual void set(const FloatVector &arg) { 
+			boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+			CBF_THROW_RUNTIME_ERROR("this doesn't make sense")
+		}
+	
+		virtual unsigned int dim() {
+			boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
+			return m_Result.size();
+		}
+	
+		protected:
+			robotinterface::RobotInterface m_RobotInterface;	
+			robotinterface::RobotCommandSet m_RobotCommandSet;
+	
+			std::string m_RobotName;
+	
+			FloatVector m_Result;
+			FloatVector m_LastPose;
+	
+			boost::recursive_mutex m_ResultMutex;		
+	};
+	
+	typedef boost::shared_ptr<RobotInterfaceResource> RobotInterfaceResourcePtr;
+	
 } // namespace
 
 #endif

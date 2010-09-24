@@ -20,7 +20,7 @@
 
 #include <cbf/composite_reference.h>
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 
@@ -56,6 +56,7 @@ namespace CBF {
 			CBF_DEBUG("dim: " << dim())
 	}
 
+	static XMLDerivedFactory<CompositeReference, CBFSchema::CompositeReference, Reference, CBFSchema::Reference> x;
 #endif
 
 

@@ -259,9 +259,9 @@ namespace CBF {
 			CBF_DEBUG("FiniScript:\n" << m_FiniScript)
 		}
 		
-		CBF_PLUGIN_CLASS(PythonPotential, Potential)
-		CBF_PLUGIN_CLASS(PythonSensorTransform, SensorTransform)
-		
+		static XMLDerivedFactory<PythonPotential, CBFSchema::PythonPotential, Potential, CBFSchema::Potential> x;
+		static XMLDerivedFactory<PythonSensorTransform, CBFSchema::PythonSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
+
 	#endif
 } // namespace
 

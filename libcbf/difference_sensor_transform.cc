@@ -19,7 +19,7 @@
 */
 
 #include <cbf/difference_sensor_transform.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
@@ -54,6 +54,13 @@ namespace CBF {
 
 			set_transforms(transforms[0], transforms[1]);
 		}
+
+		static XMLDerivedFactory<
+			DifferenceSensorTransform, 
+			CBFSchema::DifferenceSensorTransform, 
+			SensorTransform, 
+			CBFSchema::SensorTransform
+		> x;
 		
 	#endif
 } // namespace

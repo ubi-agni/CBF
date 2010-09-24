@@ -1,7 +1,7 @@
 #include <cbf/control_basis.h>
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 
@@ -24,6 +24,13 @@ namespace CBF {
 			m_Controllers[c->name()] = c;
 		}
 	}
+
+	static XMLDerivedFactory<
+		ControlBasis, 
+		CBFSchema::ControlBasis, 
+		Object, 
+		CBFSchema::Object> 
+	x1;
 
 #endif
 

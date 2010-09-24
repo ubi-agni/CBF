@@ -8,12 +8,13 @@
 #include <boost/shared_ptr.hpp>
 
 #include <cbf/controller.h>
+#include <cbf/object.h>
 
 namespace CBFSchema { class ControlBasis; }
 
 namespace CBF {
 
-struct ControlBasis {
+struct ControlBasis : public Object {
 	ControlBasis () { }
 
 	ControlBasis(const CBFSchema::ControlBasis &xml_instance);

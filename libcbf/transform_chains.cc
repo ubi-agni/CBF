@@ -19,7 +19,7 @@
 */
 
 #include <cbf/transform_chains.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
@@ -43,6 +43,9 @@ namespace CBF {
 		
 			set_transforms(transforms);
 		}
+
+		static XMLDerivedFactory<SensorTransformChain, CBFSchema::SensorTransformChain, SensorTransform, CBFSchema::SensorTransform> x;
+
 	#endif
 };
 

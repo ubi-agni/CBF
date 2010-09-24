@@ -19,16 +19,24 @@
 */
 
 #include <cbf/axis_potential.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
+
 		AxisPotential::AxisPotential(const CBFSchema::AxisPotential &xml_instance) :
 			Potential(xml_instance) {
 			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!")
 			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
 			m_Coefficient = xml_instance.Coefficient();
 		}
+
+		static XMLDerivedFactory<
+			AxisPotential, 
+			CBFSchema::AxisPotential, 
+			Potential, 
+			CBFSchema::Potential> 
+		x1;
+
 	#endif
-	
 } // namespace

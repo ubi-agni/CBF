@@ -24,7 +24,7 @@
 #include <cbf/types.h>
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -212,7 +212,8 @@ namespace CBF {
 			CBF_DEBUG("Constructing")
 			init();
 
-			m_Name = xml_instance.Name();
+			if (xml_instance.Name())
+				m_Name = *xml_instance.Name();
 
 			m_Coefficient = xml_instance.Coefficient();
 		

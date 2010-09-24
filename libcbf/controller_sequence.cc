@@ -22,7 +22,7 @@
 #include <iostream>
 
 #ifdef CBF_HAVE_XSD
-	#include <cbf/xml_factories.h>
+	#include <cbf/xml_factory.h>
 #endif
 
 namespace CBF {
@@ -45,6 +45,14 @@ namespace CBF {
 		
 			m_Iterator = m_Controllers.begin();
 		}
+
+		static XMLDerivedFactory<
+			ControllerSequence, 
+			CBFSchema::ControllerSequence, 
+			Controller, 
+			CBFSchema::Controller> 
+		x1;
+
 	#endif
 	
 	bool ControllerSequence::step() {

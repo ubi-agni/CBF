@@ -20,7 +20,7 @@
 
 #include <cbf/config.h>
 #include <cbf/composite_potential.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 
@@ -71,6 +71,13 @@ namespace CBF {
 
 		//m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
+
+	static XMLDerivedFactory<
+		CompositePotential, 
+		CBFSchema::CompositePotential, 
+		Potential, 
+		CBFSchema::Potential> 
+	x1;
 #endif
 
 } // namespace

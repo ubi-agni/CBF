@@ -1,5 +1,5 @@
 #include <cbf/masking_resource.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 
@@ -22,6 +22,8 @@ MaskingResource::MaskingResource(const CBFSchema::MaskingResource &xml_instance)
 
 	set_resource_and_indexes(resource, indexes);
 }
+
+static XMLDerivedFactory<MaskingResource, CBFSchema::MaskingResource, Resource, CBFSchema::Resource> x;
 
 #endif
 

@@ -21,16 +21,16 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/spacenavi_reference.h>
-#include <cbf/plugin_macros.h>
+#include <cbf/xml_factories.h>
 
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
 	SpaceNaviReference::SpaceNaviReference(const SpaceNaviReferenceType &xml_instance) {
 	}
-#endif
+	static XMLDerivedFactory<SpaceNaviReference, CBFSchema::SpaceNaviReference, Reference, CBFSchema::Reference> x;
 
-CBF_PLUGIN_CLASS(SpaceNaviReference, Reference)
+#endif
 
 } // namespace
 

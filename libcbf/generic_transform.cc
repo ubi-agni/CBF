@@ -20,7 +20,7 @@
 
 #include <cbf/generic_transform.h>
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_factory.h>
 
 #ifndef CBF_HAVE_EIGEN2
   #include <cbf/svd.h>
@@ -170,7 +170,26 @@ void DampedWeightedGenericEffectorTransform::update() {
 	
 	}
 
-	static XMLDerivedFactory<GenericEffectorTransform, CBFSchema::GenericEffectorTransform, EffectorTransform, CBFSchema::EffectorTransform> x;
+	static XMLDerivedFactory<
+		GenericEffectorTransform, 
+		CBFSchema::GenericEffectorTransform, 
+		EffectorTransform, 
+		CBFSchema::EffectorTransform
+	> x1;
+
+	static XMLDerivedFactory<
+		DampedGenericEffectorTransform, 
+		CBFSchema::DampedGenericEffectorTransform, 
+		EffectorTransform, 
+		CBFSchema::EffectorTransform
+	> x2;
+
+	static XMLDerivedFactory<
+		DampedWeightedGenericEffectorTransform, 
+		CBFSchema::DampedWeightedGenericEffectorTransform, 
+		EffectorTransform, 
+		CBFSchema::EffectorTransform
+	> x3;
 
 #endif
 
