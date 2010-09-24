@@ -1,9 +1,17 @@
 #include <tests/gui/test_xcf_reference_client_gui.h>
-#include <iostream>
-#include <cbf/debug_macros.h>
-#include <cbf/schemas.hxx>
+
 #include <cbf/types.h>
+#include <xcf/RemoteServer.hpp>
+#include <cbf/schemas.hxx>
+#include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
+#include <boost/numeric/ublas/io.hpp>
+
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <unistd.h>
+#include <memory>
 
 int main(int argc, char *argv[]){
   new Test_xcf_reference_client_gui(argc, argv);
@@ -48,9 +56,7 @@ void Test_xcf_reference_client_gui::okay(){
 void Test_xcf_reference_client_gui::connect(){
 	input = (lineedit -> text()).toStdString();
 	if(input.length()>0){
-		try{	
-			/*	
-			std::cout << "connect" << std::endl;
+		try{
 			label -> setText("connecting...");
 			CBF_DEBUG("creating remote server object")
 			std::cout << "connecting to " << input << std::endl;
@@ -62,13 +68,11 @@ void Test_xcf_reference_client_gui::connect(){
 
 			std::istringstream vv_stream(dim_string);
 
-			std::auto_ptr<VectorType> dim_v = Vector(vv_stream, 				xml_schema::flags::dont_validate);
+			std::auto_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
 			CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
 			CBF_DEBUG("dim_vv: " << dim_vv)
 
 			dim = dim_vv[0];
-			*/
-			dim = 12;
 			connected = 1;
 			enter_input_mode();
 		} catch(...){
@@ -124,7 +128,7 @@ void Test_xcf_reference_client_gui::enter_input_mode(){
 }
 
 void Test_xcf_reference_client_gui::send(){
-	std::cout << "SEND:" << std::endl;
+	std::cout << "sending: ";
 	std::stringstream vector_string;
 	vector_string << "[" << dim <<"](";
 	for (unsigned int i = 0; i < dim; i++) {
@@ -133,13 +137,13 @@ void Test_xcf_reference_client_gui::send(){
 	}
 	vector_string << ")";
 	std::cout << vector_string.str() << std::endl;
-	/*
+	
 	CBF_DEBUG("creating vector doc")
-	BoostVectorType v(vector_string.str());
+	CBFSchema::BoostVector v(vector_string.str());
 
 	std::ostringstream s;
 	//s << v;
-	Vector (s, v);
+	CBFSchema::Vector_ (s, v);
 
 	CBF_DEBUG("document: " << s.str())
 
@@ -147,5 +151,4 @@ void Test_xcf_reference_client_gui::send(){
 
 	CBF_DEBUG("calling remote method")
 	_remoteServer->callMethod("set_reference", s.str(), out);
-	*/
 }
