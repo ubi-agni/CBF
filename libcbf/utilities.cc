@@ -21,6 +21,7 @@
 #include <cbf/utilities.h>
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
+#include <cbf/xml_factory.h>
 
 #ifdef CBF_HAVE_KDL
 	#include <kdl/jacobian.hpp>
@@ -209,7 +210,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 #endif
 
 #ifdef CBF_HAVE_XSD
-ublas::vector<Float> create_vector(const CBFSchema::Vector &xml_instance) {
+FloatVector create_vector(const CBFSchema::Vector &xml_instance) {
 	const CBFSchema::SimpleVector *simple_vector = dynamic_cast<const CBFSchema::SimpleVector*>(&xml_instance);
 
 	if (simple_vector) {
@@ -242,6 +243,24 @@ ublas::vector<Float> create_vector(const CBFSchema::Vector &xml_instance) {
 	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
 }
 
+boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance) {
+	boost::shared_ptr<FloatVector> v(new FloatVector);
+	std::stringstream stream(xml_instance.String());
+	CBF_DEBUG("string: " << stream.str())
+	stream >> *v;
+	if ((*v).size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
+
+	return v;
+}
+
+XMLCreator<
+	FloatVector, 
+	CBFSchema::BoostVector, 
+	boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &)
+> x(create_boost_vector);
+
+template <> XMLFactory<FloatVector> 
+	*XMLFactory<FloatVector>::m_Instance = 0;
 
 FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance)
 {

@@ -244,6 +244,11 @@ namespace CBF {
 				}
 				CBF_THROW_RUNTIME_ERROR("ConvergenceCriterion type not supported yet")
 			}
+
+			CBF_DEBUG("Creating reference...")
+			m_Reference = 
+				XMLBaseFactory<Reference, CBFSchema::Reference>::instance()->create(xml_instance.Reference());
+
 		
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");
@@ -303,15 +308,10 @@ namespace CBF {
 			m_SensorTransform->set_resource(res);
 			m_EffectorTransform->set_resource(res);
 		
-			//! Create a resource if given...
 			CBF_DEBUG("Creating combination strategy...")
 			m_CombinationStrategy = 
 				XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>::instance()->create(xml_instance.CombinationStrategy());
 		
-			//! Create a resource if given...
-			CBF_DEBUG("Creating reference...")
-			m_Reference = 
-				XMLBaseFactory<Reference, CBFSchema::Reference>::instance()->create(xml_instance.Reference());
 
 			check_dimensions();
 		}
