@@ -72,6 +72,13 @@ namespace CBF {
 	}
 
 	static XMLDerivedFactory<SquarePotential, CBFSchema::SquarePotential, Potential, CBFSchema::Potential> x;
+	static XMLCreator<
+		SquarePotential, 
+		CBFSchema::SquarePotential, 
+		Constructor<
+			SquarePotential, 
+			CBFSchema::SquarePotential
+		> > x2(Constructor<SquarePotential, CBFSchema::SquarePotential>());
 	
 #endif
 } // namespace

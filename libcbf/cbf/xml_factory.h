@@ -83,6 +83,14 @@ namespace CBF {
 				}
 		};
 
+
+		template <class T, class TSchemaType>
+		struct Constructor {
+			boost::shared_ptr<T> create(const TSchemaType &xml_instance) {
+				return boost::shared_ptr<T>(new T(xml_instance));
+			}
+		};
+
 		template <class T>
 		struct XMLCreatorBase {
 			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) = 0;
