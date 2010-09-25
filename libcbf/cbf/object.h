@@ -15,6 +15,8 @@ namespace CBF {
 	
 		Object(const CBFSchema::Object &xml_instance);
 		Object(const std::string name = "Object") : m_Name(name) { }
+
+		virtual ~Object() { }
 	};
 	
 	typedef boost::shared_ptr<Object> ObjectPtr;

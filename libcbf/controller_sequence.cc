@@ -39,7 +39,7 @@ namespace CBF {
 				++it
 			)
 			{
-					ControllerPtr controller(XMLBaseFactory<Controller, CBFSchema::Controller>::instance()->create(*it));
+					ControllerPtr controller(XMLObjectFactory::instance()->create<Controller>(*it));
 					m_Controllers.push_back(controller);
 			}
 		
@@ -48,10 +48,8 @@ namespace CBF {
 
 		static XMLDerivedFactory<
 			ControllerSequence, 
-			CBFSchema::ControllerSequence, 
-			Controller, 
-			CBFSchema::Controller> 
-		x1;
+			CBFSchema::ControllerSequence
+		> x1;
 
 	#endif
 	

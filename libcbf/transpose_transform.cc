@@ -8,7 +8,7 @@ namespace CBF {
 
 	}
 
-	static XMLDerivedFactory<TransposeEffectorTransform, CBFSchema::TransposeEffectorTransform, EffectorTransform, CBFSchema::EffectorTransform> x;
+	static XMLDerivedFactory<TransposeEffectorTransform, CBFSchema::TransposeEffectorTransform> x;
 
 #endif
 

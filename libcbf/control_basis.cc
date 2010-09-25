@@ -15,7 +15,7 @@ namespace CBF {
 			++it)
 		{
 			ControllerPtr c = 
-				XMLBaseFactory<Controller, CBFSchema::Controller>::instance()->create(*it);
+				XMLObjectFactory::instance()->create<Controller>(*it);
 
 			if (m_Controllers.find(c->name()) != m_Controllers.end()) {
 				CBF_THROW_RUNTIME_ERROR("Name: " << c->name() << " already in basis");
@@ -27,10 +27,8 @@ namespace CBF {
 
 	static XMLDerivedFactory<
 		ControlBasis, 
-		CBFSchema::ControlBasis, 
-		Object, 
-		CBFSchema::Object> 
-	x1;
+		CBFSchema::ControlBasis
+	> x1;
 
 #endif
 

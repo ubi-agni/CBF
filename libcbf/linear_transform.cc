@@ -34,7 +34,7 @@ namespace CBF {
 			m_TaskJacobian = create_matrix(xml_instance.Matrix());
 		}
 
-		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
+		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform> x;
 	#endif
 		
 } // namespace

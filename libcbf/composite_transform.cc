@@ -118,14 +118,14 @@ namespace CBF {
 				++it
 			)
 			{
-				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::instance()->create(*it));
+				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it));
 				transforms.push_back(tr);
 			}
 		
 			set_transforms(transforms);
 		}
 		
-		static XMLDerivedFactory<CompositeSensorTransform, CBFSchema::CompositeSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
+		static XMLDerivedFactory<CompositeSensorTransform, CBFSchema::CompositeSensorTransform> x;
 	#endif
 };
 

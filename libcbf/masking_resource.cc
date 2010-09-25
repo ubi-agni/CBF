@@ -7,7 +7,7 @@ namespace CBF {
 
 MaskingResource::MaskingResource(const CBFSchema::MaskingResource &xml_instance) {
 	ResourcePtr resource 
-		= XMLBaseFactory<Resource, CBFSchema::Resource>::instance()->create
+		= XMLObjectFactory::instance()->create<Resource>
 			(xml_instance.Resource1());
 
 	std::vector<unsigned int> indexes;
@@ -23,7 +23,7 @@ MaskingResource::MaskingResource(const CBFSchema::MaskingResource &xml_instance)
 	set_resource_and_indexes(resource, indexes);
 }
 
-static XMLDerivedFactory<MaskingResource, CBFSchema::MaskingResource, Resource, CBFSchema::Resource> x;
+static XMLDerivedFactory<MaskingResource, CBFSchema::MaskingResource> x;
 
 #endif
 

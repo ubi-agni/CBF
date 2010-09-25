@@ -47,7 +47,7 @@ namespace CBF {
 		
 		}
 
-		static XMLDerivedFactory<DummyResource, CBFSchema::DummyResource, Resource, CBFSchema::Resource> x;
+		static XMLDerivedFactory<DummyResource, CBFSchema::DummyResource> x;
 	#endif
 	
 } //namespace

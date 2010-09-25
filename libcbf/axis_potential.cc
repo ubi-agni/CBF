@@ -33,10 +33,8 @@ namespace CBF {
 
 		static XMLDerivedFactory<
 			AxisPotential, 
-			CBFSchema::AxisPotential, 
-			Potential, 
-			CBFSchema::Potential> 
-		x1;
+			CBFSchema::AxisPotential
+		> x1;
 
 	#endif
 } // namespace

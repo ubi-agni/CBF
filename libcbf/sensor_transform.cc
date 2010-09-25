@@ -37,8 +37,6 @@ namespace CBF {
 			}
 		}
 		
-		template<> XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>* 
-				XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::m_Instance = 0;
 	#endif
 
 } // namespace

@@ -25,7 +25,4 @@
 
 namespace CBF {
 
-	template<> XMLBaseFactory<Resource, CBFSchema::Resource>* 
-		XMLBaseFactory<Resource, CBFSchema::Resource>::m_Instance = 0;
-
 } // namespace

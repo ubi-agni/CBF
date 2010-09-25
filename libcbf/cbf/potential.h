@@ -25,6 +25,7 @@
 #include <cbf/types.h>
 #include <cbf/utilities.h>
 #include <cbf/debug_macros.h>
+#include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -41,7 +42,7 @@ namespace ublas = boost::numeric::ublas;
 	exec function ist just there for convenience in case the
 	absolute value of the potential function needs to be known.
 */
-struct Potential {
+struct Potential : public Object {
 	bool m_ClampGradientStepNorm;
 	Float m_MaxGradientStepNorm;
 
@@ -100,11 +101,7 @@ struct Potential {
 
 typedef boost::shared_ptr<Potential> PotentialPtr;
 
-#if 0
-#ifdef CBF_HAVE_XSD
-	template struct XMLBaseFactory<Potential, CBFSchema::Potential>;
-#endif
-#endif
+
 
 
 } // namespace

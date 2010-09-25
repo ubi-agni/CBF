@@ -24,6 +24,7 @@
 #include <cbf/resource.h>
 #include <cbf/types.h>
 #include <cbf/sensor_transform.h>
+#include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -41,7 +42,7 @@ namespace CBF {
 		and maps it to the resource's configuration space by way of local
 		pseudoinverse control..
 	*/
-	struct EffectorTransform {
+	struct EffectorTransform : public Object {
 		FloatVector m_ResourceValue;
 	
 		EffectorTransform() {

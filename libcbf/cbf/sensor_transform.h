@@ -24,6 +24,7 @@
 #include <cbf/config.h>
 #include <cbf/types.h>
 #include <cbf/resource.h>
+#include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -57,7 +58,7 @@ namespace CBF {
 		from XML files requires that all subclasses have a default 
 		constructor (i.e. one without arguments)..
 	*/
-	struct SensorTransform {
+	struct SensorTransform : public Object {
 		SensorTransform()	{
 	
 		}

@@ -38,7 +38,7 @@ namespace CBF {
 				++it
 			)
 			{
-				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::instance()->create(*it));
+				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}
@@ -53,7 +53,7 @@ namespace CBF {
 				throw std::runtime_error ("[WeightedSumSensorTransform]: Mismatching number of weights and transforms");
 		}
 		
-		static XMLDerivedFactory<WeightedSumSensorTransform, CBFSchema::WeightedSumSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
+		static XMLDerivedFactory<WeightedSumSensorTransform, CBFSchema::WeightedSumSensorTransform> x;
 
 	#endif
 

@@ -12,10 +12,8 @@ namespace CBF {
 		
 		static XMLDerivedFactory<
 			CompositePrimitiveController, 
-			CBFSchema::CompositePrimitiveController, 
-			Controller, 
-			CBFSchema::Controller> 
-		x1;
+			CBFSchema::CompositePrimitiveController
+		> x1;
 	#endif
 } // namespace
 

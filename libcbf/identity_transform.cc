@@ -43,16 +43,12 @@ namespace CBF {
 
 		static XMLDerivedFactory<
 			IdentitySensorTransform, 
-			CBFSchema::IdentitySensorTransform, 
-			SensorTransform, 
-			CBFSchema::SensorTransform
+			CBFSchema::IdentitySensorTransform
 		> x1;
 
 		static XMLDerivedFactory<
 			IdentityEffectorTransform, 
-			CBFSchema::IdentityEffectorTransform, 
-			EffectorTransform, 
-			CBFSchema::EffectorTransform
+			CBFSchema::IdentityEffectorTransform
 		> x2;
 
 	#endif

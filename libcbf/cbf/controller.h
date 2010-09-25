@@ -22,6 +22,7 @@
 #define CBF_BASE_CONTROLLER_HH
 
 #include <cbf/types.h>
+#include <cbf/object.h>
 
 #include <cstdlib>
 
@@ -41,7 +42,7 @@ namespace CBF {
 		need a base class providing a common controller 
 		interface.
 	*/
-	struct Controller {
+	struct Controller : public Object {
 
 		Controller() :
 			m_UpdateCycle(-2),

@@ -24,6 +24,5 @@
 #include <cbf/xml_factory.h>
 
 namespace CBF {
-	template<> XMLBaseFactory<Controller, CBFSchema::Controller>* 
-		XMLBaseFactory<Controller, CBFSchema::Controller>::m_Instance = 0;	
+
 } // namespace

@@ -23,6 +23,7 @@
 
 #include <cbf/config.h>
 #include <cbf/types.h>
+#include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -41,7 +42,7 @@ namespace CBF {
 		for an example..
 	*/
 	
-	struct Resource {
+	struct Resource : public Object {
 		virtual ~Resource() {
 	
 		}

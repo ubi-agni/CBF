@@ -23,23 +23,17 @@ namespace CBF {
 				xml_instance.Factor()
 			)
 		) { 
-			m_Operand = XMLBaseFactory<
-				SensorTransform, CBFSchema::SensorTransform
-			>::instance()->create(xml_instance.Operand());
+			m_Operand = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand());
 		}
 
 	static XMLDerivedFactory<
 		NegateOperationSensorTransform,
-		CBFSchema::NegateOperationSensorTransform, 
-		SensorTransform, 
-		CBFSchema::SensorTransform
+		CBFSchema::NegateOperationSensorTransform
 	> x1;
 
 	static XMLDerivedFactory<
 		MultiplyOperationSensorTransform,
-		CBFSchema::MultiplyOperationSensorTransform, 
-		SensorTransform, 
-		CBFSchema::SensorTransform
+		CBFSchema::MultiplyOperationSensorTransform
 	> x2;
 #endif
 

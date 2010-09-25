@@ -24,6 +24,7 @@
 #define CBF_COMBINATION_STRATEGY_HH
 
 #include <cbf/types.h>
+#include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -46,7 +47,7 @@ namespace ublas = boost::numeric::ublas;
 	@brief This class is responsible for combining different variable changes
 	before they get projected into the nullspace of a controller..
 */
-struct CombinationStrategy {
+struct CombinationStrategy : public Object {
 	virtual ~CombinationStrategy() {
 
 	}

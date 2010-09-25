@@ -60,7 +60,7 @@ namespace CBF {
 		}
 	}
 
-	static XMLDerivedFactory<DummyReference, CBFSchema::DummyReference, Reference, CBFSchema::Reference> x;
+	static XMLDerivedFactory<DummyReference, CBFSchema::DummyReference> x;
 	#endif
 } // namespace
 

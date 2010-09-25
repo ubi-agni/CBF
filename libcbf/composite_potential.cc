@@ -64,7 +64,7 @@ namespace CBF {
 			it != xml_instance.Potential1().end();
 			++it)
 			{
-				PotentialPtr pot = XMLBaseFactory<Potential, CBFSchema::Potential>::instance()->create(*it);
+				PotentialPtr pot = XMLObjectFactory::instance()->create<Potential>(*it);
 				tmp.push_back(pot);
 			}
 		set_potentials(tmp);
@@ -74,10 +74,8 @@ namespace CBF {
 
 	static XMLDerivedFactory<
 		CompositePotential, 
-		CBFSchema::CompositePotential, 
-		Potential, 
-		CBFSchema::Potential> 
-	x1;
+		CBFSchema::CompositePotential
+	> x1;
 #endif
 
 } // namespace
