@@ -116,6 +116,9 @@ namespace CBF {
 					CBF_UNMANGLE(typeid(xml_instance).name())
 				)
 
+				if (m_Creators.find(typeid(xml_instance).name()) == m_Creators.end())
+					CBF_THROW_RUNTIME_ERROR("[" << CBF_UNMANGLE(typeid(this).name())<< "]: "  << "XMLCreator for type not found. Type: " << CBF_UNMANGLE(typeid(xml_instance).name()) << " (Did you forget to register it?)")
+
 				return m_Creators[typeid(xml_instance).name()]->create(xml_instance);
 			}
 
