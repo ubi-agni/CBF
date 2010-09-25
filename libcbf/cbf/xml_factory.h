@@ -86,8 +86,10 @@ namespace CBF {
 
 		template <class T, class TSchemaType>
 		struct Constructor {
-			boost::shared_ptr<T> create(const TSchemaType &xml_instance) {
-				return boost::shared_ptr<T>(new T(xml_instance));
+			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
+				CBF_DEBUG("creating a " << CBF_UNMANGLE(typeid(T).name()))
+				const TSchemaType &t = dynamic_cast<const TSchemaType&>(xml_instance);
+				return boost::shared_ptr<T>(new T(t));
 			}
 		};
 
@@ -153,7 +155,18 @@ namespace CBF {
 				return m_Creator(tmp);
 			}
 		};
-	
+
+		template<class T, class TSchemaType>
+		struct XMLConstructorCreator : public XMLCreator<
+			T, TSchemaType, Constructor<T, TSchemaType> > {
+			XMLConstructorCreator() : 
+				XMLCreator<
+					T, TSchemaType, 
+					Constructor<
+						T, TSchemaType
+					> 
+				>(Constructor<T, TSchemaType>()) { }
+		};
 	#endif
 	
 } // namespace
