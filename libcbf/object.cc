@@ -5,8 +5,8 @@ namespace CBF {
 
 #ifdef CBF_HAVE_XSD
 
-	template<> XMLBaseFactory<Object, CBFSchema::Object>* 
-		XMLBaseFactory<Object, CBFSchema::Object>::m_Instance = 0;
+	XMLObjectFactory* 
+		XMLObjectFactory::m_Instance = 0;
 
 #endif
 

@@ -24,6 +24,7 @@
 #define CBF_REFERENCE_HH
 
 #include <cbf/types.h>
+#include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -35,7 +36,7 @@ namespace CBF {
 	namespace ublas = boost::numeric::ublas;
 	
 	/** @brief: Base class for all types of references */
-	struct Reference {
+	struct Reference : public Object {
 	
 		/**
 			This function will be called by a controller that uses this reference

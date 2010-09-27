@@ -8,6 +8,8 @@
 #include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
+#include <map>
+#include <string>
 
 #ifdef CBF_HAVE_XSD
 	#include <cbf/schemas.hxx>
@@ -19,34 +21,33 @@ namespace CBF {
 		/**
 			This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
 		*/
-		template <class TBase>
 		struct XMLDerivedFactoryBase {
-			virtual boost::shared_ptr<TBase> create(const ::xml_schema::type &xml_instance) = 0;
+			virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) = 0;
 		};
 	
 		/**
 			This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
 		*/
-		template <class TBase, class TBaseType>
-		struct XMLBaseFactory {
+		struct XMLObjectFactory {
 			protected:
-				static XMLBaseFactory *m_Instance;
-				XMLBaseFactory() { 
+				static XMLObjectFactory *m_Instance;
+				XMLObjectFactory() { 
 						CBF_DEBUG("instance (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
 				}
 	
 			public:
-				std::vector<XMLDerivedFactoryBase<TBase>* > m_DerivedFactories;
+				std::vector<XMLDerivedFactoryBase* > m_DerivedFactories;
 	
-				static XMLBaseFactory *instance() { 
+				static XMLObjectFactory *instance() { 
 					if (m_Instance) 
 						{ return m_Instance; }
-					return (m_Instance = new XMLBaseFactory<TBase, TBaseType>); 
+					return (m_Instance = new XMLObjectFactory); 
 				}
-	
-				virtual boost::shared_ptr<TBase> create(const ::xml_schema::type &xml_instance) {
+
+				template<class T>
+				boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
 					for (unsigned int i = 0, max = m_DerivedFactories.size(); i != max; ++i) {
-						boost::shared_ptr<TBase> p = m_DerivedFactories[i]->create(xml_instance);
+						boost::shared_ptr<T> p = boost::dynamic_pointer_cast<T>(m_DerivedFactories[i]->create(xml_instance));
 						if (p.get()) return p;
 					}
 					CBF_THROW_RUNTIME_ERROR(
@@ -54,43 +55,22 @@ namespace CBF {
 						<< CBF_UNMANGLE(typeid(this).name()) << xml_instance
 					)
 	
-					return boost::shared_ptr<TBase>();
+					return boost::shared_ptr<T>();
 				}
 		};
 	
 		/**
 			This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
 		*/
-		template <class T, class TType, class TBase, class TBaseType>
-		struct XMLDerivedFactory : XMLDerivedFactoryBase<TBase> {
+		template <class T, class TType>
+		struct XMLDerivedFactory : XMLDerivedFactoryBase {
 				XMLDerivedFactory() { 
 					CBF_DEBUG("registering (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
-					XMLBaseFactory<TBase, TBaseType>::instance()->m_DerivedFactories.push_back(this); 
+					XMLObjectFactory::instance()->m_DerivedFactories.push_back(this); 
 				}
 	
 			public:
-				virtual boost::shared_ptr<TBase> create(const ::xml_schema::type &xml_instance) {
-					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(typeid(this).name()))
-					const TType* r = dynamic_cast<const TType*>(&xml_instance);
-					if (r) {
-						CBF_DEBUG("yes, i am the one")
-						return boost::shared_ptr<TBase>(new T(*r));
-					}
-					CBF_DEBUG("no i am not the one")
-					return boost::shared_ptr<TBase>();
-				}
-		};
-	
-
-		template <class T, class TType>
-		struct XMLDerivedFactory2 : XMLDerivedFactoryBase<Object> {
-				XMLDerivedFactory2() { 
-					CBF_DEBUG("registering (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
-					XMLBaseFactory<Object, CBFSchema::Object>::instance()->m_DerivedFactories.push_back(this); 
-				}
-	
-			public:
-				virtual boost::shared_ptr<Object> create(const ::xml_schema::type &xml_instance) {
+				virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) {
 					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(typeid(this).name()))
 					const TType* r = dynamic_cast<const TType*>(&xml_instance);
 					if (r) {
@@ -101,7 +81,107 @@ namespace CBF {
 					return boost::shared_ptr<Object>();
 				}
 		};
+
+
+		template <class T, class TSchemaType>
+		struct Constructor {
+			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
+				CBF_DEBUG("creating a " << CBF_UNMANGLE(typeid(T).name()))
+				const TSchemaType &t = dynamic_cast<const TSchemaType&>(xml_instance);
+				return boost::shared_ptr<T>(new T(t));
+			}
+		};
+
+		template <class T>
+		struct XMLCreatorBase {
+			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) = 0;
+			virtual ~XMLCreatorBase() { }
+		};
 	
+	
+		template <class T>
+		struct XMLFactory {
+			std::map<std::string, XMLCreatorBase<T>* > m_Creators;
+	
+			static XMLFactory *instance() {
+				if (m_Instance == 0)
+					return (m_Instance = new XMLFactory());
+			}
+	
+			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
+				CBF_DEBUG(
+					"creating a " << 
+					CBF_UNMANGLE(typeid(T).name()) << 
+					" from a " << 
+					CBF_UNMANGLE(typeid(xml_instance).name())
+				)
+
+				if (m_Creators.find(typeid(xml_instance).name()) == m_Creators.end())
+					CBF_THROW_RUNTIME_ERROR("[" << CBF_UNMANGLE(typeid(this).name())<< "]: "  << "XMLCreator for type not found. Type: " << CBF_UNMANGLE(typeid(xml_instance).name()) << " (Did you forget to register it?)")
+
+				return m_Creators[typeid(xml_instance).name()]->create(xml_instance);
+			}
+
+			virtual ~XMLFactory() { }
+
+			protected:
+				XMLFactory() { }
+				static XMLFactory *m_Instance;
+		};
+
+		/**
+			This template allows registering a functor C that
+			constructs a boost::shared_ptr<T> from a TSchemaType.
+
+			THe signature of the functor's operator() has to be
+
+			boost::shared_ptr<T>(*)(const TSchemaType&)
+		*/
+		template<class T, class TSchemaType, class C>
+		struct XMLCreator : public XMLCreatorBase <T>{
+			C m_Creator;
+	
+			XMLCreator(C c) : m_Creator(c) { 
+				// register here..
+				XMLFactory<T>::instance()->m_Creators[typeid(TSchemaType).name()] = this;
+				CBF_DEBUG(
+					"registering type: " << 
+					CBF_UNMANGLE(typeid(TSchemaType).name()) << 
+					" in registry " << 
+					CBF_UNMANGLE(typeid(T).name())
+				)
+			}
+
+			boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
+				CBF_DEBUG(
+					"creating a " << 
+					CBF_UNMANGLE(typeid(T).name()) << 
+					" from a " << 
+					CBF_UNMANGLE(typeid(xml_instance).name()) <<
+					" TSChemaType = " <<
+					CBF_UNMANGLE(typeid(TSchemaType).name())
+				)
+				const TSchemaType &tmp = dynamic_cast<const TSchemaType&>(xml_instance);
+				return m_Creator(tmp);
+			}
+		};
+
+
+		/**
+			This template can be used with types that have a constructor
+			that takes a const TSchemaType& as argument.
+		*/
+		template<class TBase, class T, class TSchemaType>
+		struct XMLConstructorCreator : public XMLCreator<
+			T, TSchemaType, Constructor<T, TSchemaType> > {
+			XMLConstructorCreator() : 
+				XMLCreator<
+					T, TSchemaType, 
+					Constructor<
+						T, TSchemaType
+					> 
+				>(Constructor<T, TSchemaType>()) { }
+		};
 	#endif
 	
 } // namespace

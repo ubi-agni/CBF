@@ -24,7 +24,6 @@
 #include <cbf/xml_factory.h>
 
 namespace CBF {
-	template<> XMLBaseFactory<Reference, CBFSchema::Reference>* 
-		XMLBaseFactory<Reference, CBFSchema::Reference>::m_Instance = 0;
+
 } // namespace
 

@@ -36,7 +36,7 @@ namespace CBF {
 				++it
 			)
 			{
-				SensorTransformPtr tr(XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::instance()->create(*it));
+				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}
@@ -44,7 +44,7 @@ namespace CBF {
 			set_transforms(transforms);
 		}
 
-		static XMLDerivedFactory<SensorTransformChain, CBFSchema::SensorTransformChain, SensorTransform, CBFSchema::SensorTransform> x;
+		static XMLDerivedFactory<SensorTransformChain, CBFSchema::SensorTransformChain> x;
 
 	#endif
 };

@@ -8,7 +8,7 @@ namespace CBF {
 		init(xml_instance.SendMemoryName(), xml_instance.RecvMemoryName(), xml_instance.RobotName(), xml_instance.NumberOfJoints());
 	}
 
-	static XMLDerivedFactory<RobotInterfaceResource, CBFSchema::RobotInterfaceResource, Resource, CBFSchema::Resource> x;
+	static XMLDerivedFactory<RobotInterfaceResource, CBFSchema::RobotInterfaceResource> x;
 #endif
 
 } // namespace

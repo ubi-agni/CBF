@@ -35,7 +35,7 @@ namespace CBF {
 				++it
 			)
 			{
-				ResourcePtr tr(XMLBaseFactory<Resource, CBFSchema::Resource>::instance()->create(*it));
+				ResourcePtr tr(XMLObjectFactory::instance()->create<Resource>(*it));
 				resources.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}
@@ -43,7 +43,7 @@ namespace CBF {
 			set_resources(resources);
 			CBF_DEBUG("dim: " << dim());
 	}
-	static XMLDerivedFactory<CompositeResource, CBFSchema::CompositeResource, Resource, CBFSchema::Resource> x;
+	static XMLDerivedFactory<CompositeResource, CBFSchema::CompositeResource> x;
 
 #endif
 

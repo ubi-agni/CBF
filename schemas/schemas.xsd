@@ -129,6 +129,10 @@
 
   <xsd:element name="Vector" type="CBF:Vector"/>
   <xsd:complexType name="Vector" abstract="true">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="SimpleVector">
@@ -198,9 +202,13 @@
 
   <xsd:element name="Potential" type="CBF:Potential"/>
   <xsd:complexType abstract="true" name="Potential">
-	 <xsd:sequence>
-		<xsd:element name="MaxGradientStepNorm" type="xsd:float"/>
-	 </xsd:sequence>
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:ConvergenceCriterion">
+		  <xsd:sequence>
+			 <xsd:element name="MaxGradientStepNorm" type="xsd:float"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="XCFVectorReference">
@@ -429,8 +437,10 @@
   </xsd:complexType>
 
   <xsd:complexType name="Matrix" abstract="true">
-	 <xsd:sequence>
-	 </xsd:sequence>
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="BoostMatrix">

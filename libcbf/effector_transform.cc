@@ -22,7 +22,6 @@
 #include <cbf/xml_factory.h>
 
 namespace CBF {
-	template<> XMLBaseFactory<EffectorTransform, CBFSchema::EffectorTransform>* 
-		XMLBaseFactory<EffectorTransform, CBFSchema::EffectorTransform>::m_Instance = 0;
+
 } // namespace
 

@@ -11,7 +11,7 @@ namespace CBF {
 		init();
 	}
 
-	static XMLDerivedFactory<XCFVectorReference, CBFSchema::XCFVectorReference, Reference, CBFSchema::Reference> x;
+	static XMLDerivedFactory<XCFVectorReference, CBFSchema::XCFVectorReference> x;
 #endif
 } // namespace
 

@@ -71,7 +71,18 @@ namespace CBF {
 		// m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
 
-	static XMLDerivedFactory<SquarePotential, CBFSchema::SquarePotential, Potential, CBFSchema::Potential> x;
+	static XMLDerivedFactory<SquarePotential, CBFSchema::SquarePotential> x;
+
+	static XMLCreator<
+		SquarePotential, 
+		CBFSchema::SquarePotential, 
+		Constructor<
+			SquarePotential, 
+			CBFSchema::SquarePotential
+		> 
+	> x2(Constructor<SquarePotential, CBFSchema::SquarePotential>());
 	
+	//static XMLConstructorCreator<Potential, CBFSchema::SquarePotential> x3;
+
 #endif
 } // namespace

@@ -244,21 +244,27 @@ namespace CBF {
 				}
 				CBF_THROW_RUNTIME_ERROR("ConvergenceCriterion type not supported yet")
 			}
+
+			CBF_DEBUG("Creating reference...")
+			m_Reference = 
+				XMLObjectFactory::instance()->create<Reference>(xml_instance.Reference());
+
 		
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");
-			// m_Potential = XMLBaseFactory<Potential, CBFSchema::Potential>::instance()->create(xml_instance.Potential());
-			m_Potential = XMLBaseFactory<Potential, ::CBFSchema::Potential>::instance()->create(xml_instance.Potential());
+			// m_Potential = XMLObjectFactory<Potential, CBFSchema::Potential>::instance()->create(xml_instance.Potential());
+			m_Potential = 
+				XMLObjectFactory::instance()->create<Potential>(xml_instance.Potential());
 
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating sensor transform...")
-			m_SensorTransform = XMLBaseFactory<SensorTransform, CBFSchema::SensorTransform>::instance()->create(xml_instance.SensorTransform());
+			m_SensorTransform = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.SensorTransform());
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating effector transform...")
-			m_EffectorTransform = XMLBaseFactory<EffectorTransform, CBFSchema::EffectorTransform>::instance()->create(xml_instance.EffectorTransform());
+			m_EffectorTransform = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform());
 			m_EffectorTransform->set_sensor_transform(m_SensorTransform);
 		
 			//CBF_DEBUG(m_SensorTransform.get())
@@ -274,19 +280,11 @@ namespace CBF {
 				CBF_DEBUG("Creating subordinate controller...")
 				CBF_DEBUG("------------------------")
 				//! First we see whether we can construct a controller from the xml_document
-				ControllerPtr controller = XMLBaseFactory<Controller, CBFSchema::Controller>::instance()->create(*it);
+				PrimitiveControllerPtr controller = XMLObjectFactory::instance()->create<PrimitiveController>(*it);
 				if (controller.get() == 0) {
 					throw std::logic_error("This should not happen");
 				} else {
-					//! Then, since we only accept primitive controllers as subordinate controllers,
-					//! let's see if it _is_ a primitive controller
-					PrimitiveControllerPtr p_controller;
-					p_controller = boost::dynamic_pointer_cast<PrimitiveController>(controller);
-	
-					if (p_controller.get() == 0)
-						throw std::runtime_error("This should not happen. Controller was not convertible to PrimitiveController");
-					else
-		 				m_SubordinateControllers.push_back(p_controller);
+		 				m_SubordinateControllers.push_back(controller);
 				}
 
 				CBF_DEBUG("------------------------")
@@ -296,27 +294,22 @@ namespace CBF {
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating resource...")
-			ResourcePtr res = XMLBaseFactory<Resource, CBFSchema::Resource>::instance()->create(xml_instance.Resource());
+			ResourcePtr res = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource());
 			//! And bind to it...
 			CBF_DEBUG("Binding to resource...")
 
 			m_SensorTransform->set_resource(res);
 			m_EffectorTransform->set_resource(res);
 		
-			//! Create a resource if given...
 			CBF_DEBUG("Creating combination strategy...")
 			m_CombinationStrategy = 
-				XMLBaseFactory<CombinationStrategy, CBFSchema::CombinationStrategy>::instance()->create(xml_instance.CombinationStrategy());
+				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy());
 		
-			//! Create a resource if given...
-			CBF_DEBUG("Creating reference...")
-			m_Reference = 
-				XMLBaseFactory<Reference, CBFSchema::Reference>::instance()->create(xml_instance.Reference());
 
 			check_dimensions();
 		}
 
-		static XMLDerivedFactory<PrimitiveController, ::CBFSchema::PrimitiveController, Controller, ::CBFSchema::Controller> x;
+		static XMLDerivedFactory<PrimitiveController, ::CBFSchema::PrimitiveController> x;
 		
 	#endif
 

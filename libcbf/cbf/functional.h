@@ -47,10 +47,7 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 			m_Operand = 
-				XMLBaseFactory<
-					SensorTransform, 
-					CBFSchema::SensorTransform
-				>::instance()->create(xml_instance.Operand()); 
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
 
 			init_results(m_Operand);
 		}
@@ -132,10 +129,7 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 			m_Operand = 
-				XMLBaseFactory<
-					SensorTransform, 
-					CBFSchema::SensorTransform
-				>::instance()->create(xml_instance.Operand()); 
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
 			m_Blocksize = xml_instance.Blocksize();
 			init_results(m_Operand);
 		}

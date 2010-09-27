@@ -105,7 +105,7 @@ namespace CBF {
 			Float m_TaskSpaceDistanceThreshold;
 			Float m_ResourceStepNormThreshold;
 		
-			//* @brief Function for stuff common to all constructors */
+			/*** @brief Function for stuff common to all constructors */
 			void init();
 
 			/**

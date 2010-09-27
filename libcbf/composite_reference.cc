@@ -47,7 +47,7 @@ namespace CBF {
 				++it
 			)
 			{
-				ReferencePtr tr = XMLBaseFactory<Reference, CBFSchema::Reference>::instance()->create(*it);
+				ReferencePtr tr = XMLObjectFactory::instance()->create<Reference>(*it);
 				references.push_back(tr);
 				//tr->set_reference(ReferencePtr(new DummyReference(tr->get_reference_dim())));
 			}
@@ -56,7 +56,7 @@ namespace CBF {
 			CBF_DEBUG("dim: " << dim())
 	}
 
-	static XMLDerivedFactory<CompositeReference, CBFSchema::CompositeReference, Reference, CBFSchema::Reference> x;
+	static XMLDerivedFactory<CompositeReference, CBFSchema::CompositeReference> x;
 #endif
 
 

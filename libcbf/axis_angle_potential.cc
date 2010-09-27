@@ -84,6 +84,6 @@ namespace CBF {
 			m_Coefficient = xml_instance.Coefficient();
 		}
 
-		static XMLDerivedFactory<AxisAnglePotential, CBFSchema::AxisAnglePotential, Potential, CBFSchema::Potential> x;
+		static XMLDerivedFactory<AxisAnglePotential, CBFSchema::AxisAnglePotential> x;
 	#endif
 } // namespace
