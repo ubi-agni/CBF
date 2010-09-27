@@ -17,6 +17,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
     cbf
     ${Boost_LIBRARIES}
     )
+
 else()
   message(STATUS "  not adding executable cbf_run_controller because xsd or boost-program-options was not found")
 endif()
