@@ -62,7 +62,7 @@ cbf_controller_create_from_file(
 
 		//! Finally let's create the controller instance..
 		CBF::ControllerPtr controller = 
-			CBF::XMLBaseFactory<CBF::Controller, CBFSchema::Controller>::instance()->create(*xml_instance);
+			CBF::XMLObjectFactory::instance()->create<CBF::Controller>(*xml_instance);
 
 		CBF_DEBUG("[create_controller_from_file]: Checking if it's a PrimitiveController")
 		//! Checking whether the created controller is a PrimitiveController.
