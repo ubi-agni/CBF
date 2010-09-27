@@ -1179,7 +1179,7 @@
 	 </EffectorTransform>
 
 	 <PrimitiveController>
-		<Coefficient>1</Coefficient>
+		<Coefficient>0.01</Coefficient>
 		<ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
 		  <Threshold>0.001</Threshold>
 		</ConvergenceCriterion>
@@ -1196,9 +1196,8 @@
 		<SensorTransform xsi:type="cbf:IdentitySensorTransform">
 		  <Dimension>62</Dimension>
 		</SensorTransform>
-		<EffectorTransform xsi:type="cbf:GenericEffectorTransform">
-		  <TaskDimension>62</TaskDimension>
-		  <ResourceDimension>62</ResourceDimension>
+		<EffectorTransform xsi:type="cbf:IdentityEffectorTransform">
+		  <Dimension>62</Dimension>
 		</EffectorTransform>
 		<CombinationStrategy xsi:type="cbf:AddingStrategy"/>
 		<Resource xsi:type="cbf:DummyResource">
