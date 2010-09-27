@@ -119,7 +119,7 @@ namespace CBF {
 			/**
 				This reads the current resource values and updates the KDL::Jacobian matrix..
 			*/
-			virtual void update();
+			virtual void update(const FloatVector &resource_value);
 
 			boost::shared_ptr<KDL::Chain> chain() { return m_Chain; }
 	};
@@ -145,7 +145,7 @@ namespace CBF {
 			return 3u; 
 		}
 
-		virtual void update();
+		virtual void update(const FloatVector &resource_value);
 	};
 	
 	typedef boost::shared_ptr<
@@ -176,7 +176,7 @@ namespace CBF {
 		
 		virtual unsigned int task_dim() const { return 3u; }
 
-		virtual void update();
+		virtual void update(const FloatVector &resource_value);
 	};
 	
 	typedef boost::shared_ptr<KDLChainAxisAngleSensorTransform> KDLChainAxisAngleSensorTransformPtr;	
@@ -245,7 +245,7 @@ namespace CBF {
 			/**
 				This reads the current resource values and updates the KDL::Jacobian matrix..
 			*/
-			virtual void update();
+			virtual void update(const FloatVector &resource_value);
 
 			boost::shared_ptr<KDL::Tree> tree() { return m_Tree; }
 	};
@@ -268,7 +268,7 @@ namespace CBF {
 
 		virtual unsigned int task_dim() const { return 3u * m_SegmentNames.size(); }
 
-		virtual void update();
+		virtual void update(const FloatVector &resource_value);
 	};
 	
 	typedef boost::shared_ptr<KDLTreePositionSensorTransform> KDLTreePositionSensorTransformPtr;
@@ -296,7 +296,7 @@ namespace CBF {
 			return 3u * m_SegmentNames.size(); 
 		}
 
-		virtual void update();
+		virtual void update(const FloatVector &resource_value);
 	};
 	
 	typedef boost::shared_ptr<

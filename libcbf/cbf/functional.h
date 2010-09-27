@@ -53,18 +53,15 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 		}
 	#endif
 
-	virtual void update() {
+	virtual void update(const FloatVector &resource_value) {
 		CBF_DEBUG("update")
-		m_Operand->update();
+		m_Operand->update(resource_value);
 		m_Result = m_VectorOperation(m_Operand->result());
 		m_TaskJacobian = m_MatrixOperation(m_Operand->task_jacobian());
 
 		CBF_DEBUG("result " << m_Result)
 		CBF_DEBUG("jac    " << m_TaskJacobian)
 	}
-
-	virtual void set_resource(ResourcePtr res) 
-		{ m_Operand->set_resource(res); }
 
 	virtual unsigned int task_dim() const
 		{ return m_Operand->task_dim(); }
@@ -135,8 +132,8 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 		}
 	#endif
 
-	virtual void update() {
-		m_Operand->update();
+	virtual void update(const FloatVector &resource_value) {
+		m_Operand->update(resource_value);
 		FloatVector tmp_result = m_Operand->result();
 		FloatMatrix tmp_jacobian = m_Operand->task_jacobian();
 		
@@ -167,9 +164,6 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 			mr.assign(m_MatrixOperation(mir));
 		}
 	}
-
-	virtual void set_resource(ResourcePtr res) 
-		{ m_Operand->set_resource(res); }
 
 	virtual unsigned int task_dim() const
 		{ return m_Operand->task_dim(); }

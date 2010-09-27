@@ -23,6 +23,8 @@
 #ifndef CBF_GENERIC_TRANSFORM_H
 #define CBF_GENERIC_TRANSFORM_H
 
+#include <cbf/config.h>
+#include <cbf/types.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 #include <cbf/utilities.h>
@@ -45,7 +47,7 @@ namespace CBF {
 
 		GenericEffectorTransform() { }
 	
-		virtual void update();
+		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
 			result = ublas::prod(m_InverseTaskJacobian, input);
@@ -69,7 +71,7 @@ namespace CBF {
 	struct DampedGenericEffectorTransform : public EffectorTransform {
 		DampedGenericEffectorTransform (const CBFSchema::DampedGenericEffectorTransform &xml_instnace);
 	
-		virtual void update();
+		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
 		DampedGenericEffectorTransform(
 			Float damping_constant = 0.1)
@@ -117,7 +119,7 @@ namespace CBF {
 			Float m_DampingConstant;
 
 		public:	
-			virtual void update();
+			virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 		
 			DampedWeightedGenericEffectorTransform(
 				Float dampingConstant = 0.1)

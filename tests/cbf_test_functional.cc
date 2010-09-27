@@ -25,8 +25,7 @@ int main() {
 		)
 	);
 
-	s->set_resource(r);
-	s->update();
+	s->update(r->get());
 
 	std::cout << "s1" << std::endl;
 	std::cout << "result   " << s->result() << std::endl;
@@ -41,8 +40,7 @@ int main() {
 		)
 	);
 
-	s2->set_resource(r);
-	s2->update();
+	s2->update(r->get());
 
 	std::cout << "s2" << std::endl;
 	std::cout << "result   " << s2->result() << std::endl;
@@ -56,8 +54,7 @@ int main() {
 		)
 	);
 
-	s3->set_resource(r);
-	s3->update();
+	s3->update(r->get());
 
 	std::cout << "s3" << std::endl;
 	std::cout << "result   " << s3->result() << std::endl;

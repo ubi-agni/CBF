@@ -10,8 +10,8 @@ namespace CBF {
 struct TransposeEffectorTransform : public EffectorTransform {
 	TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance);
 
-	virtual void update() {
-		m_InverseTaskJacobian = ublas::trans(m_SensorTransform->task_jacobian());
+	virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
+		m_InverseTaskJacobian = ublas::trans(task_jacobian);
 	}
 
 	virtual unsigned int task_dim() const { return m_SensorTransform->task_dim(); }

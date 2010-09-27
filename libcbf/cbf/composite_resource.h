@@ -94,28 +94,6 @@ struct CompositeResource : public Resource
 			}
 		}
 
-		/**
-			@brief This method calles the respective methods of the combined resources
-		*/	
-		virtual void set(const FloatVector& arg) {
-			unsigned int current_start_index = 0;
-	
-			for (
-				unsigned int i = 0, len = m_Resources.size();
-				i < len;
-				++i) 
-			{
-				FloatVector tmp(m_Resources[i]->dim());
-				std::copy(
-					arg.begin() + current_start_index,
-					arg.begin() + current_start_index + m_Resources[i]->dim(),
-					tmp.begin());
-	
-				m_Resources[i]->set(tmp);
-				current_start_index += m_Resources[i]->dim();			
-			}
-	
-		}
 	
 		/**
 			@brief Distributes the passed argument to the combined resources

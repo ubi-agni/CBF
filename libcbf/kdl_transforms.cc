@@ -61,15 +61,15 @@ namespace CBF {
 		m_Jacobian = boost::shared_ptr<KDL::Jacobian>(new KDL::Jacobian(m_Chain->getNrOfJoints()));
 	}
 	
-	void BaseKDLChainSensorTransform::update() {
+	void BaseKDLChainSensorTransform::update(const FloatVector &resource_value) {
 		KDL::JntArray jnt_array(resource_dim());
 	
 		//const ublas::vector<Float> &resource = m_Resource->get();
 	
-		CBF_DEBUG(m_Resource->get())
+		CBF_DEBUG(resource_value)
 	
 		for (unsigned int i = 0; i < resource_dim(); ++i) {
-			jnt_array(i) = m_Resource->get()[i];
+			jnt_array(i) = resource_value[i];
 		}
 	
 		m_JacSolver->JntToJac(jnt_array, *m_Jacobian);
@@ -88,8 +88,8 @@ namespace CBF {
 		m_Result = ublas::vector<Float>(3);
 	}
 	
-	void KDLChainPositionSensorTransform::update() {
-		BaseKDLChainSensorTransform::update();
+	void KDLChainPositionSensorTransform::update(const FloatVector &resource_value) {
+		BaseKDLChainSensorTransform::update(resource_value);
 
 		//! Update the jacobian so we can hand it out...
 		m_TaskJacobian = FloatMatrix(3, resource_dim());
@@ -112,8 +112,8 @@ namespace CBF {
 		m_Result = ublas::vector<Float>(3);
 	}
 	
-	void KDLChainAxisAngleSensorTransform::update() {
-		BaseKDLChainSensorTransform::update();
+	void KDLChainAxisAngleSensorTransform::update(const FloatVector &resource_value) {
+		BaseKDLChainSensorTransform::update(resource_value);
 	
 		CBF_DEBUG("Updating Jacobian")
 		//! Update the jacobian so we can hand it out...
@@ -179,15 +179,15 @@ namespace CBF {
 		}
 	}
 	
-	void BaseKDLTreeSensorTransform::update() {
+	void BaseKDLTreeSensorTransform::update(const FloatVector &resource_value) {
 		KDL::JntArray jnt_array(resource_dim());
 	
 		//const ublas::vector<Float> &resource = m_Resource->get();
 	
-		CBF_DEBUG(m_Resource->get())
+		CBF_DEBUG(resource_value)
 	
 		for (unsigned int i = 0; i < resource_dim(); ++i) {
-			jnt_array(i) = m_Resource->get()[i];
+			jnt_array(i) = resource_value[i];
 		}
 
 		for (unsigned int i = 0; i < m_SegmentNames.size(); ++i) {
@@ -215,8 +215,8 @@ namespace CBF {
 
 
 
-	void KDLTreePositionSensorTransform::update() {
-		BaseKDLTreeSensorTransform::update();
+	void KDLTreePositionSensorTransform::update(const FloatVector &resource_value) {
+		BaseKDLTreeSensorTransform::update(resource_value);
 
 		unsigned int total_row = 0;
 
@@ -246,8 +246,8 @@ namespace CBF {
 	}
 
 
-	void KDLTreeAxisAngleSensorTransform::update() {
-		BaseKDLTreeSensorTransform::update();
+	void KDLTreeAxisAngleSensorTransform::update(const FloatVector &resource_value) {
+		BaseKDLTreeSensorTransform::update(resource_value);
 	
 		CBF_DEBUG("Updating Jacobian")
 	

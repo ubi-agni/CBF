@@ -68,19 +68,12 @@ struct WeightedSumSensorTransform : public SensorTransform {
 		m_Result = ublas::zero_vector<Float>(transforms[0]->task_dim());
 	}
 
-	void set_resource(ResourcePtr resource) {
-		for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
-			m_Transforms[i]->set_resource(resource);
-		}
-		m_Resource = resource;
-	}
-
-	void update() {
+	void update(const FloatVector &resource_value) {
 		assert(m_Transforms.size() > 1);
 		assert(m_Transforms.size() == m_Weights.size());
 
 		for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
-			m_Transforms[i]->update();
+			m_Transforms[i]->update(resource_value);
 		}
 
 		m_TaskJacobian = ublas::zero_matrix<Float>(m_Transforms[0]->task_dim(), m_Transforms[0]->resource_dim());

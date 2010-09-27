@@ -106,7 +106,7 @@ cbf_controller_get_resource_dim(struct cbf_primitive_controller *c) {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 	try {
 		//! Check whether the controller contains a dummy resource..
-		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->sensor_transform()->resource());
+		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
 		if (res.get() == 0) {
 			CBF_DEBUG("[step_controller]: No dummy resource found in controller")
 			return 0;
@@ -163,7 +163,7 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 	try {
 		//! Check whether the controller contains a dummy resource..
-		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->sensor_transform()->resource());
+		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
 		if (res.get() == 0) {
 			CBF_DEBUG("[step_controller]: No dummy resource found in controller")
 			return -1;
@@ -232,7 +232,7 @@ cbf_controller_set_resource(struct cbf_primitive_controller *c, double *resource
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
-	int resource_dim = (*p)->sensor_transform()->resource()->dim();
+	int resource_dim = (*p)->resource()->dim();
 
 	CBF::FloatVector vec(resource_dim);
 
@@ -242,7 +242,9 @@ cbf_controller_set_resource(struct cbf_primitive_controller *c, double *resource
 		vec.begin()
 	);
 
-	(*p)->sensor_transform()->resource()->set(vec);
+	CBF::DummyResourcePtr dr = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
+
+	dr->set(vec);
 
 	return 1;
 }
@@ -255,8 +257,8 @@ cbf_controller_get_resource(struct cbf_primitive_controller *c, double *resource
 
 
 	std::copy(
-		(*p)->sensor_transform()->resource()->get().begin(),
-		(*p)->sensor_transform()->resource()->get().end(),
+		(*p)->resource()->get().begin(),
+		(*p)->resource()->get().end(),
 		resource_out
 	);
 

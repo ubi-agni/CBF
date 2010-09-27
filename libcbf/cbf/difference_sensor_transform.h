@@ -54,17 +54,11 @@ namespace CBF {
 			m_Transform2 = t2;
 		}
 
-		void set_resource(ResourcePtr resource) {
-			m_Transform1->set_resource(resource);
-			m_Transform2->set_resource(resource);
-			m_Resource = resource;
-		}
-
-		void update() {
+		void update(const FloatVector &resource_value) {
 			assert(m_Transform1->task_dim() == m_Transform2->task_dim());
 
-			m_Transform1->update();
-			m_Transform2->update();
+			m_Transform1->update(resource_value);
+			m_Transform2->update(resource_value);
 
 			//! The jacobian is just the difference of the individual transforms
 			m_TaskJacobian = m_Transform1->task_jacobian() - m_Transform2->task_jacobian();
