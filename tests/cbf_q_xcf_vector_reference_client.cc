@@ -60,7 +60,7 @@ void Test_xcf_reference_client_gui::connect(){
 			label -> setText("connecting...");
 			CBF_DEBUG("creating remote server object")
 			std::cout << "connecting to " << input << std::endl;
-			/*_remoteServer = XCF::RemoteServer::create(input.c_str());
+			_remoteServer = XCF::RemoteServer::create(input.c_str());
 
 			std::string dim_string;
 			_remoteServer->callMethod("get_dimension", "", dim_string);
@@ -72,7 +72,7 @@ void Test_xcf_reference_client_gui::connect(){
 			CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
 			CBF_DEBUG("dim_vv: " << dim_vv)
 
-			dim = dim_vv[0];*/dim = 5;
+			dim = dim_vv[0];
 			connected = 1;
 			enter_input_mode();
 		} catch(...){
@@ -142,7 +142,7 @@ void Test_xcf_reference_client_gui::send(){
 	vector_string << ")";
 	std::cout << vector_string.str() << std::endl;
 	
-	/*CBF_DEBUG("creating vector doc")
+	CBF_DEBUG("creating vector doc")
 	CBFSchema::BoostVector v(vector_string.str());
 
 	std::ostringstream s;
@@ -155,7 +155,7 @@ void Test_xcf_reference_client_gui::send(){
 
 	CBF_DEBUG("calling remote method")
 	_remoteServer->callMethod("set_reference", s.str(), out);
-	*/
+	
 }
 
 void Test_xcf_reference_client_gui::changeSendMode(){
