@@ -15,7 +15,6 @@ set(CBF_SOURCES
   controller_sequence.cc
   identity_transform.cc 
   primitive_controller.cc 
-  composite_primitive_controller.cc 
   resource.cc 
   dummy_resource.cc 
   effector_transform.cc 
@@ -27,7 +26,6 @@ set(CBF_SOURCES
   composite_potential.cc
   square_potential.cc
   linear_transform.cc 
-  transform_chains.cc
   composite_resource.cc
   reference.cc
   dummy_reference.cc
