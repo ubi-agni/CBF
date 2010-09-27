@@ -38,13 +38,10 @@ namespace CBF {
 	
 	
 	/**
-		@brief The effector transform takes a gradient step in task space
-		and maps it to the resource's configuration space by way of local
-		pseudoinverse control..
+		@brief The EffectorTransform takes a gradient step in task space
+		and maps it to the resource's configuration space.
 	*/
 	struct EffectorTransform : public Object {
-		FloatVector m_ResourceValue;
-	
 		EffectorTransform() {
 	
 		}
@@ -65,7 +62,10 @@ namespace CBF {
 			the inverse task jacobian given that it depends on the current resource
 			value / the current task jacobian (in the common case that it is not constant).
 		*/
-		virtual void update() = 0;
+		virtual void update(
+			const FloatVector &resource_value, 
+			const FloatMatrix &task_jacobian
+		) = 0;
 
 	
 		/**
@@ -75,6 +75,9 @@ namespace CBF {
 			This method must map the input gradient step onto a step in resource space.
 			This step is then added lateron to the current resource values by the
 			controller.
+
+			Call this only after calling update() to make sure the EffectorTransform
+			is in a valid state..
 		*/
 		virtual void exec(
 			const FloatVector &input,
@@ -85,12 +88,12 @@ namespace CBF {
 			A way to get to the current task jacobian. This is needed by the
 			controller to construct the nullspace projector.
 	
-			May only be called after a call to exec() to update the internal
+			May only be called after a call to update() to update the internal
 			matrices.
 		*/
-		virtual const FloatMatrix &inverse_task_jacobian() const { return m_InverseTaskJacobian; }
-	
-	
+		virtual const FloatMatrix &inverse_task_jacobian() const { 
+			return m_InverseTaskJacobian; 
+		}
 	
 		/**
 			Needs to be implemented in subclass to allow dimensionality checking when
@@ -98,32 +101,14 @@ namespace CBF {
 		*/
 		virtual unsigned resource_dim() const = 0;
 	
-		ResourcePtr resource() {
-			return m_Resource;
-		}
-	
-		virtual void set_resource(ResourcePtr r) {
-			if (r->dim() != resource_dim()) throw std::runtime_error("[EffectorTransform]: Dimension mismatch!");
-	
-			m_Resource = r;
-		}
-	
 		/**
 			Needs to be implemented in subclass to allow dimensionality checking when
 			this is bound to a resource.
 		*/
 		virtual unsigned int task_dim() const = 0;
 	
-		virtual void set_sensor_transform(SensorTransformPtr sensor_transform) 
-			{ m_SensorTransform = sensor_transform; }
-
 		protected:
 			SensorTransformPtr m_SensorTransform;
-
-			/** 
-				An effector transform is bound to a resource
-			*/
-			ResourcePtr m_Resource;
 
 			/**
 				This should be calculated in the update() function. the inverse_task_jacobian() function

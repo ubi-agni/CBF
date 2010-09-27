@@ -38,12 +38,14 @@ namespace CBF {
 		CBF_DEBUG("m_Result " << m_Result)
 	}
 
+#if 0
 	void CompositeSensorTransform::set_resource(ResourcePtr resource) {
 		SensorTransform::set_resource(resource);
 		CBF_DEBUG("set_resource()")
 		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i)
 			m_SensorTransforms[i]->set_resource(resource);
 	}
+#endif
 
 	unsigned int CompositeSensorTransform::resource_dim() const {
 		//! NOTE: All sensor transforms should work on the same resource
@@ -64,12 +66,11 @@ namespace CBF {
 		return sum;
 	}
 	
-	void CompositeSensorTransform::update() {
-	
+	void CompositeSensorTransform::update(const FloatVector &resource_value) {
 		unsigned int current_task_pos = 0;
 		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i) {
 			//! Make all subordinate transforms update their state..
-			m_SensorTransforms[i]->update();
+			m_SensorTransforms[i]->update(resource_value);
 	
 			//! Assemble total jacobian..
 			CBF_DEBUG("range: " << current_task_pos << " " << current_task_pos + m_SensorTransforms[i]->task_dim())

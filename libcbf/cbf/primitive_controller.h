@@ -151,10 +151,15 @@ namespace CBF {
 			CombinationStrategyPtr m_CombinationStrategy;
 
 			/**
+				The resource this controller acts upon
+			*/
+			ResourcePtr m_Resource;
+
+			/**
 				The factor for the primary gradient step
 			*/
 			Float m_Coefficient;
-	
+
 		public:
 			/**
 				This function only returns sensible values after
@@ -162,6 +167,8 @@ namespace CBF {
 			*/
 			const FloatVector &current_task_position() 
 				{ return m_CurrentTaskPosition; }
+
+			ResourcePtr resource() { return m_Resource; }
 
 			ReferencePtr reference() 
 				{ return m_Reference; }

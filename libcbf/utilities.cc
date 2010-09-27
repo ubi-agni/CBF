@@ -253,14 +253,6 @@ boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector 
 	return v;
 }
 
-XMLCreator<
-	FloatVector, 
-	CBFSchema::BoostVector, 
-	boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &)
-> x(create_boost_vector);
-
-template <> XMLFactory<FloatVector> 
-	*XMLFactory<FloatVector>::m_Instance = 0;
 
 FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance)
 {
@@ -425,6 +417,18 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 
 #endif
 #endif
+
+#ifdef CBF_HAVE_XSD
+	XMLCreator<
+		FloatVector, 
+		CBFSchema::BoostVector, 
+		boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &)
+	> x(create_boost_vector);
+	
+	template <> XMLFactory<FloatVector> 
+		*XMLFactory<FloatVector>::m_Instance = 0;
+#endif
+
 
 } // namespace
 

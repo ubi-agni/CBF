@@ -49,7 +49,7 @@ namespace CBF {
 	
 		FloatMatrix m_Jacobian;
 	
-		virtual void update() {
+		virtual void update(const FloatVector &resource_value) {
 			FloatMatrix jac = m_SensorTransforms[0]->task_jacobian(); 
 	
 			FloatMatrix tmp;
@@ -143,10 +143,6 @@ namespace CBF {
 		*/
 		std::vector<SensorTransformPtr> transforms() {
 			return m_SensorTransforms;
-		}
-	
-		virtual void get_task_jacobian(FloatMatrix &result) {
-			result = m_Jacobian;
 		}
 	
 		protected:

@@ -72,10 +72,8 @@ namespace CBF {
 
 			virtual unsigned int task_dim() const;
 
-			virtual void update();
+			virtual void update(const FloatVector &resource_value);
 	
-			virtual void set_resource(ResourcePtr resource);
-
 			virtual const std::vector<SensorTransformPtr> &transforms() const {
 				return m_SensorTransforms;
 			}

@@ -19,14 +19,15 @@ namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
 		/**
-			This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
+			@brief The base type for all concrete Object factories
 		*/
 		struct XMLDerivedFactoryBase {
 			virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) = 0;
 		};
 	
 		/**
-			This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
+			@brief The central registry, where all types derived of CBF::Object that have
+			a constructor taking a CBFSchema::Object argument in their constructor register.
 		*/
 		struct XMLObjectFactory {
 			protected:
@@ -83,6 +84,11 @@ namespace CBF {
 		};
 
 
+		/**
+			@brief A functor that can be used to register types in the XMLFactory that do not
+			provide a free function to construct them from a TSchemaType but rather
+			a constructor..
+		*/
 		template <class T, class TSchemaType>
 		struct Constructor {
 			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
@@ -98,7 +104,11 @@ namespace CBF {
 			virtual ~XMLCreatorBase() { }
 		};
 	
-	
+
+		/**
+			The XMLFactory is a central point for types to register ways of constructing instances
+			from CBFSchema:: types..
+		*/ 	
 		template <class T>
 		struct XMLFactory {
 			std::map<std::string, XMLCreatorBase<T>* > m_Creators;
@@ -116,8 +126,14 @@ namespace CBF {
 					CBF_UNMANGLE(typeid(xml_instance).name())
 				)
 
-				if (m_Creators.find(typeid(xml_instance).name()) == m_Creators.end())
-					CBF_THROW_RUNTIME_ERROR("[" << CBF_UNMANGLE(typeid(this).name())<< "]: "  << "XMLCreator for type not found. Type: " << CBF_UNMANGLE(typeid(xml_instance).name()) << " (Did you forget to register it?)")
+				if (m_Creators.find(typeid(xml_instance).name()) == m_Creators.end()) {
+					CBF_THROW_RUNTIME_ERROR(
+						"[" << CBF_UNMANGLE(typeid(this).name())<< "]: "  << 
+						"XMLCreator for type not found. Type: " << 
+						CBF_UNMANGLE(typeid(xml_instance).name()) << 
+						" (Did you forget to register it?)"
+					)
+				}
 
 				return m_Creators[typeid(xml_instance).name()]->create(xml_instance);
 			}
@@ -138,18 +154,18 @@ namespace CBF {
 			boost::shared_ptr<T>(*)(const TSchemaType&)
 		*/
 		template<class T, class TSchemaType, class C>
-		struct XMLCreator : public XMLCreatorBase <T>{
+		struct XMLCreator : public XMLCreatorBase <T> {
 			C m_Creator;
 	
 			XMLCreator(C c) : m_Creator(c) { 
-				// register here..
-				XMLFactory<T>::instance()->m_Creators[typeid(TSchemaType).name()] = this;
 				CBF_DEBUG(
 					"registering type: " << 
 					CBF_UNMANGLE(typeid(TSchemaType).name()) << 
 					" in registry " << 
 					CBF_UNMANGLE(typeid(T).name())
 				)
+
+				XMLFactory<T>::instance()->m_Creators[typeid(TSchemaType).name()] = this;
 			}
 
 			boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
@@ -168,19 +184,30 @@ namespace CBF {
 
 
 		/**
-			This template can be used with types that have a constructor
+			This utility template can be used with types that have a constructor
 			that takes a const TSchemaType& as argument.
 		*/
 		template<class TBase, class T, class TSchemaType>
 		struct XMLConstructorCreator : public XMLCreator<
-			T, TSchemaType, Constructor<T, TSchemaType> > {
+			T, TSchemaType, Constructor<T, TSchemaType> 
+		> {
 			XMLConstructorCreator() : 
 				XMLCreator<
 					T, TSchemaType, 
 					Constructor<
 						T, TSchemaType
 					> 
-				>(Constructor<T, TSchemaType>()) { }
+				> (Constructor<T, TSchemaType>()) 
+			{ 
+				CBF_DEBUG(
+					"adding constructor with TBase: " << 
+					CBF_UNMANGLE(typeid(TBase).name()) <<  
+					" and T: " << 
+					CBF_UNMANGLE(typeid(T).name()) << 
+					" and TSchemaType: " << 
+					CBF_UNMANGLE(typeid(TSchemaType).name())
+				)
+			}
 		};
 	#endif
 	

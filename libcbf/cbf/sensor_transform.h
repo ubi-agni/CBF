@@ -83,7 +83,7 @@ namespace CBF {
 			different methods, e.g. the jacobian given that it depends 
 			on the current resource value.
 		*/
-		virtual void update() = 0;
+		virtual void update(const FloatVector &resource_value) = 0;
 	
 		/**
 			@brief Return a reference to the result calculated in the 
@@ -102,23 +102,6 @@ namespace CBF {
 			dimensionality checking when bound to a resource.
 		*/
 		virtual unsigned int task_dim() const = 0;
-	
-		const ResourcePtr resource() const {
-			return m_Resource;
-		}
-
-		/**
-			@brief Bind this sensor transform to a resource
-
-			Subclasses might have to override this. See e.g. 
-			CompositeSensorTransform for an example that does this.
-		*/
-		virtual void set_resource(ResourcePtr r) {
-			if (r->dim() != resource_dim()) {
-				throw std::runtime_error("[SensorTransform]: Dimension mismatch");
-			}
-			m_Resource = r;
-		}
 	
 		/**
 			@brief returns the current task jacobian
@@ -149,11 +132,6 @@ namespace CBF {
 				to avoid calling update more often than nessecary.
 			*/
 			int m_Cycle;
-
-			/**
-				A sensor transformation is bound to a resource..
-			*/
-			ResourcePtr m_Resource;
 
 			/**
 				This variable is used to cache the resourcevalue..

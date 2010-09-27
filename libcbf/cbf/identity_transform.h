@@ -44,7 +44,10 @@ namespace CBF {
 			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim);
 		}
 
-		virtual void update() { }	
+		virtual void update(
+			const FloatVector &resource_value, 
+			const FloatMatrix &task_jacobian) 
+		{ }	
 	
 		virtual void exec(const CBF::FloatVector& in, CBF::FloatVector& result)
 		{
@@ -78,9 +81,9 @@ namespace CBF {
 			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim,dim);
 		}
 
-		virtual void update() {
+		virtual void update(const FloatVector &resource_value) {
 			//! nothing to do as the jacobian is constant and computed during construction time
-			m_Result = m_Resource->get();
+			m_Result = resource_value;
 		}
 	
 		virtual unsigned int resource_dim() const {

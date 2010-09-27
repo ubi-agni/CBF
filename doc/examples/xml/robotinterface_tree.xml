@@ -1174,6 +1174,34 @@
 	 </SensorTransform>
 	 <EffectorTransform 
 		 xsi:type="cbf:GenericEffectorTransform"/>
+
+	 <PrimitiveController>
+		<Coefficient>1</Coefficient>
+		<ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
+		  <Threshold>0.001</Threshold>
+		</ConvergenceCriterion>
+		<Reference xsi:type="cbf:DummyReference">
+		  <Vector xsi:type="cbf:BoostVector">
+			 <String>[62](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
+		  </Vector>
+		</Reference>
+		<Potential xsi:type="cbf:SquarePotential">
+		  <MaxGradientStepNorm>100</MaxGradientStepNorm>
+		  <Dimension>62</Dimension>
+		  <Coefficient>1</Coefficient>
+		</Potential>
+		<SensorTransform xsi:type="cbf:IdentitySensorTransform">
+		  <Dimension>62</Dimension>
+		</SensorTransform>
+		<EffectorTransform xsi:type="cbf:GenericEffectorTransform"/>
+		<CombinationStrategy xsi:type="cbf:AddingStrategy"/>
+		<Resource xsi:type="cbf:DummyResource">
+		  <Vector xsi:type="cbf:BoostVector">
+			 <String>[62](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
+		  </Vector>
+		</Resource>
+	 </PrimitiveController>
+	 
 	 <CombinationStrategy
 		 xsi:type="cbf:AddingStrategy"/>
 	 <Resource

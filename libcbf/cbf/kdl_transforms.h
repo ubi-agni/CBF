@@ -95,11 +95,15 @@ namespace CBF {
 				and init_solvers() was called. This should have been done by subclasses without
 				any user intervention.
 			*/
-			BaseKDLChainSensorTransform
-				(boost::shared_ptr<KDL::Chain> chain);
+			BaseKDLChainSensorTransform(
+				boost::shared_ptr<KDL::Chain> chain
+			);
 	
 			//! This constructor is only implemented when XSD support is enabled..
-			BaseKDLChainSensorTransform(const CBFSchema::ChainBase &xml_chain_instance, const CBFSchema::SensorTransform &xml_st_instance);
+			BaseKDLChainSensorTransform(
+				const CBFSchema::ChainBase &xml_chain_instance, 
+				const CBFSchema::SensorTransform &xml_st_instance
+			);
 	
 			/**
 				For all derived types the resource dim is always the same: the number of joints
@@ -129,16 +133,24 @@ namespace CBF {
 	*/
 	struct KDLChainPositionSensorTransform : public BaseKDLChainSensorTransform
 	{
-		KDLChainPositionSensorTransform(const CBFSchema::KDLChainPositionSensorTransform &xml_instance);
+		KDLChainPositionSensorTransform(
+			const CBFSchema::KDLChainPositionSensorTransform &xml_instance
+		);
 	
-		KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain);
+		KDLChainPositionSensorTransform(
+			boost::shared_ptr<KDL::Chain> chain
+		);
 
-		virtual unsigned int task_dim() const { return 3u; }
+		virtual unsigned int task_dim() const { 
+			return 3u; 
+		}
 
 		virtual void update();
 	};
 	
-	typedef boost::shared_ptr<KDLChainPositionSensorTransform> KDLChainPositionSensorTransformPtr;
+	typedef boost::shared_ptr<
+		KDLChainPositionSensorTransform
+	> KDLChainPositionSensorTransformPtr;
 	
 	
 	
@@ -208,11 +220,16 @@ namespace CBF {
 				and init_solvers() was called. This should have been done by subclasses without
 				any user intervention.
 			*/
-			BaseKDLTreeSensorTransform
-				(boost::shared_ptr<KDL::Tree> tree, const std::vector<std::string> &segment_names);
+			BaseKDLTreeSensorTransform(
+				boost::shared_ptr<KDL::Tree> tree, 
+				const std::vector<std::string> &segment_names
+			);
 	
 			//! This constructor is only implemented when XSD support is enabled..
-			BaseKDLTreeSensorTransform(const CBFSchema::TreeBase &xml_tree_instance, const CBFSchema::SensorTransform &xml_st_instance);
+			BaseKDLTreeSensorTransform(
+				const CBFSchema::TreeBase &xml_tree_instance, 
+				const CBFSchema::SensorTransform &xml_st_instance
+			);
 	
 			/**
 				For all derived types the resource dim is always the same: the number of joints
@@ -257,13 +274,7 @@ namespace CBF {
 	typedef boost::shared_ptr<KDLTreePositionSensorTransform> KDLTreePositionSensorTransformPtr;
 	
 	
-	
-	
-	
-	
-	
-	
-	
+
 	/**
 		@brief This class implements the SensorTransform for an arbitrary KDL tree. The task space is
 		the orientation of the end effector of the tree specified in compact axis-angle representation
@@ -272,19 +283,25 @@ namespace CBF {
 	*/
 	struct KDLTreeAxisAngleSensorTransform : public BaseKDLTreeSensorTransform
 	{
-		KDLTreeAxisAngleSensorTransform(const CBFSchema::KDLTreeAxisAngleSensorTransform &xml_instance);
+		KDLTreeAxisAngleSensorTransform(
+			const CBFSchema::KDLTreeAxisAngleSensorTransform &xml_instance
+		);
 	
 		KDLTreeAxisAngleSensorTransform(
 			boost::shared_ptr<KDL::Tree> tree, 
 			std::vector<std::string> segment_names
 		);
 
-		virtual unsigned int task_dim() const { return 3u * m_SegmentNames.size(); }
+		virtual unsigned int task_dim() const { 
+			return 3u * m_SegmentNames.size(); 
+		}
 
 		virtual void update();
 	};
 	
-	typedef boost::shared_ptr<KDLTreeAxisAngleSensorTransform> KDLTreeAxisAngleSensorTransformPtr;	
+	typedef boost::shared_ptr<
+		KDLTreeAxisAngleSensorTransform
+	> KDLTreeAxisAngleSensorTransformPtr;	
 
 
 } // namespace

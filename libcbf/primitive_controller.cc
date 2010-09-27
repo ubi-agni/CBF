@@ -55,14 +55,10 @@ namespace CBF {
 		m_Potential(potential),
 		m_EffectorTransform(effector_transform),
 		m_CombinationStrategy(combination_strategy),
+		m_Resource(resource),
 		m_Coefficient(alpha)
 	{
 		CBF_DEBUG("Constructor1")
-
-		m_EffectorTransform->set_sensor_transform(sensor_transform);
-
-		m_SensorTransform->set_resource(resource);
-		m_EffectorTransform->set_resource(resource);
 
 		check_dimensions();
 	}
@@ -77,13 +73,13 @@ namespace CBF {
 		if (m_SensorTransform->task_dim() != m_Potential->dim())
 			throw std::runtime_error("SensorTransform and Potential dimensions mismatch");
 
-		if (m_SensorTransform->resource_dim() != m_SensorTransform->resource()->dim())
+		if (m_SensorTransform->resource_dim() != m_Resource->dim())
 			throw std::runtime_error("SensorTransform and Resource dimensions mismatch");
 
 		if (m_EffectorTransform->task_dim() != m_Potential->dim())
 			throw std::runtime_error("EffectorTransform and Potential dimensions mismatch");
 
-		if (m_EffectorTransform->resource_dim() != m_EffectorTransform->resource()->dim())
+		if (m_Resource->dim() != m_EffectorTransform->resource_dim())
 			throw std::runtime_error("EffectorTransform and Resource dimensions mismatch");
 	}	
 	
@@ -97,8 +93,7 @@ namespace CBF {
 		assert(m_Potential.get() != 0);
 		assert(m_CombinationStrategy.get() != 0);
 
-		assert(m_SensorTransform->resource() != 0);
-		assert(m_EffectorTransform->resource() != 0);
+		assert(m_Resource.get() != 0);
 
 		assert(m_Reference->dim() == m_Potential->dim());
 
@@ -109,11 +104,11 @@ namespace CBF {
 		// CBF_DEBUG("ref: " << m_References[0])
 	
 		//! Update resource if nessecary
-		m_SensorTransform->resource()->update();
-	
+		m_Resource->update();
+
 		//! Fill vector with data from sensor transform
-		m_SensorTransform->update();
-		m_EffectorTransform->update();
+		m_SensorTransform->update(m_Resource->get());
+		m_EffectorTransform->update(m_Resource->get(), m_SensorTransform->task_jacobian());
 	
 		m_CurrentTaskPosition = m_SensorTransform->result();
 		CBF_DEBUG("currentTaskPosition: " << m_CurrentTaskPosition)
@@ -167,9 +162,7 @@ namespace CBF {
 	
 	void PrimitiveController::do_action(int cycle) {
 		update(cycle);
-
-		m_EffectorTransform->resource()->add(m_Result);
-
+		m_Resource->add(m_Result);
 		m_Converged = check_convergence();
 	}
 	
@@ -265,10 +258,23 @@ namespace CBF {
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating effector transform...")
 			m_EffectorTransform = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform());
-			m_EffectorTransform->set_sensor_transform(m_SensorTransform);
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
+			//CBF_DEBUG(m_SensorTransform.get())
+		
+			//! Create a resource if given...
+			CBF_DEBUG("Creating resource...")
+			m_Resource = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource());
+			//! And bind to it...
+			CBF_DEBUG("Binding to resource...")
+
+			CBF_DEBUG("Creating combination strategy...")
+			m_CombinationStrategy = 
+				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy());
+
+			check_dimensions();
+
 			//! Instantiate the subordinate controllers
 			CBF_DEBUG("Creating subordinate controller(s)...")
 			for (
@@ -288,25 +294,10 @@ namespace CBF {
 				}
 
 				CBF_DEBUG("------------------------")
+				controller->m_Resource = m_Resource;
 			}
 		
-			//CBF_DEBUG(m_SensorTransform.get())
-		
-			//! Create a resource if given...
-			CBF_DEBUG("Creating resource...")
-			ResourcePtr res = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource());
-			//! And bind to it...
-			CBF_DEBUG("Binding to resource...")
 
-			m_SensorTransform->set_resource(res);
-			m_EffectorTransform->set_resource(res);
-		
-			CBF_DEBUG("Creating combination strategy...")
-			m_CombinationStrategy = 
-				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy());
-		
-
-			check_dimensions();
 		}
 
 		static XMLDerivedFactory<PrimitiveController, ::CBFSchema::PrimitiveController> x;
