@@ -4,7 +4,7 @@ include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 
 set(CBF_SOURCES
-  #xml_factory.cc
+  xml_factory.cc
   object.cc
   sensor_transform.cc 
   composite_transform.cc

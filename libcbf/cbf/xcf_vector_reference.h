@@ -100,6 +100,10 @@ struct XCFVectorReference : public Reference {
 
 	virtual unsigned int dim() { return m_Dim; }
 
+	virtual void get_current_task_position_xcf(std::string &xml_in, std::string &xml_out) {
+
+	}
+
 	virtual void get_dimension_from_xcf(std::string &xml_in, std::string &xml_out) {
 		std::stringstream vector_string;
 
