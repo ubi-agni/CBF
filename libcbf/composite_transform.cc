@@ -32,6 +32,13 @@ namespace CBF {
 		// First set the member, so that task_dim() and resource_dim() return sensible value..
 		m_SensorTransforms = transforms;
 
+		m_ResourceDim = m_SensorTransforms[0]->resource_dim();
+
+		m_TaskDim = 0;
+		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i)
+			m_TaskDim += m_SensorTransforms[i]->task_dim();
+
+
 		m_TaskJacobian = ublas::zero_matrix<Float>(task_dim(), resource_dim());
 		CBF_DEBUG("task_dim " << task_dim())
 		m_Result = FloatVector(task_dim());
@@ -47,25 +54,6 @@ namespace CBF {
 	}
 #endif
 
-	unsigned int CompositeSensorTransform::resource_dim() const {
-		//! NOTE: All sensor transforms should work on the same resource
-		if (m_SensorTransforms.size() == 0) throw std::runtime_error("[CompositeSensorTransform]: No sensor transforms set");
-	
-		return m_SensorTransforms[0]->resource_dim();
-	}
-	
-	unsigned int CompositeSensorTransform::task_dim() const {
-		//! TODO: Cache result if inefficient as is..
-		unsigned int sum = 0;
-	
-		for (unsigned int index = 0; index < m_SensorTransforms.size(); ++index) {
-			sum += m_SensorTransforms[index]->task_dim();
-		}
-
-		CBF_DEBUG(sum)
-		return sum;
-	}
-	
 	void CompositeSensorTransform::update(const FloatVector &resource_value) {
 		unsigned int current_task_pos = 0;
 		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i) {
@@ -73,10 +61,10 @@ namespace CBF {
 			m_SensorTransforms[i]->update(resource_value);
 	
 			//! Assemble total jacobian..
-			CBF_DEBUG("range: " << current_task_pos << " " << current_task_pos + m_SensorTransforms[i]->task_dim())
+			CBF_DEBUG("range: " << current_task_pos << " " << current_task_pos + m_SensorTransforms[i]->task_jacobian().size1())
 			ublas::matrix_range<FloatMatrix > mr(
 				m_TaskJacobian,
-				ublas::range(current_task_pos, current_task_pos + m_SensorTransforms[i]->task_dim()),
+				ublas::range(current_task_pos, current_task_pos + m_SensorTransforms[i]->task_jacobian().size1()),
 				ublas::range(0, resource_dim())
 			);
 
@@ -89,16 +77,16 @@ namespace CBF {
 			mr.assign(tmp);
 			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian)
 	
-			ublas::vector<Float> tmp_result (m_SensorTransforms[i]->task_dim());
+			ublas::vector<Float> tmp_result (m_SensorTransforms[i]->task_jacobian().size1());
 			tmp_result = m_SensorTransforms[i]->result();
 			CBF_DEBUG("tmp_result " << tmp_result)
 	
-			CBF_DEBUG("current_task_pos " << current_task_pos << " task_dim " << m_SensorTransforms[i]->task_dim())
-			for (unsigned int j = 0; j < m_SensorTransforms[i]->task_dim(); ++j) {
+			CBF_DEBUG("current_task_pos " << current_task_pos << " task_dim " << m_SensorTransforms[i]->task_jacobian().size1())
+			for (unsigned int j = 0; j < m_SensorTransforms[i]->task_jacobian().size1(); ++j) {
 				m_Result(current_task_pos + j) = tmp_result(j);
 			}
 	
-			current_task_pos += m_SensorTransforms[i]->task_dim();
+			current_task_pos += m_SensorTransforms[i]->task_jacobian().size1();
 		}
 	
 	}

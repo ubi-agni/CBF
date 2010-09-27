@@ -14,9 +14,6 @@ struct TransposeEffectorTransform : public EffectorTransform {
 		m_InverseTaskJacobian = ublas::trans(task_jacobian);
 	}
 
-	virtual unsigned int task_dim() const { return m_SensorTransform->task_dim(); }
-	virtual unsigned int resource_dim() const { return m_SensorTransform->resource_dim(); }
-
 	virtual void exec(const FloatVector &input, FloatVector &result) {
 		result = ublas::prod(m_InverseTaskJacobian, input);
 	}

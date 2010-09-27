@@ -37,25 +37,20 @@ namespace CBF {
 	struct DifferenceSensorTransform : public SensorTransform {
 		DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance);
 
-		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr())
+		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr()) :
+			SensorTransform(t1->task_dim(), t1->resource_dim())
 		{
 			if (t1.get() && t2.get())
 				set_transforms(t1, t2);
 		}
 
 		void set_transforms(SensorTransformPtr t1, SensorTransformPtr t2) {
-			if (t1->resource_dim() != t2->resource_dim())
-				throw std::runtime_error("[DifferenceSensorTransform]: Resource dimensions do not match");
-
-			if (t1->task_dim() != t2->task_dim())
-				throw std::runtime_error("[DifferenceSensorTransform]: Task dimensions do not match");
-
 			m_Transform1 = t1;
 			m_Transform2 = t2;
 		}
 
 		void update(const FloatVector &resource_value) {
-			assert(m_Transform1->task_dim() == m_Transform2->task_dim());
+			assert(m_Transform1->task_jacobian().size1() == m_Transform2->task_jacobian().size1());
 
 			m_Transform1->update(resource_value);
 			m_Transform2->update(resource_value);
@@ -67,8 +62,6 @@ namespace CBF {
 			m_Result = m_Transform1->result() - m_Transform2->result();
 		}
 
-		// As both sensor transforms are required to have the same resource dimensionality, it does not matter
-		// which one we return
 		unsigned int resource_dim() const { return m_Transform1->resource_dim(); }
 
 		// As both sensor transforms are required to have the same task dimensionality, it does not matter

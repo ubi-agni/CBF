@@ -39,6 +39,7 @@ namespace CBF {
 	
 	
 	BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(boost::shared_ptr<KDL::Chain> chain) :
+		SensorTransform(0,0),
 		m_Chain(chain),
 		m_Frame(new KDL::Frame),
 		m_Jacobian(new KDL::Jacobian)
@@ -85,6 +86,9 @@ namespace CBF {
 	KDLChainPositionSensorTransform::KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain) :
 		BaseKDLChainSensorTransform(chain)
 	{
+		m_TaskDim = 3;
+		m_ResourceDim = chain->getNrOfJoints();
+
 		m_Result = ublas::vector<Float>(3);
 	}
 	
@@ -109,6 +113,8 @@ namespace CBF {
 	KDLChainAxisAngleSensorTransform::KDLChainAxisAngleSensorTransform(boost::shared_ptr<KDL::Chain> chain) :
 		BaseKDLChainSensorTransform(chain)
 	{
+		m_TaskDim = 3;
+		m_ResourceDim = chain->getNrOfJoints();
 		m_Result = ublas::vector<Float>(3);
 	}
 	
@@ -154,11 +160,11 @@ namespace CBF {
 		boost::shared_ptr<KDL::Tree> tree,
 		const std::vector<std::string> &segment_names
 	) :
+		SensorTransform(0,0),
 		m_Tree(tree),
 		m_SegmentNames(segment_names)
 	{
 		init_solvers();
-
 	}
 	
 	void BaseKDLTreeSensorTransform::init_solvers() {
@@ -208,6 +214,8 @@ namespace CBF {
 	) : 
 		BaseKDLTreeSensorTransform(tree, segment_names)
 	{
+		m_TaskDim = 3;
+		m_ResourceDim = tree->getNrOfJoints();
 		m_Result = FloatVector(3 * segment_names.size());
 		m_TaskJacobian = FloatMatrix(3 * segment_names.size(), tree->getNrOfJoints());
 	}
@@ -241,6 +249,9 @@ namespace CBF {
 	) : 
 		BaseKDLTreeSensorTransform(tree, segment_names)
 	{
+		m_TaskDim = 3;
+		m_ResourceDim = tree->getNrOfJoints();
+
 		m_Result = FloatVector(3 * segment_names.size());
 		m_TaskJacobian = FloatMatrix(3 * segment_names.size(), tree->getNrOfJoints());
 	}

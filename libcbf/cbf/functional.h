@@ -23,6 +23,7 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 		VectorOperation vector_operation, 
 		MatrixOperation matrix_operation
 	) :
+		SensorTransform(operand->task_dim(),operand->resource_dim()),
 		m_Operand(operand),
 		m_VectorOperation(vector_operation),
 		m_MatrixOperation(matrix_operation)
@@ -43,7 +44,9 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 			NegateOperationSensorTransform
 		*/
 		template <class XMLType>
-		ApplyOperationSensorTransform(const XMLType& xml_instance) { 
+		ApplyOperationSensorTransform(const XMLType& xml_instance) :
+		SensorTransform(0,0) 
+		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 			m_Operand = 
@@ -107,6 +110,7 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 		MatrixOperation matrix_operation,
 		unsigned int blocksize
 	) :
+		SensorTransform(0,0),
 		m_Operand(operand),
 		m_VectorOperation(vector_operation),
 		m_MatrixOperation(matrix_operation),

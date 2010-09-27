@@ -28,6 +28,7 @@ struct NormSensorTransform : public SensorTransform {
 	SensorTransformPtr m_Transform;
 
 	NormSensorTransform(SensorTransformPtr transform) : 
+		SensorTransform(transform->task_dim(), transform->resource_dim()),
 		m_Transform(transform) {
 
 		/// The norm is a 1D number

@@ -128,7 +128,7 @@ void GenericEffectorTransform::update(const FloatVector &resource_value, const F
 	CBF_DEBUG("updating")
 
 	//m_SensorTransform->task_jacobian(m_Jacobian);
-	pseudo_inverse(m_SensorTransform->task_jacobian(), m_InverseTaskJacobian);
+	pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
 
 	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
 }
@@ -150,25 +150,28 @@ void DampedWeightedGenericEffectorTransform::update(
 	CBF_DEBUG("updating")
 
 	//m_SensorTransform->task_jacobian(m_Jacobian);
-	damped_pseudo_inverse(m_SensorTransform->task_jacobian(), m_InverseTaskJacobian);
+	damped_pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
 
 	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
 }
 
 
 #ifdef CBF_HAVE_XSD
-	GenericEffectorTransform::GenericEffectorTransform(const CBFSchema::GenericEffectorTransform &xml_instance)
+	GenericEffectorTransform::GenericEffectorTransform(const CBFSchema::GenericEffectorTransform &xml_instance) :
+		EffectorTransform(xml_instance.TaskDimension(), xml_instance.ResourceDimension())
 	{
 	
 	}
 	
 
-	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const CBFSchema::DampedGenericEffectorTransform &xml_instance)
+	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const CBFSchema::DampedGenericEffectorTransform &xml_instance) :
+		EffectorTransform(xml_instance.TaskDimension(), xml_instance.ResourceDimension())
 	{
 		m_DampingConstant = (xml_instance.DampingConstant());
 	}
 
-	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance)
+	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance) :
+		EffectorTransform(xml_instance.TaskDimension(), xml_instance.ResourceDimension())
 	{
 	
 	}

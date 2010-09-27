@@ -89,7 +89,7 @@ int main() {
 	CBF::WeightedSumSensorTransformPtr st
 		(new CBF::WeightedSumSensorTransform(v, weights));
 
-	CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform);
+	CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(3, NUM_OF_JOINT_TRIPLES * 3));
 
 	//! An AxisPotential for R^3
 	CBF::AxisPotentialPtr p(new CBF::AxisPotential(3, 0.01));

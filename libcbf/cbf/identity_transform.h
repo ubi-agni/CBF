@@ -34,12 +34,10 @@ namespace CBF {
 		@brief Trivial transform that passes the input through unchanged
 	*/
 	struct IdentityEffectorTransform : public EffectorTransform {
-		unsigned int m_Dim;
-	
 		IdentityEffectorTransform(const CBFSchema::IdentityEffectorTransform &xml_instance);
 
 		IdentityEffectorTransform(unsigned int dim = 1) :
-			m_Dim(dim)
+			EffectorTransform(dim, dim)
 		{
 			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim);
 		}
@@ -52,14 +50,6 @@ namespace CBF {
 		virtual void exec(const CBF::FloatVector& in, CBF::FloatVector& result)
 		{
 			result = in;
-		}
-
-		virtual unsigned resource_dim() const {
-			return m_Dim;
-		}
-	
-		virtual unsigned int task_dim() const {
-			return m_Dim;
 		}
 	};
 
@@ -75,7 +65,7 @@ namespace CBF {
 		unsigned int m_Dim;
 	
 		IdentitySensorTransform(unsigned int dim = 1) :
-			m_Dim(dim)
+			SensorTransform(dim, dim)
 		{
 			// Setup the (constant) jacobian which is just the identity matrix.. [TODO: erm, check this]
 			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim,dim);

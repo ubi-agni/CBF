@@ -36,7 +36,7 @@ int main() {
 			dr,
 			PotentialPtr(new SquarePotential(3, 0.1)),
 			SensorTransformPtr(new IdentitySensorTransform(3)),
-			EffectorTransformPtr(new GenericEffectorTransform),
+			EffectorTransformPtr(new GenericEffectorTransform(3,3)),
 			ResourcePtr(new DummyResource(3))));
 
 	FloatVector vec(3);

@@ -68,13 +68,15 @@ int main(int argc, char *argv[]) {
 		ref->references()[0] = CBF::ublas::unit_vector<CBF::Float>(3,1);
 
 		//! Use a simple primitive controller for this test
-		controller = CBF::PrimitiveControllerPtr(new CBF::PrimitiveController(
-			ref,
-			CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)),
-			CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
-			CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform),
-			CBF::ResourcePtr(new CBF::DummyResource(12))
-		));
+		controller = CBF::PrimitiveControllerPtr(
+			new CBF::PrimitiveController(
+				ref,
+				CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)),
+				CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
+				CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(3, 12)),
+				CBF::ResourcePtr(new CBF::DummyResource(12))
+			)
+		);
 
 		unsigned int total_steps = 0;
 		for (unsigned int run = 0; run < NUM_OF_RUNS; ++run) {

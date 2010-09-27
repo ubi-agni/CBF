@@ -59,7 +59,10 @@ namespace CBF {
 		constructor (i.e. one without arguments)..
 	*/
 	struct SensorTransform : public Object {
-		SensorTransform()	{
+		SensorTransform(unsigned int task_dim, unsigned int resource_dim)	:
+			m_TaskDim(task_dim),
+			m_ResourceDim(resource_dim)
+		{
 	
 		}
 
@@ -72,6 +75,9 @@ namespace CBF {
 		virtual ~SensorTransform() {
 	
 		}
+
+		virtual unsigned int task_dim() { return m_TaskDim; }
+		virtual unsigned int resource_dim() { return m_ResourceDim; }
 	
 		/**
 			@brief Update internal state and do expensive one shot calculations 
@@ -91,17 +97,6 @@ namespace CBF {
 		*/
 		virtual const FloatVector &result() const { return m_Result; }
 
-		/**
-			@brief Needs to be implemented in subclass to allow 
-			dimensionality checking when this is bound to a resource.
-		*/
-		virtual unsigned int resource_dim() const = 0;
-	
-		/**
-			@brief Needs to be implemented in subclass to allow 
-			dimensionality checking when bound to a resource.
-		*/
-		virtual unsigned int task_dim() const = 0;
 	
 		/**
 			@brief returns the current task jacobian
@@ -156,6 +151,9 @@ namespace CBF {
 			std::vector<std::string> m_ComponentNames;
 
 			std::string m_DefaultComponentName;
+
+			unsigned int m_TaskDim;
+			unsigned int m_ResourceDim;
 	};
 
 	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;

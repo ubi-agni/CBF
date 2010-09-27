@@ -42,7 +42,11 @@ namespace CBF {
 		and maps it to the resource's configuration space.
 	*/
 	struct EffectorTransform : public Object {
-		EffectorTransform() {
+
+		EffectorTransform(unsigned int task_dim, unsigned int resource_dim) :
+			m_TaskDim(task_dim),
+			m_ResourceDim(resource_dim)
+		{
 	
 		}
 
@@ -95,26 +99,15 @@ namespace CBF {
 			return m_InverseTaskJacobian; 
 		}
 	
-		/**
-			Needs to be implemented in subclass to allow dimensionality checking when
-			this is bound to a resource.
-		*/
-		virtual unsigned resource_dim() const = 0;
-	
-		/**
-			Needs to be implemented in subclass to allow dimensionality checking when
-			this is bound to a resource.
-		*/
-		virtual unsigned int task_dim() const = 0;
-	
 		protected:
-			SensorTransformPtr m_SensorTransform;
-
 			/**
 				This should be calculated in the update() function. the inverse_task_jacobian() function
 				should then return a reference to this to avoid unnessecary recomputations.
 			*/
 			FloatMatrix m_InverseTaskJacobian;
+
+			unsigned int m_TaskDim;
+			unsigned int m_ResourceDim;
 	};
 } // namespace
 

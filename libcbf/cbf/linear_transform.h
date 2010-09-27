@@ -42,11 +42,15 @@ struct LinearSensorTransform : public SensorTransform {
 		m_Result = ublas::prod(m_TaskJacobian, resource_value);
 	}
 
-	LinearSensorTransform() {
-		m_TaskJacobian = ublas::identity_matrix<Float>(1);
+	LinearSensorTransform(unsigned int task_dim, unsigned int resource_dim) :
+		SensorTransform(task_dim,resource_dim)
+	{
+		m_TaskJacobian = ublas::identity_matrix<Float>(task_dim, resource_dim);
 	}
 
-	LinearSensorTransform(FloatMatrix &m) {
+	LinearSensorTransform(FloatMatrix &m) :
+		SensorTransform(m.size1(), m.size2())
+	{
 		m_TaskJacobian = m ;
 	}
 

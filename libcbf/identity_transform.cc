@@ -26,7 +26,7 @@ namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
 		IdentityEffectorTransform::IdentityEffectorTransform(const CBFSchema::IdentityEffectorTransform &xml_instance) :
-			m_Dim(xml_instance.Dimension())
+			EffectorTransform(xml_instance.Dimension(), xml_instance.Dimension())
 		{
 			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(xml_instance.Dimension());
 

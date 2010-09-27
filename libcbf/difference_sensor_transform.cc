@@ -46,10 +46,10 @@ namespace CBF {
 			if (transforms.size() != 2) 
 				throw std::runtime_error("[DifferenceSensorTransform]: Number of transforms != 2");
 
-			if (transforms[0]->resource_dim() != transforms[1]->resource_dim())
+			if (transforms[0]->task_jacobian().size2() != transforms[1]->task_jacobian().size2())
 				throw std::runtime_error("[DifferenceSensorTransform]: Resource dimensions do not match");
 
-			if (transforms[0]->task_dim() != transforms[1]->task_dim())
+			if (transforms[0]->task_jacobian().size1() != transforms[1]->task_jacobian().size1())
 				throw std::runtime_error("[DifferenceSensorTransform]: Task dimensions do not match");
 
 			set_transforms(transforms[0], transforms[1]);

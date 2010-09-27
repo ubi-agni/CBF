@@ -53,13 +53,17 @@ namespace CBF {
 			std::vector<SensorTransformPtr> m_SensorTransforms;
 	
 		public:
-			CompositeSensorTransform(std::vector<SensorTransformPtr> transforms = std::vector<SensorTransformPtr>()) {
+			CompositeSensorTransform(std::vector<SensorTransformPtr> transforms = std::vector<SensorTransformPtr>()) :
+				SensorTransform(0,0)
+			{
 				set_transforms(transforms);
 			}
 
 			CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance);
 
-			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2) {
+			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2) :
+				SensorTransform(0,0)
+			{
 				std::vector<SensorTransformPtr> v;
 				v.push_back(t1);
 				v.push_back(t2);
@@ -68,10 +72,6 @@ namespace CBF {
 
 			virtual void set_transforms(std::vector<SensorTransformPtr> transforms);
 		
-			virtual unsigned resource_dim() const;
-
-			virtual unsigned int task_dim() const;
-
 			virtual void update(const FloatVector &resource_value);
 	
 			virtual const std::vector<SensorTransformPtr> &transforms() const {

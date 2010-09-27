@@ -45,7 +45,9 @@ namespace CBF {
 	struct GenericEffectorTransform : public EffectorTransform {
 		GenericEffectorTransform (const CBFSchema::GenericEffectorTransform &xml_instance);
 
-		GenericEffectorTransform() { }
+		GenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim) :
+			EffectorTransform(task_dim, resource_dim)
+		{ }
 	
 		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
@@ -54,11 +56,11 @@ namespace CBF {
 		}
 	
 		virtual unsigned resource_dim() const {
-			return m_SensorTransform->resource_dim();
+			return m_ResourceDim;
 		}
 	
 		virtual unsigned int task_dim() const {
-			return m_SensorTransform->task_dim();
+			return m_TaskDim;
 		}
 	};
 	
@@ -73,9 +75,8 @@ namespace CBF {
 	
 		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
-		DampedGenericEffectorTransform(
-			Float damping_constant = 0.1)
-			: m_DampingConstant(damping_constant)
+		DampedGenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim,	Float damping_constant = 0.1)
+			: EffectorTransform(task_dim, resource_dim), m_DampingConstant(damping_constant)
 		{
 
 		}
@@ -84,14 +85,6 @@ namespace CBF {
 			result = ublas::prod(m_InverseTaskJacobian, input);
 		}
 	
-		virtual unsigned resource_dim() const {
-			return m_SensorTransform->resource_dim();
-		}
-	
-		virtual unsigned int task_dim() const {
-			return m_SensorTransform->task_dim();
-		}
-
 		protected:
 			Float m_DampingConstant;
 	};
@@ -122,7 +115,11 @@ namespace CBF {
 			virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 		
 			DampedWeightedGenericEffectorTransform(
-				Float dampingConstant = 0.1)
+				unsigned int task_dim,
+				unsigned int resource_dim,
+				Float dampingConstant = 0.1
+			) :
+				EffectorTransform(task_dim, resource_dim)
 			{
 				m_DampingConstant = dampingConstant;
 			}
@@ -132,13 +129,6 @@ namespace CBF {
 				result = ublas::prod(m_InverseTaskJacobian, input);
 			}
 		
-			virtual unsigned resource_dim() const {
-				return m_SensorTransform->resource_dim();
-			}
-		
-			virtual unsigned int task_dim() const {
-				return m_SensorTransform->task_dim();
-			}
 	};
 	
 	typedef boost::shared_ptr<DampedWeightedGenericEffectorTransform> DampedWeightedGenericEffectorTransformPtr;

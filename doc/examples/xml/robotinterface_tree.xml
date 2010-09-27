@@ -1173,7 +1173,10 @@
 		<SegmentName>Right.hand.ff1</SegmentName>
 	 </SensorTransform>
 	 <EffectorTransform 
-		 xsi:type="cbf:GenericEffectorTransform"/>
+		 xsi:type="cbf:GenericEffectorTransform">
+		<TaskDimension>6</TaskDimension>
+		<ResourceDimension>62</ResourceDimension>
+	 </EffectorTransform>
 
 	 <PrimitiveController>
 		<Coefficient>1</Coefficient>
@@ -1193,7 +1196,10 @@
 		<SensorTransform xsi:type="cbf:IdentitySensorTransform">
 		  <Dimension>62</Dimension>
 		</SensorTransform>
-		<EffectorTransform xsi:type="cbf:GenericEffectorTransform"/>
+		<EffectorTransform xsi:type="cbf:GenericEffectorTransform">
+		  <TaskDimension>62</TaskDimension>
+		  <ResourceDimension>62</ResourceDimension>
+		</EffectorTransform>
 		<CombinationStrategy xsi:type="cbf:AddingStrategy"/>
 		<Resource xsi:type="cbf:DummyResource">
 		  <Vector xsi:type="cbf:BoostVector">

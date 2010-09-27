@@ -69,18 +69,6 @@ namespace CBF {
 
 		if (m_Reference->dim() != m_Potential->dim())
 			throw std::runtime_error("Reference and Potential dimensions mismatch");
-
-		if (m_SensorTransform->task_dim() != m_Potential->dim())
-			throw std::runtime_error("SensorTransform and Potential dimensions mismatch");
-
-		if (m_SensorTransform->resource_dim() != m_Resource->dim())
-			throw std::runtime_error("SensorTransform and Resource dimensions mismatch");
-
-		if (m_EffectorTransform->task_dim() != m_Potential->dim())
-			throw std::runtime_error("EffectorTransform and Potential dimensions mismatch");
-
-		if (m_Resource->dim() != m_EffectorTransform->resource_dim())
-			throw std::runtime_error("EffectorTransform and Resource dimensions mismatch");
 	}	
 	
 	
@@ -122,7 +110,7 @@ namespace CBF {
 			//! Map gradient step into resource step via exec:
 			m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
 		} else {
-			m_ResourceStep = ublas::zero_vector<Float>(m_EffectorTransform->resource_dim());
+			m_ResourceStep = ublas::zero_vector<Float>(m_Resource->dim());
 		}
 	
 		CBF_DEBUG("resourceStep: " << m_ResourceStep)
@@ -137,7 +125,7 @@ namespace CBF {
 			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i])
 		}
 	
-		m_CombinedResults = ublas::zero_vector<Float>(m_EffectorTransform->resource_dim());
+		m_CombinedResults = ublas::zero_vector<Float>(m_Resource->dim());
 	
 		m_CombinationStrategy->exec(m_CombinedResults, m_SubordinateGradientSteps);
 	

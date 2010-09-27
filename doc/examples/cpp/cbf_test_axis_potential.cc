@@ -81,7 +81,9 @@ int main() {
 	CBF::DifferenceSensorTransformPtr st
 		(new CBF::DifferenceSensorTransform(st1, st2));
 
-	CBF::DampedGenericEffectorTransformPtr et(new CBF::DampedGenericEffectorTransform);
+	CBF::DampedGenericEffectorTransformPtr et(
+		new CBF::DampedGenericEffectorTransform(3, NUM_OF_JOINT_TRIPLES * 3)
+	);
 	// CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(st));
 
 	//! An AxisPotential for R^3
