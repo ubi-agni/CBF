@@ -59,6 +59,12 @@ namespace CBF {
 		m_Coefficient(alpha)
 	{
 		CBF_DEBUG("Constructor1")
+		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) { 
+			m_SubordinateControllers[i]->m_Resource = m_Resource; 
+			m_SubordinateControllers[i]->check_dimensions();
+		}
+
+		
 
 		check_dimensions();
 	}
