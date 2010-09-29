@@ -33,7 +33,7 @@ namespace CBF {
 			protected:
 				static XMLObjectFactory *m_Instance;
 				XMLObjectFactory() { 
-						CBF_DEBUG("instance (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
+						CBF_DEBUG("instance (possibly mangled type name follows): " << CBF_UNMANGLE(this))
 				}
 	
 			public:
@@ -53,7 +53,7 @@ namespace CBF {
 					}
 					CBF_THROW_RUNTIME_ERROR(
 						"No creator found for this " 
-						<< CBF_UNMANGLE(typeid(this).name()) << xml_instance
+						<< CBF_UNMANGLE(this) << xml_instance
 					)
 	
 					return boost::shared_ptr<T>();
@@ -66,13 +66,13 @@ namespace CBF {
 		template <class T, class TType>
 		struct XMLDerivedFactory : XMLDerivedFactoryBase {
 				XMLDerivedFactory() { 
-					CBF_DEBUG("registering (possibly mangled type name follows): " << CBF_UNMANGLE(typeid(this).name()))
+					CBF_DEBUG("registering (possibly mangled type name follows): " << CBF_UNMANGLE(this))
 					XMLObjectFactory::instance()->m_DerivedFactories.push_back(this); 
 				}
 	
 			public:
 				virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) {
-					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(typeid(this).name()))
+					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(this))
 					const TType* r = dynamic_cast<const TType*>(&xml_instance);
 					if (r) {
 						CBF_DEBUG("yes, i am the one")
@@ -92,7 +92,7 @@ namespace CBF {
 		template <class T, class TSchemaType>
 		struct Constructor {
 			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
-				CBF_DEBUG("creating a " << CBF_UNMANGLE(typeid(T).name()))
+				CBF_DEBUG("creating a " << CBF_UNMANGLE(T))
 				const TSchemaType &t = dynamic_cast<const TSchemaType&>(xml_instance);
 				return boost::shared_ptr<T>(new T(t));
 			}
@@ -121,16 +121,16 @@ namespace CBF {
 			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
 				CBF_DEBUG(
 					"creating a " << 
-					CBF_UNMANGLE(typeid(T).name()) << 
+					CBF_UNMANGLE(T) << 
 					" from a " << 
-					CBF_UNMANGLE(typeid(xml_instance).name())
+					CBF_UNMANGLE(xml_instance)
 				)
 
 				if (m_Creators.find(typeid(xml_instance).name()) == m_Creators.end()) {
 					CBF_THROW_RUNTIME_ERROR(
-						"[" << CBF_UNMANGLE(typeid(this).name())<< "]: "  << 
+						"[" << CBF_UNMANGLE(this)<< "]: "  << 
 						"XMLCreator for type not found. Type: " << 
-						CBF_UNMANGLE(typeid(xml_instance).name()) << 
+						CBF_UNMANGLE(xml_instance) << 
 						" (Did you forget to register it?)"
 					)
 				}
@@ -160,9 +160,9 @@ namespace CBF {
 			XMLCreator(C c) : m_Creator(c) { 
 				CBF_DEBUG(
 					"registering type: " << 
-					CBF_UNMANGLE(typeid(TSchemaType).name()) << 
+					CBF_UNMANGLE(TSchemaType) << 
 					" in registry " << 
-					CBF_UNMANGLE(typeid(T).name())
+					CBF_UNMANGLE(T)
 				)
 
 				XMLFactory<T>::instance()->m_Creators[typeid(TSchemaType).name()] = this;
@@ -171,11 +171,11 @@ namespace CBF {
 			boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
 				CBF_DEBUG(
 					"creating a " << 
-					CBF_UNMANGLE(typeid(T).name()) << 
+					CBF_UNMANGLE(T) << 
 					" from a " << 
-					CBF_UNMANGLE(typeid(xml_instance).name()) <<
+					CBF_UNMANGLE(xml_instance) <<
 					" TSChemaType = " <<
-					CBF_UNMANGLE(typeid(TSchemaType).name())
+					CBF_UNMANGLE(TSchemaType)
 				)
 				const TSchemaType &tmp = dynamic_cast<const TSchemaType&>(xml_instance);
 				return m_Creator(tmp);
@@ -201,11 +201,11 @@ namespace CBF {
 			{ 
 				CBF_DEBUG(
 					"adding constructor with TBase: " << 
-					CBF_UNMANGLE(typeid(TBase).name()) <<  
+					CBF_UNMANGLE(TBase) <<  
 					" and T: " << 
-					CBF_UNMANGLE(typeid(T).name()) << 
+					CBF_UNMANGLE(T) << 
 					" and TSchemaType: " << 
-					CBF_UNMANGLE(typeid(TSchemaType).name())
+					CBF_UNMANGLE(TSchemaType)
 				)
 			}
 		};

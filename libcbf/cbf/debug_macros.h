@@ -31,9 +31,35 @@
 	#define CBF_DEBUG(arg) ;
 #else
 	#ifdef CBF_DEBUG_COLOR
-		#define CBF_DEBUG(arg) std::cerr << std::fixed << std::setprecision(14) << "\033[22;32m[" << __FILE__ << ":" << __LINE__ << " - \033[22;33m" << __FUNCTION__ << "()\033[22;32m]: \033[22;37m" << arg <<  std::endl << std::flush;
+		#define CBF_DEBUG(arg) \
+			std::cerr << \
+				std::fixed << \
+				std::setprecision(14) << \
+				"\033[22;32m[" << \
+				__FILE__ << \
+				":" << \
+				__LINE__ << \
+				" - \033[22;33m" << \
+				__FUNCTION__ << \
+				"()\033[22;32m]: \033[22;37m" << \
+				arg <<  \
+				std::endl << std::flush;
 	#else
-		#define CBF_DEBUG(arg) std::cerr << std::fixed << std::setprecision(14) << std::fixed << std::setprecision(8) << """[" << __FILE__ << ":" << __LINE__ << " - " << __FUNCTION__ << "()]: " << arg <<  std::endl << std::flush;
+		#define CBF_DEBUG(arg) \
+			std::cerr << \
+				std::fixed << \
+				std::setprecision(14) << \
+				std::fixed << \
+				std::setprecision(8) << \
+				"""[" << \
+				__FILE__ << \
+				":" << \
+				__LINE__ << \
+				" - " << \
+				__FUNCTION__ << \
+				"()]: " << \
+				arg <<  \
+				std::endl << std::flush;
 	#endif
 #endif
 
@@ -52,9 +78,9 @@
 		return ret;
 	}
 
-	#define CBF_UNMANGLE(X) (gcc_unmangle(X))
+	#define CBF_UNMANGLE(X) (gcc_unmangle(typeid(X).name()))
 #else
-	#define CBF_UNMANGLE(X) (X)
+	#define CBF_UNMANGLE(X) (typeid(X).name())
 #endif
 
 #endif
