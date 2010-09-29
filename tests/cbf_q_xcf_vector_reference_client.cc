@@ -25,22 +25,31 @@ Test_xcf_reference_client_gui::Test_xcf_reference_client_gui(int argc, char *arg
 	app = new QApplication(argc, argv);
 
 	window = new QWidget;
-	layout = new QGridLayout();
-	label = new QLabel("Insert the server address here:", window);
-	lineedit = new QLineEdit(window);
-	okaybutton = new QPushButton("Connect", window);
-	exitbutton = new QPushButton("Quit", window);
-
-	layout -> addWidget(label, 0, 0, 1, 3);
-	layout -> addWidget(lineedit, 1, 0, 1, 2);
-	layout -> addWidget(okaybutton, 1, 2, 1, 1);
-	layout -> addWidget(exitbutton, 2, 0, 1, 3);
-
+	layout = new QVBoxLayout();
 	window -> setLayout(layout);
+
+	connectWindow = new QWidget(window);
+	QGridLayout *connectWindowLayout = new QGridLayout();
+	connectWindow -> setLayout(connectWindowLayout);
+
+	label = new QLabel("Insert the server address here:", connectWindow);
+	lineedit = new QLineEdit(connectWindow);
+	okaybutton = new QPushButton("Connect", connectWindow);
+	exitbutton = new QPushButton("Quit", connectWindow);
+
+	connectWindowLayout -> addWidget(label, 0, 0, 1, 3);
+	connectWindowLayout -> addWidget(lineedit, 1, 0, 1, 2);
+	connectWindowLayout -> addWidget(okaybutton, 1, 2, 1, 1);
+	connectWindowLayout -> addWidget(exitbutton, 2, 0, 1, 3);
+
+
+	layout -> addWidget(connectWindow);
 	window -> show();
 
 	QObject::connect(exitbutton, SIGNAL(clicked()), app, SLOT(quit()));
 	QObject::connect(okaybutton, SIGNAL(clicked()), this, SLOT(okay()));
+
+	connectWindow -> setMaximumHeight(connectWindow -> height());
 
 	app -> exec();
 }
@@ -60,7 +69,7 @@ void Test_xcf_reference_client_gui::connect(){
 			label -> setText("connecting...");
 			CBF_DEBUG("creating remote server object")
 			std::cout << "connecting to " << input << std::endl;
-			_remoteServer = XCF::RemoteServer::create(input.c_str());
+			/*_remoteServer = XCF::RemoteServer::create(input.c_str());
 
 			std::string dim_string;
 			_remoteServer->callMethod("get_dimension", "", dim_string);
@@ -72,7 +81,7 @@ void Test_xcf_reference_client_gui::connect(){
 			CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
 			CBF_DEBUG("dim_vv: " << dim_vv)
 
-			dim = dim_vv[0];
+			dim = dim_vv[0];*/dim = 5;
 			connected = 1;
 			enter_input_mode();
 		} catch(...){
@@ -85,9 +94,10 @@ void Test_xcf_reference_client_gui::connect(){
 
 void Test_xcf_reference_client_gui::disconnect(){	
 	label -> setText("Insert the server address here:");
-	okaybutton -> setText("Connect");	
-	layout -> removeWidget(input_window);
-	delete input_window;
+	okaybutton -> setText("Connect");
+	layout -> removeWidget(inputWindow);
+	delete inputWindow;
+	//_remoteServer -> destroy();
 	connected = 0;
 }
 
@@ -96,39 +106,42 @@ void Test_xcf_reference_client_gui::enter_input_mode(){
 	connectedto.append(input.c_str());
 	label -> setText(connectedto);
 	okaybutton -> setText("Disconnect");
+	lineedit -> setText("");
 
-	input_window = new QWidget(window);
-	QGridLayout *iwin_layout = new QGridLayout(input_window);
+	inputWindow = new QWidget(window);
+	QGridLayout *iWinLayout = new QGridLayout(inputWindow);
 	
-	QLabel *label2 = new QLabel("Please enter values:", input_window);
+	QLabel *label2 = new QLabel("Please enter values:", inputWindow);
+	label2 -> setMaximumHeight(label2 -> height());
 
-	iwin_layout -> addWidget(label2, 0 , 0, 1, 3);
+	iWinLayout -> addWidget(label2, 0 , 0, 1, 3);
 
 	spinboxes -> reserve(dim);
 	unsigned int i;
 	for (i=0; i<dim; i++){
 		std::ostringstream valno;
 		valno << "Value Nr. " << i+1;
-		iwin_layout -> addWidget(new QLabel(valno.str().c_str(), input_window), i+1, 0, 1, 1);
+		iWinLayout -> addWidget(new QLabel(valno.str().c_str(), inputWindow), i+1, 0, 1, 1);
 
-		QDoubleSpinBox *spinbox = new QDoubleSpinBox(input_window);
+		QDoubleSpinBox *spinbox = new QDoubleSpinBox(inputWindow);
 		spinbox -> setDecimals(SPINBOX_DECIMALS);
 		spinbox -> setSingleStep(SPINBOX_STEP);
+		spinbox -> setRange(SPINBOX_MIN, SPINBOX_MAX);
 		(*spinboxes)[i] = spinbox;
-		iwin_layout -> addWidget(spinbox, i+1, 2, 1, 2);
+		iWinLayout -> addWidget(spinbox, i+1, 2, 1, 2);
 
 	}
 
-	alwaysSend = new QCheckBox("Send every change", input_window);
+	alwaysSend = new QCheckBox("Send every change", inputWindow);
 	QObject::connect(alwaysSend, SIGNAL(clicked()), this, SLOT(changeSendMode()));
-	iwin_layout -> addWidget(alwaysSend, i+2, 0, 1, 4);
+	iWinLayout -> addWidget(alwaysSend, i+2, 0, 1, 4);
 
-	sendbutton = new QPushButton("Send", input_window);
+	sendbutton = new QPushButton("Send", inputWindow);
 	QObject::connect(sendbutton, SIGNAL(clicked()), this, SLOT(send()));
-	iwin_layout -> addWidget(sendbutton, i+3, 0, 1, 4);
+	iWinLayout -> addWidget(sendbutton, i+3, 0, 1, 4);
 
-	input_window -> setLayout(iwin_layout);
-	layout -> addWidget(input_window, 3, 0, 1, 3);
+	inputWindow -> setLayout(iWinLayout);
+	layout -> addWidget(inputWindow);
 }
 
 void Test_xcf_reference_client_gui::send(){
@@ -142,7 +155,7 @@ void Test_xcf_reference_client_gui::send(){
 	vector_string << ")";
 	std::cout << vector_string.str() << std::endl;
 	
-	CBF_DEBUG("creating vector doc")
+	/*CBF_DEBUG("creating vector doc")
 	CBFSchema::BoostVector v(vector_string.str());
 
 	std::ostringstream s;
@@ -154,8 +167,7 @@ void Test_xcf_reference_client_gui::send(){
 	std::string out;
 
 	CBF_DEBUG("calling remote method")
-	_remoteServer->callMethod("set_reference", s.str(), out);
-	
+	_remoteServer->callMethod("set_reference", s.str(), out);*/
 }
 
 void Test_xcf_reference_client_gui::changeSendMode(){

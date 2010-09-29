@@ -7,6 +7,7 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
 #include <QtGui/QGridLayout>
+#include <QtGui/QVBoxLayout>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QCheckBox>
 #include <QtCore/QObject>
@@ -18,18 +19,21 @@ class Test_xcf_reference_client_gui : public QObject{
 	Q_OBJECT
 	
 	private:
-	static const int SPINBOX_DECIMALS = 4;
+	static const int SPINBOX_DECIMALS = 9;
 	static const double SPINBOX_STEP = 0.0001;	
+	static const double SPINBOX_MIN = -1000;
+	static const double SPINBOX_MAX = +1000;
 	
 	QApplication *app;
 	QWidget *window;
-	QWidget *input_window;
+	QWidget *connectWindow;
+	QWidget *inputWindow;
 	QLabel *label;
 	QLineEdit *lineedit;
 	QPushButton *okaybutton;
 	QPushButton *exitbutton;
 	QPushButton *sendbutton;
-	QGridLayout *layout;
+	QVBoxLayout *layout;
 	QCheckBox *alwaysSend;
 	unsigned int connected;
 
