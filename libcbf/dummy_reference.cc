@@ -41,8 +41,8 @@ namespace CBF {
 		{
 			FloatVector tmp;
 
-			CBF_DEBUG("testing XMLFactory")
-			boost::shared_ptr<FloatVector> t = XMLFactory<FloatVector>::instance()->create((CBFSchema::Object &)*it);
+			//CBF_DEBUG("testing XMLFactory")
+			//boost::shared_ptr<FloatVector> t = XMLFactory<FloatVector>::instance()->create((CBFSchema::Object &)*it);
 
 			CBF_DEBUG("Extracting reference vector coefficients...")
 			try {
