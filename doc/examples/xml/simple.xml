@@ -29,6 +29,8 @@
  </SensorTransform>
 
  <EffectorTransform xsi:type="cbf:TransposeEffectorTransform">
+  <TaskDimension> 3 </TaskDimension>
+  <ResourceDimension> 3 </ResourceDimension>
  </EffectorTransform>
 
  <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
