@@ -155,7 +155,6 @@ namespace CBF {
 			int m_UpdateCycle;
 			int m_ActionCycle;
 
-			std::string m_Name;
 	};
 	
 	//! Convenience typedef

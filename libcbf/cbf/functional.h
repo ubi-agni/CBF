@@ -1,6 +1,7 @@
 #ifndef CBF_FUNCTIONAL_HH
 #define CBF_FUNCTIONAL_HH
 
+#include <cbf/config.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/debug_macros.h>
 

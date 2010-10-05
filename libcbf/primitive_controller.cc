@@ -35,38 +35,60 @@
 
 
 namespace CBF {
-	void PrimitiveController::init() {
+	void PrimitiveController::init(
+			Float coefficient,
+			std::vector<ConvergenceCriterionPtr> convergence_criteria,
+			ReferencePtr reference,
+			PotentialPtr potential,
+			SensorTransformPtr sensor_transform,
+			EffectorTransformPtr effector_transform,
+			std::vector<PrimitiveControllerPtr> subordinate_controllers,
+			CombinationStrategyPtr combination_strategy,
+			ResourcePtr resource
+	) {
 		m_Converged = false;
-	}
 
-	PrimitiveController::PrimitiveController(
-		ReferencePtr reference,
-		PotentialPtr potential,
-		SensorTransformPtr sensor_transform,
-		EffectorTransformPtr effector_transform,
-		ResourcePtr resource,
-		CombinationStrategyPtr combination_strategy,
-		std::vector<PrimitiveControllerPtr> subordinate_controllers,
-		Float alpha
-	) :
-		m_Reference(reference),
-		m_SubordinateControllers(subordinate_controllers),
-		m_SensorTransform(sensor_transform),
-		m_Potential(potential),
-		m_EffectorTransform(effector_transform),
-		m_CombinationStrategy(combination_strategy),
-		m_Resource(resource),
-		m_Coefficient(alpha)
-	{
-		CBF_DEBUG("Constructor1")
+		m_Reference = reference;
+		m_SubordinateControllers = subordinate_controllers;
+		m_SensorTransform = sensor_transform;
+		m_Potential = potential;
+		m_EffectorTransform = effector_transform;
+		m_CombinationStrategy = combination_strategy;
+		m_Resource = resource;
+		m_Coefficient = coefficient;
+
 		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) { 
 			m_SubordinateControllers[i]->m_Resource = m_Resource; 
 			m_SubordinateControllers[i]->check_dimensions();
 		}
-
-		
-
 		check_dimensions();
+
+	}
+
+	PrimitiveController::PrimitiveController(
+		Float alpha,
+		std::vector<ConvergenceCriterionPtr> convergence_criteria,
+		ReferencePtr reference,
+		PotentialPtr potential,
+		SensorTransformPtr sensor_transform,
+		EffectorTransformPtr effector_transform,
+		std::vector<PrimitiveControllerPtr> subordinate_controllers,
+		CombinationStrategyPtr combination_strategy,
+		ResourcePtr resource
+	)	{
+		init(
+			alpha,
+			convergence_criteria,
+			reference,
+			potential,
+			sensor_transform,
+			effector_transform,
+			subordinate_controllers,
+			combination_strategy,
+			resource
+		);
+
+		CBF_DEBUG("init")
 	}
 	
 
@@ -161,6 +183,15 @@ namespace CBF {
 	}
 	
 	bool PrimitiveController::check_convergence() {
+		m_Converged = false;
+
+		for (unsigned int i = 0, max = m_ConvergenceCriteria.size(); i < max; ++i) {
+			if (m_ConvergenceCriteria[i]->check_convergence(*this)) {
+				m_Converged = true;
+				return true;
+			}
+		}
+#if 0
 		Float stepnorm = ublas::norm_2(m_Result);
 
 		if (m_Reference->get().size() == 0)
@@ -183,6 +214,8 @@ namespace CBF {
 			((m_ConvergenceCriterion & RESOURCE_STEP_THRESHOLD) && (stepnorm < m_ResourceStepNormThreshold));
 
 		return converged;
+#endif
+		return false;
 	}
 	
 	bool PrimitiveController::finished() {
@@ -192,22 +225,15 @@ namespace CBF {
 	}
 	
 	#ifdef CBF_HAVE_XSD
-		PrimitiveController::PrimitiveController(const CBFSchema::PrimitiveController &xml_instance) :
-			m_Coefficient(1.0)
-		
+		PrimitiveController::PrimitiveController(const CBFSchema::PrimitiveController &xml_instance)
 		{
 			CBF_DEBUG("Constructing")
-			init();
-
 			if (xml_instance.Name())
 				m_Name = *xml_instance.Name();
 
-			m_Coefficient = xml_instance.Coefficient();
-		
-			m_ConvergenceCriterion = 0;
+			Float coefficient = xml_instance.Coefficient();
 
-			if (xml_instance.ConvergenceCriterion().begin() == xml_instance.ConvergenceCriterion().end())
-				CBF_THROW_RUNTIME_ERROR("Missing ConvergenceCriterion");
+			std::vector<ConvergenceCriterionPtr> criteria;
 
 			for (
 				::CBFSchema::PrimitiveController::ConvergenceCriterion_const_iterator it = 
@@ -215,6 +241,9 @@ namespace CBF {
 				it != xml_instance.ConvergenceCriterion().end();
 				++it
 			) {
+				ConvergenceCriterionPtr criterion = XMLObjectFactory::instance()->create<ConvergenceCriterion>(*it);
+				criteria.push_back(criterion);
+#if 0
 				const ::CBFSchema::TaskSpaceDistanceThreshold *d = dynamic_cast<const ::CBFSchema::TaskSpaceDistanceThreshold *>(&(*it));
 				if (d != 0) {
 					m_ConvergenceCriterion |= TASK_SPACE_DISTANCE_THRESHOLD;
@@ -222,6 +251,7 @@ namespace CBF {
 					CBF_DEBUG("TaskSpaceDistanceThreshold " << m_TaskSpaceDistanceThreshold)
 					continue;
 				}
+
 				const ::CBFSchema::ResourceStepNormThreshold *s = dynamic_cast<const ::CBFSchema::ResourceStepNormThreshold *>(&(*it));
 				if (s != 0) {
 					m_ConvergenceCriterion |= RESOURCE_STEP_THRESHOLD;
@@ -230,28 +260,30 @@ namespace CBF {
 					continue;
 				}
 				CBF_THROW_RUNTIME_ERROR("ConvergenceCriterion type not supported yet")
+#endif
 			}
 
+
 			CBF_DEBUG("Creating reference...")
-			m_Reference = 
+			ReferencePtr ref = 
 				XMLObjectFactory::instance()->create<Reference>(xml_instance.Reference());
 
 		
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");
 			// m_Potential = XMLObjectFactory<Potential, CBFSchema::Potential>::instance()->create(xml_instance.Potential());
-			m_Potential = 
+			PotentialPtr pot = 
 				XMLObjectFactory::instance()->create<Potential>(xml_instance.Potential());
 
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating sensor transform...")
-			m_SensorTransform = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.SensorTransform());
+			SensorTransformPtr sens = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.SensorTransform());
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating effector transform...")
-			m_EffectorTransform = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform());
+			EffectorTransformPtr eff = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform());
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
@@ -259,18 +291,17 @@ namespace CBF {
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating resource...")
-			m_Resource = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource());
+			ResourcePtr res = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource());
 			//! And bind to it...
 			CBF_DEBUG("Binding to resource...")
 
 			CBF_DEBUG("Creating combination strategy...")
-			m_CombinationStrategy = 
+			CombinationStrategyPtr com = 
 				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy());
-
-			check_dimensions();
 
 			//! Instantiate the subordinate controllers
 			CBF_DEBUG("Creating subordinate controller(s)...")
+			std::vector<PrimitiveControllerPtr> subs;
 			for (
 				::CBFSchema::PrimitiveController::PrimitiveController1_const_iterator it = xml_instance.PrimitiveController1().begin(); 
 				it != xml_instance.PrimitiveController1().end();
@@ -281,17 +312,23 @@ namespace CBF {
 				CBF_DEBUG("------------------------")
 				//! First we see whether we can construct a controller from the xml_document
 				PrimitiveControllerPtr controller = XMLObjectFactory::instance()->create<PrimitiveController>(*it);
-				if (controller.get() == 0) {
-					throw std::logic_error("This should not happen");
-				} else {
-		 				m_SubordinateControllers.push_back(controller);
-				}
+				controller->m_Resource = m_Resource;
+ 				subs.push_back(controller);
 
 				CBF_DEBUG("------------------------")
-				controller->m_Resource = m_Resource;
 			}
-		
 
+			init(
+				coefficient, 
+				criteria, 
+				ref, 
+				pot, 
+				sens, 
+				eff, 
+				subs, 
+				com, 
+				res
+			);
 		}
 
 		static XMLDerivedFactory<PrimitiveController, ::CBFSchema::PrimitiveController> x;

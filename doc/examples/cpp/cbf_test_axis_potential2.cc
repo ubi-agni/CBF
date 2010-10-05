@@ -25,6 +25,8 @@
 #include <cbf/weighted_sum_transforms.h>
 #include <cbf/kdl_transforms.h>
 #include <cbf/generic_transform.h>
+#include <cbf/convergence_criterion.h>
+#include <cbf/combination_strategy.h>
 
 #include <boost/shared_ptr.hpp>
 #include <kdl/chain.hpp>
@@ -106,9 +108,16 @@ int main() {
 	CBF::DummyResourcePtr dres(new CBF::DummyResource(NUM_OF_JOINT_TRIPLES * 3, 1));
 
 	//! Create our primitive controller
-	CBF::PrimitiveControllerPtr pc
-		(new CBF::PrimitiveController(
-			dref,	p,	st, et, dres));
+	CBF::PrimitiveControllerPtr pc(
+		new CBF::PrimitiveController(
+			1.0, 
+			std::vector<CBF::ConvergenceCriterionPtr>(),
+			dref,	p,	st, et, 
+			std::vector<CBF::PrimitiveControllerPtr>(),
+			CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
+			dres
+		)
+	);
 
 	do {
 		pc->step();	

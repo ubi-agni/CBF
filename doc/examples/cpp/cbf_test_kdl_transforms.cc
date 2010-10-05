@@ -70,10 +70,14 @@ int main(int argc, char *argv[]) {
 		//! Use a simple primitive controller for this test
 		controller = CBF::PrimitiveControllerPtr(
 			new CBF::PrimitiveController(
+				1.0,
+				std::vector<CBF::ConvergenceCriterionPtr>(),
 				ref,
 				CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)),
 				CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
 				CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(3, 12)),
+				std::vector<CBF::PrimitiveControllerPtr>(),
+				CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
 				CBF::ResourcePtr(new CBF::DummyResource(12))
 			)
 		);
