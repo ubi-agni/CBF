@@ -24,24 +24,31 @@
 #include <cbf/generic_transform.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
+#include <cbf/convergence_criterion.h>
+
+#include <vector>
 
 using namespace CBF;
 
 int main() {
-	DummyReferencePtr dr(new DummyReference(1,3));
+	DummyReferencePtr reference(new DummyReference(1,3));
 
 	//! Create a PrimitiveController...
  	PrimitiveControllerPtr c
-		(new CBF::PrimitiveController(
-			dr,
+		(new PrimitiveController(
+			1.0,
+			std::vector<ConvergenceCriterionPtr>(), 
+			reference,
 			PotentialPtr(new SquarePotential(3, 0.1)),
 			SensorTransformPtr(new IdentitySensorTransform(3)),
 			EffectorTransformPtr(new GenericEffectorTransform(3,3)),
+			std::vector<PrimitiveControllerPtr>(),
+			CombinationStrategyPtr(new AddingStrategy),
 			ResourcePtr(new DummyResource(3))));
 
 	FloatVector vec(3);
 	vec[0] = vec[1] = vec[2] = 1;
-	dr->set_reference(vec);
+	reference->set_reference(vec);
 
 	/** 
 		Run controller until convergence. Note that step() must be called

@@ -30,6 +30,7 @@
 #include <vector>
 
 #include <cbf/controller.h>
+#include <cbf/convergence_criterion.h>
 #include <cbf/potential.h>
 #include <cbf/resource.h>
 #include <cbf/effector_transform.h>
@@ -40,7 +41,6 @@
 namespace CBFSchema { class PrimitiveController; }
 
 namespace CBF {
-
 	/** Forward declaration for subordinate controllers */
 	class PrimitiveController;
 	typedef boost::shared_ptr<PrimitiveController> PrimitiveControllerPtr;
@@ -68,14 +68,15 @@ namespace CBF {
 			set from the specified arguments
 		*/
 		PrimitiveController(
+			Float coefficient,
+			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
 			PotentialPtr potential,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
-			ResourcePtr resource,
-			CombinationStrategyPtr combination_strategy = CombinationStrategyPtr(new AddingStrategy),
-			std::vector<PrimitiveControllerPtr> subordinate_controllers = std::vector<PrimitiveControllerPtr>(),
-			Float coefficient = 1.0
+			std::vector<PrimitiveControllerPtr> subordinate_controllers,
+			CombinationStrategyPtr combination_strategy,
+			ResourcePtr resource
 		);
 	
 	
@@ -88,25 +89,21 @@ namespace CBF {
 				This should only be used after the result has been calculated
 			*/ 
 			virtual bool check_convergence();
+
+			std::vector<ConvergenceCriterionPtr> m_ConvergenceCriteria;
 	
-			/**
-				DISTANCE_THRESHOLD means that the potential should signal
-				convergence when only a certain distance away from at
-				least one reference..
-		
-				Some potentials might not have a notion of reference. For 
-				these convergence might be determined by a sufficiently
-				small gradient step norm. For this the STEP_THRESHOLD 
-				is useful.
-			*/
-			enum ConvergenceCriterion { TASK_SPACE_DISTANCE_THRESHOLD = 1, RESOURCE_STEP_THRESHOLD = 2 };
-			unsigned int m_ConvergenceCriterion;
-		
-			Float m_TaskSpaceDistanceThreshold;
-			Float m_ResourceStepNormThreshold;
-		
 			/*** @brief Function for stuff common to all constructors */
-			void init();
+			void init(
+				Float coefficient,
+				std::vector<ConvergenceCriterionPtr> convergence_criteria,
+				ReferencePtr reference,
+				PotentialPtr potential,
+				SensorTransformPtr sensor_transform,
+				EffectorTransformPtr effector_transform,
+				std::vector<PrimitiveControllerPtr> subordinate_controllers,
+				CombinationStrategyPtr combination_strategy,
+				ResourcePtr resource
+			);
 
 			/**
 				A reference determines the task 

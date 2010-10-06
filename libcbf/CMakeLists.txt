@@ -38,6 +38,7 @@ set(CBF_SOURCES
   transpose_transform.cc
   functional.cc
   svd.cc
+  convergence_criterion.cc
   )
 
 set(CBF_LIBS "")

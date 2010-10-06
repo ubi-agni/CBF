@@ -25,6 +25,8 @@
 #include <cbf/difference_sensor_transform.h>
 #include <cbf/kdl_transforms.h>
 #include <cbf/generic_transform.h>
+#include <cbf/convergence_criterion.h>
+#include <cbf/combination_strategy.h>
 
 #include <boost/shared_ptr.hpp>
 #include <kdl/chain.hpp>
@@ -101,13 +103,19 @@ int main() {
 	CBF::DummyResourcePtr dres(new CBF::DummyResource(NUM_OF_JOINT_TRIPLES * 3, 1));
 
 	//! Create our primitive controller
-	CBF::PrimitiveControllerPtr pc
-		(new CBF::PrimitiveController(
+	CBF::PrimitiveControllerPtr pc(
+		new CBF::PrimitiveController(
+			1.0,
+			std::vector<CBF::ConvergenceCriterionPtr>(),
 			dref,
 			p,
 			st,
 			et,
-			dres));
+			std::vector<CBF::PrimitiveControllerPtr>(),
+			CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
+			dres
+		)
+	);
 
 	do {
 		pc->step();	

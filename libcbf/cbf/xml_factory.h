@@ -53,7 +53,7 @@ namespace CBF {
 					}
 					CBF_THROW_RUNTIME_ERROR(
 						"No creator found for this " 
-						<< CBF_UNMANGLE(this) << xml_instance
+						<< CBF_UNMANGLE(T) << xml_instance
 					)
 	
 					return boost::shared_ptr<T>();
