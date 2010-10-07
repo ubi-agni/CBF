@@ -16,7 +16,6 @@
 #endif
 
 namespace CBF {
-
 	#ifdef CBF_HAVE_XSD
 		/**
 			@brief The base type for all concrete Object factories
@@ -37,7 +36,7 @@ namespace CBF {
 				}
 	
 			public:
-				std::vector<XMLDerivedFactoryBase* > m_DerivedFactories;
+				std::map<std::string, XMLDerivedFactoryBase* > m_DerivedFactories;
 	
 				static XMLObjectFactory *instance() { 
 					if (m_Instance) 
@@ -47,14 +46,24 @@ namespace CBF {
 
 				template<class T>
 				boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
-					for (unsigned int i = 0, max = m_DerivedFactories.size(); i != max; ++i) {
-						boost::shared_ptr<T> p = boost::dynamic_pointer_cast<T>(m_DerivedFactories[i]->create(xml_instance));
-						if (p.get()) return p;
+					if (m_DerivedFactories.find(std::string(typeid(xml_instance).name())) == m_DerivedFactories.end()) {
+						CBF_THROW_RUNTIME_ERROR(
+							"No factory found for type (possibly mangled): " << 
+							CBF_UNMANGLE(xml_instance)
+						);
 					}
+					boost::shared_ptr<T> p = 
+						boost::dynamic_pointer_cast<T>(
+							m_DerivedFactories[typeid(xml_instance).name()]->create(xml_instance)
+						)
+					;
+
+					if (p.get()) return p;
+
 					CBF_THROW_RUNTIME_ERROR(
-						"No creator found for this " 
-						<< CBF_UNMANGLE(T) << xml_instance
-					)
+						"No factory found for type (possibly mangled): " << 
+						CBF_UNMANGLE(xml_instance)
+					);
 	
 					return boost::shared_ptr<T>();
 				}
@@ -67,7 +76,7 @@ namespace CBF {
 		struct XMLDerivedFactory : XMLDerivedFactoryBase {
 				XMLDerivedFactory() { 
 					CBF_DEBUG("registering (possibly mangled type name follows): " << CBF_UNMANGLE(this))
-					XMLObjectFactory::instance()->m_DerivedFactories.push_back(this); 
+					XMLObjectFactory::instance()->m_DerivedFactories[std::string(typeid(TType).name())] = this; 
 				}
 	
 			public:
@@ -210,7 +219,6 @@ namespace CBF {
 			}
 		};
 	#endif
-	
 } // namespace
 
 #endif
