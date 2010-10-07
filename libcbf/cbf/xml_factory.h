@@ -3,7 +3,6 @@
 
 #include <cbf/config.h>
 #include <cbf/exceptions.h>
-#include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
 #include <cbf/object.h>
 
