@@ -18,7 +18,7 @@ message(STATUS "==============================================================")
 message(STATUS "Configuring CBF:")
 
 message(STATUS "Looking for Boost components: program_options and python")
-find_package(Boost 1.34.1 COMPONENTS program_options python)
+find_package(Boost 1.40.0 COMPONENTS program_options python)
 
 if(Boost_FOUND)
   set(CBF_HAVE_BOOST 1)
