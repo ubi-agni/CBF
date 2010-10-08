@@ -1,6 +1,7 @@
 #ifndef CBF_Q_XCF_VECTOR_REFERENCE_CLIENT_HH
 #define CBF_Q_XCF_VECTOR_REFERENCE_CLIENT_HH
 
+#define GUI_TEST_MODE
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
 #include <QtGui/QTabWidget>
@@ -16,7 +17,7 @@
 #include <QtCore/QObject>
 
 
-#include <xcf/RemoteServer.hpp>
+//#include <xcf/RemoteServer.hpp>
 
 class Xcf_enter_remote_values_tab : public QWidget{
 	Q_OBJECT
@@ -28,27 +29,46 @@ class Xcf_enter_remote_values_tab : public QWidget{
 	static const double SPINBOX_MAX = +1000;
 
 	QWidget *inputWindow;
+	QVBoxLayout *layout;
 	QPushButton *sendbutton;
-	QCheckBox *alwaysSend;
-	QSpinBox *decimalSpinBox;
+	QCheckBox *alwaysSend;	
 
-	XCF::RemoteServerPtr _remoteServer;
+	QWidget *decimals;
+	QWidget *stepSize;
+	QWidget *minMax;
+
+	QSpinBox *decimalSpinBox;
+	QLineEdit *stepSizeLineEdit;
+	QLineEdit *minLineEdit;
+	QLineEdit *maxLineEdit;
+
+//	XCF::RemoteServerPtr _remoteServer;
 
 	unsigned int dim;
 	std::vector<QDoubleSpinBox*> *spinboxes;
 
+	void addDecimalsOption();
+	void addStepSizeOption();
+	void addMinMaxoption();
+
 	public:
-	Xcf_enter_remote_values_tab(QWidget *parent, XCF::RemoteServerPtr _remoteServer, std::string input);
+	Xcf_enter_remote_values_tab(QWidget *parent, /*XCF::RemoteServerPtr _remoteServer,*/ std::string input);
 
 	public slots:
 	void send();
 	void quit();
 	void changeSendMode();
 	void setDecimals();
+	void setStepSize();
+	void setMinValue();
+	void setMaxValue();
 };
 
 class Test_xcf_reference_client_gui : public QObject{
 	Q_OBJECT
+
+	static const int PROG_MIN_WIDTH = 250;
+	static const int PROG_MIN_HEIGTH = 400;
 	
 	private:
 	QApplication *app;
