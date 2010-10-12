@@ -43,7 +43,7 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD)
 
     target_link_libraries(cbf_q_xcf_vector_reference_client
 	  ${QT_LIBRARIES}
-	  #cbf
+	  cbf
 	  )
   else()
     message(STATUS "  not adding executable: cbf_q_xcf_vector_reference_client")

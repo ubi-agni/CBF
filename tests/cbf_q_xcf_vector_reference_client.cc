@@ -1,7 +1,7 @@
 #include <cbf_q_xcf_vector_reference_client.h>
 
 #include <cbf/types.h>
-//#include <xcf/RemoteServer.hpp>
+#include <xcf/RemoteServer.hpp>
 #include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
@@ -16,6 +16,17 @@
 int main(int argc, char *argv[]){
   new Test_xcf_reference_client_gui(argc, argv);
   return 0;
+}
+
+void showDialog(QString text, QWidget *parent=0){
+	QDialog dialog(parent);
+	QVBoxLayout *dialogLayout = new QVBoxLayout(&dialog);
+	QLabel message(text, &dialog);
+	message.setWordWrap(true);
+	message.setAlignment(Qt::AlignCenter);
+	dialogLayout -> addWidget(&message);
+	dialog.setLayout(dialogLayout);
+	dialog.exec();
 }
 
 Test_xcf_reference_client_gui::Test_xcf_reference_client_gui(int argc, char *argv[]){
@@ -50,6 +61,9 @@ Test_xcf_reference_client_gui::Test_xcf_reference_client_gui(int argc, char *arg
 
 	window -> setMinimumSize(PROG_MIN_WIDTH, PROG_MIN_HEIGTH);
 
+	lineedit -> setFocus(Qt::OtherFocusReason);
+	QObject::connect(lineedit, SIGNAL(returnPressed()), okaybutton, SLOT(animateClick()));
+	
 	app -> exec();
 }
 
@@ -60,17 +74,18 @@ void Test_xcf_reference_client_gui::connect(){
 			CBF_DEBUG("creating remote server object")
 			std::cout << "connecting to " << input << std::endl;
 #ifndef GUI_TEST_MODE
-			XCF::RemoteServer _remoteServer = XCF::RemoteServer::create(input.c_str());
+			XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(input.c_str());
 #else
-//			XCF::RemoteServerPtr _remoteServer;
+			XCF::RemoteServerPtr _remoteServer;
 #endif
 			Xcf_enter_remote_values_tab *new_tab = 
-				new Xcf_enter_remote_values_tab(window, /*_remoteServer,*/  input);
+				new Xcf_enter_remote_values_tab(window, _remoteServer,  input);
 
 			window -> addTab(new_tab, input.c_str());
 			tabs -> push_back(new_tab);
+			window -> setCurrentWidget(new_tab);
 		} catch(...){
-			label -> setText("connecting failed, try it again.");
+			showDialog("Connecting failed, try it again.", window);
 			std::cout << "connecting to '" << input << "' failed"<< std::endl;
 		}
 		
@@ -87,7 +102,8 @@ void Test_xcf_reference_client_gui::quit(){
 	app -> quit();
 }
 
-Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent, /*XCF::RemoteServerPtr _remoteServer,*/ std::string input):
+Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent, 
+							XCF::RemoteServerPtr _remoteServer, std::string input):
 	QWidget(parent)
 {
 	spinboxes = new std::vector<QDoubleSpinBox*>;
@@ -111,12 +127,9 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent, /*XCF:
 
 	QString connectedto = "Connected to: ";
 	connectedto.append(input.c_str());
+
 	QLabel *label = new QLabel(connectedto);
 	layout -> addWidget(label);
-	
-	addDecimalsOption();
-	addStepSizeOption();
-	addMinMaxoption();
 
 	QWidget *inputWin = new QWidget();
 	QGridLayout *inputWinLayout = new QGridLayout(inputWin);
@@ -141,6 +154,25 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent, /*XCF:
 	scrollArea -> setWidget(inputWin);
 	layout -> addWidget(scrollArea);
 	
+	makeOptionsWidget();
+	layout -> addWidget(optionsWidget);
+
+	optionsCheckBox = new QCheckBox("show options", this);
+	layout -> addWidget(optionsCheckBox);
+
+	optionsCheckBox -> setChecked(SHOW_OPTIONS);
+	QObject::connect(optionsCheckBox, SIGNAL(stateChanged(int)), this, SLOT(showOptionsWidget()));
+	showOptionsWidget();
+
+	alwaysSendCheckBox = new QCheckBox("always send", this);
+	alwaysSendCheckBox -> setToolTip("This option makes the programm send each change of the values in the "
+						"spinboxes immediately. ");
+	layout -> addWidget(alwaysSendCheckBox);
+	alwaysSendCheckBox -> setChecked(ALWAYS_SEND);
+	QObject::connect(alwaysSendCheckBox, SIGNAL(stateChanged(int)), this, SLOT(changeSendMode()));
+	changeSendMode();
+
+
 	QPushButton *send = new QPushButton("Send");
 	QObject::connect(send, SIGNAL(clicked()), this, SLOT(send()));	
 	layout -> addWidget(send);
@@ -150,67 +182,75 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent, /*XCF:
 	layout -> addWidget(disconnect);
 }
 
-/**
-  * Creates and adds an option to change the count of decimals in the Spinboxes.
-  */
-void Xcf_enter_remote_values_tab::addDecimalsOption(){	
-	decimals = new QWidget(this);
-	QHBoxLayout *decimalsLayout = new QHBoxLayout(decimals);
-	QPushButton *decimalsButton = new QPushButton("Set decimals to:", decimals);
-	decimalsLayout -> addWidget(decimalsButton);	
+void Xcf_enter_remote_values_tab::makeOptionsWidget(){	
 
-	decimalSpinBox = new QSpinBox(decimals);
-	decimalSpinBox -> setValue(SPINBOX_DECIMALS);
+	const char* TOOLTIP_DECIMALS = "The option 'set decimals to' changes the count of "
+						"numbers after the point. It only affects the spinboxes.";
+	const char* TOOLTIP_STEP = "The option 'set stepsize to' changes the value by which the numbers "
+						"in the spinboxes are increased/decreased through the up/down button.";
+	const char* TOOLTIP_MAX = "The option 'set maximum value to' changes "
+						"the maximum value of the spinboxes.";
+	const char* TOOLTIP_MIN = "The option 'set minimum value to' changes "
+						"the minimum value of the spinboxes.";
+
+	optionsWidget = new QWidget(this);
+	QGridLayout *optionsLayout = new QGridLayout(optionsWidget);
+	optionsWidget -> setLayout(optionsLayout);	
 	
-	decimalsLayout -> addWidget(decimalSpinBox);
+ 	//Adding an option to change the count of decimals in the Spinboxes.
+	QPushButton *decimalsButton = new QPushButton("Set decimals to:", optionsWidget);
+	decimalsButton -> setToolTip(TOOLTIP_DECIMALS);
+	optionsLayout -> addWidget(decimalsButton, 0, 0, 0);
 
+	std::ostringstream decimals;
+	decimals << SPINBOX_DECIMALS;
+
+	decimalsLineEdit = new QLineEdit(decimals.str().c_str(), optionsWidget);
+	decimalsLineEdit -> setToolTip(TOOLTIP_DECIMALS);
+	
+	optionsLayout -> addWidget(decimalsLineEdit, 0, 1, 0);
+
+	QObject::connect(decimalsLineEdit, SIGNAL(returnPressed()), decimalsButton, SLOT(animateClick()));
 	QObject::connect(decimalsButton, SIGNAL(clicked()), this, SLOT(setDecimals()));
 
-	decimals -> setLayout(decimalsLayout);
-	layout -> addWidget(decimals);
-}
 
-void Xcf_enter_remote_values_tab::addStepSizeOption(){
-	stepSize = new QWidget(this);
-	QHBoxLayout *stepSizeLayout = new QHBoxLayout(stepSize);
-	QPushButton *stepSizeButton = new QPushButton("Set stepsize to:", stepSize);
-	stepSizeLayout -> addWidget(stepSizeButton);	
+ 	//Adding an option to change the stepsize in the Spinboxes.
+	QPushButton *stepSizeButton = new QPushButton("Set stepsize to:", optionsWidget);
+	stepSizeButton -> setToolTip(TOOLTIP_STEP);
+	optionsLayout -> addWidget(stepSizeButton, 1, 0, 0);	
 
-	std::ostringstream tmp;
-	tmp << SPINBOX_STEP;
+	std::ostringstream stepSize;
+	stepSize << SPINBOX_STEP;
 
-	stepSizeLineEdit = new QLineEdit(tmp.str().c_str());
-	stepSizeLayout -> addWidget(stepSizeLineEdit);
+	stepSizeLineEdit = new QLineEdit(stepSize.str().c_str(), optionsWidget);
+	stepSizeLineEdit -> setToolTip(TOOLTIP_STEP);
+	optionsLayout -> addWidget(stepSizeLineEdit, 1, 1, 0);
 
+	QObject::connect(stepSizeLineEdit, SIGNAL(returnPressed()), stepSizeButton, SLOT(animateClick()));
 	QObject::connect(stepSizeButton, SIGNAL(clicked()), this, SLOT(setStepSize()));
 
-	stepSize -> setLayout(stepSizeLayout);
-	layout -> addWidget(stepSize);
-}
 
-void Xcf_enter_remote_values_tab::addMinMaxoption(){
-	minMax = new QWidget(this);
-	QGridLayout *minMaxLayout = new QGridLayout(minMax);
-
-	QPushButton *maxButton = new QPushButton("Set maxinmum value to:", minMax);
-	minMaxLayout -> addWidget(maxButton, 0, 0, 0);
-	QPushButton *minButton = new QPushButton("Set minimum value to:", minMax);
-	minMaxLayout -> addWidget(minButton, 1, 0, 0);
+ 	//Adding an option to change the minimum and maximum of the Spinboxes.
+	QPushButton *maxButton = new QPushButton("Set maximum value to:", optionsWidget);
+	maxButton -> setToolTip(TOOLTIP_MAX);
+	optionsLayout -> addWidget(maxButton, 2, 0, 0);
+	QPushButton *minButton = new QPushButton("Set minimum value to:", optionsWidget);
+	minButton -> setToolTip(TOOLTIP_MIN);
+	optionsLayout -> addWidget(minButton, 3, 0, 0);
 
 	std::ostringstream min, max;
 	max << SPINBOX_MAX;
-	maxLineEdit = new QLineEdit(max.str().c_str());
-	minMaxLayout -> addWidget(maxLineEdit, 0, 1, 0);
+	maxLineEdit = new QLineEdit(max.str().c_str(), optionsWidget);
+	maxLineEdit -> setToolTip(TOOLTIP_MAX);
+	optionsLayout -> addWidget(maxLineEdit, 2, 1, 0);
 
 	min << SPINBOX_MIN;
-	minLineEdit = new QLineEdit(min.str().c_str());
-	minMaxLayout -> addWidget(minLineEdit, 1, 1, 0);
+	minLineEdit = new QLineEdit(min.str().c_str(), optionsWidget);
+	minLineEdit -> setToolTip(TOOLTIP_MIN);
+	optionsLayout -> addWidget(minLineEdit, 3, 1, 0);
 
 	QObject::connect(minButton, SIGNAL(clicked()), this, SLOT(setMinValue()));
 	QObject::connect(maxButton, SIGNAL(clicked()), this, SLOT(setMaxValue()));
-
-	minMax -> setLayout(minMaxLayout);
-	layout -> addWidget(minMax);
 }
 
 
@@ -242,8 +282,16 @@ void Xcf_enter_remote_values_tab::send(){
 #endif
 }
 
+void Xcf_enter_remote_values_tab::showOptionsWidget(){
+	if(optionsCheckBox -> isChecked()){
+		optionsWidget -> show();
+	} else {
+		optionsWidget -> hide();
+	}
+}
+
 void Xcf_enter_remote_values_tab::changeSendMode(){
-	if(alwaysSend -> isChecked()){
+	if(alwaysSendCheckBox -> isChecked()){
 		for (unsigned int i = 0; i < dim; i++) {
 			QObject::connect((*spinboxes)[i], 
 			SIGNAL(valueChanged(double)), this, SLOT(send()));
@@ -264,10 +312,15 @@ void Xcf_enter_remote_values_tab::quit(){
 }
 
 void Xcf_enter_remote_values_tab::setDecimals(){
-	int value = decimalSpinBox -> value();
-	for (unsigned int i = 0; i < dim; i++) {
-		QDoubleSpinBox* spinbox = (*spinboxes)[i];
-		spinbox -> setDecimals(value);
+	bool ok = false;
+	double value = (decimalsLineEdit -> text().toInt(&ok));
+	if(ok){
+		for (unsigned int i = 0; i < dim; i++) {
+			QDoubleSpinBox* spinbox = (*spinboxes)[i];
+			spinbox -> setDecimals(value);;
+		}
+	} else{
+		showDialog("At this place an integer value ist needed.", this);
 	}
 }
 
@@ -280,7 +333,7 @@ void Xcf_enter_remote_values_tab::setStepSize(){
 			spinbox -> setSingleStep(value);
 		}
 	} else{
-		stepSizeLineEdit -> setText("Error: Double value needed.");
+		showDialog("At this place a double-type value ist needed.", this);
 	}
 }
 
@@ -295,10 +348,10 @@ void Xcf_enter_remote_values_tab::setMinValue(){
 				spinbox -> setMinimum(value);
 			}
 		} else{
-			minLineEdit -> setText("Min has to be less then Max");
+			showDialog("The minimum value of the spinboxes must be less then the maximum value", this);
 		}
 	} else{
-		minLineEdit -> setText("Error: Double value needed.");
+		showDialog("At this place a double-type value ist needed.", this);
 	}
 }
 
@@ -313,11 +366,10 @@ void Xcf_enter_remote_values_tab::setMaxValue(){
 				spinbox -> setMaximum(value);
 			}
 		} else{
-			maxLineEdit -> setText("Max has to be greater then Min");
+			showDialog("The maximum value of the spinboxes must be greater then the minimum value", this);
 		}
 	} else{
-		maxLineEdit -> setText("Error: Double value needed.");
+		showDialog("At this place a double-type value ist needed.", this);
 	}
 }
-
 
