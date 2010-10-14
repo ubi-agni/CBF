@@ -20,11 +20,17 @@ int main(int argc, char *argv[]){
 
 void showDialog(QString text, QWidget *parent=0){
 	QDialog dialog(parent);
-	QVBoxLayout *dialogLayout = new QVBoxLayout(&dialog);
+	QGridLayout *dialogLayout = new QGridLayout(&dialog);
+
 	QLabel message(text, &dialog);
 	message.setWordWrap(true);
 	message.setAlignment(Qt::AlignCenter);
-	dialogLayout -> addWidget(&message);
+	dialogLayout -> addWidget(&message, 0, 0, 1, 3, 0);
+
+	QPushButton okay("OK", &dialog);
+	QObject::connect(&okay, SIGNAL(clicked()), &dialog, SLOT(reject()));
+	dialogLayout -> addWidget(&okay, 1, 1, 1, 1, 0);	
+
 	dialog.setLayout(dialogLayout);
 	dialog.exec();
 }
@@ -72,7 +78,7 @@ void Test_xcf_reference_client_gui::connect(){
 	if(input.length()>0){
 		try{
 			CBF_DEBUG("creating remote server object")
-			std::cout << "connecting to " << input << std::endl;
+			//std::cout << "connecting to " << input << std::endl;
 #ifndef GUI_TEST_MODE
 			XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(input.c_str());
 #else
@@ -84,9 +90,16 @@ void Test_xcf_reference_client_gui::connect(){
 			window -> addTab(new_tab, input.c_str());
 			tabs -> push_back(new_tab);
 			window -> setCurrentWidget(new_tab);
+		new_tab -> send();
+		} catch(const XCF::ServerNotFoundException &e){
+			showDialog("Server not found.", window);
+			//std::cout << "connecting to '" << input << "' failed"<< std::endl;
+		} catch(const XCF::InitializeException &e){
+			showDialog("Problem while initializing the RemoteServer object.", window);
+			//std::cout << "connecting to '" << input << "' failed"<< std::endl;
 		} catch(...){
-			showDialog("Connecting failed, try it again.", window);
-			std::cout << "connecting to '" << input << "' failed"<< std::endl;
+			showDialog("This should not have happened.", window);
+			//std::cout << "connecting to '" << input << "' failed"<< std::endl;
 		}
 		
 	}
@@ -96,7 +109,7 @@ void Test_xcf_reference_client_gui::quit(){
  	std::vector<Xcf_enter_remote_values_tab*>::iterator it;
 
 	for (it = (*tabs).begin() ; it < (*tabs).end(); it++ ){
-		(*it) -> quit();
+		(*it) -> disconnect();
 	}
 	
 	app -> quit();
@@ -107,19 +120,40 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent,
 	QWidget(parent)
 {
 	spinboxes = new std::vector<QDoubleSpinBox*>;
-
+	this -> _remoteServer = _remoteServer;
 #ifndef GUI_TEST_MODE
-	std::string dim_string;
-	_remoteServer->callMethod("get_dimension", "", dim_string);
-	CBF_DEBUG("dimension_xml: " << dim_string)
+	try{
+		std::string dim_string;
+		_remoteServer->callMethod("get_dimension", "", dim_string);
+		CBF_DEBUG("dimension_xml: " << dim_string)
 
-	std::istringstream vv_stream(dim_string);
+		std::istringstream vv_stream(dim_string);
 
-	std::auto_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
-	CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
-	CBF_DEBUG("dim_vv: " << dim_vv)
+		std::auto_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
+		CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
+		CBF_DEBUG("dim_vv: " << dim_vv)
 
-	dim = dim_vv[0];
+		dim = dim_vv[0];
+	} catch (const XCF::ServerNotFoundException &e){
+		showDialog("The server could not be localised, this connection will be closed.", this);
+		disconnect();
+	} catch (const XCF::CommunicationException &e){
+		showDialog("There is a server communication problem, this connection will be closed.", this);
+		disconnect();
+	} catch (const XCF::UserException &e){
+		showDialog("An Exception occured in the remotely called usercode, "
+					"this connection will be closed.", this);
+		disconnect();
+	} catch (const XCF::NotActivatedException &e){
+		showDialog("The run-method of the Server has not been called (yet), "
+					"this connection will be closed.", this);
+		disconnect();
+	} catch(...){
+		showDialog("An error occured while trying to get the dimension from the server, "
+					"this connection will be closed.", this);
+		disconnect();
+	}
+
 #else
 	dim = input.size();
 #endif
@@ -142,6 +176,7 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent,
 		inputWinLayout -> addWidget(new QLabel(valno.str().c_str(), inputWin), i, 0, 1, 1);
 
 		QDoubleSpinBox *spinbox = new QDoubleSpinBox(inputWin);
+		spinbox -> setKeyboardTracking(false);
 		spinbox -> setDecimals(SPINBOX_DECIMALS);
 		spinbox -> setSingleStep(SPINBOX_STEP);
 		spinbox -> setMinimum(SPINBOX_MIN);
@@ -178,7 +213,7 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent,
 	layout -> addWidget(send);
 
 	QPushButton *disconnect = new QPushButton("Disconnect");
-	QObject::connect(disconnect, SIGNAL(clicked()), this, SLOT(quit()));
+	QObject::connect(disconnect, SIGNAL(clicked()), this, SLOT(disconnect()));
 	layout -> addWidget(disconnect);
 }
 
@@ -266,19 +301,39 @@ void Xcf_enter_remote_values_tab::send(){
 	std::cout << vector_string.str() << std::endl;
 	
 #ifndef GUI_TEST_MODE
-	CBF_DEBUG("creating vector doc")
-	CBFSchema::BoostVector v(vector_string.str());
+	try{
+		CBF_DEBUG("creating vector doc")
+		CBFSchema::BoostVector v(vector_string.str());
 
-	std::ostringstream s;
-	//s << v;
-	CBFSchema::Vector_ (s, v);
+		std::ostringstream s;
+		//s << v;
+		CBFSchema::Vector_ (s, v);
 
-	CBF_DEBUG("document: " << s.str())
+		CBF_DEBUG("document: " << s.str())
 
-	std::string out;
+		std::string out;
 
-	CBF_DEBUG("calling remote method")
-	_remoteServer->callMethod("set_reference", s.str(), out);
+		CBF_DEBUG("calling remote method")
+		_remoteServer->callMethod("set_reference", s.str(), out);
+	} catch (const XCF::ServerNotFoundException &e){
+		showDialog("The server could not be localised, this connection will be closed.", this);
+		disconnect();
+	} catch (const XCF::CommunicationException &e){
+		showDialog("There is a server communication problem, this connection will be closed.", this);
+		disconnect();
+	} catch (const XCF::UserException &e){
+		showDialog("An Exception occured in the remotely called usercode, "
+					"this connection will be closed.", this);
+		disconnect();
+	} catch (const XCF::NotActivatedException &e){
+		showDialog("The run-method of the Server has not been called (yet), "
+					"this connection will be closed.", this);
+		disconnect();
+	} catch(...){
+		showDialog("An error occured while trying to send information to the server, "
+					"this connection will be closed.", this);
+		disconnect();
+	}
 #endif
 }
 
@@ -304,10 +359,15 @@ void Xcf_enter_remote_values_tab::changeSendMode(){
 	}
 }
 
-void Xcf_enter_remote_values_tab::quit(){	
+void Xcf_enter_remote_values_tab::disconnect(){	
 #ifndef GUI_TEST_MODE
-	_remoteServer -> destroy();
+	try{
+		_remoteServer -> destroy();
+	} catch (...){
+		showDialog("An error occured while shutting down the communication with the server.", this);
+	}
 #endif
+	delete spinboxes;
 	this -> deleteLater();
 }
 

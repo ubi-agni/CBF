@@ -56,7 +56,7 @@ class Xcf_enter_remote_values_tab : public QWidget{
 
 	public slots:
 	void send();
-	void quit();
+	void disconnect();
 	void changeSendMode();
 	void showOptionsWidget();
 	void setDecimals();
