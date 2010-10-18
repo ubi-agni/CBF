@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <functional>
 
 int main() {
 	CBF::SensorTransformPtr id(new CBF::IdentitySensorTransform(9));	
@@ -57,5 +59,28 @@ int main() {
 	std::cout << "result   " << s3->result() << std::endl;
 	std::cout << "jacobian " << s3->task_jacobian() << std::endl;
 
+	CBF::FloatVector v(3);
+	v[0] = 1; v[1] = 2; v[2] = 3;
 
+	CBF::FloatMatrix m(3,9);
+	m(0,0) = 1;	m(0,1) = 2;	m(0,2) = 3; m(0,3) = 1;	m(0,4) = 2;	m(0,5) = 3; m(0,6) = 1;	m(0,7) = 2;	m(0,8) = 3;
+	m(1,0) = 4;	m(1,1) = 5;	m(1,2) = 6; m(1,3) = 4;	m(1,4) = 5;	m(1,5) = 6; m(1,6) = 4;	m(1,7) = 5;	m(1,8) = 6;
+	m(2,0) = 7;	m(2,1) = 8;	m(2,2) = 9; m(2,3) = 7;	m(2,4) = 8;	m(2,5) = 9; m(2,6) = 7;	m(2,7) = 8;	m(2,8) = 9;
+
+
+
+	CBF::SensorTransformPtr s4(
+		CBF::make_ApplyOperationBlockWiseSensorTransform(
+			id,
+			std::bind2nd(std::plus<CBF::FloatVector>(), v),
+			std::bind2nd(std::plus<CBF::FloatMatrix>(), m),
+			3
+		)
+	);
+
+	s4->update(r->get());
+
+	std::cout << "s4" << std::endl;
+	std::cout << "result   " << s4->result() << std::endl;
+	std::cout << "jacobian " << s4->task_jacobian() << std::endl;
 }

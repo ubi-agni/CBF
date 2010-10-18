@@ -123,12 +123,6 @@ namespace CBF {
 
 		protected:
 			/**
-				@brief This value should be checked against by update(). 
-				to avoid calling update more often than nessecary.
-			*/
-			int m_Cycle;
-
-			/**
 				This variable is used to cache the resourcevalue..
 			*/
 			FloatVector m_ResourceValue;

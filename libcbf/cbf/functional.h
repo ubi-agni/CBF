@@ -13,6 +13,17 @@ namespace CBF {
 
 namespace ublas = boost::numeric::ublas;
 
+
+/**
+	@brief A generic SensorTransform that allows to be parametrized
+	with two functors, one acting on the result of the 
+	operand and one that acts on the jacobian matrix of the 
+	operand.
+
+	Note that the task and resource space dimensions are the same
+	as those of the operand. See NegateOperationSensorTransform
+	and MultiplyOperation examples..
+*/
 template<class VectorOperation, class MatrixOperation>
 struct ApplyOperationSensorTransform : public SensorTransform {
 	VectorOperation m_VectorOperation;
@@ -97,7 +108,7 @@ make_ApplyOperationSensorTransform(
 	of its operand's output. This is useful e.g. if the task space 
 	of a SensorTransform is made up of blocks of equal size. An example
 	would be a KDLTreePositionSensorTransform with more than one
-	controlled end effector position
+	controlled end-effector position
 */
 template<class VectorOperation, class MatrixOperation>
 struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
@@ -178,6 +189,9 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 		{ return m_Operand->resource_dim(); }
 };
 
+/**
+	@brief A function to create a ApplyOperationBlockWiseSensorTransform
+*/
 template <class VectorOperation, class MatrixOperation>
 ApplyOperationBlockWiseSensorTransform<VectorOperation, MatrixOperation> *
 make_ApplyOperationBlockWiseSensorTransform(
