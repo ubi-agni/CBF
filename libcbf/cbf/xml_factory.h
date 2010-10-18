@@ -1,3 +1,23 @@
+/*
+    This file is part of CBF.
+
+    CBF is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 2 of the License, or
+    (at your option) any later version.
+
+    CBF is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CBF.  If not, see <http://www.gnu.org/licenses/>.
+
+
+    Copyright 2009, 2010 Florian Paul Schmidt
+*/
+
 #ifndef CBF_XML_FACTORIES_HH
 #define CBF_XML_FACTORIES_HH
 
@@ -21,6 +41,7 @@ namespace CBF {
 		*/
 		struct XMLDerivedFactoryBase {
 			virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) = 0;
+			virtual ~XMLDerivedFactoryBase() { }
 		};
 	
 		/**
@@ -31,10 +52,12 @@ namespace CBF {
 			protected:
 				static XMLObjectFactory *m_Instance;
 				XMLObjectFactory() { 
-						CBF_DEBUG("instance (possibly mangled type name follows): " << CBF_UNMANGLE(this))
+
 				}
 	
 			public:
+				virtual ~XMLObjectFactory() { }
+	
 				std::map<std::string, XMLDerivedFactoryBase* > m_DerivedFactories;
 	
 				static XMLObjectFactory *instance() { 
@@ -43,6 +66,12 @@ namespace CBF {
 					return (m_Instance = new XMLObjectFactory); 
 				}
 
+				/**
+					@brief This function can be used to create an Object from a CBFSchema::Object or
+					derived type instance. 
+
+					If the creation fails, a std::runtime_error is thrown
+				*/
 				template<class T>
 				boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
 					if (m_DerivedFactories.find(std::string(typeid(xml_instance).name())) == m_DerivedFactories.end()) {
@@ -51,6 +80,7 @@ namespace CBF {
 							CBF_UNMANGLE(xml_instance)
 						);
 					}
+
 					boost::shared_ptr<T> p = 
 						boost::dynamic_pointer_cast<T>(
 							m_DerivedFactories[typeid(xml_instance).name()]->create(xml_instance)
@@ -72,9 +102,14 @@ namespace CBF {
 			This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
 		*/
 		template <class T, class TType>
-		struct XMLDerivedFactory : XMLDerivedFactoryBase {
+		struct XMLDerivedFactory : public XMLDerivedFactoryBase {
 				XMLDerivedFactory() { 
-					CBF_DEBUG("registering (possibly mangled type name follows): " << CBF_UNMANGLE(this))
+					CBF_DEBUG(
+						"registering (possibly mangled type name follows): " << 
+						CBF_UNMANGLE(T) << 
+						" with SchemaType: " << 
+						CBF_UNMANGLE(TType)
+					)
 					XMLObjectFactory::instance()->m_DerivedFactories[std::string(typeid(TType).name())] = this; 
 				}
 	
@@ -99,6 +134,7 @@ namespace CBF {
 		*/
 		template <class T, class TSchemaType>
 		struct Constructor {
+			Constructor() { CBF_DEBUG("Constructor") }
 			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
 				CBF_DEBUG("creating a " << CBF_UNMANGLE(T))
 				const TSchemaType &t = dynamic_cast<const TSchemaType&>(xml_instance);
@@ -167,7 +203,7 @@ namespace CBF {
 	
 			XMLCreator(C c) : m_Creator(c) { 
 				CBF_DEBUG(
-					"registering type: " << 
+					"XMLCreator registering type: " << 
 					CBF_UNMANGLE(TSchemaType) << 
 					" in registry " << 
 					CBF_UNMANGLE(T)

@@ -17,8 +17,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -DCBF_NDEBUG")
 message(STATUS "==============================================================")
 message(STATUS "Configuring CBF:")
 
-message(STATUS "Looking for Boost components: program_options and python")
-find_package(Boost 1.40.0 COMPONENTS program_options python)
+message(STATUS "Looking for Boost components: program_options")
+find_package(Boost 1.40.0 COMPONENTS program_options)
 
 if(Boost_FOUND)
   set(CBF_HAVE_BOOST 1)

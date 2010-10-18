@@ -38,7 +38,7 @@ namespace CBF {
 			m_Dim(xml_instance.Dimension())
 		{
 			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!")
-			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(m_Dim,m_Dim);
+			init(xml_instance.Dimension());
 		}
 
 		static XMLDerivedFactory<

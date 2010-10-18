@@ -1,7 +1,7 @@
 message(STATUS "In subdirectory apps:")
 
 if(CBF_HAVE_XSD)
-  include(${XSD_INC})
+  include_directories(${XSD_INC})
 endif()
 
 if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)

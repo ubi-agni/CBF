@@ -29,10 +29,11 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 		m_VectorOperation(vector_operation),
 		m_MatrixOperation(matrix_operation)
 	{ 
-		init_results(m_Operand);
+		init(m_Operand);
 	}
 
-	virtual void init_results(SensorTransformPtr operand) {
+	virtual void init(SensorTransformPtr operand) {
+		CBF_DEBUG("task space dim: " << operand->task_dim() << "  resource dim: " << operand->resource_dim())
 		m_Result = FloatVector(operand->task_dim()); 
 		m_TaskJacobian = FloatMatrix(operand->task_dim(), operand->resource_dim());
 	}
@@ -53,7 +54,7 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 			m_Operand = 
 				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
 
-			init_results(m_Operand);
+			init(m_Operand);
 		}
 	#endif
 
@@ -342,6 +343,12 @@ make_BlockWiseInnerProductSensorTransform(
 }
 #endif
 
+
+/**
+	A simple functor that implements a multiplication operation
+	where first and second result types may vary, but the result
+	is of the first type..
+*/
 template<typename T, typename U> 
 struct multiplies { 
 	typedef T first_argument_type;

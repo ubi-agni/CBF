@@ -6,6 +6,8 @@ namespace CBF {
 		XMLObjectFactory* 
 			XMLObjectFactory::m_Instance = 0;
 
+		template<> XMLFactory<Object> *XMLFactory<Object>::m_Instance = 0;
+
 	#endif
 } // namespace
 

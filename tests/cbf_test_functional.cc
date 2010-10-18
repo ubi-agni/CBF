@@ -5,23 +5,20 @@
 #include <iostream>
 #include <boost/numeric/ublas/io.hpp>
 
-using namespace CBF;
-
-
 int main() {
-	SensorTransformPtr id(new CBF::IdentitySensorTransform(9));	
+	CBF::SensorTransformPtr id(new CBF::IdentitySensorTransform(9));	
 
-	DummyResourcePtr r(new CBF::DummyResource(9));
+	CBF::DummyResourcePtr r(new CBF::DummyResource(9));
 
-	FloatVector vec(9);
+	CBF::FloatVector vec(9);
 	vec[0] = 1; vec[8] = -1;
 	r->set(vec);
 
-	SensorTransformPtr s(
-		make_ApplyOperationSensorTransform(
+	CBF::SensorTransformPtr s(
+		CBF::make_ApplyOperationSensorTransform(
 			id,
-			std::bind2nd(multiplies<FloatVector, double>(), 1.3),
-			std::bind2nd(multiplies<FloatMatrix, double>(), 1.4)
+			std::bind2nd(CBF::multiplies<CBF::FloatVector, double>(), 1.3),
+			std::bind2nd(CBF::multiplies<CBF::FloatMatrix, double>(), 1.4)
 		)
 	);
 
@@ -31,11 +28,11 @@ int main() {
 	std::cout << "result   " << s->result() << std::endl;
 	std::cout << "jacobian " << s->task_jacobian() << std::endl;
 
-	SensorTransformPtr s2(
-		make_ApplyOperationBlockWiseSensorTransform(
+	CBF::SensorTransformPtr s2(
+		CBF::make_ApplyOperationBlockWiseSensorTransform(
 			id,
-			std::bind2nd(multiplies<FloatVector, double>(), 1.3),
-			std::bind2nd(multiplies<FloatMatrix, double>(), 1.4),
+			std::bind2nd(CBF::multiplies<CBF::FloatVector, double>(), 1.3),
+			std::bind2nd(CBF::multiplies<CBF::FloatMatrix, double>(), 1.4),
 			3
 		)
 	);
@@ -46,11 +43,11 @@ int main() {
 	std::cout << "result   " << s2->result() << std::endl;
 	std::cout << "jacobian " << s2->task_jacobian() << std::endl;
 
-	SensorTransformPtr s3(
-		new MultiplyOperationSensorTransform(
+	CBF::SensorTransformPtr s3(
+		new CBF::MultiplyOperationSensorTransform(
 			id, 
-			std::bind2nd(multiplies<FloatVector, double>(), 1.3),
-			std::bind2nd(multiplies<FloatMatrix, double>(), 1.4)
+			std::bind2nd(CBF::multiplies<CBF::FloatVector, double>(), 1.3),
+			std::bind2nd(CBF::multiplies<CBF::FloatMatrix, double>(), 1.4)
 		)
 	);
 

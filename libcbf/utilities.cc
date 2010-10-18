@@ -419,7 +419,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 #endif
 
 #ifdef CBF_HAVE_XSD
-	XMLCreator<
+	static XMLCreator<
 		FloatVector, 
 		CBFSchema::BoostVector, 
 		boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &)
