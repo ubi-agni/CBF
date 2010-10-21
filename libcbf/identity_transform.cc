@@ -34,8 +34,7 @@ namespace CBF {
 		}
 		
 		IdentitySensorTransform::IdentitySensorTransform(const CBFSchema::IdentitySensorTransform &xml_instance) :
-			SensorTransform(xml_instance),
-			m_Dim(xml_instance.Dimension())
+			SensorTransform(xml_instance)
 		{
 			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!")
 			init(xml_instance.Dimension());
