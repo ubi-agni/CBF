@@ -86,6 +86,8 @@ namespace CBF {
 
 		virtual void init(unsigned int dim) {
 			m_Dim = dim;
+			m_TaskDim = dim;
+			m_ResourceDim = dim;
 			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim,dim);
 		}
 	};

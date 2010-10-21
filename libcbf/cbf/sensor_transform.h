@@ -61,7 +61,8 @@ namespace CBF {
 	struct SensorTransform : public Object {
 		SensorTransform(unsigned int task_dim, unsigned int resource_dim)	:
 			m_TaskDim(task_dim),
-			m_ResourceDim(resource_dim)
+			m_ResourceDim(resource_dim),
+			m_DefaultComponentName("A task space variable")
 		{
 	
 		}
@@ -72,9 +73,7 @@ namespace CBF {
 			@brief A virtual desctructor to allow the clean destruction 
 			of subclass objects through a base class pointer..
 		*/
-		virtual ~SensorTransform() {
-	
-		}
+		virtual ~SensorTransform() { }
 
 		virtual unsigned int task_dim() { return m_TaskDim; }
 		virtual unsigned int resource_dim() { return m_ResourceDim; }
