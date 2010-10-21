@@ -1,3 +1,24 @@
+/*
+    This file is part of CBF.
+
+    CBF is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 2 of the License, or
+    (at your option) any later version.
+
+    CBF is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CBF.  If not, see <http://www.gnu.org/licenses/>.
+
+
+    Copyright 2009, 2010 Florian Paul Schmidt
+*/
+
+
 #include <cbf_q_xcf_vector_reference_client.h>
 
 #include <cbf/types.h>
@@ -13,115 +34,143 @@
 #include <unistd.h>
 #include <memory>
 
+#include <QtGui/QScrollArea>
+#include <QtGui/QLabel>
+#include <QtGui/QApplication>
+#include <QtGui/QGridLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QDialog>
+
+/** 
+	@file cbf_q_xcf_vector_reference_client.cc
+	@brief The implementation of the cbf_q_xcf_reference_client application
+	@author Viktor Richter
+ */
+
+
+/** 
+	@brief Initializes an instance of the CBF::Q_XCF_VECTOR_REFERENCE_CLIENT::Connection_dispatcher.
+ */
 int main(int argc, char *argv[]){
-  new Test_xcf_reference_client_gui(argc, argv);
+  new cbf_q_xcf_vector_reference_client::Connection_dispatcher(argc, argv);
   return 0;
 }
 
+namespace cbf_q_xcf_vector_reference_client {
+/** 
+	@brief Starts an QDialog with the passed Text and an OK button.
+ */
 void showDialog(QString text, QWidget *parent=0){
+	//open a QDialog
 	QDialog dialog(parent);
-	QGridLayout *dialogLayout = new QGridLayout(&dialog);
+	QGridLayout dialogLayout(&dialog);
 
+	//Adding a Label the the pased text to the dialog.
 	QLabel message(text, &dialog);
 	message.setWordWrap(true);
 	message.setAlignment(Qt::AlignCenter);
-	dialogLayout -> addWidget(&message, 0, 0, 1, 3, 0);
+	dialogLayout.addWidget(&message, 0, 0, 1, 3, 0);
 
+	//Adding an OK-button to the dialog, connecting it to the reject()-slot of the dialog.
 	QPushButton okay("OK", &dialog);
 	QObject::connect(&okay, SIGNAL(clicked()), &dialog, SLOT(reject()));
-	dialogLayout -> addWidget(&okay, 1, 1, 1, 1, 0);	
+	dialogLayout.addWidget(&okay, 1, 1, 1, 1, 0);	
 
-	dialog.setLayout(dialogLayout);
+	//Setting the layout of the dialog and starting it.
+	dialog.setLayout(&dialogLayout);
 	dialog.exec();
 }
 
-Test_xcf_reference_client_gui::Test_xcf_reference_client_gui(int argc, char *argv[]){
 
-	tabs = new std::vector<Xcf_enter_remote_values_tab*>;
+Connection_dispatcher::Connection_dispatcher(int argc, char *argv[]){
 
-	app = new QApplication(argc, argv);
+	//Initializing a vector to store the Connection_manager-tabs in.
+	tabs = new std::vector<Connection_manager*>;
 
+	//Initializing the QApplication.
+	QApplication *app = new QApplication(argc, argv);
+
+	//Initializing the Applictaions main-window.
 	window = new QTabWidget;
 
-	connectWindow = new QWidget();
+	//Creating the connect QWidget in which the serverconnections will be build up.
+	QWidget *connectWindow = new QWidget(window);
 	QGridLayout *connectWindowLayout = new QGridLayout();
 	connectWindow -> setLayout(connectWindowLayout);
 
-	label = new QLabel("Insert the server address here:", connectWindow);
+	//Filling the Widget with controlls.
+	QLabel *label = new QLabel("Insert the server address here:", connectWindow);
 	label -> setFixedHeight(label -> height());
-	lineedit = new QLineEdit(connectWindow);
-	okaybutton = new QPushButton("Initialize a new connection", connectWindow);
-	exitbutton = new QPushButton("Quit", connectWindow);
-
 	connectWindowLayout -> addWidget(label, 0, 0, 1, 3);
+
+	lineedit = new QLineEdit(connectWindow);
 	connectWindowLayout -> addWidget(lineedit, 1, 0, 1, 2);
-	connectWindowLayout -> addWidget(okaybutton, 1, 2, 1, 1);
-	connectWindowLayout -> addWidget(exitbutton, 2, 0, 1, 3);
+
+	QPushButton *connectbutton = new QPushButton("Initialize a new connection", connectWindow);
+	QObject::connect(connectbutton, SIGNAL(clicked()), this, SLOT(connect()));
+	connectWindowLayout -> addWidget(connectbutton, 1, 2, 1, 1);
+
+	QPushButton *quitbutton = new QPushButton("Quit", connectWindow);
+	QObject::connect(quitbutton, SIGNAL(clicked()), app, SLOT(quit()));
+	connectWindowLayout -> addWidget(quitbutton, 2, 0, 1, 3);
 
 
+	//Adding the connect-widget as a tab to the main-window.
 	window -> addTab(connectWindow, "Main");
 	window -> show();
 
-	QObject::connect(exitbutton, SIGNAL(clicked()), this, SLOT(quit()));
-	QObject::connect(okaybutton, SIGNAL(clicked()), this, SLOT(connect()));
-
+	//Setting minimum size and focus
 	window -> setMinimumSize(PROG_MIN_WIDTH, PROG_MIN_HEIGTH);
-
 	lineedit -> setFocus(Qt::OtherFocusReason);
-	QObject::connect(lineedit, SIGNAL(returnPressed()), okaybutton, SLOT(animateClick()));
 	
+	//Connecting the returnPressed signal of the QLineEdit with the click on the connectbutton.
+	QObject::connect(lineedit, SIGNAL(returnPressed()), connectbutton, SLOT(animateClick()));
+	
+	//Starting the Application
 	app -> exec();
 }
 
-void Test_xcf_reference_client_gui::connect(){
+
+void Connection_dispatcher::connect(){
+	//Getting the text from the QlineEdit, which should hold the Servername.
 	std::string input = (lineedit -> text()).toStdString();
 	if(input.length()>0){
+	//If a servername was entered.
 		try{
 			CBF_DEBUG("creating remote server object")
-			//std::cout << "connecting to " << input << std::endl;
-#ifndef GUI_TEST_MODE
-			XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(input.c_str());
-#else
-			XCF::RemoteServerPtr _remoteServer;
-#endif
-			Xcf_enter_remote_values_tab *new_tab = 
-				new Xcf_enter_remote_values_tab(window, _remoteServer,  input);
 
+			//Create a RemoteServerPtr with the entered servername.
+			XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(input.c_str());
+			//Open a connection_manager-tab, add and show it.
+			Connection_manager *new_tab = 
+				new Connection_manager(window, _remoteServer,  input);
 			window -> addTab(new_tab, input.c_str());
 			tabs -> push_back(new_tab);
 			window -> setCurrentWidget(new_tab);
-		new_tab -> send();
 		} catch(const XCF::ServerNotFoundException &e){
 			showDialog("Server not found.", window);
-			//std::cout << "connecting to '" << input << "' failed"<< std::endl;
 		} catch(const XCF::InitializeException &e){
 			showDialog("Problem while initializing the RemoteServer object.", window);
-			//std::cout << "connecting to '" << input << "' failed"<< std::endl;
 		} catch(...){
 			showDialog("This should not have happened.", window);
-			//std::cout << "connecting to '" << input << "' failed"<< std::endl;
 		}
-		
 	}
 }
 
-void Test_xcf_reference_client_gui::quit(){
- 	std::vector<Xcf_enter_remote_values_tab*>::iterator it;
 
-	for (it = (*tabs).begin() ; it < (*tabs).end(); it++ ){
-		(*it) -> disconnect();
-	}
-	
-	app -> quit();
-}
-
-Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent, 
+Connection_manager::Connection_manager(QWidget *parent, 
 							XCF::RemoteServerPtr _remoteServer, std::string input):
 	QWidget(parent)
 {
+	//Initialize a vector to store the QDoubleSpinboxes in.
 	spinboxes = new std::vector<QDoubleSpinBox*>;
+
+	//Set the local RemoteServerPtr variable to the passed Server.
 	this -> _remoteServer = _remoteServer;
-#ifndef GUI_TEST_MODE
+
+	//Try to get the dimension from the server.
 	try{
 		std::string dim_string;
 		_remoteServer->callMethod("get_dimension", "", dim_string);
@@ -129,11 +178,13 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent,
 
 		std::istringstream vv_stream(dim_string);
 
-		std::auto_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
+		std::auto_ptr<CBFSchema::Vector> dim_v = 
+			CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
 		CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
 		CBF_DEBUG("dim_vv: " << dim_vv)
 
 		dim = dim_vv[0];
+	//If an Exception occurs the connection will be disabled, the tab closed and an error message will pop up.
 	} catch (const XCF::ServerNotFoundException &e){
 		showDialog("The server could not be localised, this connection will be closed.", this);
 		disconnect();
@@ -154,20 +205,20 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent,
 		disconnect();
 	}
 
-#else
-	dim = input.size();
-#endif
-	layout = new QVBoxLayout(this);
-
+	//Setting up the layout of the tab
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	
 	QString connectedto = "Connected to: ";
 	connectedto.append(input.c_str());
 
 	QLabel *label = new QLabel(connectedto);
 	layout -> addWidget(label);
 
+	//Making a QWidget for QDoubleSpinboxes.
 	QWidget *inputWin = new QWidget();
 	QGridLayout *inputWinLayout = new QGridLayout(inputWin);
 
+	//Adding the Spinboxes with a Label.
 	spinboxes -> reserve(dim);
 	unsigned int i;
 	for (i=0; i<dim; i++){
@@ -184,14 +235,16 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent,
 		(*spinboxes)[i] = spinbox;
 		inputWinLayout -> addWidget(spinbox, i, 2, 1, 2);
 	}	
-
+	//Making the Widget scrollable.
 	QScrollArea *scrollArea = new QScrollArea(this);
 	scrollArea -> setWidget(inputWin);
 	layout -> addWidget(scrollArea);
 	
+	//Creating and adding the option-widget.
 	makeOptionsWidget();
 	layout -> addWidget(optionsWidget);
 
+	//Adding a checkbox to show and hide the options-widget.
 	optionsCheckBox = new QCheckBox("show options", this);
 	layout -> addWidget(optionsCheckBox);
 
@@ -199,6 +252,7 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent,
 	QObject::connect(optionsCheckBox, SIGNAL(stateChanged(int)), this, SLOT(showOptionsWidget()));
 	showOptionsWidget();
 
+	//Adding a checkbox for the 'always send' option.
 	alwaysSendCheckBox = new QCheckBox("always send", this);
 	alwaysSendCheckBox -> setToolTip("This option makes the programm send each change of the values in the "
 						"spinboxes immediately. ");
@@ -207,27 +261,39 @@ Xcf_enter_remote_values_tab::Xcf_enter_remote_values_tab(QWidget *parent,
 	QObject::connect(alwaysSendCheckBox, SIGNAL(stateChanged(int)), this, SLOT(changeSendMode()));
 	changeSendMode();
 
-
+	//Adding the sendButton.
 	QPushButton *send = new QPushButton("Send");
 	QObject::connect(send, SIGNAL(clicked()), this, SLOT(send()));	
 	layout -> addWidget(send);
 
+	//Adding the disconnectButton
 	QPushButton *disconnect = new QPushButton("Disconnect");
 	QObject::connect(disconnect, SIGNAL(clicked()), this, SLOT(disconnect()));
 	layout -> addWidget(disconnect);
 }
 
-void Xcf_enter_remote_values_tab::makeOptionsWidget(){	
 
+void Connection_manager::makeOptionsWidget(){	
+
+	//The tooltip text for the decimals option.
 	const char* TOOLTIP_DECIMALS = "The option 'set decimals to' changes the count of "
 						"numbers after the point. It only affects the spinboxes.";
+	//The tooltip text for the stepsize option.
 	const char* TOOLTIP_STEP = "The option 'set stepsize to' changes the value by which the numbers "
 						"in the spinboxes are increased/decreased through the up/down button.";
+	//The tooltip text for the maximum value option.
 	const char* TOOLTIP_MAX = "The option 'set maximum value to' changes "
 						"the maximum value of the spinboxes.";
+	//The tooltip text for the minimum value option.
 	const char* TOOLTIP_MIN = "The option 'set minimum value to' changes "
 						"the minimum value of the spinboxes.";
 
+	//Creating an int and a double validator for the QLineEdits.
+	QIntValidator *intValidator = new QIntValidator(SPINBOX_DECIMALS_MIN, SPINBOX_DECIMALS_MAX, this);
+	QDoubleValidator *doubleValidator = new QDoubleValidator(this);
+	
+
+	//Initializing the QWidget, with the options.
 	optionsWidget = new QWidget(this);
 	QGridLayout *optionsLayout = new QGridLayout(optionsWidget);
 	optionsWidget -> setLayout(optionsLayout);	
@@ -242,6 +308,9 @@ void Xcf_enter_remote_values_tab::makeOptionsWidget(){
 
 	decimalsLineEdit = new QLineEdit(decimals.str().c_str(), optionsWidget);
 	decimalsLineEdit -> setToolTip(TOOLTIP_DECIMALS);
+
+	// adding an int validator to the decimalsLineEdit
+	decimalsLineEdit -> setValidator(intValidator);
 	
 	optionsLayout -> addWidget(decimalsLineEdit, 0, 1, 0);
 
@@ -259,6 +328,10 @@ void Xcf_enter_remote_values_tab::makeOptionsWidget(){
 
 	stepSizeLineEdit = new QLineEdit(stepSize.str().c_str(), optionsWidget);
 	stepSizeLineEdit -> setToolTip(TOOLTIP_STEP);
+
+	// adding a double validator to the stepSizeLineEdit
+	stepSizeLineEdit -> setValidator(doubleValidator);
+
 	optionsLayout -> addWidget(stepSizeLineEdit, 1, 1, 0);
 
 	QObject::connect(stepSizeLineEdit, SIGNAL(returnPressed()), stepSizeButton, SLOT(animateClick()));
@@ -277,11 +350,19 @@ void Xcf_enter_remote_values_tab::makeOptionsWidget(){
 	max << SPINBOX_MAX;
 	maxLineEdit = new QLineEdit(max.str().c_str(), optionsWidget);
 	maxLineEdit -> setToolTip(TOOLTIP_MAX);
+
+	// adding a double validator to the maxLineEdit
+	maxLineEdit -> setValidator(doubleValidator);
+
 	optionsLayout -> addWidget(maxLineEdit, 2, 1, 0);
 
 	min << SPINBOX_MIN;
 	minLineEdit = new QLineEdit(min.str().c_str(), optionsWidget);
 	minLineEdit -> setToolTip(TOOLTIP_MIN);
+
+	// adding a double validator to the minLineEdit
+	minLineEdit -> setValidator(doubleValidator);
+
 	optionsLayout -> addWidget(minLineEdit, 3, 1, 0);
 
 	QObject::connect(minButton, SIGNAL(clicked()), this, SLOT(setMinValue()));
@@ -289,19 +370,20 @@ void Xcf_enter_remote_values_tab::makeOptionsWidget(){
 }
 
 
-void Xcf_enter_remote_values_tab::send(){
-	std::cout << "sending:";
+void Connection_manager::send(){
+	//Creating the appropriate string for the server communication.
 	std::stringstream vector_string;
 	vector_string << "[" << dim <<"](";
 	for (unsigned int i = 0; i < dim; i++) {
+		//Getting the values from the spinboxes.
 		vector_string << ((*spinboxes)[i] -> value());
 		if (i != dim - 1) vector_string << ",";
 	}
 	vector_string << ")";
 	std::cout << vector_string.str() << std::endl;
 	
-#ifndef GUI_TEST_MODE
 	try{
+	//Trying to send the new values
 		CBF_DEBUG("creating vector doc")
 		CBFSchema::BoostVector v(vector_string.str());
 
@@ -315,29 +397,25 @@ void Xcf_enter_remote_values_tab::send(){
 
 		CBF_DEBUG("calling remote method")
 		_remoteServer->callMethod("set_reference", s.str(), out);
+	//If an Exception occurs an error message will pop up.
 	} catch (const XCF::ServerNotFoundException &e){
 		showDialog("The server could not be localised, this connection will be closed.", this);
-		disconnect();
 	} catch (const XCF::CommunicationException &e){
 		showDialog("There is a server communication problem, this connection will be closed.", this);
-		disconnect();
 	} catch (const XCF::UserException &e){
 		showDialog("An Exception occured in the remotely called usercode, "
 					"this connection will be closed.", this);
-		disconnect();
 	} catch (const XCF::NotActivatedException &e){
 		showDialog("The run-method of the Server has not been called (yet), "
 					"this connection will be closed.", this);
-		disconnect();
 	} catch(...){
 		showDialog("An error occured while trying to send information to the server, "
 					"this connection will be closed.", this);
-		disconnect();
 	}
-#endif
 }
 
-void Xcf_enter_remote_values_tab::showOptionsWidget(){
+
+void Connection_manager::showOptionsWidget(){
 	if(optionsCheckBox -> isChecked()){
 		optionsWidget -> show();
 	} else {
@@ -345,91 +423,108 @@ void Xcf_enter_remote_values_tab::showOptionsWidget(){
 	}
 }
 
-void Xcf_enter_remote_values_tab::changeSendMode(){
+
+void Connection_manager::changeSendMode(){
 	if(alwaysSendCheckBox -> isChecked()){
 		for (unsigned int i = 0; i < dim; i++) {
-			QObject::connect((*spinboxes)[i], 
+			//Connecting the valueChanged signal of the spinboxes directly to the send slot.
+			QObject::connect((*spinboxes)[i],
 			SIGNAL(valueChanged(double)), this, SLOT(send()));
 		}
 	} else {
 		for (unsigned int i = 0; i < dim; i++) {
+			//Disconnecting the valueChanged signal of the spinboxes from the send slot.
 			QObject::disconnect((*spinboxes)[i], 
 			SIGNAL(valueChanged(double)), this, SLOT(send()));
 		}
 	}
 }
 
-void Xcf_enter_remote_values_tab::disconnect(){	
-#ifndef GUI_TEST_MODE
+
+void Connection_manager::disconnect(){	
 	try{
+		//Disconnecting from the server.
 		_remoteServer -> destroy();
 	} catch (...){
 		showDialog("An error occured while shutting down the communication with the server.", this);
 	}
-#endif
+	//Deleting the spinbox-vector.
 	delete spinboxes;
+	//Deleting the tab after the handling of the calling signal. The tab should disappear right away.
 	this -> deleteLater();
 }
 
-void Xcf_enter_remote_values_tab::setDecimals(){
+
+void Connection_manager::setDecimals(){
 	bool ok = false;
-	double value = (decimalsLineEdit -> text().toInt(&ok));
-	if(ok){
+	//Getting the int value from the decimalsLineEdit.
+	int value = (decimalsLineEdit -> text().toInt(&ok));
+	if(ok){ //if value is valid.
 		for (unsigned int i = 0; i < dim; i++) {
+			//setting the value as count of decimals for every spinbox.
 			QDoubleSpinBox* spinbox = (*spinboxes)[i];
 			spinbox -> setDecimals(value);;
 		}
-	} else{
+	} else{ //should not happen because of validator.
 		showDialog("At this place an integer value ist needed.", this);
 	}
 }
 
-void Xcf_enter_remote_values_tab::setStepSize(){
+
+void Connection_manager::setStepSize(){
 	bool ok = false;
+	//Getting the double value from the stepSizeLineEdit.
 	double value = (stepSizeLineEdit -> text().toDouble(&ok));
-	if(ok){
+	if(ok){ //if value is valid.
 		for (unsigned int i = 0; i < dim; i++) {
+			//setting the value as singleStep for every spinbox.
 			QDoubleSpinBox* spinbox = (*spinboxes)[i];
 			spinbox -> setSingleStep(value);
 		}
-	} else{
+	} else{ //should not happen because of validator.
 		showDialog("At this place a double-type value ist needed.", this);
 	}
 }
 
-void Xcf_enter_remote_values_tab::setMinValue(){
+
+void Connection_manager::setMinValue(){
 	bool ok = false;
+	//Getting the double value from the minLineEdit.
 	double value = (minLineEdit -> text().toDouble(&ok));
 	bool isLess = (value < (*spinboxes)[0] -> maximum());
-	if(ok){
-		if(isLess){
+	if(ok){ //if value is valid.
+		if(isLess){ //if value is less then the spinbox maximum.
 			for (unsigned int i = 0; i < dim; i++) {
+				//setting the value as minimum for every spinbox.
 				QDoubleSpinBox* spinbox = (*spinboxes)[i];
 				spinbox -> setMinimum(value);
 			}
-		} else{
+		} else{  //should not happen because of validator.
 			showDialog("The minimum value of the spinboxes must be less then the maximum value", this);
 		}
-	} else{
+	} else{ //should not happen because of validator.
 		showDialog("At this place a double-type value ist needed.", this);
 	}
 }
 
-void Xcf_enter_remote_values_tab::setMaxValue(){
+
+void Connection_manager::setMaxValue(){
 	bool ok = false;
+	//Getting the double value from the maxLineEdit.
 	double value = (maxLineEdit -> text().toDouble(&ok));
-	bool isMore = (value > (*spinboxes)[0] -> minimum());
-	if(ok){
-		if(isMore){
+	bool isGreater = (value > (*spinboxes)[0] -> minimum());
+	if(ok){ //if value is valid.
+		if(isGreater){ //if value is greater then the spinbox minimum.
 			for (unsigned int i = 0; i < dim; i++) {
+				//setting the value as maximum for every spinbox.
 				QDoubleSpinBox* spinbox = (*spinboxes)[i];
 				spinbox -> setMaximum(value);
 			}
-		} else{
+		} else{  //should not happen because of validator.
 			showDialog("The maximum value of the spinboxes must be greater then the minimum value", this);
 		}
-	} else{
+	} else{  //should not happen because of validator.
 		showDialog("At this place a double-type value ist needed.", this);
 	}
 }
-
+} //namespace
