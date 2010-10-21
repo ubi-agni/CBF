@@ -39,9 +39,16 @@ namespace CBF {
 		IdentityEffectorTransform(unsigned int dim = 1) :
 			EffectorTransform(dim, dim)
 		{
+			init(dim);
+		}
+
+		void init(unsigned int dim) {
 			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim);
 		}
 
+		/**
+			@brief This does nothing.
+		*/
 		virtual void update(
 			const FloatVector &resource_value, 
 			const FloatMatrix &task_jacobian) 

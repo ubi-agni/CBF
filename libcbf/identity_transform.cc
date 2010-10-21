@@ -28,17 +28,21 @@ namespace CBF {
 		IdentityEffectorTransform::IdentityEffectorTransform(const CBFSchema::IdentityEffectorTransform &xml_instance) :
 			EffectorTransform(xml_instance.Dimension(), xml_instance.Dimension())
 		{
-			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(xml_instance.Dimension());
-
-			 CBF_DEBUG("[IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance)]: yay!!!")
+			init(xml_instance.Dimension());
+			CBF_DEBUG("[IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance)]: yay!!!")
 		}
-		
+
+
+
 		IdentitySensorTransform::IdentitySensorTransform(const CBFSchema::IdentitySensorTransform &xml_instance) :
 			SensorTransform(xml_instance)
 		{
 			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!")
 			init(xml_instance.Dimension());
 		}
+
+
+
 
 		static XMLDerivedFactory<
 			IdentitySensorTransform, 
