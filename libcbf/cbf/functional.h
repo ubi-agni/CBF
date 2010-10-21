@@ -13,6 +13,17 @@ namespace CBF {
 
 namespace ublas = boost::numeric::ublas;
 
+
+/**
+	@brief A generic SensorTransform that allows to be parametrized
+	with two functors, one acting on the result of the 
+	operand and one that acts on the jacobian matrix of the 
+	operand.
+
+	Note that the task and resource space dimensions are the same
+	as those of the operand. See NegateOperationSensorTransform
+	and MultiplyOperation examples..
+*/
 template<class VectorOperation, class MatrixOperation>
 struct ApplyOperationSensorTransform : public SensorTransform {
 	VectorOperation m_VectorOperation;
@@ -29,10 +40,11 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 		m_VectorOperation(vector_operation),
 		m_MatrixOperation(matrix_operation)
 	{ 
-		init_results(m_Operand);
+		init(m_Operand);
 	}
 
-	virtual void init_results(SensorTransformPtr operand) {
+	virtual void init(SensorTransformPtr operand) {
+		CBF_DEBUG("task space dim: " << operand->task_dim() << "  resource dim: " << operand->resource_dim())
 		m_Result = FloatVector(operand->task_dim()); 
 		m_TaskJacobian = FloatMatrix(operand->task_dim(), operand->resource_dim());
 	}
@@ -53,7 +65,7 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 			m_Operand = 
 				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
 
-			init_results(m_Operand);
+			init(m_Operand);
 		}
 	#endif
 
@@ -96,7 +108,7 @@ make_ApplyOperationSensorTransform(
 	of its operand's output. This is useful e.g. if the task space 
 	of a SensorTransform is made up of blocks of equal size. An example
 	would be a KDLTreePositionSensorTransform with more than one
-	controlled end effector position
+	controlled end-effector position
 */
 template<class VectorOperation, class MatrixOperation>
 struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
@@ -177,6 +189,9 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 		{ return m_Operand->resource_dim(); }
 };
 
+/**
+	@brief A function to create a ApplyOperationBlockWiseSensorTransform
+*/
 template <class VectorOperation, class MatrixOperation>
 ApplyOperationBlockWiseSensorTransform<VectorOperation, MatrixOperation> *
 make_ApplyOperationBlockWiseSensorTransform(
@@ -342,6 +357,12 @@ make_BlockWiseInnerProductSensorTransform(
 }
 #endif
 
+
+/**
+	A simple functor that implements a multiplication operation
+	where first and second result types may vary, but the result
+	is of the first type..
+*/
 template<typename T, typename U> 
 struct multiplies { 
 	typedef T first_argument_type;

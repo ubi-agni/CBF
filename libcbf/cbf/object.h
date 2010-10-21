@@ -10,6 +10,11 @@ namespace CBFSchema { class Object; }
 
 namespace CBF {
 
+	/**
+		@brief The common base class for all CBF types. 
+
+		This type is introduced solely to ease some of the XML stuff
+	*/
 	struct Object {
 		std::string m_Name;
 	

@@ -25,17 +25,19 @@
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
 #include <cbf/convergence_criterion.h>
+#include <cbf/xml_factory.h>
 
 #include <vector>
 
 using namespace CBF;
 
 int main() {
+#if 0
 	DummyReferencePtr reference(new DummyReference(1,3));
 
 	//! Create a PrimitiveController...
- 	PrimitiveControllerPtr c
-		(new PrimitiveController(
+ 	PrimitiveControllerPtr c(
+		new PrimitiveController(
 			1.0,
 			std::vector<ConvergenceCriterionPtr>(), 
 			reference,
@@ -44,7 +46,9 @@ int main() {
 			EffectorTransformPtr(new GenericEffectorTransform(3,3)),
 			std::vector<PrimitiveControllerPtr>(),
 			CombinationStrategyPtr(new AddingStrategy),
-			ResourcePtr(new DummyResource(3))));
+			ResourcePtr(new DummyResource(3))
+		)
+	);
 
 	FloatVector vec(3);
 	vec[0] = vec[1] = vec[2] = 1;
@@ -55,4 +59,5 @@ int main() {
 		before finished() to initialize internal state...
 	*/
 	do { c->step(); std::cout << "step" << std::endl; } while (c->finished() == false);
+#endif
 }

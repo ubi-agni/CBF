@@ -67,8 +67,8 @@ namespace CBF {
 		IdentitySensorTransform(unsigned int dim = 1) :
 			SensorTransform(dim, dim)
 		{
+			init(dim);
 			// Setup the (constant) jacobian which is just the identity matrix.. [TODO: erm, check this]
-			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim,dim);
 		}
 
 		virtual void update(const FloatVector &resource_value) {
@@ -82,6 +82,11 @@ namespace CBF {
 	
 		virtual unsigned int task_dim() const {
 			return m_Dim;
+		}
+
+		virtual void init(unsigned int dim) {
+			m_Dim = dim;
+			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim,dim);
 		}
 	};
 

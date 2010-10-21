@@ -73,15 +73,21 @@ namespace CBF {
 
 	static XMLDerivedFactory<SquarePotential, CBFSchema::SquarePotential> x;
 
+
+	typedef Constructor<SquarePotential, CBFSchema::SquarePotential> 
+		SquarePotentialConstructor;
+
 	static XMLCreator<
-		SquarePotential, 
+		Object, 
 		CBFSchema::SquarePotential, 
-		Constructor<
-			SquarePotential, 
-			CBFSchema::SquarePotential
-		> 
-	> x2(Constructor<SquarePotential, CBFSchema::SquarePotential>());
-	
+		SquarePotentialConstructor
+	> foobar =
+		XMLCreator<
+			Object, 
+			CBFSchema::SquarePotential, 
+			SquarePotentialConstructor
+		>(SquarePotentialConstructor());
+
 	//static XMLConstructorCreator<Potential, CBFSchema::SquarePotential> x3;
 
 #endif
