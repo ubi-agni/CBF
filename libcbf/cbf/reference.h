@@ -40,7 +40,7 @@ namespace CBF {
 	
 		/**
 			This function will be called by a controller that uses this reference
-			each control cycle. Normally the implementation shoudl just
+			each control cycle. Normally the implementation should just
 			update the m_References member..
 		*/
 		virtual void update() = 0;

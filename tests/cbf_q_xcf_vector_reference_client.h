@@ -27,6 +27,7 @@
 #include <QtCore/QObject>
 #include <QtGui/QWidget>
 #include <QtGui/QTabWidget>
+#include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QPushButton>
@@ -126,7 +127,16 @@ class Connection_manager : public QWidget{
 		@brief The dimension of the remote controller.
 	*/	
 	unsigned int dim;
+	
+	/** 
+		@brief A vector to save the pointers to the Spinboxes (used for changing spinbox options).
+	*/	
 	std::vector<QDoubleSpinBox*> *spinboxes;
+	/** 
+		@brief A vector to save the pointers to the Labels that show the current task position of
+		the remote controller.
+	*/	
+	std::vector<QLabel*> *currentValueLabels;
 
 	/** 
 		@brief Adds options (decimals count, stepsize, minvalue, maxvalue) to the Connection_manager.
@@ -144,9 +154,11 @@ class Connection_manager : public QWidget{
 	/** 
 		@brief Creates a n-dimensional vector from the values of the spinboxes and sends it to the RemoteServer.
 	*/
-
 	void send();
-
+	/** 
+		@brief Gets the current position from the server and writes it into the labels next to the spinboxes.
+	*/
+	void loadRemoteValues();
 	/** 
 		@brief Disconnects from the RemoteServer and closes the Tab.
 	*/
