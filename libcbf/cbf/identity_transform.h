@@ -39,9 +39,16 @@ namespace CBF {
 		IdentityEffectorTransform(unsigned int dim = 1) :
 			EffectorTransform(dim, dim)
 		{
+			init(dim);
+		}
+
+		void init(unsigned int dim) {
 			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim);
 		}
 
+		/**
+			@brief This does nothing.
+		*/
 		virtual void update(
 			const FloatVector &resource_value, 
 			const FloatMatrix &task_jacobian) 
@@ -62,10 +69,8 @@ namespace CBF {
 	struct IdentitySensorTransform : public SensorTransform {
 		IdentitySensorTransform(const CBFSchema::IdentitySensorTransform &xml_instance);
 	
-		unsigned int m_Dim;
-	
 		IdentitySensorTransform(unsigned int dim = 1) :
-			SensorTransform(dim, dim)
+			SensorTransform(0, 0)
 		{
 			init(dim);
 			// Setup the (constant) jacobian which is just the identity matrix.. [TODO: erm, check this]
@@ -76,17 +81,10 @@ namespace CBF {
 			m_Result = resource_value;
 		}
 	
-		virtual unsigned int resource_dim() const {
-			return m_Dim;
-		}
-	
-		virtual unsigned int task_dim() const {
-			return m_Dim;
-		}
-
 		virtual void init(unsigned int dim) {
-			m_Dim = dim;
-			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim,dim);
+			m_TaskDim = dim;
+			m_ResourceDim = dim;
+			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(m_TaskDim,m_ResourceDim);
 		}
 	};
 

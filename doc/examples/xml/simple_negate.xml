@@ -1,45 +1,49 @@
 <?xml version="1.0"?>
-<ControlBasis>
-<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+<cbf:ControlBasis
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF">
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
  <Name>foo</Name>
 
  <Coefficient> 1 </Coefficient>
 
- <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
+ <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
   <Threshold> 0.01 </Threshold>
  </ConvergenceCriterion>
 
- <Reference xsi:type="DummyReferenceType">
-  <Vector xsi:type="SimpleVectorType">
+ <Reference xsi:type="cbf:DummyReference">
+  <Vector xsi:type="cbf:SimpleVector">
    <Coefficient> 1.1111111 </Coefficient>
    <Coefficient> 1.1111111 </Coefficient>
    <Coefficient> 1.1111111 </Coefficient>
   </Vector>
  </Reference>
 
- <Potential xsi:type="SquarePotentialType">
+ <Potential xsi:type="cbf:SquarePotential">
   <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
   <Dimension> 3 </Dimension>
   <Coefficient> 0.1 </Coefficient>
  </Potential>
  
 
- <SensorTransform xsi:type="CompositeSensorTransformType">
-  <SensorTransform xsi:type="NegateOperationSensorTransformType"> 
-   <Operand xsi:type="IdentitySensorTransformType">
+ <SensorTransform xsi:type="cbf:CompositeSensorTransform">
+  <SensorTransform xsi:type="cbf:NegateOperationSensorTransform"> 
+   <Operand xsi:type="cbf:IdentitySensorTransform">
     <Dimension> 3 </Dimension>
    </Operand> 
   </SensorTransform>
  </SensorTransform>
 
- <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
+ <EffectorTransform xsi:type="cbf:DampedGenericEffectorTransform">
+
   <DampingConstant> 0.1 </DampingConstant>
+  <TaskDimension> 3 </TaskDimension>
+  <ResourceDimension> 3 </ResourceDimension>
  </EffectorTransform>
 
- <CombinationStrategy xsi:type="AddingStrategyType"/>
+ <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
 
- <Resource xsi:type="DummyResourceType">
-  <Vector xsi:type="SimpleVectorType">
+ <Resource xsi:type="cbf:DummyResource">
+  <Vector xsi:type="cbf:SimpleVector">
    <Coefficient> 10 </Coefficient>
    <Coefficient> 1 </Coefficient>
    <Coefficient> 5 </Coefficient>
@@ -49,4 +53,4 @@
 
 </Controller>
 
-</ControlBasis>
+</cbf:ControlBasis>

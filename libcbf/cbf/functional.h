@@ -47,6 +47,8 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 		CBF_DEBUG("task space dim: " << operand->task_dim() << "  resource dim: " << operand->resource_dim())
 		m_Result = FloatVector(operand->task_dim()); 
 		m_TaskJacobian = FloatMatrix(operand->task_dim(), operand->resource_dim());
+		m_TaskDim = operand->task_dim();
+		m_ResourceDim = operand->resource_dim();
 	}
 
 	#ifdef CBF_HAVE_XSD
