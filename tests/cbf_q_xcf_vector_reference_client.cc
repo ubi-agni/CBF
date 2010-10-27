@@ -26,6 +26,7 @@
 #include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
+#include <cbf/exceptions.h>
 #include <boost/numeric/ublas/io.hpp>
 
 #include <string>
@@ -35,7 +36,6 @@
 #include <memory>
 
 #include <QtGui/QScrollArea>
-#include <QtGui/QLabel>
 #include <QtGui/QApplication>
 #include <QtGui/QGridLayout>
 #include <QtGui/QVBoxLayout>
@@ -143,7 +143,7 @@ void Connection_dispatcher::connect(){
 
 			//Create a RemoteServerPtr with the entered servername.
 			XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(input.c_str());
-			//Open a connection_manager-tab, add and show it.
+			//Open a connection_manager-tab, add and show it.FloatVector
 			Connection_manager *new_tab = 
 				new Connection_manager(window, _remoteServer,  input);
 			window -> addTab(new_tab, input.c_str());
@@ -153,19 +153,18 @@ void Connection_dispatcher::connect(){
 			showDialog("Server not found.", window);
 		} catch(const XCF::InitializeException &e){
 			showDialog("Problem while initializing the RemoteServer object.", window);
-		} catch(...){
-			showDialog("This should not have happened.", window);
 		}
 	}
 }
 
 
-Connection_manager::Connection_manager(QWidget *parent, 
-							XCF::RemoteServerPtr _remoteServer, std::string input):
+Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _remoteServer, std::string input):
 	QWidget(parent)
 {
 	//Initialize a vector to store the QDoubleSpinboxes in.
 	spinboxes = new std::vector<QDoubleSpinBox*>;
+	//Initialize a vector to store the Labels for the current values in.
+	currentValueLabels = new std::vector<QLabel*>;
 
 	//Set the local RemoteServerPtr variable to the passed Server.
 	this -> _remoteServer = _remoteServer;
@@ -199,10 +198,6 @@ Connection_manager::Connection_manager(QWidget *parent,
 		showDialog("The run-method of the Server has not been called (yet), "
 					"this connection will be closed.", this);
 		disconnect();
-	} catch(...){
-		showDialog("An error occured while trying to get the dimension from the server, "
-					"this connection will be closed.", this);
-		disconnect();
 	}
 
 	//Setting up the layout of the tab
@@ -220,6 +215,7 @@ Connection_manager::Connection_manager(QWidget *parent,
 
 	//Adding the Spinboxes with a Label.
 	spinboxes -> reserve(dim);
+	currentValueLabels -> reserve(dim);
 	unsigned int i;
 	for (i=0; i<dim; i++){
 		std::ostringstream valno;
@@ -233,7 +229,11 @@ Connection_manager::Connection_manager(QWidget *parent,
 		spinbox -> setMinimum(SPINBOX_MIN);
 		spinbox -> setMaximum(SPINBOX_MAX);
 		(*spinboxes)[i] = spinbox;
-		inputWinLayout -> addWidget(spinbox, i, 2, 1, 2);
+		inputWinLayout -> addWidget(spinbox, i, 1, 1, 2);
+
+		QLabel *currentValLabel = new QLabel("0.0000000000", inputWin);
+		(*currentValueLabels)[i] = currentValLabel;
+		inputWinLayout -> addWidget(currentValLabel, i, 3, 1, 2);
 	}	
 	//Making the Widget scrollable.
 	QScrollArea *scrollArea = new QScrollArea(this);
@@ -265,6 +265,11 @@ Connection_manager::Connection_manager(QWidget *parent,
 	QPushButton *send = new QPushButton("Send");
 	QObject::connect(send, SIGNAL(clicked()), this, SLOT(send()));	
 	layout -> addWidget(send);
+
+	//Adding the loadRemoteValuesButton.
+	QPushButton *loadRemoteValues = new QPushButton("Load remote values");
+	QObject::connect(loadRemoteValues, SIGNAL(clicked()), this, SLOT(loadRemoteValues()));	
+	layout -> addWidget(loadRemoteValues);
 
 	//Adding the disconnectButton
 	QPushButton *disconnect = new QPushButton("Disconnect");
@@ -396,7 +401,7 @@ void Connection_manager::send(){
 		std::string out;
 
 		CBF_DEBUG("calling remote method")
-		_remoteServer->callMethod("set_reference", s.str(), out);
+		_remoteServer -> callMethod("set_reference", s.str(), out);
 	//If an Exception occurs an error message will pop up.
 	} catch (const XCF::ServerNotFoundException &e){
 		showDialog("The server could not be localised, this connection will be closed.", this);
@@ -408,12 +413,44 @@ void Connection_manager::send(){
 	} catch (const XCF::NotActivatedException &e){
 		showDialog("The run-method of the Server has not been called (yet), "
 					"this connection will be closed.", this);
-	} catch(...){
-		showDialog("An error occured while trying to send information to the server, "
-					"this connection will be closed.", this);
 	}
 }
 
+void Connection_manager::loadRemoteValues(){
+	try{
+		//Getting the current task position from the server.
+		std::string xml_in, out;
+		_remoteServer -> callMethod("get_current_task_position", out, xml_in);
+
+		//Parsing XML for FloatVector
+		CBF_DEBUG("doc: " << xml_in)
+		std::istringstream s(xml_in);
+		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
+		CBF_DEBUG("create vector")
+		CBF::FloatVector currentPositionVector = CBF::create_vector(*v);
+
+		CBF_DEBUG("vector created")
+		if (currentPositionVector.size() != dim) {
+			CBF_THROW_RUNTIME_ERROR(
+				"Dimensions of xml vector not matching the dimension");
+		}
+
+		for (unsigned int i = 0; i < dim; i++) {
+			//setting the value for every Label.
+			QLabel* label = (*currentValueLabels)[i];
+			std::stringstream value;
+			value << currentPositionVector(i);
+			label -> setText(value.str().c_str());
+		}
+
+	} catch (const XCF::MethodNotFoundException &e){
+		//showDialog("The Remote does not seem to provide souch a service.", this);
+		throw;
+	} catch (const std::runtime_error &e){
+		showDialog("The dimension of the remote task does not match the local saved dimension. Maybe"
+			"the Task needs to be run first.", this);
+	}
+}
 
 void Connection_manager::showOptionsWidget(){
 	if(optionsCheckBox -> isChecked()){
@@ -441,7 +478,7 @@ void Connection_manager::changeSendMode(){
 }
 
 
-void Connection_manager::disconnect(){	
+void Connection_manager::disconnect(){
 	try{
 		//Disconnecting from the server.
 		_remoteServer -> destroy();

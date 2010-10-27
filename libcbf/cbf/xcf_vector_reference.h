@@ -45,6 +45,7 @@ struct XCFVectorReference : public Reference {
 		the main
 	*/
 	FloatVector m_TempReference;
+	FloatVector m_CurrentReferencePosition;
 
 	IceUtil::Monitor<IceUtil::RecMutex> m_ReferenceMonitor;
 
@@ -86,6 +87,16 @@ struct XCFVectorReference : public Reference {
 		m_XCFServer->registerMethod
 			(std::string("get_dimension"), f);
 
+		f = boost::bind(
+			boost::mem_fn(&XCFVectorReference::get_current_task_position_xcf), 
+			this,
+			_1,
+			_2
+		);
+
+		m_XCFServer->registerMethod
+			(std::string("get_current_task_position"), f);
+
 		m_XCFServer->run(true);
 	}
 
@@ -96,12 +107,29 @@ struct XCFVectorReference : public Reference {
 			m_References.resize(1);
 			m_References[0] = m_TempReference;
 		}
+		if(m_References.size()>0){
+			CBF_DEBUG("saving current task poisition")
+			m_CurrentReferencePosition = m_References[0];
+		}
 	}
 
 	virtual unsigned int dim() { return m_Dim; }
 
 	virtual void get_current_task_position_xcf(std::string &xml_in, std::string &xml_out) {
+		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
+		
+		std::stringstream vector_string;
 
+		vector_string << m_CurrentReferencePosition;
+
+		CBFSchema::BoostVector v(vector_string.str());
+
+		std::ostringstream s;
+		CBFSchema::Vector_ (s, v);
+
+		CBF_DEBUG("doc: " << s.str())
+
+		xml_out = s.str();
 	}
 
 	virtual void get_dimension_from_xcf(std::string &xml_in, std::string &xml_out) {
