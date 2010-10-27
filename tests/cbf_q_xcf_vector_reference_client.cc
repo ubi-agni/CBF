@@ -143,7 +143,7 @@ void Connection_dispatcher::connect(){
 
 			//Create a RemoteServerPtr with the entered servername.
 			XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(input.c_str());
-			//Open a connection_manager-tab, add and show it.FloatVector
+			//Open a connection_manager-tab, add and show it.
 			Connection_manager *new_tab = 
 				new Connection_manager(window, _remoteServer,  input);
 			window -> addTab(new_tab, input.c_str());
@@ -168,6 +168,10 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 
 	//Set the local RemoteServerPtr variable to the passed Server.
 	this -> _remoteServer = _remoteServer;
+
+	//Creating timer for the update function
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(loadRemoteValues()));
 
 	//Try to get the dimension from the server.
 	try{
@@ -231,7 +235,7 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 		(*spinboxes)[i] = spinbox;
 		inputWinLayout -> addWidget(spinbox, i, 1, 1, 2);
 
-		QLabel *currentValLabel = new QLabel("0.0000000000", inputWin);
+		QLabel *currentValLabel = new QLabel(inputWin);
 		(*currentValueLabels)[i] = currentValLabel;
 		inputWinLayout -> addWidget(currentValLabel, i, 3, 1, 2);
 	}	
@@ -242,7 +246,7 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 	
 	//Creating and adding the option-widget.
 	makeOptionsWidget();
-	layout -> addWidget(optionsWidget);
+	layout -> addWidget(optionsTabWidget);
 
 	//Adding a checkbox to show and hide the options-widget.
 	optionsCheckBox = new QCheckBox("show options", this);
@@ -251,15 +255,6 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 	optionsCheckBox -> setChecked(SHOW_OPTIONS);
 	QObject::connect(optionsCheckBox, SIGNAL(stateChanged(int)), this, SLOT(showOptionsWidget()));
 	showOptionsWidget();
-
-	//Adding a checkbox for the 'always send' option.
-	alwaysSendCheckBox = new QCheckBox("always send", this);
-	alwaysSendCheckBox -> setToolTip("This option makes the programm send each change of the values in the "
-						"spinboxes immediately. ");
-	layout -> addWidget(alwaysSendCheckBox);
-	alwaysSendCheckBox -> setChecked(ALWAYS_SEND);
-	QObject::connect(alwaysSendCheckBox, SIGNAL(stateChanged(int)), this, SLOT(changeSendMode()));
-	changeSendMode();
 
 	//Adding the sendButton.
 	QPushButton *send = new QPushButton("Send");
@@ -279,6 +274,46 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 
 
 void Connection_manager::makeOptionsWidget(){	
+	//Initializing the QTabWidget, with the options.
+	optionsTabWidget = new QTabWidget(this);
+
+
+	//Initializing a QWidget for the main options.
+	QWidget *mainOptionsWidget = new QWidget(optionsTabWidget);
+	QGridLayout *mainOptionsLayout = new QGridLayout(mainOptionsWidget);
+	mainOptionsWidget -> setLayout(mainOptionsLayout);	
+
+	//Adding a checkbox for the 'always send' option.
+	alwaysSendCheckBox = new QCheckBox("Always send", mainOptionsWidget);
+	alwaysSendCheckBox -> setToolTip("This option makes the programm send each change of the values in the "
+						"spinboxes immediately. ");
+	mainOptionsLayout -> addWidget(alwaysSendCheckBox, 0, 0, 1, 3);
+	alwaysSendCheckBox -> setChecked(ALWAYS_SEND);
+	QObject::connect(alwaysSendCheckBox, SIGNAL(stateChanged(int)), this, SLOT(changeSendMode()));
+	if (ALWAYS_SEND) changeSendMode();
+
+	//Adding a checkbox for the 'always load' option.
+	alwaysLoadCheckBox = new QCheckBox("Always load", mainOptionsWidget);
+	alwaysLoadCheckBox -> setToolTip("This option makes the programm load the remote task position and then "
+						"make the specified pause");
+	mainOptionsLayout -> addWidget(alwaysLoadCheckBox, 1, 0, 1, 3);
+	alwaysLoadCheckBox -> setChecked(ALWAYS_LOAD);
+	QObject::connect(alwaysLoadCheckBox, SIGNAL(stateChanged(int)), this, SLOT(changeLoadMode()));
+	if (ALWAYS_LOAD) changeLoadMode();
+	mainOptionsLayout -> addWidget(new QLabel("Reload every", mainOptionsWidget), 2, 0, 1, 1);
+
+	//Adding a spinbox to change the pause time.
+	reloadPauseSpinbox = new QSpinBox(mainOptionsWidget);
+	reloadPauseSpinbox -> setRange(RELOAD_PAUSE_TIME_MIN, RELOAD_PAUSE_TIME_MAX);
+	reloadPauseSpinbox -> setSingleStep(RELOAD_PAUSE_TIME_STEP);
+	reloadPauseSpinbox -> setSuffix(" ms");
+	reloadPauseSpinbox -> setValue(RELOAD_PAUSE_TIME_FIRST);
+	reloadPauseSpinbox -> setKeyboardTracking(false);
+	QObject::connect(reloadPauseSpinbox, SIGNAL(valueChanged(int)), this, SLOT(changeLoadPauseTime(int)));
+	mainOptionsLayout -> addWidget(reloadPauseSpinbox, 2, 1, 1, 2);
+
+	optionsTabWidget -> addTab(mainOptionsWidget, "Main");
+
 
 	//The tooltip text for the decimals option.
 	const char* TOOLTIP_DECIMALS = "The option 'set decimals to' changes the count of "
@@ -296,82 +331,82 @@ void Connection_manager::makeOptionsWidget(){
 	//Creating an int and a double validator for the QLineEdits.
 	QIntValidator *intValidator = new QIntValidator(SPINBOX_DECIMALS_MIN, SPINBOX_DECIMALS_MAX, this);
 	QDoubleValidator *doubleValidator = new QDoubleValidator(this);
-	
 
-	//Initializing the QWidget, with the options.
-	optionsWidget = new QWidget(this);
-	QGridLayout *optionsLayout = new QGridLayout(optionsWidget);
-	optionsWidget -> setLayout(optionsLayout);	
+	//Initializing a QWidget for the Spinbox-Options
+	QWidget *spinboxOptionsWidget = new QWidget(optionsTabWidget);
+	QGridLayout *spinboxOptionsLayout = new QGridLayout(spinboxOptionsWidget);
+	spinboxOptionsWidget -> setLayout(spinboxOptionsLayout);	
 	
  	//Adding an option to change the count of decimals in the Spinboxes.
-	QPushButton *decimalsButton = new QPushButton("Set decimals to:", optionsWidget);
+	QPushButton *decimalsButton = new QPushButton("Set decimals to:", spinboxOptionsWidget);
 	decimalsButton -> setToolTip(TOOLTIP_DECIMALS);
-	optionsLayout -> addWidget(decimalsButton, 0, 0, 0);
+	spinboxOptionsLayout -> addWidget(decimalsButton, 0, 0, 0);
 
 	std::ostringstream decimals;
 	decimals << SPINBOX_DECIMALS;
 
-	decimalsLineEdit = new QLineEdit(decimals.str().c_str(), optionsWidget);
+	decimalsLineEdit = new QLineEdit(decimals.str().c_str(), spinboxOptionsWidget);
 	decimalsLineEdit -> setToolTip(TOOLTIP_DECIMALS);
 
 	// adding an int validator to the decimalsLineEdit
 	decimalsLineEdit -> setValidator(intValidator);
 	
-	optionsLayout -> addWidget(decimalsLineEdit, 0, 1, 0);
+	spinboxOptionsLayout -> addWidget(decimalsLineEdit, 0, 1, 0);
 
 	QObject::connect(decimalsLineEdit, SIGNAL(returnPressed()), decimalsButton, SLOT(animateClick()));
 	QObject::connect(decimalsButton, SIGNAL(clicked()), this, SLOT(setDecimals()));
 
-
  	//Adding an option to change the stepsize in the Spinboxes.
-	QPushButton *stepSizeButton = new QPushButton("Set stepsize to:", optionsWidget);
+	QPushButton *stepSizeButton = new QPushButton("Set stepsize to:", spinboxOptionsWidget);
 	stepSizeButton -> setToolTip(TOOLTIP_STEP);
-	optionsLayout -> addWidget(stepSizeButton, 1, 0, 0);	
+	spinboxOptionsLayout -> addWidget(stepSizeButton, 1, 0, 0);	
 
 	std::ostringstream stepSize;
 	stepSize << SPINBOX_STEP;
 
-	stepSizeLineEdit = new QLineEdit(stepSize.str().c_str(), optionsWidget);
+	stepSizeLineEdit = new QLineEdit(stepSize.str().c_str(), spinboxOptionsWidget);
 	stepSizeLineEdit -> setToolTip(TOOLTIP_STEP);
 
 	// adding a double validator to the stepSizeLineEdit
 	stepSizeLineEdit -> setValidator(doubleValidator);
 
-	optionsLayout -> addWidget(stepSizeLineEdit, 1, 1, 0);
+	spinboxOptionsLayout -> addWidget(stepSizeLineEdit, 1, 1, 0);
 
 	QObject::connect(stepSizeLineEdit, SIGNAL(returnPressed()), stepSizeButton, SLOT(animateClick()));
 	QObject::connect(stepSizeButton, SIGNAL(clicked()), this, SLOT(setStepSize()));
 
-
  	//Adding an option to change the minimum and maximum of the Spinboxes.
-	QPushButton *maxButton = new QPushButton("Set maximum value to:", optionsWidget);
+	QPushButton *maxButton = new QPushButton("Set maximum value to:", spinboxOptionsWidget);
 	maxButton -> setToolTip(TOOLTIP_MAX);
-	optionsLayout -> addWidget(maxButton, 2, 0, 0);
-	QPushButton *minButton = new QPushButton("Set minimum value to:", optionsWidget);
+	spinboxOptionsLayout -> addWidget(maxButton, 2, 0, 0);
+	QPushButton *minButton = new QPushButton("Set minimum value to:", spinboxOptionsWidget);
 	minButton -> setToolTip(TOOLTIP_MIN);
-	optionsLayout -> addWidget(minButton, 3, 0, 0);
+	spinboxOptionsLayout -> addWidget(minButton, 3, 0, 0);
 
 	std::ostringstream min, max;
 	max << SPINBOX_MAX;
-	maxLineEdit = new QLineEdit(max.str().c_str(), optionsWidget);
+	maxLineEdit = new QLineEdit(max.str().c_str(), spinboxOptionsWidget);
 	maxLineEdit -> setToolTip(TOOLTIP_MAX);
 
 	// adding a double validator to the maxLineEdit
 	maxLineEdit -> setValidator(doubleValidator);
 
-	optionsLayout -> addWidget(maxLineEdit, 2, 1, 0);
+	spinboxOptionsLayout -> addWidget(maxLineEdit, 2, 1, 0);
 
 	min << SPINBOX_MIN;
-	minLineEdit = new QLineEdit(min.str().c_str(), optionsWidget);
+	minLineEdit = new QLineEdit(min.str().c_str(), spinboxOptionsWidget);
 	minLineEdit -> setToolTip(TOOLTIP_MIN);
 
 	// adding a double validator to the minLineEdit
 	minLineEdit -> setValidator(doubleValidator);
 
-	optionsLayout -> addWidget(minLineEdit, 3, 1, 0);
+	spinboxOptionsLayout -> addWidget(minLineEdit, 3, 1, 0);
 
 	QObject::connect(minButton, SIGNAL(clicked()), this, SLOT(setMinValue()));
 	QObject::connect(maxButton, SIGNAL(clicked()), this, SLOT(setMaxValue()));
+
+
+	optionsTabWidget -> addTab(spinboxOptionsWidget, "Spinboxes");
 }
 
 
@@ -444,19 +479,19 @@ void Connection_manager::loadRemoteValues(){
 		}
 
 	} catch (const XCF::MethodNotFoundException &e){
-		//showDialog("The Remote does not seem to provide souch a service.", this);
+		CBF_DEBUG("The Remote does not seem to provide souch a service.");
 		throw;
 	} catch (const std::runtime_error &e){
-		showDialog("The dimension of the remote task does not match the local saved dimension. Maybe"
-			"the Task needs to be run first.", this);
+		CBF_DEBUG("The dimension of the remote task does not match the local saved dimension. Maybe"
+			"the Task needs to be run first.");
 	}
 }
 
 void Connection_manager::showOptionsWidget(){
 	if(optionsCheckBox -> isChecked()){
-		optionsWidget -> show();
+		optionsTabWidget -> show();
 	} else {
-		optionsWidget -> hide();
+		optionsTabWidget -> hide();
 	}
 }
 
@@ -477,6 +512,19 @@ void Connection_manager::changeSendMode(){
 	}
 }
 
+void Connection_manager::changeLoadMode(){
+	if(alwaysLoadCheckBox -> isChecked()){
+		//Starting the timer
+		timer -> start(reloadPauseSpinbox -> value());
+	} else {
+		//Stopping the timer
+		timer -> stop();
+	}
+}
+
+void Connection_manager::changeLoadPauseTime(int time){
+	timer -> setInterval(time);
+}
 
 void Connection_manager::disconnect(){
 	try{

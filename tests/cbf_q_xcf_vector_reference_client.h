@@ -25,6 +25,7 @@
 #include <xcf/RemoteServer.hpp>
 
 #include <QtCore/QObject>
+#include <QtCore/QTimer>
 #include <QtGui/QWidget>
 #include <QtGui/QTabWidget>
 #include <QtGui/QLabel>
@@ -83,40 +84,27 @@ class Connection_manager : public QWidget{
 		@brief Is the always send option activatet at first?
 	*/	
 	static const bool ALWAYS_SEND = false;
+	/** 
+		@brief The shortest pause time before a new task position is loaded from the server.
+	*/	
+	static const int RELOAD_PAUSE_TIME_MIN = 50;
+	/** 
+		@brief The longest pause time before a new task position is loaded from the server.
+	*/	
+	static const int RELOAD_PAUSE_TIME_MAX = 30000;
+	/** 
+		@brief The stepsize for the spinbox that holds the current reload pause time.
+	*/	
+	static const int RELOAD_PAUSE_TIME_STEP = 50;
+	/** 
+		@brief The standart pause time before a new task position is loaded from the server.
+	*/	
+	static const int RELOAD_PAUSE_TIME_FIRST = 300;
+	/** 
+		@brief Is the always load option activatet at first?
+	*/	
+	static const bool ALWAYS_LOAD = false;
 
-	/** 
-		@brief The button for sending values to the server.
-	*/	
-	QPushButton *sendbutton;
-	/** 
-		@brief The checkbox which shows/hides the options-widget.
-	*/	
-	QCheckBox *optionsCheckBox;
-	/** 
-		@brief The checkbox which activates the always-send function.
-	*/	
-	QCheckBox *alwaysSendCheckBox;	
-
-	/** 
-		@brief The widget that holds the options for the spinboxes.
-	*/
-	QWidget *optionsWidget;
-	/** 
-		@brief The LineEdit for the new count of decimals for the spinboxes.
-	*/	
-	QLineEdit *decimalsLineEdit;
-	/** 
-		@brief The LineEdit for the new single step size for the spinboxes.
-	*/	
-	QLineEdit *stepSizeLineEdit;
-	/** 
-		@brief The LineEdit for the new minimum value for the spinboxes.
-	*/	
-	QLineEdit *minLineEdit;
-	/** 
-		@brief The LineEdit for the new maximum value for the spinboxes.
-	*/	
-	QLineEdit *maxLineEdit;
 
 	/** 
 		@brief The RemoteServerPtr, which is used for the server communication.
@@ -132,11 +120,63 @@ class Connection_manager : public QWidget{
 		@brief A vector to save the pointers to the Spinboxes (used for changing spinbox options).
 	*/	
 	std::vector<QDoubleSpinBox*> *spinboxes;
+
+	/** 
+		@brief The timer that emits the signal to load the curent task position.
+	*/	
+	QTimer *timer;
+
 	/** 
 		@brief A vector to save the pointers to the Labels that show the current task position of
 		the remote controller.
 	*/	
 	std::vector<QLabel*> *currentValueLabels;
+
+	/** 
+		@brief The widget that holds the options for the spinboxes.
+	*/
+	QTabWidget *optionsTabWidget;
+
+	/** 
+		@brief The checkbox which shows/hides the options-widget.
+	*/	
+	QCheckBox *optionsCheckBox;
+
+	/** 
+		@brief The checkbox which activates the always-send function.
+	*/	
+	QCheckBox *alwaysSendCheckBox;	
+
+	/** 
+		@brief The checkbox which activates the always-load function.
+	*/	
+	QCheckBox *alwaysLoadCheckBox;
+
+	/** 
+		@brief The spinbox that holds the pause of the always load option.
+	*/	
+	QSpinBox *reloadPauseSpinbox;
+
+	/** 
+		@brief The LineEdit for the new count of decimals for the spinboxes.
+	*/	
+	QLineEdit *decimalsLineEdit;
+
+	/** 
+		@brief The LineEdit for the new single step size for the spinboxes.
+	*/	
+	QLineEdit *stepSizeLineEdit;
+
+	/** 
+		@brief The LineEdit for the new minimum value for the spinboxes.
+	*/	
+	QLineEdit *minLineEdit;
+
+	/** 
+		@brief The LineEdit for the new maximum value for the spinboxes.
+	*/	
+	QLineEdit *maxLineEdit;
+
 
 	/** 
 		@brief Adds options (decimals count, stepsize, minvalue, maxvalue) to the Connection_manager.
@@ -159,10 +199,16 @@ class Connection_manager : public QWidget{
 		@brief Gets the current position from the server and writes it into the labels next to the spinboxes.
 	*/
 	void loadRemoteValues();
+
 	/** 
 		@brief Disconnects from the RemoteServer and closes the Tab.
 	*/
 	void disconnect();
+
+	/** 
+		@brief Shows and hides the QWidget, that contains the options for the spinboxes.
+	*/
+	void showOptionsWidget();
 
 	/** 
 		@brief Changes the sending mode from 'send on sendbutton' to 'always Send' and back.
@@ -170,9 +216,14 @@ class Connection_manager : public QWidget{
 	void changeSendMode();
 
 	/** 
+		@brief Changes the load mode from 'load on loadbutton' to 'always load' and back.
+	*/
+	void changeLoadMode();
+
+	/** 
 		@brief Shows and hides the QWidget, that contains the options for the spinboxes.
 	*/
-	void showOptionsWidget();
+	void changeLoadPauseTime(int time);
 
 	/** 
 		@brief Sets the count of decimals of the spinboxes to the entered or throws an error message.
@@ -211,7 +262,7 @@ class Connection_dispatcher : public QObject{
 	/** 
 		@brief The minimum heith of the window.
 	*/
-	static const int PROG_MIN_HEIGTH = 400;
+	static const int PROG_MIN_HEIGTH = 450;
 	
 	private:
 	/** 
