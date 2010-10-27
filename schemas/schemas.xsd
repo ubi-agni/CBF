@@ -307,6 +307,7 @@
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:EffectorTransform">
 		  <xsd:sequence>
+			 <xsd:element name="DampingConstant" type="xsd:float"/>
 			 <xsd:element name="Weights" type="CBF:Matrix"/>
 			 <xsd:element name="TaskDimension" type="xsd:nonNegativeInteger"/>
 			 <xsd:element name="ResourceDimension" type="xsd:nonNegativeInteger"/>

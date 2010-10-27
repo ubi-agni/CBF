@@ -24,8 +24,7 @@
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		WeightedSumSensorTransform::WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance) :
-			SensorTransform(0,0)
+		WeightedSumSensorTransform::WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance) 
 		{
 			CBF_DEBUG("yay!!!");
 		

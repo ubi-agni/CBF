@@ -27,14 +27,11 @@
 namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
-		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance) :
-			SensorTransform(0, 0)
+		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance) 
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
 
-			m_TaskJacobian = create_matrix(xml_instance.Matrix());
-			m_TaskDim = m_TaskJacobian.size1();
-			m_ResourceDim = m_TaskJacobian.size2();
+			init(create_matrix(xml_instance.Matrix()));
 		}
 
 		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform> x;

@@ -57,11 +57,15 @@ namespace CBF {
 		Note that for the functionality that allows creation of controllers
 		from XML files requires that all subclasses have a default 
 		constructor (i.e. one without arguments)..
+
+		NOTE: Subclasses must make sure that the m_TaskJacobian is
+		set to the right source during initialization (in all possible
+		constructors) because the default implementations of
+		task_dim() and resource_dim() use the task jacobian sizes
+		to determine the respective dimensionalities..
 	*/
 	struct SensorTransform : public Object {
-		SensorTransform(unsigned int task_dim, unsigned int resource_dim)	:
-			m_TaskDim(task_dim),
-			m_ResourceDim(resource_dim),
+		SensorTransform()	:
 			m_DefaultComponentName("A task space variable")
 		{
 	
@@ -75,8 +79,25 @@ namespace CBF {
 		*/
 		virtual ~SensorTransform() { }
 
-		virtual unsigned int task_dim() { return m_TaskDim; }
-		virtual unsigned int resource_dim() { return m_ResourceDim; }
+		/**
+			@brief The task space dimensionality 
+
+			The default implementation returns the number of 
+			rows in the task jacobian
+		*/
+		virtual unsigned int task_dim() const {
+			return m_TaskJacobian.size1();
+		}
+
+		/**
+			@brief The resource space dimensionality 
+
+			The default implementation returns the number of 
+			columns in the task jacobian
+		*/
+		virtual unsigned int resource_dim() const {
+			return m_TaskJacobian.size2();
+		}
 	
 		/**
 			@brief Update internal state and do expensive one shot calculations 
@@ -144,9 +165,6 @@ namespace CBF {
 			std::vector<std::string> m_ComponentNames;
 
 			std::string m_DefaultComponentName;
-
-			unsigned int m_TaskDim;
-			unsigned int m_ResourceDim;
 	};
 
 	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;

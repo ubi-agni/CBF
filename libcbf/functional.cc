@@ -22,8 +22,7 @@ namespace CBF {
 				multiplies<FloatMatrix, double>(),
 				xml_instance.Factor()
 			)
-		), 
-		SensorTransform(0,0)
+		) 
 	{ 
 		m_Operand = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand());
 		

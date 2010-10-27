@@ -51,8 +51,7 @@ struct WeightedSumSensorTransform : public SensorTransform {
 			= std::vector<SensorTransformPtr>(), 
 		FloatVector weights 
 			= ublas::zero_vector<Float>()
-	) :
-		SensorTransform(0,0)
+	) 
 	{
 		set_transforms(transforms);
 		set_weights(weights);
@@ -64,9 +63,6 @@ struct WeightedSumSensorTransform : public SensorTransform {
 
 	void set_transforms(std::vector<SensorTransformPtr> &transforms) {
 		m_Transforms = transforms;
-
-		m_TaskDim = transforms[0]->task_dim();
-		m_ResourceDim = transforms[0]->resource_dim();
 		//! Set the result and task jacobian matrixes to the right sizes...
 		m_TaskJacobian = ublas::zero_matrix<Float>(transforms[0]->task_dim(), transforms[0]->resource_dim());
 		m_Result = ublas::zero_vector<Float>(transforms[0]->task_dim());

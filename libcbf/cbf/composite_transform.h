@@ -49,20 +49,19 @@ namespace CBF {
 		positive non zero number of transforms...
 	*/
 	struct CompositeSensorTransform : public SensorTransform {
+
 		protected:
 			std::vector<SensorTransformPtr> m_SensorTransforms;
 	
 		public:
-			CompositeSensorTransform(std::vector<SensorTransformPtr> transforms = std::vector<SensorTransformPtr>()) :
-				SensorTransform(0,0)
+			CompositeSensorTransform(std::vector<SensorTransformPtr> transforms = std::vector<SensorTransformPtr>()) 
 			{
 				set_transforms(transforms);
 			}
 
 			CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance);
 
-			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2) :
-				SensorTransform(0,0)
+			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2)
 			{
 				std::vector<SensorTransformPtr> v;
 				v.push_back(t1);

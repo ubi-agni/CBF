@@ -37,8 +37,7 @@ namespace CBF {
 	struct DifferenceSensorTransform : public SensorTransform {
 		DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance);
 
-		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr()) :
-			SensorTransform(t1->task_dim(), t1->resource_dim())
+		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr()) 
 		{
 			if (t1.get() && t2.get())
 				set_transforms(t1, t2);

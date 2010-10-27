@@ -35,7 +35,6 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 		VectorOperation vector_operation, 
 		MatrixOperation matrix_operation
 	) :
-		SensorTransform(operand->task_dim(),operand->resource_dim()),
 		m_Operand(operand),
 		m_VectorOperation(vector_operation),
 		m_MatrixOperation(matrix_operation)
@@ -47,8 +46,6 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 		CBF_DEBUG("task space dim: " << operand->task_dim() << "  resource dim: " << operand->resource_dim())
 		m_Result = FloatVector(operand->task_dim()); 
 		m_TaskJacobian = FloatMatrix(operand->task_dim(), operand->resource_dim());
-		m_TaskDim = operand->task_dim();
-		m_ResourceDim = operand->resource_dim();
 	}
 
 	#ifdef CBF_HAVE_XSD
@@ -59,8 +56,7 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 			NegateOperationSensorTransform
 		*/
 		template <class XMLType>
-		ApplyOperationSensorTransform(const XMLType& xml_instance) :
-		SensorTransform(0,0) 
+		ApplyOperationSensorTransform(const XMLType& xml_instance) 
 		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
@@ -125,7 +121,6 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 		MatrixOperation matrix_operation,
 		unsigned int blocksize
 	) :
-		SensorTransform(0,0),
 		m_Operand(operand),
 		m_VectorOperation(vector_operation),
 		m_MatrixOperation(matrix_operation),
@@ -197,10 +192,10 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 template <class VectorOperation, class MatrixOperation>
 ApplyOperationBlockWiseSensorTransform<VectorOperation, MatrixOperation> *
 make_ApplyOperationBlockWiseSensorTransform(
-		SensorTransformPtr operand,
-		VectorOperation vector_operation, 
-		MatrixOperation matrix_operation,
-		unsigned int blocksize
+	SensorTransformPtr operand,
+	VectorOperation vector_operation, 
+	MatrixOperation matrix_operation,
+	unsigned int blocksize
 ) {
 	return new ApplyOperationBlockWiseSensorTransform<
 		VectorOperation,

@@ -39,36 +39,31 @@ struct LinearSensorTransform : public SensorTransform {
 	LinearSensorTransform (const CBFSchema::LinearSensorTransform &xml_instance);
 
 	void update(const FloatVector &resource_value) {
-		m_Result = ublas::prod(m_TaskJacobian, resource_value);
+		m_Result = ublas::prod(m_CoefficientMatrix, resource_value);
 	}
 
-	LinearSensorTransform(unsigned int task_dim, unsigned int resource_dim) :
-		SensorTransform(task_dim,resource_dim)
+	LinearSensorTransform(const FloatMatrix &coefficient_matrix) 
 	{
-		m_TaskJacobian = ublas::identity_matrix<Float>(task_dim, resource_dim);
+		init(coefficient_matrix);
 	}
 
-	LinearSensorTransform(FloatMatrix &m) :
-		SensorTransform(m.size1(), m.size2())
+	void init (const FloatMatrix &coefficient_matrix) {
+		m_CoefficientMatrix = coefficient_matrix;
+		m_TaskJacobian = ublas::identity_matrix<Float>(
+			coefficient_matrix.size1(), 
+			coefficient_matrix.size2()
+		);
+	}
+
+	LinearSensorTransform(FloatMatrix &m) 
 	{
 		m_TaskJacobian = m ;
 	}
 
-	/**
-		Needs to be implemented in subclass to allow dimensionality checking when
-		this is bound to a resource.
+	/** 
+		A linear map is described by a matrix of coefficients
 	*/
-	virtual unsigned int resource_dim() const {
-		return m_TaskJacobian.size2();
-	}
-
-	/**
-		Needs to be implemented in subclass to allow dimensionality checking when
-		this is bound to a resource.
-	*/
-	virtual unsigned int task_dim() const {
-		return m_TaskJacobian.size1();
-	}
+	FloatMatrix m_CoefficientMatrix;
 };
 
 

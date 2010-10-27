@@ -36,8 +36,7 @@ namespace CBF {
 	struct IdentityEffectorTransform : public EffectorTransform {
 		IdentityEffectorTransform(const CBFSchema::IdentityEffectorTransform &xml_instance);
 
-		IdentityEffectorTransform(unsigned int dim = 1) :
-			EffectorTransform(dim, dim)
+		IdentityEffectorTransform(unsigned int dim = 1)
 		{
 			init(dim);
 		}
@@ -69,8 +68,7 @@ namespace CBF {
 	struct IdentitySensorTransform : public SensorTransform {
 		IdentitySensorTransform(const CBFSchema::IdentitySensorTransform &xml_instance);
 	
-		IdentitySensorTransform(unsigned int dim = 1) :
-			SensorTransform(0, 0)
+		IdentitySensorTransform(unsigned int dim = 1)
 		{
 			init(dim);
 			// Setup the (constant) jacobian which is just the identity matrix.. [TODO: erm, check this]
@@ -82,9 +80,7 @@ namespace CBF {
 		}
 	
 		virtual void init(unsigned int dim) {
-			m_TaskDim = dim;
-			m_ResourceDim = dim;
-			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(m_TaskDim,m_ResourceDim);
+			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim, dim);
 		}
 	};
 
