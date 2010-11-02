@@ -514,8 +514,6 @@ struct multiplies {
 	T operator()(T const& t, U const& u) const { return t * u; } 
 };
 
-
-
 typedef ApplyOperationSensorTransform<
 	std::negate<FloatVector>,
 	std::negate<FloatMatrix>
@@ -532,6 +530,11 @@ typedef BlockWiseInnerProductSensorTransform<
 	multiplies<FloatMatrix, double>
 > BlockWiseWeightedSumSensorTransform;
 #endif
+
+typedef BlockWiseAccumulateSensorTransform<
+	std::plus<FloatVector>,
+	std::plus<FloatMatrix>
+> BlockWiseSumSensorTransform;
 
 } // namespace
 
