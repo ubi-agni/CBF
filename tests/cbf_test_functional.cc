@@ -13,7 +13,7 @@ int main() {
 	CBF::DummyResourcePtr r(new CBF::DummyResource(9));
 
 	CBF::FloatVector vec(9);
-	vec[0] = 1; vec[8] = -1;
+	vec[0] = 1; vec[3] = 1; vec[8] = -1;
 	r->set(vec);
 
 	CBF::SensorTransformPtr s(
