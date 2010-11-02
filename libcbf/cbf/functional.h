@@ -477,6 +477,28 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 };
 
 
+template <class VectorOperation, class MatrixOperation>
+BlockWiseAccumulateSensorTransform<VectorOperation, MatrixOperation> *
+make_BlockWiseAccumulateSensorTransform(
+		SensorTransformPtr operand,
+		VectorOperation vector_operation, 
+		MatrixOperation matrix_operation,
+		const FloatVector &init_vector,
+		const FloatMatrix &init_matrix,
+		unsigned int block_size
+) {
+	return new BlockWiseAccumulateSensorTransform<
+		VectorOperation,
+		MatrixOperation
+	> (
+		operand,
+		vector_operation,
+		matrix_operation,
+		init_vector,
+		init_matrix,
+		block_size
+	);
+}
 
 
 /**

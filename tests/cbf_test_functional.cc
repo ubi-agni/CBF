@@ -89,10 +89,8 @@ int main() {
 		boost::numeric::ublas::unit_vector<CBF::Float>(3, 0);
 
 	CBF::SensorTransformPtr s5(
-		new CBF::BlockWiseAccumulateSensorTransform<
-			std::plus<CBF::FloatVector>,
-			std::plus<CBF::FloatMatrix> 
-		> (
+		CBF::make_BlockWiseAccumulateSensorTransform
+		(
 			id,
 			std::plus<CBF::FloatVector>(),
 			std::plus<CBF::FloatMatrix>(),
