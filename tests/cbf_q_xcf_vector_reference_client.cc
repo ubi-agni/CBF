@@ -43,6 +43,8 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QDialog>
 
+#include<QtGui/QTableWidget>
+
 /** 
 	@file cbf_q_xcf_vector_reference_client.cc
 	@brief The implementation of the cbf_q_xcf_reference_client application
@@ -171,7 +173,10 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 
 	//Creating timer for the update function
 	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(loadRemoteValues()));
+	QObject::connect(timer, SIGNAL(timeout()), this, SLOT(loadRemoteValues()));
+
+	//Setting the pointer of the combobox from the 'set spinboxes to' dialog to null.
+	comboSetSpinboxes = NULL;
 
 	//Try to get the dimension from the server.
 	try{
@@ -205,17 +210,20 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 	}
 
 	//Setting up the layout of the tab
-	QVBoxLayout *layout = new QVBoxLayout(this);
+	QGridLayout *layout = new QGridLayout(this);
+	this -> setLayout(layout);
 	
 	QString connectedto = "Connected to: ";
 	connectedto.append(input.c_str());
 
 	QLabel *label = new QLabel(connectedto);
-	layout -> addWidget(label);
+	layout -> addWidget(label, 0, 0, 1, 2);
 
 	//Making a QWidget for QDoubleSpinboxes.
-	QWidget *inputWin = new QWidget();
+	inputWin = new QWidget(this);
 	QGridLayout *inputWinLayout = new QGridLayout(inputWin);
+	inputWinLayout -> setSizeConstraint(QLayout::SetNoConstraint);
+	inputWin -> setLayout(inputWinLayout);
 
 	//Adding the Spinboxes with a Label.
 	spinboxes -> reserve(dim);
@@ -233,24 +241,26 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 		spinbox -> setMinimum(SPINBOX_MIN);
 		spinbox -> setMaximum(SPINBOX_MAX);
 		(*spinboxes)[i] = spinbox;
-		inputWinLayout -> addWidget(spinbox, i, 1, 1, 2);
+		inputWinLayout -> addWidget(spinbox, i, 1, 1, 3);
 
 		QLabel *currentValLabel = new QLabel(inputWin);
 		(*currentValueLabels)[i] = currentValLabel;
-		inputWinLayout -> addWidget(currentValLabel, i, 3, 1, 2);
-	}	
+		inputWinLayout -> addWidget(currentValLabel, i, 4, 1, 1);
+	}
+	
 	//Making the Widget scrollable.
 	QScrollArea *scrollArea = new QScrollArea(this);
 	scrollArea -> setWidget(inputWin);
-	layout -> addWidget(scrollArea);
+	scrollArea -> setAlignment(Qt::AlignCenter);
+	layout -> addWidget(scrollArea, 1, 0, 1, 2);
 	
 	//Creating and adding the option-widget.
 	makeOptionsWidget();
-	layout -> addWidget(optionsTabWidget);
+	layout -> addWidget(optionsTabWidget, 2, 0, 1, 2);
 
 	//Adding a checkbox to show and hide the options-widget.
 	optionsCheckBox = new QCheckBox("show options", this);
-	layout -> addWidget(optionsCheckBox);
+	layout -> addWidget(optionsCheckBox, 3, 0, 1, 2);
 
 	optionsCheckBox -> setChecked(SHOW_OPTIONS);
 	QObject::connect(optionsCheckBox, SIGNAL(stateChanged(int)), this, SLOT(showOptionsWidget()));
@@ -259,17 +269,30 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 	//Adding the sendButton.
 	QPushButton *send = new QPushButton("Send");
 	QObject::connect(send, SIGNAL(clicked()), this, SLOT(send()));	
-	layout -> addWidget(send);
+	layout -> addWidget(send, 4, 0, 1, 1);
 
 	//Adding the loadRemoteValuesButton.
 	QPushButton *loadRemoteValues = new QPushButton("Load remote values");
 	QObject::connect(loadRemoteValues, SIGNAL(clicked()), this, SLOT(loadRemoteValues()));	
-	layout -> addWidget(loadRemoteValues);
+	layout -> addWidget(loadRemoteValues, 4, 1, 1, 1);
+
+	//Adding the setSpinboxesToButton.
+	QPushButton *setSpinboxesTo = new QPushButton("Set spinboxes to:");
+	QObject::connect(setSpinboxesTo, SIGNAL(clicked()), this, SLOT(setSpinboxesTo()));	
+	layout -> addWidget(setSpinboxesTo, 5, 0, 1, 1);
+
+	//Adding a ComboBox for the setSpinboxesTo function.
+	comboSetSpinboxes = new QComboBox(this);
+	comboSetSpinboxes -> addItem("set to current values from server");
+	comboSetSpinboxes -> addItem("set to already loaded values");
+	comboSetSpinboxes -> addItem("choose single value");
+	comboSetSpinboxes -> setCurrentIndex(0);
+	layout -> addWidget(comboSetSpinboxes, 5, 1, 1, 1);
 
 	//Adding the disconnectButton
 	QPushButton *disconnect = new QPushButton("Disconnect");
 	QObject::connect(disconnect, SIGNAL(clicked()), this, SLOT(disconnect()));
-	layout -> addWidget(disconnect);
+	layout -> addWidget(disconnect, 6, 0, 1, 2);
 }
 
 
@@ -278,41 +301,41 @@ void Connection_manager::makeOptionsWidget(){
 	optionsTabWidget = new QTabWidget(this);
 
 
-	//Initializing a QWidget for the main options.
-	QWidget *mainOptionsWidget = new QWidget(optionsTabWidget);
-	QGridLayout *mainOptionsLayout = new QGridLayout(mainOptionsWidget);
-	mainOptionsWidget -> setLayout(mainOptionsLayout);	
+	//Initializing a QWidget for the server options.
+	QWidget *serverOptionsWidget = new QWidget(optionsTabWidget);
+	QGridLayout *serverOptionsLayout = new QGridLayout(serverOptionsWidget);
+	serverOptionsWidget -> setLayout(serverOptionsLayout);	
 
 	//Adding a checkbox for the 'always send' option.
-	alwaysSendCheckBox = new QCheckBox("Always send", mainOptionsWidget);
+	alwaysSendCheckBox = new QCheckBox("Always send", serverOptionsWidget);
 	alwaysSendCheckBox -> setToolTip("This option makes the programm send each change of the values in the "
 						"spinboxes immediately. ");
-	mainOptionsLayout -> addWidget(alwaysSendCheckBox, 0, 0, 1, 3);
+	serverOptionsLayout -> addWidget(alwaysSendCheckBox, 0, 0, 1, 3);
 	alwaysSendCheckBox -> setChecked(ALWAYS_SEND);
 	QObject::connect(alwaysSendCheckBox, SIGNAL(stateChanged(int)), this, SLOT(changeSendMode()));
 	if (ALWAYS_SEND) changeSendMode();
 
 	//Adding a checkbox for the 'always load' option.
-	alwaysLoadCheckBox = new QCheckBox("Always load", mainOptionsWidget);
+	alwaysLoadCheckBox = new QCheckBox("Always load", serverOptionsWidget);
 	alwaysLoadCheckBox -> setToolTip("This option makes the programm load the remote task position and then "
 						"make the specified pause");
-	mainOptionsLayout -> addWidget(alwaysLoadCheckBox, 1, 0, 1, 3);
+	serverOptionsLayout -> addWidget(alwaysLoadCheckBox, 1, 0, 1, 3);
 	alwaysLoadCheckBox -> setChecked(ALWAYS_LOAD);
 	QObject::connect(alwaysLoadCheckBox, SIGNAL(stateChanged(int)), this, SLOT(changeLoadMode()));
 	if (ALWAYS_LOAD) changeLoadMode();
-	mainOptionsLayout -> addWidget(new QLabel("Reload every", mainOptionsWidget), 2, 0, 1, 1);
+	serverOptionsLayout -> addWidget(new QLabel("Reload every", serverOptionsWidget), 2, 0, 1, 1);
 
 	//Adding a spinbox to change the pause time.
-	reloadPauseSpinbox = new QSpinBox(mainOptionsWidget);
+	reloadPauseSpinbox = new QSpinBox(serverOptionsWidget);
 	reloadPauseSpinbox -> setRange(RELOAD_PAUSE_TIME_MIN, RELOAD_PAUSE_TIME_MAX);
 	reloadPauseSpinbox -> setSingleStep(RELOAD_PAUSE_TIME_STEP);
 	reloadPauseSpinbox -> setSuffix(" ms");
 	reloadPauseSpinbox -> setValue(RELOAD_PAUSE_TIME_FIRST);
 	reloadPauseSpinbox -> setKeyboardTracking(false);
 	QObject::connect(reloadPauseSpinbox, SIGNAL(valueChanged(int)), this, SLOT(changeLoadPauseTime(int)));
-	mainOptionsLayout -> addWidget(reloadPauseSpinbox, 2, 1, 1, 2);
+	serverOptionsLayout -> addWidget(reloadPauseSpinbox, 2, 1, 1, 2);
 
-	optionsTabWidget -> addTab(mainOptionsWidget, "Main");
+	optionsTabWidget -> addTab(serverOptionsWidget, "Server");
 
 
 	//The tooltip text for the decimals option.
@@ -409,6 +432,18 @@ void Connection_manager::makeOptionsWidget(){
 	optionsTabWidget -> addTab(spinboxOptionsWidget, "Spinboxes");
 }
 
+void Connection_manager::disconnect(){
+	try{
+		//Disconnecting from the server.
+		_remoteServer -> destroy();
+	} catch (...){
+		showDialog("An error occured while shutting down the communication with the server.", this);
+	}
+	//Deleting the spinbox-vector.
+	delete spinboxes;
+	//Deleting the tab after the handling of the calling signal. The tab should disappear right away.
+	this -> deleteLater();
+}
 
 void Connection_manager::send(){
 	//Creating the appropriate string for the server communication.
@@ -451,51 +486,6 @@ void Connection_manager::send(){
 	}
 }
 
-void Connection_manager::loadRemoteValues(){
-	try{
-		//Getting the current task position from the server.
-		std::string xml_in, out;
-		_remoteServer -> callMethod("get_current_task_position", out, xml_in);
-
-		//Parsing XML for FloatVector
-		CBF_DEBUG("doc: " << xml_in)
-		std::istringstream s(xml_in);
-		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
-		CBF_DEBUG("create vector")
-		CBF::FloatVector currentPositionVector = CBF::create_vector(*v);
-
-		CBF_DEBUG("vector created")
-		if (currentPositionVector.size() != dim) {
-			CBF_THROW_RUNTIME_ERROR(
-				"Dimensions of xml vector not matching the dimension");
-		}
-
-		for (unsigned int i = 0; i < dim; i++) {
-			//setting the value for every Label.
-			QLabel* label = (*currentValueLabels)[i];
-			std::stringstream value;
-			value << currentPositionVector(i);
-			label -> setText(value.str().c_str());
-		}
-
-	} catch (const XCF::MethodNotFoundException &e){
-		CBF_DEBUG("The Remote does not seem to provide souch a service.");
-		throw;
-	} catch (const std::runtime_error &e){
-		CBF_DEBUG("The dimension of the remote task does not match the local saved dimension. Maybe"
-			"the Task needs to be run first.");
-	}
-}
-
-void Connection_manager::showOptionsWidget(){
-	if(optionsCheckBox -> isChecked()){
-		optionsTabWidget -> show();
-	} else {
-		optionsTabWidget -> hide();
-	}
-}
-
-
 void Connection_manager::changeSendMode(){
 	if(alwaysSendCheckBox -> isChecked()){
 		for (unsigned int i = 0; i < dim; i++) {
@@ -509,6 +499,49 @@ void Connection_manager::changeSendMode(){
 			QObject::disconnect((*spinboxes)[i], 
 			SIGNAL(valueChanged(double)), this, SLOT(send()));
 		}
+	}
+}
+
+CBF::FloatVector* Connection_manager::loadCurrentPositionVector(){
+	try{
+		//Getting the current task position from the server.
+		std::string xml_in, out;
+		_remoteServer -> callMethod("get_current_task_position", out, xml_in);
+
+		//Parsing XML for FloatVector
+		CBF_DEBUG("doc: " << xml_in)
+		std::istringstream s(xml_in);
+		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
+		CBF_DEBUG("create vector")
+		CBF::FloatVector *currentPositionVector = new CBF::FloatVector(CBF::create_vector(*v));
+
+		CBF_DEBUG("vector created")
+		if (currentPositionVector -> size() != dim) {
+			CBF_THROW_RUNTIME_ERROR(
+				"Dimensions of xml vector not matching the dimension");
+		}
+		return currentPositionVector;
+	} catch (const XCF::MethodNotFoundException &e){
+		CBF_DEBUG("The Remote does not seem to provide souch a service.");
+		throw;
+	} catch (const std::runtime_error &e){
+		CBF_DEBUG("The dimension of the remote task does not match the local saved dimension. Maybe"
+			"the Task needs to be run first.");
+	}
+	return NULL;
+}
+
+void Connection_manager::loadRemoteValues(){
+	CBF::FloatVector *currentPositionVector = loadCurrentPositionVector();
+	if(currentPositionVector != NULL){
+		for (unsigned int i = 0; i < dim; i++) {
+			//setting the value for every Label.
+			QLabel* label = (*currentValueLabels)[i];
+			std::stringstream value;
+			value << (*currentPositionVector)(i);
+			label -> setText(value.str().c_str());
+		}
+		inputWin -> resize(inputWin -> sizeHint());
 	}
 }
 
@@ -526,19 +559,80 @@ void Connection_manager::changeLoadPauseTime(int time){
 	timer -> setInterval(time);
 }
 
-void Connection_manager::disconnect(){
-	try{
-		//Disconnecting from the server.
-		_remoteServer -> destroy();
-	} catch (...){
-		showDialog("An error occured while shutting down the communication with the server.", this);
+
+void Connection_manager::setSpinboxesTo(){
+	switch(comboSetSpinboxes -> currentIndex()){
+		case 0:{ //"set to current values from server" - Getting values from Server.
+			CBF::FloatVector *currentPositionVector = loadCurrentPositionVector();
+			if(currentPositionVector != NULL){
+				for (unsigned int i = 0; i < dim; i++) {
+					//setting the value for every spinbox.
+					(*spinboxes)[i] -> setValue((*currentPositionVector)(i));
+				}
+				inputWin -> resize(inputWin -> sizeHint());
+			}
+			break;
+		}
+		case 1:{ //"set to already loaded values" - Getting values from Labels.
+			if(((*currentValueLabels)[0] -> text()) != ""){
+				for (unsigned int i = 0; i < dim; i++) {
+					//setting the value for every spinbox.
+					double value = ((*currentValueLabels)[i] -> text()).toDouble();
+					(*spinboxes)[i] -> setValue(value);
+				}
+				inputWin -> resize(inputWin -> sizeHint());
+			}
+			break;
+		}
+		case 2:{ //"choose single value" - Getting value through a dialog.
+			QDialog dialog(this);
+			QGridLayout dialogLayout(&dialog);
+
+			//Adding a Label with text to the dialog.
+			QLabel message("Choose the value:", &dialog);
+			message.setWordWrap(true);
+			message.setAlignment(Qt::AlignCenter);
+			dialogLayout.addWidget(&message, 0, 0, 1, 2, Qt::AlignHCenter);
+
+			//Adding a QLineEdit the new value.
+			QLineEdit inputLine(&dialog);
+			QDoubleValidator *doubleValidator = new QDoubleValidator(this);
+			inputLine.setValidator(doubleValidator);
+			dialogLayout.addWidget(&inputLine, 1, 0, 1, 2, Qt::AlignHCenter);
+			QObject::connect(&inputLine, SIGNAL(returnPressed()), &dialog, SLOT(accept()));			
+
+			//Adding cancell and okay buttons to the dialog.
+			QPushButton cancel("Cancel", &dialog);
+			QObject::connect(&cancel, SIGNAL(clicked()), &dialog, SLOT(reject()));
+			dialogLayout.addWidget(&cancel, 2, 0, 1, 1, Qt::AlignRight);
+
+			QPushButton okay("Ok", &dialog);
+			QObject::connect(&okay, SIGNAL(clicked()), &dialog, SLOT(accept()));
+			dialogLayout.addWidget(&okay, 2, 1, 1, 1, Qt::AlignLeft);
+
+			//Setting the layout of the dialog and starting it.
+			dialog.setLayout(&dialogLayout);
+			dialog.exec();
+			if(dialog.result()==QDialog::Accepted && inputLine.text()!=""){
+				for (unsigned int i = 0; i < dim; i++) {
+					//setting the value for every spinbox.
+					double value = inputLine.text().toDouble();
+					(*spinboxes)[i] -> setValue(value);
+				}
+				inputWin -> resize(inputWin -> sizeHint());
+			}
+			break;
+		}
 	}
-	//Deleting the spinbox-vector.
-	delete spinboxes;
-	//Deleting the tab after the handling of the calling signal. The tab should disappear right away.
-	this -> deleteLater();
 }
 
+void Connection_manager::showOptionsWidget(){
+	if(optionsCheckBox -> isChecked()){
+		optionsTabWidget -> show();
+	} else {
+		optionsTabWidget -> hide();
+	}
+}
 
 void Connection_manager::setDecimals(){
 	bool ok = false;
@@ -550,6 +644,7 @@ void Connection_manager::setDecimals(){
 			QDoubleSpinBox* spinbox = (*spinboxes)[i];
 			spinbox -> setDecimals(value);;
 		}
+		inputWin -> resize(inputWin -> sizeHint());
 	} else{ //should not happen because of validator.
 		showDialog("At this place an integer value ist needed.", this);
 	}
@@ -584,6 +679,7 @@ void Connection_manager::setMinValue(){
 				QDoubleSpinBox* spinbox = (*spinboxes)[i];
 				spinbox -> setMinimum(value);
 			}
+			inputWin -> resize(inputWin -> sizeHint());
 		} else{  //should not happen because of validator.
 			showDialog("The minimum value of the spinboxes must be less then the maximum value", this);
 		}
@@ -605,6 +701,7 @@ void Connection_manager::setMaxValue(){
 				QDoubleSpinBox* spinbox = (*spinboxes)[i];
 				spinbox -> setMaximum(value);
 			}
+			inputWin -> resize(inputWin -> sizeHint());
 		} else{  //should not happen because of validator.
 			showDialog("The maximum value of the spinboxes must be greater then the minimum value", this);
 		}

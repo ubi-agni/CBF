@@ -33,6 +33,9 @@
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QPushButton>
 #include <QtGui/QCheckBox>
+#include <QtGui/QComboBox>
+
+#include <cbf/types.h>
 
 /** 
 	@file cbf_q_xcf_vector_reference_client.h
@@ -133,6 +136,11 @@ class Connection_manager : public QWidget{
 	std::vector<QLabel*> *currentValueLabels;
 
 	/** 
+		@brief The widget that holds the spinboxes.
+	*/
+	QWidget *inputWin;
+
+	/** 
 		@brief The widget that holds the options for the spinboxes.
 	*/
 	QTabWidget *optionsTabWidget;
@@ -177,6 +185,11 @@ class Connection_manager : public QWidget{
 	*/	
 	QLineEdit *maxLineEdit;
 
+	/** 
+		@brief The ComboBox, for the 'set spinboxes to' function.
+	*/
+	QComboBox *comboSetSpinboxes;
+
 
 	/** 
 		@brief Adds options (decimals count, stepsize, minvalue, maxvalue) to the Connection_manager.
@@ -191,14 +204,6 @@ class Connection_manager : public QWidget{
 	Connection_manager(QWidget *parent, XCF::RemoteServerPtr _remoteServer, std::string input);
 
 	public slots:
-	/** 
-		@brief Creates a n-dimensional vector from the values of the spinboxes and sends it to the RemoteServer.
-	*/
-	void send();
-	/** 
-		@brief Gets the current position from the server and writes it into the labels next to the spinboxes.
-	*/
-	void loadRemoteValues();
 
 	/** 
 		@brief Disconnects from the RemoteServer and closes the Tab.
@@ -206,14 +211,25 @@ class Connection_manager : public QWidget{
 	void disconnect();
 
 	/** 
-		@brief Shows and hides the QWidget, that contains the options for the spinboxes.
+		@brief Creates a n-dimensional vector from the values of the spinboxes and sends it to the RemoteServer.
 	*/
-	void showOptionsWidget();
+	void send();
 
 	/** 
 		@brief Changes the sending mode from 'send on sendbutton' to 'always Send' and back.
 	*/
 	void changeSendMode();
+
+	/** 
+		@brief Gets the current position from the server. Returns a pointer to a CBF:FloatVector.
+		ATTENTION: dont forget to free the space with 'delete'.
+	*/
+	CBF::FloatVector* loadCurrentPositionVector();
+
+	/** 
+		@brief Gets the current position from the server and writes it into the labels next to the spinboxes.
+	*/
+	void loadRemoteValues();
 
 	/** 
 		@brief Changes the load mode from 'load on loadbutton' to 'always load' and back.
@@ -224,6 +240,16 @@ class Connection_manager : public QWidget{
 		@brief Shows and hides the QWidget, that contains the options for the spinboxes.
 	*/
 	void changeLoadPauseTime(int time);
+
+	/** 
+		@brief Sets the spinboxes to the specified values.
+	*/
+	void setSpinboxesTo();
+
+	/** 
+		@brief Shows and hides the QWidget, that contains the options for the spinboxes.
+	*/
+	void showOptionsWidget();
 
 	/** 
 		@brief Sets the count of decimals of the spinboxes to the entered or throws an error message.
