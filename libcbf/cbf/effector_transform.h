@@ -43,9 +43,7 @@ namespace CBF {
 	*/
 	struct EffectorTransform : public Object {
 
-		EffectorTransform(unsigned int task_dim, unsigned int resource_dim) :
-			m_TaskDim(task_dim),
-			m_ResourceDim(resource_dim)
+		EffectorTransform()
 		{
 	
 		}
@@ -59,6 +57,8 @@ namespace CBF {
 		}
 	
 		/**
+			@brief This function is called by a controller in each control cycle
+	
 			This method must be called before exec. Ideally right after the resource has 
 			changed and the SensorTransfor has been read(). This method is meant for 
 			EffectorTransforms to be able to do one-shot expensive computations whose 
@@ -99,15 +99,20 @@ namespace CBF {
 			return m_InverseTaskJacobian; 
 		}
 	
+		virtual unsigned int task_dim() const { 
+			return m_InverseTaskJacobian.size2();
+		}
+
+		virtual unsigned int resource_dim() const {
+			return m_InverseTaskJacobian.size1();
+		}
+
 		protected:
 			/**
 				This should be calculated in the update() function. the inverse_task_jacobian() function
 				should then return a reference to this to avoid unnessecary recomputations.
 			*/
 			FloatMatrix m_InverseTaskJacobian;
-
-			unsigned int m_TaskDim;
-			unsigned int m_ResourceDim;
 	};
 } // namespace
 

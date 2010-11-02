@@ -27,14 +27,15 @@ struct NormSensorTransform : public SensorTransform {
 	*/
 	SensorTransformPtr m_Transform;
 
-	NormSensorTransform(SensorTransformPtr transform) : 
-		SensorTransform(transform->task_dim(), transform->resource_dim()),
-		m_Transform(transform) {
+	NormSensorTransform(SensorTransformPtr operand) 
+	{
+		init(operand);
+	}
 
-		/// The norm is a 1D number
+	virtual void init(SensorTransformPtr operand) {
+		m_Transform = operand;
 		m_Result.resize(1);
-
-		m_TaskJacobian.resize(1,transform->resource_dim());
+		m_TaskJacobian.resize(1, operand->resource_dim());
 	}
 
 	virtual void update(const FloatVector &resource_value) {
@@ -48,8 +49,14 @@ struct NormSensorTransform : public SensorTransform {
 		}
 	}
 
+	/**
+		@brief The norm gives a single real number
+	*/
 	virtual unsigned int task_dim() const { return 1u; }
 
+	/**
+		@brief The resource dimensionality is the same as of the operand
+	*/
 	virtual unsigned int resource_dim() const { return m_Transform->resource_dim(); }
 };
 

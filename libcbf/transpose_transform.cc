@@ -4,10 +4,11 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	TransposeEffectorTransform::TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance) :
-		EffectorTransform(xml_instance.TaskDimension(), xml_instance.ResourceDimension())
+	TransposeEffectorTransform::TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance) 
 	{
-
+		m_InverseTaskJacobian = FloatMatrix(
+				xml_instance.ResourceDimension(), xml_instance.TaskDimension()
+		);
 	}
 
 	static XMLDerivedFactory<TransposeEffectorTransform, CBFSchema::TransposeEffectorTransform> x;

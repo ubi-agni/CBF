@@ -32,14 +32,14 @@ namespace CBF {
 		// First set the member, so that task_dim() and resource_dim() return sensible value..
 		m_SensorTransforms = transforms;
 
-		m_ResourceDim = m_SensorTransforms[0]->resource_dim();
+		unsigned int total_resource_dim = m_SensorTransforms[0]->resource_dim();
 
-		m_TaskDim = 0;
+		unsigned int total_task_dim = 0;
 		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i)
-			m_TaskDim += m_SensorTransforms[i]->task_dim();
+			total_task_dim += m_SensorTransforms[i]->task_dim();
 
 
-		m_TaskJacobian = ublas::zero_matrix<Float>(task_dim(), resource_dim());
+		m_TaskJacobian = ublas::zero_matrix<Float>(total_task_dim, total_resource_dim);
 		CBF_DEBUG("task_dim " << task_dim())
 		m_Result = FloatVector(task_dim());
 		CBF_DEBUG("m_Result " << m_Result)

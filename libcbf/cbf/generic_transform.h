@@ -45,23 +45,20 @@ namespace CBF {
 	struct GenericEffectorTransform : public EffectorTransform {
 		GenericEffectorTransform (const CBFSchema::GenericEffectorTransform &xml_instance);
 
-		GenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim) :
-			EffectorTransform(task_dim, resource_dim)
-		{ }
+		GenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim) 
+		{ 
+			init(task_dim, resource_dim);
+		}
 	
 		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
 			result = ublas::prod(m_InverseTaskJacobian, input);
 		}
-	
-		virtual unsigned resource_dim() const {
-			return m_ResourceDim;
-		}
-	
-		virtual unsigned int task_dim() const {
-			return m_TaskDim;
-		}
+
+		void init(unsigned int task_dim, unsigned int resource_dim) {
+			m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
+		}	
 	};
 	
 	typedef boost::shared_ptr<GenericEffectorTransform> GenericEffectorTransformPtr;
@@ -76,14 +73,19 @@ namespace CBF {
 		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
 		DampedGenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim,	Float damping_constant = 0.1)
-			: EffectorTransform(task_dim, resource_dim), m_DampingConstant(damping_constant)
 		{
-
+			init(task_dim, resource_dim, damping_constant);
 		}
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
 			result = ublas::prod(m_InverseTaskJacobian, input);
 		}
+
+
+		void init(unsigned int task_dim, unsigned int resource_dim, Float damping_constant) {
+			m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
+			m_DampingConstant = damping_constant;
+		}	
 	
 		protected:
 			Float m_DampingConstant;
@@ -117,18 +119,20 @@ namespace CBF {
 			DampedWeightedGenericEffectorTransform(
 				unsigned int task_dim,
 				unsigned int resource_dim,
-				Float dampingConstant = 0.1
-			) :
-				EffectorTransform(task_dim, resource_dim)
+				Float damping_constant
+			) 
 			{
-				m_DampingConstant = dampingConstant;
-			}
-		
+				init(task_dim, resource_dim, damping_constant);
+			}		
 		
 			virtual void exec(const FloatVector &input, FloatVector &result) {
 				result = ublas::prod(m_InverseTaskJacobian, input);
 			}
-		
+
+			void init(unsigned int task_dim, unsigned int resource_dim, Float damping_constant) {
+				m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
+				m_DampingConstant = damping_constant;
+			}		
 	};
 	
 	typedef boost::shared_ptr<DampedWeightedGenericEffectorTransform> DampedWeightedGenericEffectorTransformPtr;

@@ -157,23 +157,32 @@ void DampedWeightedGenericEffectorTransform::update(
 
 
 #ifdef CBF_HAVE_XSD
-	GenericEffectorTransform::GenericEffectorTransform(const CBFSchema::GenericEffectorTransform &xml_instance) :
-		EffectorTransform(xml_instance.TaskDimension(), xml_instance.ResourceDimension())
+	GenericEffectorTransform::GenericEffectorTransform(
+		const CBFSchema::GenericEffectorTransform &xml_instance
+	)
 	{
-	
+		init(xml_instance.TaskDimension(), xml_instance.ResourceDimension());
 	}
 	
 
-	DampedGenericEffectorTransform::DampedGenericEffectorTransform(const CBFSchema::DampedGenericEffectorTransform &xml_instance) :
-		EffectorTransform(xml_instance.TaskDimension(), xml_instance.ResourceDimension())
+	DampedGenericEffectorTransform::DampedGenericEffectorTransform(
+		const CBFSchema::DampedGenericEffectorTransform &xml_instance
+	) 
 	{
-		m_DampingConstant = (xml_instance.DampingConstant());
+		init(
+			xml_instance.TaskDimension(), 
+			xml_instance.ResourceDimension(),
+			xml_instance.DampingConstant()
+		);
 	}
 
-	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance) :
-		EffectorTransform(xml_instance.TaskDimension(), xml_instance.ResourceDimension())
+	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance) 
 	{
-	
+		init(
+			xml_instance.TaskDimension(), 
+			xml_instance.ResourceDimension(),
+			xml_instance.DampingConstant()
+		);
 	}
 
 	static XMLDerivedFactory<

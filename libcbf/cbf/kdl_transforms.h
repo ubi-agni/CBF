@@ -88,6 +88,9 @@ namespace CBF {
 	
 			//! Intermediate result
 			boost::shared_ptr<KDL::Jacobian> m_Jacobian;
+
+			unsigned int m_TaskDim;
+			unsigned int m_ResourceDim;
 	
 		public:
 			/**
@@ -198,6 +201,9 @@ namespace CBF {
 	*/
 	struct BaseKDLTreeSensorTransform : public SensorTransform {
 		protected:
+			unsigned int m_TaskDim;
+			unsigned int m_ResourceDim;
+
 			boost::shared_ptr<KDL::Tree> m_Tree;
 			boost::shared_ptr<KDL::TreeJntToJacSolver> m_JacSolver;
 			boost::shared_ptr<KDL::TreeFkSolverPos_recursive> m_FKSolver;

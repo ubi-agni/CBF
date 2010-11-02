@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
+
 project(CBF)
 
 set(CBF_VERSION_MAJOR 1)

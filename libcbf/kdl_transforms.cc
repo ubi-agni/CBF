@@ -39,7 +39,6 @@ namespace CBF {
 	
 	
 	BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(boost::shared_ptr<KDL::Chain> chain) :
-		SensorTransform(0,0),
 		m_Chain(chain),
 		m_Frame(new KDL::Frame),
 		m_Jacobian(new KDL::Jacobian)
@@ -160,7 +159,6 @@ namespace CBF {
 		boost::shared_ptr<KDL::Tree> tree,
 		const std::vector<std::string> &segment_names
 	) :
-		SensorTransform(0,0),
 		m_Tree(tree),
 		m_SegmentNames(segment_names)
 	{
