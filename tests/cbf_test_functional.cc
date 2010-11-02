@@ -83,4 +83,28 @@ int main() {
 	std::cout << "s4" << std::endl;
 	std::cout << "result   " << s4->result() << std::endl;
 	std::cout << "jacobian " << s4->task_jacobian() << std::endl;
+
+
+	CBF::FloatVector init_vector = 
+		boost::numeric::ublas::unit_vector<CBF::Float>(3, 0);
+
+	CBF::SensorTransformPtr s5(
+		new CBF::BlockWiseAccumulateSensorTransform<
+			std::plus<CBF::FloatVector>,
+			std::plus<CBF::FloatMatrix> 
+		> (
+			id,
+			std::plus<CBF::FloatVector>(),
+			std::plus<CBF::FloatMatrix>(),
+			boost::numeric::ublas::zero_vector<CBF::Float>(3),
+			boost::numeric::ublas::zero_matrix<CBF::Float>(3,9),
+			3
+		)
+	);
+	s5->update(r->get());
+
+	std::cout << "s5" << std::endl;
+	std::cout << "result   " << s5->result() << std::endl;
+	std::cout << "jacobian " << s5->task_jacobian() << std::endl;
+
 }

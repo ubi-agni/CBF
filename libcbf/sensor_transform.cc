@@ -30,11 +30,17 @@ namespace CBF {
 	#ifdef CBF_HAVE_XSD
 		SensorTransform::SensorTransform(const CBFSchema::SensorTransform &xml_instance) {
 			for (
-				CBFSchema::SensorTransform::ComponentName_sequence::const_iterator it = xml_instance.ComponentName().begin();
+				CBFSchema::SensorTransform::ComponentName_sequence::const_iterator it 
+					= xml_instance.ComponentName().begin();
 				it != xml_instance.ComponentName().end();
-				++it) {
-					m_ComponentNames.push_back(*it);
+				++it) 
+			{
+				m_ComponentNames.push_back(*it);
 			}
+		}
+
+		ConstantSensorTransform::ConstantSensorTransform(const CBFSchema::ConstantSensorTransform &xml_instance) {
+			init(*XMLFactory<FloatVector>::instance()->create(xml_instance.Value()));
 		}
 		
 	#endif

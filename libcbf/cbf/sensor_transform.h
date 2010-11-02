@@ -37,7 +37,10 @@
 #include <map>
 #include <string>
 
-namespace CBFSchema { class SensorTransform; }
+namespace CBFSchema { 
+	class SensorTransform; 
+	class ConstantSensorTransform;
+}
 
 namespace CBF {
 	
@@ -168,6 +171,25 @@ namespace CBF {
 	};
 
 	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;
+
+
+	struct ConstantSensorTransform : public SensorTransform {
+		ConstantSensorTransform(const FloatVector &value) {
+			init(value);
+		}
+
+		ConstantSensorTransform(const CBFSchema::ConstantSensorTransform& xml_instance);
+
+		void init(const FloatVector &value) {
+			m_Result = m_Result;
+			m_TaskJacobian = ublas::zero_matrix<Float>(m_Result.size(), m_Result.size());
+		}
+
+		virtual void update(const FloatVector &resource_value) {
+
+		}
+	};
+
 
 } // namespace
 

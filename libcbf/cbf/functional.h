@@ -211,6 +211,53 @@ make_ApplyOperationBlockWiseSensorTransform(
 
 #if 0
 /**
+	@brief A template class similar to std::accumulate
+
+	This template class allows the construction of composite SensorTransforms
+*/
+template<class VectorOperation, class MatrixOperation>
+struct BlockWiseAccumulateSensorTransform : public SensorTransform {
+	BlockWiseAccumulateSensorTransform(
+		SensorTransformPtr operand,
+		VectorOperation vector_operation,
+		MatrixOperation matrix_operation,
+		FloatVector init_vector,
+		FloatMatrix init_matrix,
+		unsigned int block_size
+	) :
+		m_Operand(operand),
+		m_VectorOperation(vector_operation),
+		m_MatrixOperation(matrix_operation),
+		m_InitVector(init_vector),
+		m_InitMatrix(init_matrix),
+		m_BlockSize(block_size)
+	{
+		m_Result = m_InitVector;
+		m_TaskJacobian = m_InitMatrix;
+
+		assert(m_Result.size() == block_size);
+		assert(m_TaskJacobian.size1() == block_size);
+	}
+
+	virtual void update(const FloatVector &resource_value) {
+		m_Result = m_InitVector;
+		m_TaskJacobian = m_InitMatrix;
+	}
+
+	protected:
+		VectorOperation m_VectorOperation;
+		MatrixOperation m_MatrixOperation;
+
+		SensorTransformPtr m_Operand;
+
+		FloatVector m_InitVector;
+		FloatMatrix m_InitMatrix;
+
+		unsigned int m_BlockSize;
+};
+#endif
+
+/**
 	A SensorTransform that applies the operations to row wise blocks
 	of its operands' output. This is useful e.g. if the task space 
 	of a SensorTransform is made up of blocks of equal size. An example
@@ -259,23 +306,17 @@ struct BlockWiseInnerProductSensorTransform : public SensorTransform {
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 			m_Operand1 = 
-				XMLBaseFactory<
-					SensorTransform, 
-					SensorTransformType
-				>::instance()->create(xml_instance.Operand()); 
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
 			m_Operand2 = 
-				XMLBaseFactory<
-					SensorTransform, 
-					SensorTransformType
-				>::instance()->create(xml_instance.Operand2()); 
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand2()); 
 			m_Blocksize = xml_instance.Blocksize();
 			init_results(m_Operand1);
 		}
 	#endif
 
-	virtual void update() {
-		m_Operand1->update();
-		m_Operand2->update();
+	virtual void update(const FloatVector &resource_value) {
+		m_Operand1->update(resource_value);
+		m_Operand2->update(resource_value);
 		FloatVector tmp_result1 = m_Operand1->result();
 		FloatMatrix tmp_jacobian1 = m_Operand1->task_jacobian();
 		FloatVector tmp_result2 = m_Operand2->result();
@@ -318,10 +359,6 @@ struct BlockWiseInnerProductSensorTransform : public SensorTransform {
 		}
 	}
 
-	virtual void set_resource(ResourcePtr res) { 
-		m_Operand1->set_resource(res); 
-		m_Operand2->set_resource(res); 
-	}
 
 	virtual unsigned int task_dim() const
 		{ return m_TaskDim; }
@@ -352,7 +389,94 @@ make_BlockWiseInnerProductSensorTransform(
 		task_dim
 	);
 }
-#endif
+
+
+
+/**
+	@brief Accumulate blocks of size block_size with a VectorOperation and a MatrixOperation
+*/
+template<class VectorOperation, class MatrixOperation>
+struct BlockWiseAccumulateSensorTransform : public SensorTransform {
+	VectorOperation m_VectorOperation;
+	MatrixOperation m_MatrixOperation;
+	SensorTransformPtr m_Operand;
+	unsigned int m_Blocksize;
+	FloatVector m_InitVector;
+	FloatMatrix m_InitMatrix;
+
+	BlockWiseAccumulateSensorTransform(
+		SensorTransformPtr operand,
+		VectorOperation vector_operation, 
+		MatrixOperation matrix_operation,
+		const FloatVector &init_vector,
+		const FloatMatrix &init_matrix,
+		unsigned int blocksize
+	) :
+		m_Operand(operand),
+		m_VectorOperation(vector_operation),
+		m_MatrixOperation(matrix_operation),
+		m_Blocksize(blocksize),
+		m_InitVector(init_vector),
+		m_InitMatrix(init_matrix)
+	{ 
+		init_results(m_Operand);
+	}
+
+	virtual void init_results(SensorTransformPtr operand) {
+		m_Result = FloatVector(operand->task_dim()); 
+		m_TaskJacobian = FloatMatrix(operand->task_dim(), operand->resource_dim());
+	}
+
+	#ifdef CBF_HAVE_XSD
+		template <class XMLType>
+		BlockWiseAccumulateSensorTransform(const XMLType& xml_instance) { 
+			m_VectorOperation = VectorOperation();
+			m_MatrixOperation = MatrixOperation();
+			m_Operand = 
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
+			m_Blocksize = xml_instance.Blocksize();
+			init_results(m_Operand);
+		}
+	#endif
+
+	virtual void update(const FloatVector &resource_value) {
+		m_Operand->update(resource_value);
+		FloatVector tmp_result = m_Operand->result();
+		FloatMatrix tmp_jacobian = m_Operand->task_jacobian();
+
+		m_Result = m_InitVector;
+		m_TaskJacobian = m_InitMatrix;
+		
+		for (unsigned int i = 0, n = m_Operand->task_dim(); i < n; i += m_Blocksize) {
+			CBF_DEBUG("iiiii " << i)
+			CBF_DEBUG("vector")
+
+			ublas::vector_range<FloatVector> vir(
+				tmp_result, 
+				ublas::range(i, i+m_Blocksize)
+			);
+			m_Result.assign(m_VectorOperation(m_Result, vir));
+
+			CBF_DEBUG("matrix")
+
+			ublas::matrix_range<FloatMatrix> mir(
+				tmp_jacobian, 
+				ublas::range(i, i+m_Blocksize),
+				ublas::range(0, tmp_jacobian.size2())
+			);
+			m_TaskJacobian.assign(m_MatrixOperation(m_TaskJacobian, mir));
+		}
+	}
+
+
+	virtual unsigned int task_dim() const
+		{ return m_Blocksize; }
+
+	virtual unsigned int resource_dim() const
+		{ return m_Operand->resource_dim(); }
+};
+
+
 
 
 /**
