@@ -104,5 +104,4 @@ int main() {
 	std::cout << "s5" << std::endl;
 	std::cout << "result   " << s5->result() << std::endl;
 	std::cout << "jacobian " << s5->task_jacobian() << std::endl;
-
 }

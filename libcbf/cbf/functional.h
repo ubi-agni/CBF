@@ -7,7 +7,13 @@
 
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+
 #include <cbf/xml_factory.h>
+#include <cbf/utilities.h>
+
+#ifdef CBF_HAVE_XSD
+	#include <cbf/schemas.hxx>
+#endif
 
 namespace CBF {
 
@@ -212,54 +218,6 @@ make_BlockWiseApplySensorTransform(
 }
 
 
-#if 0
-/**
-	@brief A template class similar to std::accumulate
-
-	This template class allows the construction of composite SensorTransforms
-*/
-template<class VectorOperation, class MatrixOperation>
-struct BlockWiseAccumulateSensorTransform : public SensorTransform {
-	BlockWiseAccumulateSensorTransform(
-		SensorTransformPtr operand,
-		VectorOperation vector_operation,
-		MatrixOperation matrix_operation,
-		FloatVector init_vector,
-		FloatMatrix init_matrix,
-		unsigned int block_size
-	) :
-		m_Operand(operand),
-		m_VectorOperation(vector_operation),
-		m_MatrixOperation(matrix_operation),
-		m_InitVector(init_vector),
-		m_InitMatrix(init_matrix),
-		m_BlockSize(block_size)
-	{
-		m_Result = m_InitVector;
-		m_TaskJacobian = m_InitMatrix;
-
-		assert(m_Result.size() == block_size);
-		assert(m_TaskJacobian.size1() == block_size);
-	}
-
-	virtual void update(const FloatVector &resource_value) {
-		m_Result = m_InitVector;
-		m_TaskJacobian = m_InitMatrix;
-	}
-
-	protected:
-		VectorOperation m_VectorOperation;
-		MatrixOperation m_MatrixOperation;
-
-		SensorTransformPtr m_Operand;
-
-		FloatVector m_InitVector;
-		FloatMatrix m_InitMatrix;
-
-		unsigned int m_BlockSize;
-};
-#endif
-
 /**
 	A SensorTransform that applies the operations to row wise blocks
 	of its operands' output. This is useful e.g. if the task space 
@@ -426,20 +384,31 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 	}
 
 	virtual void init_results(SensorTransformPtr operand) {
-		m_Result = FloatVector(operand->task_dim()); 
-		m_TaskJacobian = FloatMatrix(operand->task_dim(), operand->resource_dim());
+		m_Result = FloatVector(m_Blocksize); 
+
+		m_TaskJacobian = FloatMatrix(
+			m_Blocksize, 
+			operand->resource_dim()
+		);
 	}
 
 	#ifdef CBF_HAVE_XSD
-		template <class XMLType>
-		BlockWiseAccumulateSensorTransform(const XMLType& xml_instance) { 
+		BlockWiseAccumulateSensorTransform(
+			const CBFSchema::BlockWiseAccumulateSensorTransform& xml_instance
+		) { 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
+
 			m_Operand = 
 				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
+
 			m_Blocksize = xml_instance.Blocksize();
+			m_InitVector = *XMLFactory<FloatVector>::instance()->create(xml_instance.InitVector());
+			m_InitMatrix = create_matrix(xml_instance.InitMatrix());
+
 			init_results(m_Operand);
 		}
+
 	#endif
 
 	virtual void update(const FloatVector &resource_value) {

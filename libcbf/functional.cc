@@ -37,6 +37,12 @@ namespace CBF {
 		MultiplyOperationSensorTransform,
 		CBFSchema::MultiplyOperationSensorTransform
 	> x2;
+
+	static XMLDerivedFactory<
+		BlockWiseSumSensorTransform,
+		CBFSchema::BlockWiseSumSensorTransform
+	> x3;
+
 #endif
 
 } // namespace

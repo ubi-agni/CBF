@@ -262,9 +262,12 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance)
 	if (m2) {
 		FloatMatrix matrix;
 		std::stringstream stream(std::string(m2->String()));
+		CBF_DEBUG("string: " << stream.str())
 		stream >> matrix;
 		CBF_DEBUG(matrix)
-		if ((matrix.size1() == 0) && (matrix.size2() == 0)) throw std::runtime_error("[LinearEffectorTransform]: Matrix is empty");
+		if ((matrix.size1() == 0) && (matrix.size2() == 0)) {
+			CBF_THROW_RUNTIME_ERROR("Matrix is empty")
+		}
 
 		return matrix;
 	}
