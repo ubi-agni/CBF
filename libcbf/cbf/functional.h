@@ -25,12 +25,12 @@ namespace ublas = boost::numeric::ublas;
 	and MultiplyOperation examples..
 */
 template<class VectorOperation, class MatrixOperation>
-struct ApplyOperationSensorTransform : public SensorTransform {
+struct ApplySensorTransform : public SensorTransform {
 	VectorOperation m_VectorOperation;
 	MatrixOperation m_MatrixOperation;
 	SensorTransformPtr m_Operand;
 
-	ApplyOperationSensorTransform(
+	ApplySensorTransform(
 		SensorTransformPtr operand,
 		VectorOperation vector_operation, 
 		MatrixOperation matrix_operation
@@ -56,7 +56,7 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 			NegateOperationSensorTransform
 		*/
 		template <class XMLType>
-		ApplyOperationSensorTransform(const XMLType& xml_instance) 
+		ApplySensorTransform(const XMLType& xml_instance) 
 		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
@@ -85,13 +85,13 @@ struct ApplyOperationSensorTransform : public SensorTransform {
 };
 
 template <class VectorOperation, class MatrixOperation>
-ApplyOperationSensorTransform<VectorOperation, MatrixOperation> *
-make_ApplyOperationSensorTransform(
+ApplySensorTransform<VectorOperation, MatrixOperation> *
+make_ApplySensorTransform(
 		SensorTransformPtr operand,
 		VectorOperation vector_operation, 
 		MatrixOperation matrix_operation
 ) {
-	return new ApplyOperationSensorTransform<
+	return new ApplySensorTransform<
 		VectorOperation,
 		MatrixOperation
 	> (
@@ -109,13 +109,13 @@ make_ApplyOperationSensorTransform(
 	controlled end-effector position
 */
 template<class VectorOperation, class MatrixOperation>
-struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
+struct BlockWiseApplySensorTransform : public SensorTransform {
 	VectorOperation m_VectorOperation;
 	MatrixOperation m_MatrixOperation;
 	SensorTransformPtr m_Operand;
 	unsigned int m_Blocksize;
 
-	ApplyOperationBlockWiseSensorTransform(
+	BlockWiseApplySensorTransform(
 		SensorTransformPtr operand,
 		VectorOperation vector_operation, 
 		MatrixOperation matrix_operation,
@@ -136,12 +136,15 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 
 	#ifdef CBF_HAVE_XSD
 		template <class XMLType>
-		ApplyOperationBlockWiseSensorTransform(const XMLType& xml_instance) { 
+		BlockWiseApplySensorTransform(const XMLType& xml_instance) { 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
+
 			m_Operand = 
 				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
+
 			m_Blocksize = xml_instance.Blocksize();
+
 			init_results(m_Operand);
 		}
 	#endif
@@ -187,17 +190,17 @@ struct ApplyOperationBlockWiseSensorTransform : public SensorTransform {
 };
 
 /**
-	@brief A function to create a ApplyOperationBlockWiseSensorTransform
+	@brief A function to create a BlockWiseApplySensorTransform
 */
 template <class VectorOperation, class MatrixOperation>
-ApplyOperationBlockWiseSensorTransform<VectorOperation, MatrixOperation> *
-make_ApplyOperationBlockWiseSensorTransform(
+BlockWiseApplySensorTransform<VectorOperation, MatrixOperation> *
+make_BlockWiseApplySensorTransform(
 	SensorTransformPtr operand,
 	VectorOperation vector_operation, 
 	MatrixOperation matrix_operation,
 	unsigned int blocksize
 ) {
-	return new ApplyOperationBlockWiseSensorTransform<
+	return new BlockWiseApplySensorTransform<
 		VectorOperation,
 		MatrixOperation
 	> (
@@ -514,12 +517,12 @@ struct multiplies {
 	T operator()(T const& t, U const& u) const { return t * u; } 
 };
 
-typedef ApplyOperationSensorTransform<
+typedef ApplySensorTransform<
 	std::negate<FloatVector>,
 	std::negate<FloatMatrix>
 > NegateOperationSensorTransform;
 
-typedef ApplyOperationSensorTransform<
+typedef ApplySensorTransform<
 	std::binder2nd<multiplies<FloatVector, double> >,
 	std::binder2nd<multiplies<FloatMatrix, double> >
 > MultiplyOperationSensorTransform;
