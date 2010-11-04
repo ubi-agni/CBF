@@ -130,6 +130,15 @@ Connection_dispatcher::Connection_dispatcher(int argc, char *argv[]){
 	//Connecting the returnPressed signal of the QLineEdit with the click on the connectbutton.
 	QObject::connect(lineedit, SIGNAL(returnPressed()), connectbutton, SLOT(animateClick()));
 	
+	//Start connections for all command line arguments.
+	if(argc > 1){
+		for(int i = 1; i < argc ; i++){
+			lineedit -> setText(argv[i]);
+			connectbutton -> animateClick();
+			window -> setCurrentIndex(0);
+		}
+	}
+
 	//Starting the Application
 	app -> exec();
 }
@@ -543,6 +552,7 @@ void Connection_manager::loadRemoteValues(){
 		}
 		inputWin -> resize(inputWin -> sizeHint());
 	}
+	delete currentPositionVector;
 }
 
 void Connection_manager::changeLoadMode(){
@@ -571,6 +581,7 @@ void Connection_manager::setSpinboxesTo(){
 				}
 				inputWin -> resize(inputWin -> sizeHint());
 			}
+			delete currentPositionVector;
 			break;
 		}
 		case 1:{ //"set to already loaded values" - Getting values from Labels.
