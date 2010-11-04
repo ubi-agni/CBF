@@ -17,7 +17,7 @@ int main() {
 	r->set(vec);
 
 	CBF::SensorTransformPtr s(
-		CBF::make_ApplyOperationSensorTransform(
+		CBF::make_ApplySensorTransform(
 			id,
 			std::bind2nd(CBF::multiplies<CBF::FloatVector, double>(), 1.3),
 			std::bind2nd(CBF::multiplies<CBF::FloatMatrix, double>(), 1.4)
@@ -31,7 +31,7 @@ int main() {
 	std::cout << "jacobian " << s->task_jacobian() << std::endl;
 
 	CBF::SensorTransformPtr s2(
-		CBF::make_ApplyOperationBlockWiseSensorTransform(
+		CBF::make_BlockWiseApplySensorTransform(
 			id,
 			std::bind2nd(CBF::multiplies<CBF::FloatVector, double>(), 1.3),
 			std::bind2nd(CBF::multiplies<CBF::FloatMatrix, double>(), 1.4),
@@ -70,7 +70,7 @@ int main() {
 
 
 	CBF::SensorTransformPtr s4(
-		CBF::make_ApplyOperationBlockWiseSensorTransform(
+		CBF::make_BlockWiseApplySensorTransform(
 			id,
 			std::bind2nd(std::plus<CBF::FloatVector>(), v),
 			std::bind2nd(std::plus<CBF::FloatMatrix>(), m),
@@ -104,5 +104,4 @@ int main() {
 	std::cout << "s5" << std::endl;
 	std::cout << "result   " << s5->result() << std::endl;
 	std::cout << "jacobian " << s5->task_jacobian() << std::endl;
-
 }
