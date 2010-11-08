@@ -13,6 +13,16 @@
   </xsd:complexType>
   <xsd:element name="Object" type="CBF:Object"/>
 
+  <xsd:complexType name="ObjectReference">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+		  <xsd:sequence>
+			 <xsd:element name="ReferenceName" type="xsd:string"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
   <xsd:complexType name="ControlBasis">
 	 <xsd:complexContent> 
 		<xsd:extension base="CBF:Object">
