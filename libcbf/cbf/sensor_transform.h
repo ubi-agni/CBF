@@ -181,7 +181,7 @@ namespace CBF {
 		ConstantSensorTransform(const CBFSchema::ConstantSensorTransform& xml_instance);
 
 		void init(const FloatVector &value) {
-			m_Result = m_Result;
+			m_Result = value;
 			m_TaskJacobian = ublas::zero_matrix<Float>(m_Result.size(), m_Result.size());
 		}
 
