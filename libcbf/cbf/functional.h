@@ -474,6 +474,39 @@ make_BlockWiseAccumulateSensorTransform(
 
 
 /**
+	@brief A template that allows the construction of a SensorTransform from two functors
+*/
+template<class VectorOperation, class MatrixOperation>
+struct GenericSensorTransform : public SensorTransform {
+	GenericSensorTransform(
+		const VectorOperation &vector_operation,
+		const MatrixOperation &matrix_operation,
+		unsigned int task_dim,
+		unsigned int resource_dim
+	) :
+		m_VectorOperation(vector_operation),
+		m_MatrixOperation(matrix_operation)
+	{
+		init(task_dim, resource_dim);
+	}
+
+	void init(unsigned int task_dim, unsigned int resource_dim) {
+		m_Result = FloatVector(task_dim);
+		m_TaskJacobian = FloatMatrix(task_dim, resource_dim);
+	}
+
+	virtual void update(const FloatVector &resource_value) {
+		m_Result = m_VectorOperation(resource_value);
+		m_TaskJacobian = m_MatrixOperation(resource_value);
+	}	
+
+	protected:
+		VectorOperation m_VectorOperation;
+		MatrixOperation m_MatrixOperation;
+};
+
+
+/**
 	A simple functor that implements a multiplication operation
 	where first and second result types may vary, but the result
 	is of the first type..
@@ -484,6 +517,16 @@ struct multiplies {
 	typedef U second_argument_type;
 	typedef T result_type;
 	T operator()(T const& t, U const& u) const { return t * u; } 
+};
+
+
+template<class T, class U>
+struct constant {
+	constant(const U& value) : m_Value(value) { }
+	U m_Value;
+	U operator()(const T& in) {
+		return m_Value;
+	}
 };
 
 typedef ApplySensorTransform<
