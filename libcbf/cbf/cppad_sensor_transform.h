@@ -11,10 +11,14 @@ namespace CBF {
 using CppAD::AD;
 
 struct CppADSensorTransform : public SensorTransform {
-	CppAD<Float> m_Func;
+	CppAD::ADFun<Float> m_Func;
 
 	CppADSensorTransform(const CppAD::ADFun<Float> &fun) {
 
+	}
+
+	virtual void update(const FloatVector &resource_value) {
+		std::vector<double> TaskJacobian = m_Func.Jacobian(std::vector<double>(1));
 	}
 };
 
