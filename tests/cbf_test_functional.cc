@@ -111,7 +111,7 @@ int main() {
 			CBF::constant<CBF::FloatVector, CBF::FloatVector>,
 			CBF::constant<CBF::FloatVector, CBF::FloatMatrix>
 		> (
-			CBF::constant<CBF::FloatVector, CBF::FloatVector>(CBF::FloatVector(3,0)),
+			CBF::constant<CBF::FloatVector, CBF::FloatVector>(CBF::FloatVector(3,1)),
 			CBF::constant<CBF::FloatVector, CBF::FloatMatrix>(CBF::FloatMatrix(3,3,0)),
 			3, 3
 		)

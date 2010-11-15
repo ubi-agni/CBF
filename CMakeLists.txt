@@ -28,6 +28,13 @@ else()
   message(FATAL_ERROR "boost_program_options and boost_python are required for CBF")
 endif()
 
+message(STATUS "Looking for CppAD automatic differentiation package")
+find_path(CPPAD_PATH cppad/CppAD.h)
+if(NOT ${CPPAD_PATH} STREQUAL "CPPAD_PATH-NOTFOUND")
+  message(STATUS "  found")
+  set(CBF_HAVE_CPPAD 1)
+endif()
+
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(PythonInterp "Found Python" python2)
