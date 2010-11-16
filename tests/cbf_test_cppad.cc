@@ -1,5 +1,11 @@
 #include <cbf/cppad_sensor_transform.h>
 #include <boost/numeric/ublas/io.hpp>
+#include <cbf/primitive_controller.h>
+#include <cbf/dummy_reference.h>
+#include <cbf/dummy_resource.h>
+#include <cbf/square_potential.h>
+#include <cbf/combination_strategy.h>
+#include <cbf/generic_transform.h>
 #include <iostream>
 
 int main() {
@@ -15,13 +21,6 @@ int main() {
 
 	CppAD::ADFun<double> f(x,y);
 
-	boost::numeric::ublas::vector<double> x_p(2);
-	for (unsigned int i = 0; i < 100; ++i) {
-		x_p[0] = (i/100.0) * (2.0 * M_PI);
-		x_p[1] = 0;
-		std::cout << i << " " << x_p[0] << " " << f.Jacobian(x_p)[0] << " "  <<  std::endl;
-	}
-
 	CBF::CppADSensorTransformPtr s(new CBF::CppADSensorTransform(f, 1, 2));
 
 	CBF::FloatVector res(2);
@@ -31,4 +30,21 @@ int main() {
 
 	std::cout << s->result() << std::endl;
 	std::cout << s->task_jacobian() << std::endl;
+
+	CBF::PrimitiveControllerPtr c(new CBF::PrimitiveController(
+		0.1,
+		std::vector<CBF::ConvergenceCriterionPtr>(),
+		CBF::DummyReferencePtr(new CBF::DummyReference(1)),
+		CBF::PotentialPtr(new CBF::SquarePotential(1,1)),
+		s,
+		CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(1,2)),
+		std::vector<CBF::PrimitiveControllerPtr>(),
+		CBF::CombinationStrategyPtr(new CBF::AddingStrategy()),
+		CBF::ResourcePtr(new CBF::DummyResource(res))
+	));
+
+	
+
+	for (unsigned int n = 0; n < 1000; ++n)
+		c->step();
 }
