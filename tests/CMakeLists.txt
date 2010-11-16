@@ -7,6 +7,9 @@ if(CBF_HAVE_CPPAD)
   add_executable(cbf_test_cppad
 	 cbf_test_cppad.cc
 	 )
+  target_link_libraries(cbf_test_cppad
+	 cbf
+	 )
 endif()
 
 if(CBF_HAVE_XCF)
