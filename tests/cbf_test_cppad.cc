@@ -1,12 +1,13 @@
 #include <cbf/cppad_sensor_transform.h>
-#include <boost/numeric/ublas/io.hpp>
 #include <cbf/primitive_controller.h>
 #include <cbf/dummy_reference.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/square_potential.h>
 #include <cbf/combination_strategy.h>
 #include <cbf/generic_transform.h>
+
 #include <iostream>
+#include <boost/numeric/ublas/io.hpp>
 
 int main() {
 	using CppAD::AD;
