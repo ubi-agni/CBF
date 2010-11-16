@@ -44,8 +44,6 @@ int main() {
 		CBF::ResourcePtr(new CBF::DummyResource(res))
 	));
 
-	
-
 	for (unsigned int n = 0; n < 1000; ++n)
-		c->step();
+		{ c->step(); }
 }
