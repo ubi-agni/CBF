@@ -130,13 +130,11 @@ Connection_dispatcher::Connection_dispatcher(int argc, char *argv[]){
 	//Connecting the returnPressed signal of the QLineEdit with the click on the connectbutton.
 	QObject::connect(lineedit, SIGNAL(returnPressed()), connectbutton, SLOT(animateClick()));
 	
-	//Start connections for all command line arguments.
+	//Start connections for first command line argument.
 	if(argc > 1){
-		for(int i = 1; i < argc ; i++){
-			lineedit -> setText(argv[i]);
-			connectbutton -> animateClick();
-			window -> setCurrentIndex(0);
-		}
+		lineedit -> setText(argv[1]);
+		connectbutton -> animateClick();
+		window -> setCurrentIndex(0);
 	}
 
 	//Starting the Application
@@ -483,15 +481,15 @@ void Connection_manager::send(){
 		_remoteServer -> callMethod("set_reference", s.str(), out);
 	//If an Exception occurs an error message will pop up.
 	} catch (const XCF::ServerNotFoundException &e){
-		showDialog("The server could not be localised, this connection will be closed.", this);
+		showDialog("The server could not be localised, this connection can be closed.", this);
 	} catch (const XCF::CommunicationException &e){
-		showDialog("There is a server communication problem, this connection will be closed.", this);
+		showDialog("There is a server communication problem, this connection can be closed.", this);
 	} catch (const XCF::UserException &e){
 		showDialog("An Exception occured in the remotely called usercode, "
-					"this connection will be closed.", this);
+					"this connection can be closed.", this);
 	} catch (const XCF::NotActivatedException &e){
 		showDialog("The run-method of the Server has not been called (yet), "
-					"this connection will be closed.", this);
+					"this connection can be closed.", this);
 	}
 }
 
@@ -536,7 +534,11 @@ CBF::FloatVector* Connection_manager::loadCurrentPositionVector(){
 	} catch (const std::runtime_error &e){
 		CBF_DEBUG("The dimension of the remote task does not match the local saved dimension. Maybe"
 			"the Task needs to be run first.");
+	} catch (const XCF::CommunicationException &e){
+		showDialog("There is a server communication problem, this connection can be closed.", this);
 	}
+	alwaysLoadCheckBox -> setChecked(false);
+	changeLoadMode();
 	return NULL;
 }
 

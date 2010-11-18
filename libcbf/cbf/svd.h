@@ -32,7 +32,7 @@ namespace CBF {
 		 Calculates the Singular Value Decomposition for a MxN - CBF::FloatMatrix
 		 M has to be equal or greater then N.
 		
-		 found here: http://www.crbond.com/download/misc/svd.c
+		 	found here: http://www.crbond.com/download/misc/svd.c
 			svd.c -- Singular value decomposition. Translated to 'C' from the
 							 original Algol code in "Handbook for Automatic Computation,
 							 vol. II, Linear Algebra", Springer-Verlag.
@@ -45,8 +45,10 @@ namespace CBF {
 		
 			Returns an error code = 0, if no errors and 'k' if a failure to
 			converge at the 'kth' singular value.
-		 
-			Changed for CBF-matrix-compatibility
+
+			
+
+		The code is from the ICL-Library, it was slightly changed to suite CBFMatrices.
 		 
 		@param withu When withu is !=0, u will be calculated correctly.
 		@param withv When withv is !=0, v will be calculated correctly.

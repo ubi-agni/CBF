@@ -47,7 +47,7 @@
 
 namespace cbf_q_xcf_vector_reference_client {
 /** 
-	@brief A QWidget that can be used to set the reference of a controller over the network.
+	@brief A QWidget that can be used to set and load the reference of a controller over the network.
 	It gets the dimension of the controller through the (already initialized) XCF::RemoteServerPtr
 	and shows the appropriate amound of spinboxes to set new values and send them.
 */
@@ -66,11 +66,11 @@ class Connection_manager : public QWidget{
 	/** 
 		@brief The initial count of decimals in a spinbox is:
 	*/	
-	static const int SPINBOX_DECIMALS = 2;
+	static const int SPINBOX_DECIMALS = 5;
 	/** 
 		@brief The initial size of a single step in a spinbox is:
 	*/	
-	static const double SPINBOX_STEP = 0.05;	
+	static const double SPINBOX_STEP = 0.00005;	
 	/** 
 		@brief The initial minimum value in a spinbox is:
 	*/	
@@ -94,17 +94,17 @@ class Connection_manager : public QWidget{
 	/** 
 		@brief The longest pause time before a new task position is loaded from the server.
 	*/	
-	static const int RELOAD_PAUSE_TIME_MAX = 30000;
+	static const int RELOAD_PAUSE_TIME_MAX = 60000;
 	/** 
 		@brief The stepsize for the spinbox that holds the current reload pause time.
 	*/	
-	static const int RELOAD_PAUSE_TIME_STEP = 50;
+	static const int RELOAD_PAUSE_TIME_STEP = 100;
 	/** 
 		@brief The standart pause time before a new task position is loaded from the server.
 	*/	
-	static const int RELOAD_PAUSE_TIME_FIRST = 300;
+	static const int RELOAD_PAUSE_TIME_FIRST = 1000;
 	/** 
-		@brief Is the always load option activatet at first?
+		@brief Is the always load option activated at first?
 	*/	
 	static const bool ALWAYS_LOAD = false;
 
@@ -120,7 +120,8 @@ class Connection_manager : public QWidget{
 	unsigned int dim;
 	
 	/** 
-		@brief A vector to save the pointers to the Spinboxes (used for changing spinbox options).
+		@brief A vector to save the pointers to the Spinboxes (used for changing the behaviour and
+		getting the current the values of the spinboxes).
 	*/	
 	std::vector<QDoubleSpinBox*> *spinboxes;
 
@@ -141,7 +142,7 @@ class Connection_manager : public QWidget{
 	QWidget *inputWin;
 
 	/** 
-		@brief The widget that holds the options for the spinboxes.
+		@brief The widget that holds the options for the spinboxes and servercommunication.
 	*/
 	QTabWidget *optionsTabWidget;
 
@@ -161,7 +162,7 @@ class Connection_manager : public QWidget{
 	QCheckBox *alwaysLoadCheckBox;
 
 	/** 
-		@brief The spinbox that holds the pause of the always load option.
+		@brief The spinbox that holds the pause-time of the always load option.
 	*/	
 	QSpinBox *reloadPauseSpinbox;
 
@@ -192,26 +193,31 @@ class Connection_manager : public QWidget{
 
 
 	/** 
-		@brief Adds options (decimals count, stepsize, minvalue, maxvalue) to the Connection_manager.
+		@brief Creates a QTabWidget for the pointer optionsTabWidget and fills it with options for the
+		servercommunication and spinbox-behaviour. The widget needs to be added to the layout afterwards.
 	*/
 	void makeOptionsWidget();
 
 	public:
 	/** 
 		@brief The constructor of the Connection_manager gets the dimension from the
-		Server and opens the adequate number ob QDouble Spinboxes.
+		server and opens the adequate number ob QDoubleSpinboxes.
+
+		@param parent The parent-widget of the manager.
+		@param _remoteServer The XCF::RemoteServerPtr, which is used to communicate with the server.
+		@param input The entered servername. it is only used to show the user the name of the server.
 	*/
 	Connection_manager(QWidget *parent, XCF::RemoteServerPtr _remoteServer, std::string input);
 
 	public slots:
 
 	/** 
-		@brief Disconnects from the RemoteServer and closes the Tab.
+		@brief Disconnects from the remoteServer and closes the tab.
 	*/
 	void disconnect();
 
 	/** 
-		@brief Creates a n-dimensional vector from the values of the spinboxes and sends it to the RemoteServer.
+		@brief Creates a n-dimensional vector from the values of the spinboxes and sends it to the remoteServer.
 	*/
 	void send();
 
@@ -238,6 +244,8 @@ class Connection_manager : public QWidget{
 
 	/** 
 		@brief Shows and hides the QWidget, that contains the options for the spinboxes.
+		
+		@param time The pause-time after which the timer sends its signal.
 	*/
 	void changeLoadPauseTime(int time);
 
@@ -252,31 +260,31 @@ class Connection_manager : public QWidget{
 	void showOptionsWidget();
 
 	/** 
-		@brief Sets the count of decimals of the spinboxes to the entered or throws an error message.
+		@brief Sets the count of decimals of the spinboxes to the entered.
 	*/
 	void setDecimals();
 
 	/** 
-		@brief Sets the single-step-size of the spinboxes to the entered or throws an error message.
+		@brief Sets the single-step-size of the spinboxes to the entered.
 	*/
 	void setStepSize();
 
 	/** 
-		@brief Sets the minimum value of the spinboxes to the entered or throws an error message.
+		@brief Sets the minimum value of the spinboxes to the entered.
 	*/
 	void setMinValue();
 
 	/** 
-		@brief Sets the maximum value of the spinboxes to the entered or throws an error message.
+		@brief Sets the maximum value of the spinboxes to the entered.
 	*/
 	void setMaxValue();
 };
 
 
 /** 
-	@brief A QObject which can build up multiple connections to XCF servers. This can be used to set the reference
+	@brief A QObject which can build up multiple connections to XCFServers. This can be used to set the reference
 	of a controller over the network. It only creates the RemoteServerPtr and lets the Connection_manager 
-	manipulate the controller.
+	communicate with the server.
  */
 class Connection_dispatcher : public QObject{
 	Q_OBJECT
@@ -309,6 +317,9 @@ class Connection_dispatcher : public QObject{
 	/** 
 	@brief Opens a window in which connections to XCF::RemoteServers can be build up. 
 	The connections are opend in tabs.
+
+		@param argc The command line argument count.
+		@param argv The command line arguments.
 	 */
 	Connection_dispatcher(int argc, char *argv[]);
 
