@@ -104,4 +104,21 @@ int main() {
 	std::cout << "s5" << std::endl;
 	std::cout << "result   " << s5->result() << std::endl;
 	std::cout << "jacobian " << s5->task_jacobian() << std::endl;
+
+
+	CBF::SensorTransformPtr s6(
+		new CBF::GenericSensorTransform<
+			CBF::constant<CBF::FloatVector, CBF::FloatVector>,
+			CBF::constant<CBF::FloatVector, CBF::FloatMatrix>
+		> (
+			CBF::constant<CBF::FloatVector, CBF::FloatVector>(CBF::FloatVector(3,1)),
+			CBF::constant<CBF::FloatVector, CBF::FloatMatrix>(CBF::FloatMatrix(3,3,0)),
+			3, 3
+		)
+	);
+
+	s6->update(CBF::FloatVector(3));
+	std::cout << "s6" << std::endl;
+	std::cout << "result   " << s6->result() << std::endl;
+	std::cout << "jacobian " << s6->task_jacobian() << std::endl;
 }

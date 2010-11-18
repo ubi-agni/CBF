@@ -54,6 +54,11 @@ else()
   message(STATUS "  excluding plugin_pool.cc because xsd was not found")
 endif()
 
+if(CBF_HAVE_CPPAD)
+  set(CBF_SOURCES ${CBF_SOURCES} cppad_sensor_transform.cc)
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${CPPAD_PATH})
+endif()
+
 
 if(CBF_HAVE_KDL)
   set(CBF_SOURCES ${CBF_SOURCES} kdl_transforms.cc)

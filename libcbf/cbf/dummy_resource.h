@@ -38,6 +38,11 @@ namespace CBF {
 
 		FloatVector m_Variables;
 
+		DummyResource(const FloatVector &values) :
+			m_Variables(values) {
+
+		}
+
 		/**
 			The variance argument can be used to initialize the resource
 			with non zero values drawn from a distribution with range

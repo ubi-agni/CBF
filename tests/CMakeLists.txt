@@ -2,6 +2,16 @@ message(STATUS "In subdirectory tests:")
 
 include_directories(${PROJECT_SOURCE_DIR}/libcbf/ ${PROJECT_BINARY_DIR}/libcbf/)
 
+if(CBF_HAVE_CPPAD)
+  include_directories(${CPPAD_PATH})
+  add_executable(cbf_test_cppad
+	 cbf_test_cppad.cc
+	 )
+  target_link_libraries(cbf_test_cppad
+	 cbf
+	 )
+endif()
+
 if(CBF_HAVE_XCF)
   include_directories(${XCF_INCLUDE_DIRS})
 endif()
