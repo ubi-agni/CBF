@@ -455,6 +455,7 @@
 	 </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:element name="Matrix" type="CBF:Matrix"/>
   <xsd:complexType name="Matrix" abstract="true">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Object">
