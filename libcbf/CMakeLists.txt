@@ -82,18 +82,33 @@ else()
 endif()
 
 if (CBF_HAVE_XCF)
+  set(CBF_LIBS ${CBF_LIBS} ${XCF_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${XCF_INCLUDE_DIRS}) 
+
   if (CBF_HAVE_XSD)
     set(CBF_SOURCES ${CBF_SOURCES} xcf_vector_reference.cc)
+  else()
+    message(STATUS "  excluding xcf_vector_reference.cc because xsd was not found")
   endif()
-  set(CBF_LIBS ${CBF_LIBS} ${XCF_LDFLAGS})
-  set(CBF_INCLUDES ${CBF_INCLUDES} ${XCF_INCLUDE_DIRS})
+ 
+  if(CBF_HAVE_MEMORY)
+    set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_sensor_transform.cc)
+    set(CBF_LIBS ${CBF_LIBS} ${MEMORY_LDFLAGS})
+    set(CBF_INCLUDES ${CBF_INCLUDES} ${MEMORY_INCLUDE_DIRS})
+  else()
+    message(STATUS "  excluding xcf_memoy_sensor_transform.cc because memory was not found")
+  endif() 
+
   if (CBF_HAVE_XMLTIO)
     set(CBF_SOURCES ${CBF_SOURCES} xcf_resource.cc)
     set(CBF_LIBS ${CBF_LIBS} ${XMLTIO_LDFLAGS})
     set(CBF_INCLUDES ${CBF_INCLUDES} ${XMLTIO_INCLUDE_DIRS})
+  else()
+    message(STATUS "  excluding xcf_resource.cc because xmltio was not found")
   endif()
+
 else()
-  message(STATUS "  excluding xcf_vector_reference.cc and xcf_ressource.cc because xcf or xmltio was not found")
+  message(STATUS "  excluding xcf_vector_reference.cc, xcf_memory_sensor_transform and xcf_ressource.cc because xcf was not found")
 endif()
 
 
