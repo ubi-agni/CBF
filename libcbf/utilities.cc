@@ -253,6 +253,19 @@ boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector 
 	return v;
 }
 
+boost::shared_ptr<FloatVector> create_zero_vector(const CBFSchema::ZeroVector &xml_instance) {
+	return boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension(), 0));
+}
+
+boost::shared_ptr<FloatVector> create_basis_vector(const CBFSchema::ZeroVector &xml_instance) {
+	return boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension()));
+}
+
+
+boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &xml_instance) {
+	return boost::shared_ptr<FloatMatrix>(new FloatMatrix(xml_instance.Rows(), xml_instance.Columns(), 0));
+}
+
 
 FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance)
 {
@@ -270,6 +283,11 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance)
 		}
 
 		return matrix;
+	}
+
+	const CBFSchema::ZeroMatrix *m3 = dynamic_cast<const CBFSchema::ZeroMatrix*>(m);
+	if (m3) {
+		return FloatMatrix(m3->Rows(), m3->Columns(), 0);
 	}
 
 	throw std::runtime_error("[create_matrix()]: Matrix type not supported yet");
@@ -427,6 +445,12 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 		CBFSchema::BoostVector, 
 		boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &)
 	> x(create_boost_vector);
+
+	static XMLCreator<
+		FloatVector, 
+		CBFSchema::ZeroVector, 
+		boost::shared_ptr<FloatVector>(*)(const CBFSchema::ZeroVector &)
+	> x2(create_zero_vector);
 	
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;

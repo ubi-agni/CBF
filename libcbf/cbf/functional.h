@@ -551,6 +551,11 @@ typedef BlockWiseAccumulateSensorTransform<
 	std::plus<FloatMatrix>
 > BlockWiseSumSensorTransform;
 
+typedef BlockWiseAccumulateSensorTransform<
+	std::minus<FloatVector>,
+	std::minus<FloatMatrix>
+> BlockWiseDifferenceSensorTransform;
+
 } // namespace
 
 #endif

@@ -5,6 +5,7 @@
 #include <cbf/exceptions.h>
 #include <cbf/types.h>
 #include <cbf/config.h>
+#include <cbf/debug_macros.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -47,6 +48,8 @@ struct NormSensorTransform : public SensorTransform {
 		for (unsigned int i = 0; i < res2.size(); ++i) {
 			m_TaskJacobian(0,i) = res2(i);
 		}
+
+		CBF_DEBUG(m_TaskJacobian)
 	}
 
 	/**
