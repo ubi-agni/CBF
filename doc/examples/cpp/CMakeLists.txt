@@ -28,6 +28,23 @@ if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
     cbf
     )
 
+  if(CBF_HAVE_MEMORY)
+    message(STATUS "  adding executable cbf_simple_test_memory")
+
+    include_directories(${MEMORY_INCLUDE_DIRS})
+
+    add_executable(cbf_simple_test_memory
+      cbf_simple_test_memory.cc
+      )
+    target_link_libraries(cbf_simple_test_memory
+      cbf ${MEMORY_LDFLAGS}
+      )
+  else()
+    message(STATUS "  not adding executable cbf_simple_test_memory")
+    message(STATUS "  because Memory was not found")
+  endif()
+
+
   message(STATUS "  adding executable cbf_test_axis_potential")
   add_executable(cbf_test_axis_potential
     cbf_test_axis_potential.cc
@@ -76,6 +93,7 @@ else()
   message(STATUS "  not adding executables:")
   message(STATUS "  -cbf_test_kdl_transforms")
   message(STATUS "  -cbf_simple_test")
+  message(STATUS "  -cbf_simple_test_memory")
   message(STATUS "  -cbf_test_axis_potential")
   message(STATUS "  -cbf_test_axis_potential2")
   message(STATUS "  -cbf_test_kdl_transforms_view")

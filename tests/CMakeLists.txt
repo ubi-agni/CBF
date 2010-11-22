@@ -3,6 +3,7 @@ message(STATUS "In subdirectory tests:")
 include_directories(${PROJECT_SOURCE_DIR}/libcbf/ ${PROJECT_BINARY_DIR}/libcbf/)
 
 if(CBF_HAVE_CPPAD)
+  message(STATUS "  adding executable: cbf_test_cppad")
   include_directories(${CPPAD_PATH})
   add_executable(cbf_test_cppad
 	 cbf_test_cppad.cc
@@ -10,6 +11,8 @@ if(CBF_HAVE_CPPAD)
   target_link_libraries(cbf_test_cppad
 	 cbf
 	 )
+else()
+  message(STATUS "  not adding executable: cbf_test_cppad because cppad was not found.")
 endif()
 
 if(CBF_HAVE_XCF)
@@ -57,6 +60,7 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD)
 	  )
   else()
     message(STATUS "  not adding executable: cbf_q_xcf_vector_reference_client")
+    message(STATUS "  because QT was not found")
   endif()
 else()
   message(STATUS "  not adding executables:")

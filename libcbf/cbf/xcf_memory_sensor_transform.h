@@ -34,11 +34,16 @@ namespace CBF {
 		server.
 
 		@param uri The URI of the XCFMemory server on which the data should be published.
+		@param resultName The name of the XCFMemorySensorTransformResult.
 		@param m_SensorTransform The SensorTransformPtr of the used SensorTransform.
 	*/
 	struct XCFMemorySensorTransform : public SensorTransform {
 
-		XCFMemorySensorTransform(const std::string &uri, SensorTransformPtr m_SensorTransform);
+		XCFMemorySensorTransform(
+					const std::string &uri, 
+					const std::string &resultName, 
+					SensorTransformPtr m_SensorTransform
+					);
 
 		/**
 			@brief A virtual desctructor to allow the clean destruction 
@@ -93,6 +98,12 @@ namespace CBF {
 		virtual void send();
 
 		protected:
+
+		/**
+			@brief. The name of the XCFMemorySensorTransformResult.
+		*/
+		std::string resultName;
+
 		/**
 			@brief: The SensorTransform, which is to wrap.
 		*/

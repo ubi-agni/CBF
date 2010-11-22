@@ -25,13 +25,15 @@
 #include <cbf/schemas.hxx>
 
 namespace CBF {
-	
+
 	XCFMemorySensorTransform::XCFMemorySensorTransform(
 					const std::string &uri, 
+					const std::string &resultName, 
 					SensorTransformPtr m_SensorTransform
 					)
 	{
 		memoryPtr = memory::interface::MemoryInterface::getInstance(uri);
+		this -> resultName = resultName;
 		this -> m_SensorTransform = m_SensorTransform;
 	}
 
@@ -56,15 +58,21 @@ namespace CBF {
 		vector_string << ")";
 
 		CBF_DEBUG("creating vector doc")
-		CBFSchema::BoostVector v(vector_string.str());
+
+		CBFSchema::BoostVector vectorDoc(vector_string.str());
+
+		CBF_DEBUG("creating transformResult doc")
+		CBFSchema::XCFMemorySensorTransformResult resultDoc(resultName, vectorDoc);
 
 		std::ostringstream s;
-		CBFSchema::Vector_ (s, v);
+		CBFSchema::XCFMemorySensorTransformResult_ (s, resultDoc);
 
 		CBF_DEBUG("document: " << s.str())
 
+
 		//Sending the result-XML to the server.
-		CBF_DEBUG("sending result vector to memory-server")
+		CBF_DEBUG("sending result to memory-server")
+		
 		memoryPtr -> send(s.str());
 
 		//Getting the task-jacobian matrix from the SensorTransform.
@@ -87,18 +95,22 @@ namespace CBF {
 		}
 		matrix_string << ")";
 
-		CBF_DEBUG("creating matrix doc")
-		CBFSchema::BoostMatrix matrix(matrix_string.str());
+//		CBF_DEBUG("creating matrix doc")
 
-		std::cout << "START: " << matrix_string.str() << " :BREAK: " << matrix << std::endl;
+//		CBFSchema::BoostMatrix matrixDoc(matrix_string.str());
+
+//		CBF_DEBUG("creating transformResult doc")
+//		CBFSchema::XCFMemorySensorTransformResult taskJacobianDoc(resultName, matrixDoc);
 
 //		std::ostringstream t;
-//		CBFSchema::Matrix_ (t, matrix);
+//		CBFSchema::XCFMemorySensorTransformResult_ (t, taskJacobianDoc);
 
 //		CBF_DEBUG("document: " << t.str())
 
-		//Sending the task-jacobian-XML to the server.
-//		CBF_DEBUG("sending task_jacobian matrix to memory-server")
+
+		//Sending the result-XML to the server.
+//		CBF_DEBUG("sending result to memory-server")
+		
 //		memoryPtr -> send(t.str());
 }
 
