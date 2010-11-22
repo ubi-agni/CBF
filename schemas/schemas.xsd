@@ -661,6 +661,7 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:element name="XCFMemorySensorTransformResult" type="CBF:XCFMemorySensorTransformResult"/>
   <xsd:complexType name="XCFMemorySensorTransformResult">
 	 <xsd:sequence>
 		<xsd:element name="ResultName" type="xsd:string"/>
