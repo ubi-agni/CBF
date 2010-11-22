@@ -661,6 +661,25 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="XCFMemorySensorTransformResult">
+	 <xsd:sequence>
+		<xsd:element name="ResultName" type="xsd:string"/>
+		<xsd:element name="Result" type="CBF:Vector"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="XCFMemorySensorTransform">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:SensorTransform">
+		  <xsd:sequence>
+			 <xsd:element name="SensorTransform" type="CBF:SensorTransform" minOccurs="1" maxOccurs="unbounded"/>
+			 <xsd:element name="URI" type="xsd:string"/>
+			 <xsd:element name="ResultName" type="xsd:string"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
 
   <xsd:complexType name="CompositeSensorTransform">
 	 <xsd:complexContent>
