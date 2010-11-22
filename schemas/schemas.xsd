@@ -155,6 +155,28 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="ZeroVector">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Vector"> 
+		  <xsd:sequence>
+			 <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="BasisVector">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Vector"> 
+		  <xsd:sequence>
+			 <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
+			 <xsd:element name="Index" type="xsd:nonNegativeInteger"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+
   <xsd:complexType name="BoostVector">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Vector"> 
@@ -455,9 +477,22 @@
 	 </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:element name="Matrix" type="CBF:Matrix"/>
   <xsd:complexType name="Matrix" abstract="true">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Object">
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ZeroMatrix" type="CBF:ZeroMatrix"/>
+  <xsd:complexType name="ZeroMatrix">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Matrix">
+		  <xsd:sequence>
+			 <xsd:element name="Rows" type="xsd:nonNegativeInteger"/>
+			 <xsd:element name="Columns" type="xsd:nonNegativeInteger"/>
+		  </xsd:sequence>
 		</xsd:extension>
 	 </xsd:complexContent>
   </xsd:complexType>
@@ -486,7 +521,7 @@
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:SensorTransform">
 		  <xsd:sequence>
-			 <xsd:element name="SensorTransform" type="CBF:SensorTransform"/>
+			 <xsd:element name="Operand" type="CBF:SensorTransform"/>
 		  </xsd:sequence>
 		</xsd:extension>
 	 </xsd:complexContent>
@@ -598,6 +633,13 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="BlockWiseDifferenceSensorTransform">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:BlockWiseAccumulateSensorTransform">
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
 
   <xsd:complexType name="BlockWiseWeightedSumSensorTransform">
 	 <xsd:complexContent>
@@ -614,6 +656,25 @@
 		<xsd:extension base="CBF:SensorTransform">
 		  <xsd:sequence>
 			 <xsd:element name="Value" type="CBF:Vector"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="XCFMemorySensorTransformResult">
+	 <xsd:sequence>
+		<xsd:element name="ResultName" type="xsd:string"/>
+		<xsd:element name="Result" type="CBF:Vector"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="XCFMemorySensorTransform">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:SensorTransform">
+		  <xsd:sequence>
+			 <xsd:element name="SensorTransform" type="CBF:SensorTransform" minOccurs="1" maxOccurs="unbounded"/>
+			 <xsd:element name="URI" type="xsd:string"/>
+			 <xsd:element name="ResultName" type="xsd:string"/>
 		  </xsd:sequence>
 		</xsd:extension>
 	 </xsd:complexContent>
