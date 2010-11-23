@@ -40,6 +40,7 @@
 namespace CBFSchema { 
 	class SensorTransform; 
 	class ConstantSensorTransform;
+	class BlockWiseMultiplySensorTransform;
 }
 
 namespace CBF {
@@ -190,6 +191,64 @@ namespace CBF {
 		}
 	};
 
+
+	/**
+		@brief A SensorTransform to multiply different blocks with different constants
+	*/
+	struct BlockWiseMultiplySensorTransform : public SensorTransform {
+		
+		BlockWiseMultiplySensorTransform(
+			SensorTransformPtr operand,
+			const unsigned int blocksize, 
+			const FloatVector &factors) {
+
+		}
+
+		BlockWiseMultiplySensorTransform(const CBFSchema::BlockWiseMultiplySensorTransform &xml_instance);
+
+		void init(
+			SensorTransformPtr operand,
+			unsigned int blocksize, 
+			const FloatVector &factors
+		) {
+			m_Operand = operand;
+			m_Blocksize = blocksize;
+			m_Factors = factors;
+
+			m_Result = FloatVector(m_Operand->task_dim());
+			m_TaskJacobian = FloatMatrix(m_Operand->task_dim(), m_Operand->resource_dim());
+		}
+
+		virtual void update(const FloatVector &resource_value) {
+			m_Operand->update(resource_value);
+			m_Result = m_Operand->result();
+			m_TaskJacobian = m_Operand->task_jacobian();
+
+			for (
+				unsigned int current_row = 0, max_row = task_dim(); 
+				current_row < max_row; 
+				++current_row
+			) {
+				m_Result[current_row] *= m_Factors[current_row % m_Blocksize];
+				for (unsigned int i = 0, imax = resource_dim(); i < imax; ++i) {
+					m_TaskJacobian(current_row, i) *= m_Factors[current_row % m_Blocksize];
+				}
+			}
+		}
+
+		virtual unsigned int task_dim() const { 
+			return m_Operand->task_dim();
+		}
+
+		virtual unsigned int resource_dim() const {
+			return m_Operand->resource_dim();
+		}
+	
+		protected:
+			SensorTransformPtr m_Operand;
+			unsigned int m_Blocksize;
+			FloatVector m_Factors;
+	};
 
 } // namespace
 

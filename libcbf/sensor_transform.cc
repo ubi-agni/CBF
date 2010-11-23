@@ -42,7 +42,19 @@ namespace CBF {
 		ConstantSensorTransform::ConstantSensorTransform(const CBFSchema::ConstantSensorTransform &xml_instance) {
 			init(*XMLFactory<FloatVector>::instance()->create(xml_instance.Value()));
 		}
-		
+
+		BlockWiseMultiplySensorTransform::BlockWiseMultiplySensorTransform(
+			const CBFSchema::BlockWiseMultiplySensorTransform &xml_instance
+		) {
+			init(
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()),
+				xml_instance.Blocksize(),
+				*XMLFactory<FloatVector>::instance()->create(xml_instance.Factors())
+			);
+		}
+
+		static XMLDerivedFactory<BlockWiseMultiplySensorTransform, CBFSchema::BlockWiseMultiplySensorTransform> x;
+
 	#endif
 
 } // namespace
