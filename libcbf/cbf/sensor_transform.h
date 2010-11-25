@@ -25,6 +25,7 @@
 #include <cbf/types.h>
 #include <cbf/resource.h>
 #include <cbf/object.h>
+#include <cbf/debug_macros.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -224,14 +225,17 @@ namespace CBF {
 			m_Result = m_Operand->result();
 			m_TaskJacobian = m_Operand->task_jacobian();
 
+			CBF_DEBUG(m_Result.size())
+
 			for (
 				unsigned int current_row = 0, max_row = task_dim(); 
 				current_row < max_row; 
 				++current_row
 			) {
-				m_Result[current_row] *= m_Factors[current_row % m_Blocksize];
+				CBF_DEBUG((unsigned int)(current_row / m_Blocksize));
+				m_Result[current_row] *= m_Factors[(unsigned int)(current_row / m_Blocksize)];
 				for (unsigned int i = 0, imax = resource_dim(); i < imax; ++i) {
-					m_TaskJacobian(current_row, i) *= m_Factors[current_row % m_Blocksize];
+					m_TaskJacobian(current_row, i) *= m_Factors[(unsigned int)(current_row / m_Blocksize)];
 				}
 			}
 		}
