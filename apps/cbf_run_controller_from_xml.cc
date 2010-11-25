@@ -64,6 +64,11 @@ int main(int argc, char *argv[]) {
 			po::value<std::string>(), 
 			"Name of a controller to run"
 		)
+		(
+			"verbose",
+			po::value<unsigned int>(),
+			"Verbosity level"
+		)
 		;
 
 	po::variables_map variables_map;
@@ -127,11 +132,17 @@ int main(int argc, char *argv[]) {
 				(steps == 0)  || step < steps; 
 				++step
 			) { 
+				if (variables_map.count("verbose"))
+					{ std::cout << "step" << std::endl; }
+
 				cb->controllers()[controller_name]->step(); 
 				usleep((long long int)sleep_time * 1000); 
 			}
 		} else {
 			while (cb->controllers()[controller_name]->step() == false) {
+				if (variables_map.count("verbose"))
+					{ std::cout << "step" << std::endl; }
+
 				usleep(sleep_time * 1000);
 			}
 		}

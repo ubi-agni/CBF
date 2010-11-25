@@ -63,6 +63,7 @@ namespace CBF {
 				static XMLObjectFactory *instance() { 
 					if (m_Instance) 
 						{ return m_Instance; }
+
 					return (m_Instance = new XMLObjectFactory); 
 				}
 
@@ -160,6 +161,8 @@ namespace CBF {
 			static XMLFactory *instance() {
 				if (m_Instance == 0)
 					return (m_Instance = new XMLFactory());
+
+				return m_Instance;
 			}
 	
 			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {

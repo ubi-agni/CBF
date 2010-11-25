@@ -22,6 +22,7 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/xml_factory.h>
+#include <cbf/utilities.h>
 
 #include <iostream>
 
@@ -50,6 +51,7 @@ namespace CBF {
 				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()),
 				xml_instance.Blocksize(),
 				*XMLFactory<FloatVector>::instance()->create(xml_instance.Factors())
+				//create_vector(xml_instance.Factors())
 			);
 		}
 
