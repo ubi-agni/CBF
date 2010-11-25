@@ -15,7 +15,7 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Florian Paul Schmidt
+    Copyright 2009, 2010 Florian Paul Schmidt, Viktor Richter
 */
 
 #ifndef XCF_MEMORY_SENSOR_TRANSFORM_HH
@@ -41,15 +41,9 @@ namespace CBF {
 
 		XCFMemorySensorTransform(
 					const std::string &uri, 
-					const std::string &resultName, 
-					SensorTransformPtr m_SensorTransform
+					const std::string &result_name, 
+					SensorTransformPtr sensor_transform
 					);
-
-		/**
-			@brief A virtual desctructor to allow the clean destruction 
-			of subclass objects through a base class pointer..
-		*/
-		virtual ~XCFMemorySensorTransform() { }
 	
 		/**
 			@brief Returns the task space dimensionality.
@@ -102,7 +96,7 @@ namespace CBF {
 		/**
 			@brief. The name of the XCFMemorySensorTransformResult.
 		*/
-		std::string resultName;
+		std::string m_ResultName;
 
 		/**
 			@brief: The SensorTransform, which is to wrap.
@@ -112,7 +106,7 @@ namespace CBF {
 		/**
 			@brief: The pointer to the XCFMemory server.
 		*/
-		memory::interface::MemoryInterface::pointer memoryPtr;
+		memory::interface::MemoryInterface::pointer m_MemoryPtr;
 			
 	};
 

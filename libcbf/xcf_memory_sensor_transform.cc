@@ -15,7 +15,7 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Florian Paul Schmidt
+    Copyright 2009, 2010 Florian Paul Schmidt, Viktor Richter
 */
 
 /* -*- mode: c-non-suck; -*- */
@@ -28,13 +28,13 @@ namespace CBF {
 
 	XCFMemorySensorTransform::XCFMemorySensorTransform(
 					const std::string &uri, 
-					const std::string &resultName, 
-					SensorTransformPtr m_SensorTransform
+					const std::string &result_name, 
+					SensorTransformPtr sensor_transform
 					)
 	{
-		memoryPtr = memory::interface::MemoryInterface::getInstance(uri);
-		this -> resultName = resultName;
-		this -> m_SensorTransform = m_SensorTransform;
+		m_MemoryPtr = memory::interface::MemoryInterface::getInstance(uri);
+		m_ResultName = result_name;
+		m_SensorTransform = sensor_transform;
 	}
 
 	void XCFMemorySensorTransform::update(const FloatVector &resource_value){
@@ -62,7 +62,7 @@ namespace CBF {
 		CBFSchema::BoostVector vectorDoc(vector_string.str());
 
 		CBF_DEBUG("creating transformResult doc")
-		CBFSchema::XCFMemorySensorTransformResult resultDoc(resultName, vectorDoc);
+		CBFSchema::XCFMemorySensorTransformResult resultDoc(m_ResultName, vectorDoc);
 
 		std::ostringstream s;
 		CBFSchema::XCFMemorySensorTransformResult_ (s, resultDoc);
@@ -73,7 +73,7 @@ namespace CBF {
 		//Sending the result-XML to the server.
 		CBF_DEBUG("sending result to memory-server")
 		
-		memoryPtr -> send(s.str());
+		m_MemoryPtr -> send(s.str());
 
 		//Getting the task-jacobian matrix from the SensorTransform.
 		FloatMatrix task_jacobian = m_SensorTransform -> task_jacobian();
@@ -111,7 +111,7 @@ namespace CBF {
 		//Sending the result-XML to the server.
 //		CBF_DEBUG("sending result to memory-server")
 		
-//		memoryPtr -> send(t.str());
+//		m_MemoryPtr -> send(t.str());
 }
 
 } // namespace
