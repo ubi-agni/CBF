@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<cbf:ControlBasis
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF">
+  <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
+	 <Name>foo</Name>
+
+	 <Coefficient> 1 </Coefficient>
+
+	 <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
+		<Threshold> 0.01 </Threshold>
+	 </ConvergenceCriterion>
+
+	 <Reference xsi:type="cbf:DummyReference">
+		<Vector xsi:type="cbf:BoostVector">
+		  <String> [3](1.1111111,2.22222,3.3333) </String>
+		</Vector>
+	 </Reference>
+
+	 <Potential xsi:type="cbf:SquarePotential">
+		<MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
+		<Dimension> 3 </Dimension>
+		<Coefficient> 0.1 </Coefficient>
+	 </Potential>
+	 
+	 
+	 <SensorTransform xsi:type="cbf:BlockWiseDifferenceSensorTransform"> 
+		<Operand xsi:type="cbf:IdentitySensorTransform">
+		  <Dimension> 9 </Dimension>
+		</Operand> 
+
+		<Blocksize> 3 </Blocksize>
+
+		<InitVector xsi:type="cbf:ZeroVector">
+		  <Dimension>3</Dimension>
+		</InitVector>
+		<InitMatrix xsi:type="cbf:ZeroMatrix">
+		  <Rows>3</Rows><Columns>9</Columns>
+		</InitMatrix>
+	 </SensorTransform>
+	 
+	 
+	 <EffectorTransform xsi:type="cbf:DampedGenericEffectorTransform">
+		<DampingConstant> 0.1 </DampingConstant>
+		<TaskDimension> 1 </TaskDimension>
+		<ResourceDimension> 9 </ResourceDimension>
+	 </EffectorTransform>
+
+	 <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
+
+	 <Resource xsi:type="cbf:DummyResource">
+		<Vector xsi:type="cbf:BoostVector">
+		  <String>[9](1,1,1,1,1,1,1,1,1)</String>
+		</Vector>
+	 </Resource>
+
+
+  </Controller>
+
+</cbf:ControlBasis>
