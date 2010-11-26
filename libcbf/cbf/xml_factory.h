@@ -37,7 +37,7 @@
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
 		/**
-			@brief The base type for all concrete Object factories
+			@brief The base type for all concrete CBF::Object factories
 		*/
 		struct XMLDerivedFactoryBase {
 			virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) = 0;
@@ -47,6 +47,10 @@ namespace CBF {
 		/**
 			@brief The central registry, where all types derived of CBF::Object that have
 			a constructor taking a CBFSchema::Object argument in their constructor register.
+
+			This factory is used for all CBFSchema types that can inherit from CBF::Object. 
+			This is not true for things like CBFSchema::BoostVector or CBFSchema::ZeroMatrix.
+			For these types the XMLFactory is used
 		*/
 		struct XMLObjectFactory {
 			protected:
@@ -128,21 +132,6 @@ namespace CBF {
 		};
 
 
-		/**
-			@brief A functor that can be used to register types in the XMLFactory that do not
-			provide a free function to construct them from a TSchemaType but rather
-			a constructor..
-		*/
-		template <class T, class TSchemaType>
-		struct Constructor {
-			Constructor() { CBF_DEBUG("Constructor") }
-			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
-				CBF_DEBUG("creating a " << CBF_UNMANGLE(T))
-				const TSchemaType &t = dynamic_cast<const TSchemaType&>(xml_instance);
-				return boost::shared_ptr<T>(new T(t));
-			}
-		};
-
 		template <class T>
 		struct XMLCreatorBase {
 			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) = 0;
@@ -151,8 +140,10 @@ namespace CBF {
 	
 
 		/**
-			The XMLFactory is a central point for types to register ways of constructing instances
-			from CBFSchema:: types..
+			@brief The XMLFactory is a central point for types to register ways of constructing instances from CBFSchema:: types..
+
+			This type of factory is used for types that do not inherit CBF::Object like e.g.
+			FloatVector or FloatMatrix
 		*/ 	
 		template <class T>
 		struct XMLFactory {
@@ -193,7 +184,7 @@ namespace CBF {
 		};
 
 		/**
-			This template allows registering a functor C that
+			@brief This template allows registering a functor C that
 			constructs a boost::shared_ptr<T> from a TSchemaType.
 
 			THe signature of the functor's operator() has to be
@@ -231,16 +222,33 @@ namespace CBF {
 
 
 		/**
+			@brief A functor that can be used to register types in the XMLFactory that do not
+			provide a free function to construct them from a TSchemaType but rather
+			a constructor..
+		*/
+		template <class T, class TSchemaType>
+		struct Constructor {
+			Constructor() { CBF_DEBUG("Constructor"); }
+			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
+				CBF_DEBUG("creating a " << CBF_UNMANGLE(T))
+				const TSchemaType &t = dynamic_cast<const TSchemaType&>(xml_instance);
+				return boost::shared_ptr<T>(new T(t));
+			}
+		};
+
+
+
+		/**
 			This utility template can be used with types that have a constructor
 			that takes a const TSchemaType& as argument.
 		*/
 		template<class TBase, class T, class TSchemaType>
 		struct XMLConstructorCreator : public XMLCreator<
-			T, TSchemaType, Constructor<T, TSchemaType> 
+			TBase, TSchemaType, Constructor<T, TSchemaType> 
 		> {
 			XMLConstructorCreator() : 
 				XMLCreator<
-					T, TSchemaType, 
+					TBase, TSchemaType, 
 					Constructor<
 						T, TSchemaType
 					> 
