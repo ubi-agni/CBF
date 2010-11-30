@@ -681,6 +681,7 @@
 	 <xsd:sequence>
 		<xsd:element name="ResultName" type="xsd:string"/>
 		<xsd:element name="Result" type="CBF:Vector"/>
+		<xsd:element name="TaskJacobian" type="CBF:Matrix" />
 	 </xsd:sequence>
   </xsd:complexType>
 
