@@ -22,9 +22,21 @@
 
 #include <cbf/xcf_memory_sensor_transform.h>
 #include <cbf/debug_macros.h>
-#include <cbf/schemas.hxx>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
+	#ifdef CBF_HAVE_XSD
+		XCFMemorySensorTransform::XCFMemorySensorTransform(
+					const CBFSchema::XCFMemorySensorTransform &xml_instance) :
+			SensorTransform(xml_instance)
+		{
+			SensorTransformPtr pt = (XMLObjectFactory::instance() 
+						-> create<SensorTransform>(xml_instance.SensorTransform1()));
+			m_SensorTransform = pt;
+			m_MemoryPtr = memory::interface::MemoryInterface::getInstance(xml_instance.URI());
+			m_ResultName = xml_instance.ResultName();
+		}
+	#endif
 
 	XCFMemorySensorTransform::XCFMemorySensorTransform(
 					const std::string &uri, 
@@ -48,37 +60,24 @@ namespace CBF {
 		FloatVector result = m_SensorTransform -> result();
 		std::stringstream vector_string;
 
-		//Creating an XML-document.
+		//Creating an XML-document for result vector.
 		CBF_DEBUG("creating vector string")
 		vector_string << "[" << result.size() << "](";
 		for (unsigned int i = 0; i < result.size(); ++i) {
 			vector_string << result(i);
 			if ( i !=  result.size() -1 ) vector_string << ",";
 		}
+
 		vector_string << ")";
 
 		CBF_DEBUG("creating vector doc")
 
 		CBFSchema::BoostVector vectorDoc(vector_string.str());
 
-		CBF_DEBUG("creating transformResult doc")
-		CBFSchema::XCFMemorySensorTransformResult resultDoc(m_ResultName, vectorDoc);
-
-		std::ostringstream s;
-		CBFSchema::XCFMemorySensorTransformResult_ (s, resultDoc);
-
-		CBF_DEBUG("document: " << s.str())
-
-
-		//Sending the result-XML to the server.
-		CBF_DEBUG("sending result to memory-server")
-		
-		m_MemoryPtr -> send(s.str());
-
 		//Getting the task-jacobian matrix from the SensorTransform.
 		FloatMatrix task_jacobian = m_SensorTransform -> task_jacobian();
 		
-		//Creating an XML-document.
+		//Creating an XML-document for task jacobian.
 		std::stringstream matrix_string;
 
 		unsigned int i,j,m,n;
@@ -88,30 +87,32 @@ namespace CBF {
 		CBF_DEBUG("creating matrix string")
 		matrix_string << "[" << m << "," << n << "](";
 		for (i = 0; i < m ; ++i) {
+			matrix_string << "(";
 			for (j = 0; j < n ; j++){
 				matrix_string << task_jacobian(i,j);
-				if (i != m - 1 && j != n -1 ) matrix_string << ",";
+				if (j != n -1 ) matrix_string << ",";
 			}
+			matrix_string << ")";
+			if (i != m - 1) matrix_string << ",";
 		}
-		matrix_string << ")";
+		matrix_string << ")";		
 
-//		CBF_DEBUG("creating matrix doc")
+		CBF_DEBUG("creating matrix doc")
 
-//		CBFSchema::BoostMatrix matrixDoc(matrix_string.str());
+		CBFSchema::BoostMatrix matrixDoc(matrix_string.str());
 
-//		CBF_DEBUG("creating transformResult doc")
-//		CBFSchema::XCFMemorySensorTransformResult taskJacobianDoc(resultName, matrixDoc);
+		CBF_DEBUG("creating XCFMemorySensorTransformResult doc")
+		CBFSchema::XCFMemorySensorTransformResult transformResult(m_ResultName, vectorDoc, matrixDoc);
 
-//		std::ostringstream t;
-//		CBFSchema::XCFMemorySensorTransformResult_ (t, taskJacobianDoc);
+		std::ostringstream s;
+		CBFSchema::XCFMemorySensorTransformResult_ (s, transformResult);
 
-//		CBF_DEBUG("document: " << t.str())
-
+		CBF_DEBUG("document: " << s.str())
 
 		//Sending the result-XML to the server.
-//		CBF_DEBUG("sending result to memory-server")
+		CBF_DEBUG("sending result to memory-server")
 		
-//		m_MemoryPtr -> send(t.str());
+		m_MemoryPtr -> send(s.str());
 }
 
 } // namespace

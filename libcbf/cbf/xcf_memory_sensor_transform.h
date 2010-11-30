@@ -22,6 +22,7 @@
 #define XCF_MEMORY_SENSOR_TRANSFORM_HH
 
 #include <cbf/sensor_transform.h>
+#include <cbf/schemas.hxx>
 
 #include <Memory/Interface.hpp>
 
@@ -38,6 +39,8 @@ namespace CBF {
 		@param m_SensorTransform The SensorTransformPtr of the used SensorTransform.
 	*/
 	struct XCFMemorySensorTransform : public SensorTransform {
+
+		XCFMemorySensorTransform(const CBFSchema::XCFMemorySensorTransform &xml_instance);
 
 		XCFMemorySensorTransform(
 					const std::string &uri, 
