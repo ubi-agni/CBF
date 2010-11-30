@@ -30,6 +30,9 @@ namespace CBF {
 		m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
 	}
 
+	template <> XMLFactory<Potential> 
+		*XMLFactory<Potential>::m_Instance = 0;
+
 #endif
 
 } // namespace
