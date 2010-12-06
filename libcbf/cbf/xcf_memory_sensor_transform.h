@@ -25,6 +25,8 @@
 #include <cbf/schemas.hxx>
 
 #include <Memory/Interface.hpp>
+#include <xmltio/Location.hpp>
+#include <xmltio/XPath.hpp>
 
 namespace CBF {
 
@@ -94,10 +96,27 @@ namespace CBF {
 		*/
 		virtual void send();
 
+		/**
+			@brief: A shared pointer to an xmltio::Location.
+		*/
+		typedef boost::shared_ptr<xmltio::Location> LocationPtr;
+
 		protected:
 
 		/**
-			@brief. The name of the XCFMemorySensorTransformResult.
+			@brief: Points to the 'Result' element of 
+			the inserted XCFMemorySensorTransformResult document.
+		*/
+		LocationPtr m_ResultLocationPtr;
+
+		/**
+			@brief: Points to the 'TaskJacobian' element of 
+			the inserted XCFMemorySensorTransformResult document.
+		*/
+		LocationPtr m_TaskJacobianLocationPtr;
+
+		/**
+			@brief: The name of the XCFMemorySensorTransformResult.
 		*/
 		std::string m_ResultName;
 
@@ -110,7 +129,23 @@ namespace CBF {
 			@brief: The pointer to the XCFMemory server.
 		*/
 		memory::interface::MemoryInterface::pointer m_MemoryPtr;
-			
+
+		/**
+			@brief: Returns the string that points to the Result 
+			element in the XCFMemorySensorTransformResult document.
+		*/
+		inline const char* ResultXPathString(){
+			return "/p1:XCFMemorySensorTransformResult/Result/String";
+		}
+
+		/**
+			@brief: Returns the string that points to the TaskJacobian 
+			element in the XCFMemorySensorTransformResult document.
+		*/
+		inline const char* TeskJacobianXPathString(){
+			return "/p1:XCFMemorySensorTransformResult/TaskJacobian/String";
+		}
+
 	};
 
 } // namespace
