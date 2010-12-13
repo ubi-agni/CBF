@@ -323,6 +323,19 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="PaddedEffectorTransform">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:EffectorTransform">
+		  <xsd:sequence>
+			 <xsd:element name="TaskDimension" type="xsd:nonNegativeInteger"/>
+			 <xsd:element name="ResourceDimension" type="xsd:nonNegativeInteger"/>
+			 <xsd:element name="Diagonal" type="CBF:Vector"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+
   <xsd:complexType name="DampedGenericEffectorTransform">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:EffectorTransform">

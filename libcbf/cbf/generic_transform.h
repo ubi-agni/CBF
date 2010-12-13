@@ -28,16 +28,19 @@
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 #include <cbf/utilities.h>
+#include <cbf/exceptions.h>
 
 #include <boost/numeric/ublas/io.hpp>
 
 namespace CBFSchema {
 	class GenericEffectorTransform;
+	class PaddedEffectorTransform;
 	class DampedGenericEffectorTransform;
 	class DampedWeightedGenericEffectorTransform;
 }
 
 namespace CBF {
+	namespace ublas = boost::numeric::ublas;
 
 	/**
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
@@ -136,6 +139,60 @@ namespace CBF {
 	};
 	
 	typedef boost::shared_ptr<DampedWeightedGenericEffectorTransform> DampedWeightedGenericEffectorTransformPtr;
+
+
+	/**
+		@brief Effector Transform based on padded Jacobian pseudo inverse
+	*/
+	struct PaddedEffectorTransform : public EffectorTransform {
+		PaddedEffectorTransform (const CBFSchema::PaddedEffectorTransform &xml_instance);
+
+		PaddedEffectorTransform(
+			unsigned int task_dim, 
+			unsigned int resource_dim, 
+			FloatVector diagonal_elements
+		) { 
+			init(task_dim, resource_dim, diagonal_elements);
+		}
+	
+		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
+			pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
+
+			ublas::matrix_range<FloatMatrix> mr(
+				m_PaddedTaskJacobian, 
+				ublas::range(0, task_jacobian.size1()), 
+				ublas::range(0, task_jacobian.size2())
+			);
+			mr.assign(task_jacobian);			
+			pseudo_inverse(m_PaddedTaskJacobian, m_PaddedInverseTaskJacobian);
+		}
+	
+		virtual void exec(const FloatVector &input, FloatVector &result) {
+			FloatVector res = ublas::prod(m_PaddedInverseTaskJacobian, input);
+			result = ublas::vector_range<FloatVector>(res, ublas::range(0, m_InverseTaskJacobian.size1()));
+		}
+
+		void init(unsigned int task_dim, unsigned int resource_dim, FloatVector diagonal) {
+			if (task_dim != diagonal.size()) CBF_THROW_RUNTIME_ERROR("dimension mismatch");
+
+			m_PaddedTaskJacobian = ublas::zero_matrix<Float>(task_dim, resource_dim + task_dim);
+
+			for (unsigned int i = 0; i < task_dim; ++i) {
+				m_PaddedTaskJacobian(i, task_dim+i) = diagonal[i];
+			}
+
+			m_PaddedInverseTaskJacobian = FloatMatrix(resource_dim + task_dim, task_dim);
+
+			m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
+		}	
+
+
+		protected:
+			FloatMatrix m_PaddedTaskJacobian;
+			FloatMatrix m_PaddedInverseTaskJacobian;
+	};
+	
+	typedef boost::shared_ptr<GenericEffectorTransform> GenericEffectorTransformPtr;
 	
 	
 } // namespace

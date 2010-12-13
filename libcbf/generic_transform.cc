@@ -163,6 +163,17 @@ void DampedWeightedGenericEffectorTransform::update(
 	{
 		init(xml_instance.TaskDimension(), xml_instance.ResourceDimension());
 	}
+
+	PaddedEffectorTransform::PaddedEffectorTransform(
+		const CBFSchema::PaddedEffectorTransform &xml_instance
+	)
+	{
+		init(
+			xml_instance.TaskDimension(), 
+			xml_instance.ResourceDimension(), 
+			*(XMLFactory<FloatVector>::instance()->create(xml_instance.Diagonal()))
+		);
+	}
 	
 
 	DampedGenericEffectorTransform::DampedGenericEffectorTransform(
@@ -189,6 +200,11 @@ void DampedWeightedGenericEffectorTransform::update(
 		GenericEffectorTransform, 
 		CBFSchema::GenericEffectorTransform
 	> x1;
+
+	static XMLDerivedFactory<
+		PaddedEffectorTransform, 
+		CBFSchema::PaddedEffectorTransform
+	> x4;
 
 	static XMLDerivedFactory<
 		DampedGenericEffectorTransform, 
