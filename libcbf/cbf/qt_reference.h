@@ -40,7 +40,6 @@ struct QtReference : public Reference {
 	QtReference(const CBFSchema::QtReference &xml_instance);
 
 	void init(std::vector<Control> controls, std::string window_title = "CBF:QtReference") {
-		// QVBoxLayout *layout = new QVBoxLayout();
 		QGridLayout *layout = new QGridLayout();
 		m_Widget.setLayout(layout);
 
@@ -64,20 +63,12 @@ struct QtReference : public Reference {
 		}
 		layout->setColumnStretch(1, 10);
 
-#if 0
-		QDoubleSpinBox *valid = new QDoubleSpinBox;
-		valid->setMinimum(-10000);
-		valid->setMaximum(10000);
-		valid->setDecimals(3);
-		QObject::connect(m_SpinBoxes[0], SIGNAL(valueChanged(double)), valid, SLOT(setValue(double)));
-		layout->addWidget(valid);
-#endif
-
 		m_Widget.setWindowTitle(window_title.c_str());
 
 		m_Widget.show();
 
 		m_References.resize(1);
+		m_Values.resize(controls.size());
 	}
 
 	virtual void update() {

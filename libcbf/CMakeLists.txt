@@ -119,6 +119,7 @@ endif()
 
 if (CBF_HAVE_QT)
   set(CBF_SOURCES ${CBF_SOURCES} qt_reference.cc)
+  set(CBF_SOURCES ${CBF_SOURCES} qt_sensor_transform.cc)
   set(CBF_INCLUDES ${CBF_INCLUDES} ${QT_INCLUDES})
   set(CBF_LIBS ${CBF_LIBS} ${QT_LIBRARIES})
 endif()

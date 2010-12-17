@@ -561,6 +561,18 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="QtSensorTransform">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:SensorTransform">
+		  <xsd:sequence>
+			 <xsd:element name="WindowTitle" type="xsd:string" minOccurs="0"/>
+			 <xsd:element name="Operand" type="CBF:SensorTransform"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+
   <xsd:complexType name="IdentitySensorTransform">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:SensorTransform">
