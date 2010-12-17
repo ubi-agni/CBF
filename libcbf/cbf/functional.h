@@ -400,7 +400,9 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 	#ifdef CBF_HAVE_XSD
 		BlockWiseAccumulateSensorTransform(
 			const CBFSchema::BlockWiseAccumulateSensorTransform& xml_instance
-		) { 
+		) : 
+			SensorTransform(xml_instance) 
+		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 
