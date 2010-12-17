@@ -15,18 +15,21 @@
 
 	 <Reference xsi:type="cbf:QtReference">
 		<Control>
+		  <ControlName>X</ControlName>
 		  <Minimum>-100.0</Minimum>
 		  <Maximum>100.0</Maximum>
 		  <Decimals>3</Decimals>
 		  <InitialValue>0</InitialValue>
 		</Control>
 		<Control>
+		  <ControlName>Y</ControlName>
 		  <Minimum>-100.0</Minimum>
 		  <Maximum>100.0</Maximum>
 		  <Decimals>3</Decimals>
 		  <InitialValue>0</InitialValue>
 		</Control>
 		<Control>
+		  <ControlName>Z</ControlName>
 		  <Minimum>-100.0</Minimum>
 		  <Maximum>100.0</Maximum>
 		  <Decimals>3</Decimals>
@@ -1220,7 +1223,7 @@
 		 xsi:type="cbf:PaddedEffectorTransform">
 		<TaskDimension>3</TaskDimension>
 		<ResourceDimension>62</ResourceDimension>
-		<Diagonal xsi:type="cbf:BoostVector"><String>[3](0.1,0.1,0.1)</String></Diagonal>
+		<Diagonal xsi:type="cbf:BoostVector"><String>[3](0.5,0.5,0.5)</String></Diagonal>
 	 </EffectorTransform>
 
 	 <PrimitiveController>

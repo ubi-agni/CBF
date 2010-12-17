@@ -245,7 +245,7 @@
 
   <xsd:complexType name="Control">
 	 <xsd:sequence>
-		<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+		<xsd:element name="ControlName" type="xsd:string" minOccurs="0"/>
 		<xsd:element name="Minimum" type="xsd:float"/>
 		<xsd:element name="Maximum" type="xsd:float"/>
 		<xsd:element name="Decimals" type="xsd:nonNegativeInteger"/>

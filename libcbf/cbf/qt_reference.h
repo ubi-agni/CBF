@@ -12,8 +12,10 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QGridLayout>
 #include <QtGui/QApplication>
 #include <QtGui/QDoubleSpinBox>
+#include <QtGui/QLabel>
 
 namespace CBFSchema {
 	class QtReference;
@@ -23,20 +25,23 @@ namespace CBF {
 
 struct QtReference : public Reference {
 	struct Control {
+		Control() : control_name("Control") { }
+		std::string control_name;
 		Float min;
 		Float max;
 		unsigned int decimals;
 		Float initial_value;
 	};
 
-	QtReference(const std::vector<Control> &controls, std::string window_title = "QtReference") {
+	QtReference(const std::vector<Control> &controls, std::string window_title = "CBF:QtReference") {
 		init(controls, window_title);
 	}
 
 	QtReference(const CBFSchema::QtReference &xml_instance);
 
-	void init(std::vector<Control> controls, std::string window_title) {
-		QVBoxLayout *layout = new QVBoxLayout();
+	void init(std::vector<Control> controls, std::string window_title = "CBF:QtReference") {
+		// QVBoxLayout *layout = new QVBoxLayout();
+		QGridLayout *layout = new QGridLayout();
 		m_Widget.setLayout(layout);
 
 		m_Values.resize(controls.size());
@@ -50,9 +55,14 @@ struct QtReference : public Reference {
 			s->setValue(controls[i].initial_value);
 			s->setKeyboardTracking(false);
 
-			layout->addWidget(s);
+			layout->addWidget(s,i,1);
+
+			QLabel *label = new QLabel(controls[i].control_name.c_str());
+			layout->addWidget(label, i, 0);
+
 			m_SpinBoxes.push_back(s);
 		}
+		layout->setColumnStretch(1, 10);
 
 #if 0
 		QDoubleSpinBox *valid = new QDoubleSpinBox;

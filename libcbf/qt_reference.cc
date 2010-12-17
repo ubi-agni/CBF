@@ -14,6 +14,10 @@ namespace CBF {
 
 			Control c;
 
+			if ((*it).ControlName()) {
+				c.control_name = *(*it).ControlName();
+			}
+
 			c.min = (*it).Minimum();
 			c.max = (*it).Maximum();
 			c.decimals = (*it).Decimals();
@@ -25,7 +29,7 @@ namespace CBF {
 			init(controls, *(xml_instance.WindowTitle()));
 		}
 		else {
-			init(controls, "QtReference");
+			init(controls);
 		}
 	}
 
