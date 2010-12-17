@@ -29,7 +29,11 @@ namespace CBF {
 				QLabel *label = new QLabel;
 				layout->addWidget(label, i, 1);
 				m_Labels.push_back(label);
+
+				QLabel *name = new QLabel(component_name(i).c_str());
+				layout->addWidget(name, i, 0);
 			}
+			layout->setColumnStretch(1,10);
 			m_Widget.show();
 		}
 
