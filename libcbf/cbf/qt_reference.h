@@ -6,6 +6,7 @@
 #include <cbf/types.h>
 
 #include <vector>
+#include <string>
 
 #include <boost/shared_ptr.hpp>
 
@@ -28,13 +29,13 @@ struct QtReference : public Reference {
 		Float initial_value;
 	};
 
-	QtReference(const std::vector<Control> &controls) {
-		init(controls);
+	QtReference(const std::vector<Control> &controls, std::string window_title = "QtReference") {
+		init(controls, window_title);
 	}
 
 	QtReference(const CBFSchema::QtReference &xml_instance);
 
-	void init(std::vector<Control> controls) {
+	void init(std::vector<Control> controls, std::string window_title) {
 		QVBoxLayout *layout = new QVBoxLayout();
 		m_Widget.setLayout(layout);
 
@@ -51,6 +52,8 @@ struct QtReference : public Reference {
 			layout->addWidget(s);
 			m_SpinBoxes.push_back(s);
 		}
+
+		m_Widget.setWindowTitle(window_title.c_str());
 
 		m_Widget.show();
 

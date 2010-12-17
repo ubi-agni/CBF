@@ -21,7 +21,12 @@ namespace CBF {
 
 			controls.push_back(c);
 		}
-		init(controls);
+		if (xml_instance.WindowTitle()) {
+			init(controls, *(xml_instance.WindowTitle()));
+		}
+		else {
+			init(controls, "QtReference");
+		}
 	}
 
 	static XMLDerivedFactory<QtReference, CBFSchema::QtReference> x1;
