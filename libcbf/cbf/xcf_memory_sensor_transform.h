@@ -15,7 +15,7 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Florian Paul Schmidt, Viktor Richter
+    Copyright 2009, 2010 Viktor Richter
 */
 
 #ifndef XCF_MEMORY_SENSOR_TRANSFORM_HH

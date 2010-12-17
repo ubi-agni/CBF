@@ -26,6 +26,8 @@ endif()
 if(CBF_HAVE_XCF AND CBF_HAVE_XSD)
   message(STATUS "  adding executable: cbf_test_xcf_reference")
   message(STATUS "  adding executable: cbf_test_xcf_reference_client")
+  message(STATUS "  adding executable: cbf_test_xcf_memory_reference")
+  message(STATUS "  adding executable: cbf_test_xcf_memory_reference_client")
 
   add_executable(cbf_test_xcf_reference
     cbf_test_xcf_reference.cc
@@ -40,6 +42,22 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD)
     )
 
   target_link_libraries(cbf_test_xcf_reference_client
+    cbf
+    )
+
+  add_executable(cbf_test_xcf_memory_reference
+    cbf_test_xcf_memory_reference.cc
+    )
+
+  target_link_libraries(cbf_test_xcf_memory_reference
+    cbf
+    )
+
+  add_executable(cbf_test_xcf_memory_reference_client
+    cbf_test_xcf_memory_reference_client.cc
+    )
+
+  target_link_libraries(cbf_test_xcf_memory_reference_client
     cbf
     )
 
@@ -66,6 +84,8 @@ else()
   message(STATUS "  not adding executables:")
   message(STATUS "  -cbf_test_xcf_reference")
   message(STATUS "  -cbf_test_xcf_reference_client")
+  message(STATUS "  -cbf_test_xcf_memory_reference")
+  message(STATUS "  -cbf_test_xcf_memory_reference_client")
   message(STATUS "  -cbf_q_xcf_vector_reference_client")
   message(STATUS "  because xcf was not found")
 endif()

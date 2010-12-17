@@ -102,11 +102,11 @@ if (CBF_HAVE_XCF)
     set(CBF_INCLUDES ${CBF_INCLUDES} ${XMLTIO_INCLUDE_DIRS})
 
     if(CBF_HAVE_MEMORY)
-      set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_sensor_transform.cc)
+      set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_sensor_transform.cc xcf_memory_reference.cc)
       set(CBF_LIBS ${CBF_LIBS} ${MEMORY_LDFLAGS})
       set(CBF_INCLUDES ${CBF_INCLUDES} ${MEMORY_INCLUDE_DIRS})
     else()
-      message(STATUS "  excluding xcf_memoy_sensor_transform.cc because memory was not found")
+      message(STATUS "  excluding xcf_memoy_sensor_transform.cc and xcf_memory_reference.cc because memory was not found")
     endif() 
 
   else()
