@@ -1199,10 +1199,12 @@
 		</InitMatrix>
 
 	 </SensorTransform>
+
 	 <EffectorTransform 
-		 xsi:type="cbf:GenericEffectorTransform">
-		<TaskDimension>6</TaskDimension>
+		 xsi:type="cbf:PaddedEffectorTransform">
+		<TaskDimension>3</TaskDimension>
 		<ResourceDimension>62</ResourceDimension>
+		<Diagonal xsi:type="cbf:BoostVector"><String>[3](1,1,1)</String></Diagonal>
 	 </EffectorTransform>
 
 	 <PrimitiveController>

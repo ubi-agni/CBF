@@ -90,7 +90,9 @@ namespace CBF {
 	
 		/**
 			A way to get to the current task jacobian. This is needed by the
-			controller to construct the nullspace projector.
+			controller to construct the nullspace projector (but for nothing 
+			else. Implementations are thus free to do anything they want to 
+			calculate the resource step update in exec())
 	
 			May only be called after a call to update() to update the internal
 			matrices.
