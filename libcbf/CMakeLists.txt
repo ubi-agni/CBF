@@ -117,6 +117,11 @@ else()
   message(STATUS "  excluding xcf_vector_reference.cc, xcf_memory_sensor_transform and xcf_ressource.cc because xcf was not found")
 endif()
 
+if (CBF_HAVE_QT)
+  set(CBF_SOURCES ${CBF_SOURCES} qt_reference.cc)
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${QT_INCLUDES})
+  set(CBF_LIBS ${CBF_LIBS} ${QT_LIBRARIES})
+endif()
 
 if (CBF_HAVE_XRI)
   set(CBF_SOURCES ${CBF_SOURCES} robotinterface_resource.cc)

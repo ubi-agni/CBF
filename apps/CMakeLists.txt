@@ -4,6 +4,10 @@ if(CBF_HAVE_XSD)
   include_directories(${XSD_INC})
 endif()
 
+if(CBF_HAVE_QT)
+  include_directories(${QT_INCLUDES})
+endif()
+
 if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
   message(STATUS "  adding executable: cbf_run_controller")
   include_directories("${PROJECT_SOURCE_DIR}/libcbf/" ${XSD_INC})

@@ -18,10 +18,15 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
+#include <cbf/config.h>
 #include <cbf/controller.h>
 #include <cbf/control_basis.h>
 #include <cbf/debug_macros.h>
 #include <cbf/xsd_error_handler.h>
+
+#ifdef CBF_HAVE_QT
+	#include <QtGui/QApplication>
+#endif
 
 #include <string>
 #include <stdexcept>
@@ -69,6 +74,13 @@ int main(int argc, char *argv[]) {
 			po::value<unsigned int>(),
 			"Verbosity level"
 		)
+#ifdef CBF_HAVE_QT
+		(
+			"qt-main-loop",
+			po::value<bool>(),
+			"Provide Qt Mainloop and process events"
+		)
+#endif
 		;
 
 	po::variables_map variables_map;
@@ -115,6 +127,18 @@ int main(int argc, char *argv[]) {
 
 	CBF::XSDErrorHandler err_handler;
 
+#ifdef CBF_HAVE_QT
+	bool qt_support = false;
+	if (variables_map.count("qt-main-loop")) {
+		qt_support = variables_map["qt-main-loop"].as<bool>();
+	}
+
+	QApplication *app;
+	if (qt_support) {
+		app = new QApplication(argc, argv);
+	}
+#endif
+
 	CBF_DEBUG("parsing XML")
 	try {
 		std::auto_ptr<CBFSchema::ControlBasis> cbt
@@ -137,6 +161,9 @@ int main(int argc, char *argv[]) {
 
 				cb->controllers()[controller_name]->step(); 
 				usleep((long long int)sleep_time * 1000); 
+				#ifdef CBF_HAVE_QT
+					if (qt_support) QApplication::processEvents();
+				#endif
 			}
 		} else {
 			while (cb->controllers()[controller_name]->step() == false) {
@@ -144,6 +171,9 @@ int main(int argc, char *argv[]) {
 					{ std::cout << "step" << std::endl; }
 
 				usleep(sleep_time * 1000);
+				#ifdef CBF_HAVE_QT
+					if (qt_support) QApplication::processEvents();
+				#endif
 			}
 		}
 	} catch (const xml_schema::exception& e) {

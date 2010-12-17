@@ -13,6 +13,10 @@ namespace CBF {
 
 using CppAD::AD;
 
+
+/**
+	@brief A SensorTransform that is parametrized with an AppAD::ADFun<Float> which enables automatic calculation of the task jacobian (CppAD is an automatic differentiation package)
+*/
 struct CppADSensorTransform : public SensorTransform {
 	CppAD::ADFun<Float> m_Func;
 

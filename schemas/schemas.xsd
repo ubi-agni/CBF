@@ -243,6 +243,27 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="Control">
+	 <xsd:sequence>
+		<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+		<xsd:element name="Minimum" type="xsd:float"/>
+		<xsd:element name="Maximum" type="xsd:float"/>
+		<xsd:element name="Decimals" type="xsd:nonNegativeInteger"/>
+		<xsd:element name="InitialValue" type="xsd:float"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="QtReference">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Reference">
+		  <xsd:sequence>
+			 <xsd:element name="WindowTitle" type="xsd:string" minOccurs="0"/>
+			 <xsd:element name="Control" type="CBF:Control" minOccurs="1" maxOccurs="unbounded"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
   <xsd:complexType name="XCFVectorReference">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Reference">
