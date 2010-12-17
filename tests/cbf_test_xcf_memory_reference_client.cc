@@ -31,7 +31,8 @@ int main(int argc, char **argv) {
 	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(argv[1]));
 
 	std::stringstream xPath;
-	xPath << "/p1:XCFMemoryReference/ReferenceName['" << argv[2] << "']";
+//	xPath << "/p1:XCFMemoryReference/ReferenceName['" << argv[2] << "']";
+	xPath << "/";
 
 	memoryPtr -> addNamespacePrefix("xmlns:p1", "http://www.cit-ec.uni-bielefeld.de/CBF");
 	mi::ResultsPtr results = memoryPtr -> query(xPath.str(), mi::MemoryInterface::LazyEvaluation);
