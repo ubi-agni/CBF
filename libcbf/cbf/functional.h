@@ -62,7 +62,8 @@ struct ApplySensorTransform : public SensorTransform {
 			NegateOperationSensorTransform
 		*/
 		template <class XMLType>
-		ApplySensorTransform(const XMLType& xml_instance) 
+		ApplySensorTransform(const XMLType& xml_instance) :
+			SensorTransform(xml_instance)
 		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
@@ -142,7 +143,9 @@ struct BlockWiseApplySensorTransform : public SensorTransform {
 
 	#ifdef CBF_HAVE_XSD
 		template <class XMLType>
-		BlockWiseApplySensorTransform(const XMLType& xml_instance) { 
+		BlockWiseApplySensorTransform(const XMLType& xml_instance) :
+			SensorTransform(xml_instance)
+		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 
@@ -263,7 +266,9 @@ struct BlockWiseInnerProductSensorTransform : public SensorTransform {
 
 	#ifdef CBF_HAVE_XSD
 		template <class XMLType>
-		BlockWiseInnerProductSensorTransform(const XMLType& xml_instance) { 
+		BlockWiseInnerProductSensorTransform(const XMLType& xml_instance) :
+			SensorTransform(xml_instance)
+		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 			m_Operand1 = 

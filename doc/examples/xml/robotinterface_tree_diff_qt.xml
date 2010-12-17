@@ -46,6 +46,9 @@
 
 	 <SensorTransform
 		 xsi:type="cbf:QtSensorTransform">
+		<ComponentName>X Displacement</ComponentName>
+		<ComponentName>Y Displacement</ComponentName>
+		<ComponentName>Z Displacement</ComponentName>
 		<Operand
 			xsi:type="cbf:BlockWiseSumSensorTransform">
 		  <Operand
