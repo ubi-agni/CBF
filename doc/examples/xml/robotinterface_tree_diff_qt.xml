@@ -13,9 +13,25 @@
 		<Threshold> 0.001 </Threshold>
 	 </ConvergenceCriterion>
 
-	 <Reference xsi:type="cbf:XCFVectorReference">
-		<ServerName>controller</ServerName>
-		<Dimension>3</Dimension>
+	 <Reference xsi:type="cbf:QtReference">
+		<Control>
+		  <Minimum>-100.0</Minimum>
+		  <Maximum>100.0</Maximum>
+		  <Decimals>3</Decimals>
+		  <InitialValue>0</InitialValue>
+		</Control>
+		<Control>
+		  <Minimum>-100.0</Minimum>
+		  <Maximum>100.0</Maximum>
+		  <Decimals>3</Decimals>
+		  <InitialValue>0</InitialValue>
+		</Control>
+		<Control>
+		  <Minimum>-100.0</Minimum>
+		  <Maximum>100.0</Maximum>
+		  <Decimals>3</Decimals>
+		  <InitialValue>30</InitialValue>
+		</Control>
 	 </Reference>
 
 	 <Potential

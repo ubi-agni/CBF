@@ -136,6 +136,7 @@ namespace CBF {
 			CBF_DEBUG("gradientStep: " << m_GradientStep)
  
 			//! Map gradient step into resource step via exec:
+			CBF_DEBUG("calling m_EffectorTransform->exec(): Type is: " << CBF_UNMANGLE(*m_EffectorTransform.get()))
 			m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
 		} else {
 			m_ResourceStep = ublas::zero_vector<Float>(m_Resource->dim());

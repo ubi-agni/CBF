@@ -5,4 +5,5 @@
 #cmakedefine CBF_HAVE_XMLTIO
 #cmakedefine CBF_HAVE_XCF
 #cmakedefine CBF_DEBUG_COLOR
+#cmakedefine CBF_HAVE_QT
 
