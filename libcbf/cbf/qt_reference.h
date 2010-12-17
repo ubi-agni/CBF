@@ -48,10 +48,20 @@ struct QtReference : public Reference {
 			s->setMaximum(controls[i].max);
 			s->setDecimals(controls[i].decimals);
 			s->setValue(controls[i].initial_value);
+			s->setKeyboardTracking(false);
 
 			layout->addWidget(s);
 			m_SpinBoxes.push_back(s);
 		}
+
+#if 0
+		QDoubleSpinBox *valid = new QDoubleSpinBox;
+		valid->setMinimum(-10000);
+		valid->setMaximum(10000);
+		valid->setDecimals(3);
+		QObject::connect(m_SpinBoxes[0], SIGNAL(valueChanged(double)), valid, SLOT(setValue(double)));
+		layout->addWidget(valid);
+#endif
 
 		m_Widget.setWindowTitle(window_title.c_str());
 
