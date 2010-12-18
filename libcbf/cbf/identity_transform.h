@@ -23,6 +23,7 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
+#include <cbf/functional.h>
 
 namespace CBFSchema {
 	class IdentityEffectorTransform;

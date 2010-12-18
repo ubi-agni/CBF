@@ -67,7 +67,9 @@ namespace CBF {
 		set to the right source during initialization (in all possible
 		constructors) because the default implementations of
 		task_dim() and resource_dim() use the task jacobian sizes
-		to determine the respective dimensionalities..
+		to determine the respective dimensionalities.. I.e. The 
+		task jacobian has to has task_dim rows and resource_dim
+		columns.
 	*/
 	struct SensorTransform : public Object {
 		SensorTransform()	:
@@ -233,7 +235,9 @@ namespace CBF {
 				++current_row
 			) {
 				CBF_DEBUG((unsigned int)(current_row / m_Blocksize));
+
 				m_Result[current_row] *= m_Factors[(unsigned int)(current_row / m_Blocksize)];
+
 				for (unsigned int i = 0, imax = resource_dim(); i < imax; ++i) {
 					m_TaskJacobian(current_row, i) *= m_Factors[(unsigned int)(current_row / m_Blocksize)];
 				}

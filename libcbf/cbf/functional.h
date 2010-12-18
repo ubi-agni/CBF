@@ -497,6 +497,9 @@ struct GenericSensorTransform : public SensorTransform {
 		init(task_dim, resource_dim);
 	}
 
+	template<class XMLType>
+	GenericSensorTransform() { }
+
 	void init(unsigned int task_dim, unsigned int resource_dim) {
 		m_Result = FloatVector(task_dim);
 		m_TaskJacobian = FloatMatrix(task_dim, resource_dim);
