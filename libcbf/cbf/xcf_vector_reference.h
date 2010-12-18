@@ -108,7 +108,7 @@ struct XCFVectorReference : public Reference {
 			m_References[0] = m_TempReference;
 		}
 		if(m_References.size()>0){
-			CBF_DEBUG("saving current task poisition")
+			CBF_DEBUG("saving current task poisition");
 			m_CurrentReferencePosition = m_References[0];
 		}
 	}
@@ -127,7 +127,7 @@ struct XCFVectorReference : public Reference {
 		std::ostringstream s;
 		CBFSchema::Vector_ (s, v);
 
-		CBF_DEBUG("doc: " << s.str())
+		CBF_DEBUG("doc: " << s.str());
 
 		xml_out = s.str();
 	}
@@ -142,7 +142,7 @@ struct XCFVectorReference : public Reference {
 		std::ostringstream s;
 		CBFSchema::Vector_ (s, v);
 
-		CBF_DEBUG("dimension xcf" << s.str())
+		CBF_DEBUG("dimension xcf" << s.str());
 
 		xml_out = s.str();
 	}
@@ -151,22 +151,22 @@ struct XCFVectorReference : public Reference {
 		This method is exposed to XCF as "set_reference"
 	*/
 	virtual void set_reference_from_xcf(std::string &xml_in, std::string &xml_out) {
-		CBF_DEBUG("in")
+		CBF_DEBUG("in");
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
-		CBF_DEBUG("locked")
+		CBF_DEBUG("locked");
 
-		CBF_DEBUG("doc: " << xml_in)
+		CBF_DEBUG("doc: " << xml_in);
 		std::istringstream s(xml_in);
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
-		CBF_DEBUG("create vector")
+		CBF_DEBUG("create vector");
 		m_TempReference = create_vector(*v);
 
-		CBF_DEBUG("vector created")
+		CBF_DEBUG("vector created");
 		if (m_TempReference.size() != dim()) {
-			CBF_DEBUG("meeeh!!!")
+			CBF_DEBUG("meeeh!!!");
 			CBF_THROW_RUNTIME_ERROR("Dimensions of xml vector not matching the dimension of this reference");
 		}
-		CBF_DEBUG("out")
+		CBF_DEBUG("out");
 	}
 };
 

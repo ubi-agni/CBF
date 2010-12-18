@@ -49,7 +49,7 @@ cbf_controller_create_from_file(
 		//! Create an empty PrimitiveControllerPtr..
 		p = new CBF::PrimitiveControllerPtr();
 
-		CBF_DEBUG("[create_controller_from_file]: Creating ControllerType instance")
+		CBF_DEBUG("[create_controller_from_file]: Creating ControllerType instance");
 		//! Create ControllerType instance from xml file...
 		std::auto_ptr< CBFSchema::ControlBasis> xml_instance (
 			CBFSchema::ControlBasis_(
@@ -58,13 +58,13 @@ cbf_controller_create_from_file(
 			)
 		);
 	
-		CBF_DEBUG("[create_controller_from_file]: Creating controller...")
+		CBF_DEBUG("[create_controller_from_file]: Creating controller...");
 
 		//! Finally let's create the controller instance..
 		CBF::ControllerPtr controller = 
 			CBF::XMLObjectFactory::instance()->create<CBF::Controller>(*xml_instance);
 
-		CBF_DEBUG("[create_controller_from_file]: Checking if it's a PrimitiveController")
+		CBF_DEBUG("[create_controller_from_file]: Checking if it's a PrimitiveController");
 		//! Checking whether the created controller is a PrimitiveController.
 		*p = boost::dynamic_pointer_cast<CBF::PrimitiveController>(controller);
 
@@ -79,14 +79,14 @@ cbf_controller_create_from_file(
 	}
 	catch (const xml_schema::exception& e) 
 	{
-		CBF_DEBUG("[create_controller_from_file]: Some error happened: during parsing " << e)
+		CBF_DEBUG("[create_controller_from_file]: Some error happened: during parsing " << e);
 		delete p;
 
 		//! Rethrow the exception, so a debugger might catch it :)
 		return 0;
 	}
 	catch(...) {
-		CBF_DEBUG("[create_controller_from_file]: Some error happened")
+		CBF_DEBUG("[create_controller_from_file]: Some error happened");
 		delete p;
 
 		return 0;
@@ -97,7 +97,7 @@ cbf_controller_create_from_file(
 struct primitive_controller*
 cbf_controller_create_from_memory(struct primitive_controller *c, const char *mem)
 {
-	CBF_DEBUG("[create_controller_from_memory]: Not implemented yet")
+	CBF_DEBUG("[create_controller_from_memory]: Not implemented yet");
 	return c;
 }
 
@@ -108,7 +108,7 @@ cbf_controller_get_resource_dim(struct cbf_primitive_controller *c) {
 		//! Check whether the controller contains a dummy resource..
 		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
 		if (res.get() == 0) {
-			CBF_DEBUG("[step_controller]: No dummy resource found in controller")
+			CBF_DEBUG("[step_controller]: No dummy resource found in controller");
 			return 0;
 		}
 
@@ -117,7 +117,7 @@ cbf_controller_get_resource_dim(struct cbf_primitive_controller *c) {
 	}
 	catch (...)
 	{
-		CBF_DEBUG("[controller_get_resource_dim]: Something went wrong")
+		CBF_DEBUG("[controller_get_resource_dim]: Something went wrong");
 		return -1;
 	}
 
@@ -131,7 +131,7 @@ cbf_controller_set_reference(struct cbf_primitive_controller* c, double *referen
 	boost::shared_ptr<CBF::DummyReference> d = boost::dynamic_pointer_cast<CBF::DummyReference, CBF::Reference>((*p)->reference());
 
 	if (d.get() == 0) {
-		CBF_DEBUG("[controller_set_reference]: controlle_set_reference only works with a reference of type CBF::DummyReference")
+		CBF_DEBUG("[controller_set_reference]: controlle_set_reference only works with a reference of type CBF::DummyReference");
 		return -1;
 	}
 
@@ -147,7 +147,7 @@ cbf_controller_get_reference(struct cbf_primitive_controller* c, double *referen
 	boost::shared_ptr<CBF::DummyReference> d = boost::dynamic_pointer_cast<CBF::DummyReference, CBF::Reference>((*p)->reference());
 
 	if (d.get() == 0) {
-		CBF_DEBUG("[controller_set_reference]: controlle_set_reference only works with a reference of type CBF::DummyReference")
+		CBF_DEBUG("[controller_set_reference]: controlle_set_reference only works with a reference of type CBF::DummyReference");
 		return -1;
 	}
 
@@ -165,14 +165,14 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
 		//! Check whether the controller contains a dummy resource..
 		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
 		if (res.get() == 0) {
-			CBF_DEBUG("[step_controller]: No dummy resource found in controller")
+			CBF_DEBUG("[step_controller]: No dummy resource found in controller");
 			return -1;
 		}
 
 		//! Copy data over into the resource (assuming it's a dummy resource)..
 		std::copy(in, in+res->dim(), res->m_Variables.begin());
 
-		CBF_DEBUG(res->m_Variables)
+		CBF_DEBUG(res->m_Variables);
 
 		//! A place to store the result...
 		boost::numeric::ublas::vector<CBF::Float> result;
@@ -187,7 +187,7 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
 	}
 	catch (...)
 	{
-		CBF_DEBUG("[step_controller]: Something went wrong")
+		CBF_DEBUG("[step_controller]: Something went wrong");
 		return -1;
 	}
 

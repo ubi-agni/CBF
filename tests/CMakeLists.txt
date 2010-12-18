@@ -63,7 +63,7 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD)
     cbf
     )
 
-  SET_TARGET_PROPERTIES(cbf_test_xcf_memory  PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+  SET_TARGET_PROPERTIES(cbf_test_xcf_memory_reference  PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
 
   add_executable(cbf_test_xcf_memory_reference_client
     cbf_test_xcf_memory_reference_client.cc

@@ -55,14 +55,14 @@ namespace CBF {
 			unsigned int dimension = 0
 		)
 		{
-	    CBF_DEBUG("pre")
+	    CBF_DEBUG("pre");
 			init(
 				send_memory_uri, 
 				recv_memory_uri, 
 				robot_name, 
 				dimension
 			);
-	    CBF_DEBUG("post")
+	    CBF_DEBUG("post");
 		}
 	
 		void init(
@@ -71,7 +71,7 @@ namespace CBF {
 			const std::string &robot_name,
 			unsigned int dimension
 		) {
-			CBF_DEBUG("init start: " << robot_name)
+			CBF_DEBUG("init start: " << robot_name);
 			boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
 	
 			m_RobotName = robot_name;
@@ -83,7 +83,7 @@ namespace CBF {
 			m_RobotCommandSet = robotinterface::RobotCommandSet(robot_name, true, true);
 			m_RobotCommandSet.defaults(robot_name) << robotinterface::cmd::moveMode("stp", "joint");
 	
-			CBF_DEBUG("querying position of robot: " << robot_name)
+			CBF_DEBUG("querying position of robot: " << robot_name);
 			robotinterface::RobotState state = m_RobotInterface.query(
 				robot_name, robotinterface::RobotState::QUERY_POSTURE
 			);
@@ -101,7 +101,7 @@ namespace CBF {
 				"/EVENT[@name='WorldModelUpdate']/ROBOT[@id='" + robot_name + "']",
 				this
 			);
-			CBF_DEBUG("init end")
+			CBF_DEBUG("init end");
 		}
 	
 	
@@ -131,7 +131,7 @@ namespace CBF {
 	
 	
 		virtual void update() {
-	    CBF_DEBUG("update")
+	    CBF_DEBUG("update");
 			boost::recursive_mutex::scoped_lock lock(m_ResultMutex);
 	
 			m_Result = m_LastPose;		
@@ -139,7 +139,7 @@ namespace CBF {
 	
 		virtual void add(const FloatVector &arg) {
 			FloatVector tmp = m_Result + arg;
-			CBF_DEBUG("add tmp: " << tmp)
+			CBF_DEBUG("add tmp: " << tmp);
 			m_RobotCommandSet 
 				<< robotinterface::cmd::clear()
 				<< robotinterface::cmd::posture(tmp.begin(), tmp.end(), "rad");

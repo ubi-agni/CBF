@@ -19,18 +19,18 @@ int main(int argc, char **argv) {
 		exit (EXIT_FAILURE);
 	}
 
-	CBF_DEBUG("creating remote server object")
+	CBF_DEBUG("creating remote server object");
 	XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(argv[1]);
 
 	std::string dim_string;
 	_remoteServer->callMethod("get_dimension", "", dim_string);
-	CBF_DEBUG("dimension_xml: " << dim_string)
+	CBF_DEBUG("dimension_xml: " << dim_string);
 
 	std::istringstream vv_stream(dim_string);
 
 	std::auto_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
 	CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
-	CBF_DEBUG("dim_vv: " << dim_vv)
+	CBF_DEBUG("dim_vv: " << dim_vv);
 	
 	unsigned int dim;
 
@@ -50,18 +50,18 @@ int main(int argc, char **argv) {
 		}
 		vector_string << ")";
 
-		CBF_DEBUG("creating vector doc")
+		CBF_DEBUG("creating vector doc");
 		CBFSchema::BoostVector v(vector_string.str());
 
 		std::ostringstream s;
 		//s << v;
 		CBFSchema::Vector_ (s, v);
 
-		CBF_DEBUG("document: " << s.str())
+		CBF_DEBUG("document: " << s.str());
 
 		std::string out;
 
-		CBF_DEBUG("calling remote method")
+		CBF_DEBUG("calling remote method");
 		_remoteServer->callMethod("set_reference", s.str(), out);
 	}
 }

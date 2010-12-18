@@ -140,14 +140,14 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 			if (fabs(Sv(i,0)) > pseudo_inv_precision_threshold)
 				SvMatrix(i,i) = 1.0 / (Sv(i,0));
 			else {
-				CBF_DEBUG("SINGULAR")
+				CBF_DEBUG("SINGULAR");
 				SvMatrix(i,i) = 0.0;
 			}
 		}
-		CBF_DEBUG("deter:" << det)
+		CBF_DEBUG("deter:" << det);
 		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
 	
-		CBF_DEBUG("svd: "<< std::endl << SvMatrix)
+		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
 		Eigen::MatrixXd res = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
 	
@@ -195,10 +195,10 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 			det *= SvMatrix(i,i);
 			// std::cout << Sv(i,0)  << std::endl;
 		}
-		CBF_DEBUG("deter:" << det)
+		CBF_DEBUG("deter:" << det);
 		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
 	
-		CBF_DEBUG("svd: "<< std::endl << SvMatrix)
+		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
 		Eigen::MatrixXd res = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
 	
@@ -404,10 +404,10 @@ boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_ins
 	boost::shared_ptr<KDL::Joint> joint = create_joint(xml_instance.Joint());
 
 
-	CBF_DEBUG("Extracting joint...")
+	CBF_DEBUG("Extracting joint...");
 
 
-	CBF_DEBUG("Adding Segment for real..")
+	CBF_DEBUG("Adding Segment for real..");
 
 	return boost::shared_ptr<KDL::Segment>(new KDL::Segment(xml_instance.Name(), *joint, *frame));
 }
@@ -418,7 +418,7 @@ boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance)
 
 	if (matrix_frame_instance != 0)
 	{
-		CBF_DEBUG("Extracting matrix...")
+		CBF_DEBUG("Extracting matrix...");
 
 		FloatMatrix m;
 		m = create_matrix((*matrix_frame_instance).Matrix());
@@ -447,17 +447,17 @@ boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance)
 	boost::shared_ptr<KDL::Joint> joint;
 
 	if (xml_instance.Type() == "Rotational") {
-		CBF_DEBUG("Extracting rotational joint...")
+		CBF_DEBUG("Extracting rotational joint...");
 		if (xml_instance.Axis() == "X") {
-			CBF_DEBUG("X")
+			CBF_DEBUG("X");
 			joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::RotX));
 		}
 		if (xml_instance.Axis() == "Y") {
-			CBF_DEBUG("Y")
+			CBF_DEBUG("Y");
 			joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::RotY));
 		}
 		if (xml_instance.Axis() == "Z") {
-			CBF_DEBUG("Z")
+			CBF_DEBUG("Z");
 			joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::RotZ));
 		}
 	}
@@ -487,12 +487,12 @@ boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_insta
 		++it
 	)
 	{
-		CBF_DEBUG("Adding Segment...")
+		CBF_DEBUG("Adding Segment...");
 
 		boost::shared_ptr<KDL::Segment> segment = create_segment(*it);
 
 		chain->addSegment(*segment);
-		CBF_DEBUG("number of joints: " << chain->getNrOfJoints())
+		CBF_DEBUG("number of joints: " << chain->getNrOfJoints());
 	}
 	return chain;
 }
@@ -528,11 +528,11 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 		++it
 	)
 	{
-		CBF_DEBUG("Adding Segment...")
+		CBF_DEBUG("Adding Segment...");
 
 		tree_add_segment(tree, "root", *it);
 
-		CBF_DEBUG("Number of joints: " << tree->getNrOfJoints())
+		CBF_DEBUG("Number of joints: " << tree->getNrOfJoints());
 	}
 	return tree;
 }

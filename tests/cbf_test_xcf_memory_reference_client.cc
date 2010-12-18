@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 	}
 
 
-	CBF_DEBUG("connecting to XCFMemory")
+	CBF_DEBUG("connecting to XCFMemory");
 	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(argv[1]));
 
 	std::stringstream xPath;
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 	if(results -> hasNext()){
 		results -> next(document);
 	} else {
-		CBF_DEBUG("XPath: " << xPath.str())
+		CBF_DEBUG("XPath: " << xPath.str());
 		CBF_THROW_RUNTIME_ERROR("Could not find a xcf_memory_reference with the specified name "
 					"on the memory_server.");
 	}
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 	std::auto_ptr<CBFSchema::XCFMemoryReference> reference = 
 				CBFSchema::XCFMemoryReference_(s, xml_schema::flags::dont_validate);
 
-	CBF_DEBUG("dimension: " << create_vector(reference -> Vector()))
+	CBF_DEBUG("dimension: " << create_vector(reference -> Vector()));
 	
 	unsigned int dim = (create_vector(reference -> Vector())).size();
 
@@ -73,10 +73,10 @@ int main(int argc, char **argv) {
 
 		referenceVectorLoc = vector_string.str();
 
-		CBF_DEBUG("document: " << referenceVectorLoc.getDocument())
+		CBF_DEBUG("document: " << referenceVectorLoc.getDocument());
 
 
-		CBF_DEBUG("Replacing document")
+		CBF_DEBUG("Replacing document");
 		memoryPtr -> insert(referenceVectorLoc.getDocumentText());
 	}
 }

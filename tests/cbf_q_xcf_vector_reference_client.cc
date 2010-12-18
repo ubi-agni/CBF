@@ -148,7 +148,7 @@ void Connection_dispatcher::connect(){
 	if(input.length()>0){
 	//If a servername was entered.
 		try{
-			CBF_DEBUG("creating remote server object")
+			CBF_DEBUG("creating remote server object");
 
 			//Create a RemoteServerPtr with the entered servername.
 			XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(input.c_str());
@@ -189,14 +189,14 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 	try{
 		std::string dim_string;
 		_remoteServer->callMethod("get_dimension", "", dim_string);
-		CBF_DEBUG("dimension_xml: " << dim_string)
+		CBF_DEBUG("dimension_xml: " << dim_string);
 
 		std::istringstream vv_stream(dim_string);
 
 		std::auto_ptr<CBFSchema::Vector> dim_v = 
 			CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
 		CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
-		CBF_DEBUG("dim_vv: " << dim_vv)
+		CBF_DEBUG("dim_vv: " << dim_vv);
 
 		dim = dim_vv[0];
 	//If an Exception occurs the connection will be disabled, the tab closed and an error message will pop up.
@@ -466,18 +466,18 @@ void Connection_manager::send(){
 	
 	try{
 	//Trying to send the new values
-		CBF_DEBUG("creating vector doc")
+		CBF_DEBUG("creating vector doc");
 		CBFSchema::BoostVector v(vector_string.str());
 
 		std::ostringstream s;
 		//s << v;
 		CBFSchema::Vector_ (s, v);
 
-		CBF_DEBUG("document: " << s.str())
+		CBF_DEBUG("document: " << s.str());
 
 		std::string out;
 
-		CBF_DEBUG("calling remote method")
+		CBF_DEBUG("calling remote method");
 		_remoteServer -> callMethod("set_reference", s.str(), out);
 	//If an Exception occurs an error message will pop up.
 	} catch (const XCF::ServerNotFoundException &e){
@@ -516,13 +516,13 @@ CBF::FloatVector* Connection_manager::loadCurrentPositionVector(){
 		_remoteServer -> callMethod("get_current_task_position", out, xml_in);
 
 		//Parsing XML for FloatVector
-		CBF_DEBUG("doc: " << xml_in)
+		CBF_DEBUG("doc: " << xml_in);
 		std::istringstream s(xml_in);
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
-		CBF_DEBUG("create vector")
+		CBF_DEBUG("create vector");
 		CBF::FloatVector *currentPositionVector = new CBF::FloatVector(CBF::create_vector(*v));
 
-		CBF_DEBUG("vector created")
+		CBF_DEBUG("vector created");
 		if (currentPositionVector -> size() != dim) {
 			CBF_THROW_RUNTIME_ERROR(
 				"Dimensions of xml vector not matching the dimension");

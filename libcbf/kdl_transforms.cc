@@ -66,7 +66,7 @@ namespace CBF {
 	
 		//const ublas::vector<Float> &resource = m_Resource->get();
 	
-		CBF_DEBUG(resource_value)
+		CBF_DEBUG(resource_value);
 	
 		for (unsigned int i = 0; i < resource_dim(); ++i) {
 			jnt_array(i) = resource_value[i];
@@ -120,7 +120,7 @@ namespace CBF {
 	void KDLChainAxisAngleSensorTransform::update(const FloatVector &resource_value) {
 		BaseKDLChainSensorTransform::update(resource_value);
 	
-		CBF_DEBUG("Updating Jacobian")
+		CBF_DEBUG("Updating Jacobian");
 		//! Update the jacobian so we can hand it out...
 		m_TaskJacobian = ublas::zero_matrix<Float>(3, resource_dim());
 	
@@ -134,7 +134,7 @@ namespace CBF {
 			}
 		}
 	
-		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian)
+		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian);
 	
 		//! Buffer result, so we can return it when requested...
 		KDL::Vector vec;
@@ -188,7 +188,7 @@ namespace CBF {
 	
 		//const ublas::vector<Float> &resource = m_Resource->get();
 	
-		CBF_DEBUG(resource_value)
+		CBF_DEBUG(resource_value);
 	
 		for (unsigned int i = 0; i < resource_dim(); ++i) {
 			jnt_array(i) = resource_value[i];
@@ -234,7 +234,7 @@ namespace CBF {
 				m_Result[total_row] = m_Frames[i]->p(row);
 			}
 		}
-		CBF_DEBUG("TaskJacobian " << m_TaskJacobian)
+		CBF_DEBUG("TaskJacobian " << m_TaskJacobian);
 	}
 	
 
@@ -257,8 +257,8 @@ namespace CBF {
 
 	void KDLTreeAxisAngleSensorTransform::update(const FloatVector &resource_value) {
 		BaseKDLTreeSensorTransform::update(resource_value);
-	
-		CBF_DEBUG("Updating Jacobian")
+
+		CBF_DEBUG("Updating Jacobian");
 	
 		unsigned int total_row = 0;
 		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i) {
@@ -281,7 +281,7 @@ namespace CBF {
 			}
 		}
 
-		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian)
+		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian);
 	
 	}
 
@@ -295,7 +295,7 @@ namespace CBF {
 			m_Frame(new KDL::Frame),
 			m_Jacobian(new KDL::Jacobian)
 		{
-			CBF_DEBUG("[KDLChainSensorTransform(const KDLChainSensorTransformType &xml_instance)]: yay!")
+			CBF_DEBUG("[KDLChainSensorTransform(const KDLChainSensorTransformType &xml_instance)]: yay!");
 			m_Chain = create_chain(xml_instance);		
 			init_solvers();
 		}
@@ -322,7 +322,7 @@ namespace CBF {
 		BaseKDLTreeSensorTransform::BaseKDLTreeSensorTransform(const CBFSchema::TreeBase &xml_instance, const CBFSchema::SensorTransform &xml_st_instance) :
 			SensorTransform(xml_st_instance)
 		{
-			CBF_DEBUG("[KDLTreeSensorTransform(const KDLTreeSensorTransformType &xml_instance)]: yay!")
+			CBF_DEBUG("[KDLTreeSensorTransform(const KDLTreeSensorTransformType &xml_instance)]: yay!");
 
 			m_Tree = create_tree(xml_instance);		
 

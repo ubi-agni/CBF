@@ -66,7 +66,7 @@ namespace CBF {
 		std::stringstream vector_string, matrix_string;
 
 		//Creating an XML-string for the result vector.
-		CBF_DEBUG("creating vector string")
+		CBF_DEBUG("creating vector string");
 		vector_string << "[" << result.size() << "](";
 		for (unsigned int i = 0; i < result.size(); ++i) {
 			vector_string << result(i);
@@ -80,7 +80,7 @@ namespace CBF {
 		m = task_jacobian.size1();
 		n = task_jacobian.size2();
 
-		CBF_DEBUG("creating matrix string")
+		CBF_DEBUG("creating matrix string");
 		matrix_string << "[" << m << "," << n << "](";
 		for (i = 0; i < m ; ++i) {
 			matrix_string << "(";
@@ -96,22 +96,22 @@ namespace CBF {
 		if(m_ResultLocationPtr == NULL){
 			//First insert the XML-document
 
-			CBF_DEBUG("creating vector doc")
+			CBF_DEBUG("creating vector doc");
 			CBFSchema::BoostVector vectorDoc(vector_string.str());
 
-			CBF_DEBUG("creating matrix doc")
+			CBF_DEBUG("creating matrix doc");
 			CBFSchema::BoostMatrix matrixDoc(matrix_string.str());
 
-			CBF_DEBUG("creating XCFMemorySensorTransformResult doc")
+			CBF_DEBUG("creating XCFMemorySensorTransformResult doc");
 			CBFSchema::XCFMemorySensorTransformResult transformResult(m_ResultName, vectorDoc, matrixDoc);
 
 			std::ostringstream s;
 			CBFSchema::XCFMemorySensorTransformResult_ (s, transformResult);
 
-			CBF_DEBUG("document: " << s.str())
+			CBF_DEBUG("document: " << s.str());
 
 			//Insert the result-XML at the server.
-			CBF_DEBUG("insert result at memory-server")
+			CBF_DEBUG("insert result at memory-server");
 		
 			std::string documentText = m_MemoryPtr -> insert(s.str());
 
@@ -126,7 +126,7 @@ namespace CBF {
 			*m_ResultLocationPtr = vector_string.str();
 			*m_TaskJacobianLocationPtr = matrix_string.str();
 
-			CBF_DEBUG("Document text:" << m_ResultLocationPtr -> getDocumentText())
+			CBF_DEBUG("Document text:" << m_ResultLocationPtr -> getDocumentText());
 
 			/*
 			 * Because the xmltio::Location holds the whole document we can take the 

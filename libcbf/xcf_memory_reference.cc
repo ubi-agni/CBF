@@ -43,7 +43,7 @@ namespace CBF {
 
 	void XCFMemoryReference::init() {
 		//Creating an XML-Document and inserting at XCFMemory. This is the Document we will observe.
-		CBF_DEBUG("creating vector string")
+		CBF_DEBUG("creating vector string");
 
 		std::stringstream vector_string;
 		vector_string << "[" << m_Dim << "](";
@@ -53,7 +53,7 @@ namespace CBF {
 		}
 		vector_string << ")";
 
-		CBF_DEBUG("creating vector doc")
+		CBF_DEBUG("creating vector doc");
 		CBFSchema::BoostVector vectorDoc(vector_string.str());
 
 		CBFSchema::XCFMemoryReference v(m_ReferenceName, vectorDoc);
@@ -63,7 +63,7 @@ namespace CBF {
 
 		std::string document = m_MemoryPtr -> insert(s.str());
 
-		CBF_DEBUG("Document" << document)
+		CBF_DEBUG("Document" << document);
 
 		mi::Condition::Condition condition((mi::Event::REPLACE | mi::Event::INSERT), XPathString());
 
@@ -92,11 +92,11 @@ namespace CBF {
 	}
 
 	void XCFMemoryReference::set_reference(const mi::Event &event) {
-		CBF_DEBUG("in")
+		CBF_DEBUG("in");
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
-		CBF_DEBUG("locked")
+		CBF_DEBUG("locked");
 
-		CBF_DEBUG("doc: " << event.getDocument())
+		CBF_DEBUG("doc: " << event.getDocument());
 
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
 
@@ -104,16 +104,16 @@ namespace CBF {
 		std::auto_ptr<CBFSchema::XCFMemoryReference> reference = 
 				CBFSchema::XCFMemoryReference_(s, xml_schema::flags::dont_validate);
 
-		CBF_DEBUG("create vector")
+		CBF_DEBUG("create vector");
 		m_TempReference = create_vector(reference -> Vector());
-		CBF_DEBUG("vector: " << m_TempReference)
+		CBF_DEBUG("vector: " << m_TempReference);
 
-		CBF_DEBUG("vector created")
+		CBF_DEBUG("vector created");
 		if (m_TempReference.size() != dim()) {
-			CBF_DEBUG("meeeh!!!")
+			CBF_DEBUG("meeeh!!!");
 			CBF_THROW_RUNTIME_ERROR("Dimensions of xml vector not matching the dimension of this reference");
 		}
-		CBF_DEBUG("out")
+		CBF_DEBUG("out");
 	}
 } // namespace
 
