@@ -14,6 +14,7 @@ if(CBF_HAVE_XSD)
   add_library(cbf_schemas SHARED
 	 "${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx"
 	 )
+  SET_TARGET_PROPERTIES(cbf_schemas PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
 
   install(TARGETS cbf_schemas
 	 RUNTIME DESTINATION bin

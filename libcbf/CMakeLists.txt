@@ -39,8 +39,9 @@ set(CBF_SOURCES
   functional.cc
   svd.cc
   convergence_criterion.cc
+  generic_transform.cc
   )
-
+ 
 set(CBF_LIBS "")
 
 set(CBF_INCLUDES "")
@@ -133,8 +134,7 @@ else()
 endif()
 
 if (CBF_HAVE_EIGEN2)
-  set(CBF_SOURCES ${CBF_SOURCES} generic_transform.cc)
-  set(CBF_INCLUDES ${CBF_INCLUDES} ${EIGEN2_INC})
+ set(CBF_INCLUDES ${CBF_INCLUDES} ${EIGEN2_INC})
 else()
 message(STATUS "  excluding generic_transform.cc because eigen2 was not found")
 endif()
@@ -148,6 +148,8 @@ add_library(cbf SHARED
   )
 
 target_link_libraries(cbf ${CBF_LIBS})
+
+SET_TARGET_PROPERTIES(cbf PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
 
 install(TARGETS cbf
   RUNTIME DESTINATION bin

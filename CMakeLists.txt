@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 2.6)
 
 project(CBF)
 
-set(CBF_VERSION_MAJOR 1)
-set(CBF_VERSION_MINOR 0)
+set(CBF_VERSION_MAJOR 0)
+set(CBF_VERSION_MINOR 1)
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREAD OFF)

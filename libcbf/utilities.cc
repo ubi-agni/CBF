@@ -38,6 +38,10 @@
 	#include <Eigen/LU>
 #endif
 
+#ifndef CBF_HAVE_EIGEN2
+	#include <cbf/svd.h>
+#endif
+
 #ifdef CBF_HAVE_XSD
 	#include <cbf/schemas.hxx>
 	#include <sstream>
@@ -207,6 +211,103 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		if (transpose) result = ublas::trans(result);
 		return det;
 	}
+#endif
+
+
+#ifndef CBF_HAVE_EIGEN2
+static const double pseudo_inv_precision_threshold = 0.001;
+
+Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
+  bool transpose = false;
+
+  if (M.size2() > M.size1()) transpose = true;
+
+  FloatMatrix m = M;
+  if (transpose){
+    m = ublas::trans(M);
+  }
+
+  //! Placeholders for the singular value decomposition
+  FloatMatrix u(m.size1(), m.size1());
+  FloatMatrix v(m.size2(), m.size2());
+  FloatMatrix q(m.size2(), m.size1());
+  svd(1, 1, 10e-18, 10e-18, m, q, u, v);
+
+  //! Working through the singularValues Matrix calculating the determinant
+  Float det = 1.0;
+  for (int i = 0; i < m.size2(); ++i) {
+    if (fabs(q(i,i)) > pseudo_inv_precision_threshold){
+      q(i,i) = 1.0 / (q(i,i));
+      det *= q(i,i); ////??????
+    } else {
+      CBF_DEBUG("SINGULAR")
+      q(i,i) = 0.0;
+    }
+  }
+
+  CBF_DEBUG("deter:" << det)
+
+  CBF_DEBUG("svd: "<< std::endl << q)
+
+  //! Calculating the Moore-Penrose-Pseudoinverse
+  FloatMatrix res(v.size1(), q.size2());
+  axpy_prod(v, q, res, true);
+  std::cout << std::endl;
+  FloatMatrix res2(m.size2(), m.size1());
+  axpy_prod(res, ublas::trans(u), res2, true);
+  
+  if (transpose){
+    result = ublas::trans(res2);
+  } else {
+    result = res2;
+  }
+
+  return det;
+}
+
+Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, 
+                            Float damping_constant) {
+  bool transpose = false;
+
+  if (M.size2() > M.size1()) transpose = true;
+
+  FloatMatrix m = M;
+  if (transpose){
+    m = ublas::trans(M);
+  }
+
+  //! Placeholders for Singular Value Decomposition
+  FloatMatrix u(m.size1(), m.size1());
+  FloatMatrix v(m.size2(), m.size2());
+  FloatMatrix q(m.size2(), m.size1());
+
+  svd(1, 1, 10e-18, 10e-18, m, q, u, v);
+
+  Float det = 1.0;
+  //! We use the ordinary reciprocal for testing purposes here
+  for (int i = 0; i < m.size2(); ++i) {
+    q(i,i) = q(i,i) / (damping_constant + (q(i,i) * q(i,i)));
+    det *= q(i,i);
+  }
+
+  CBF_DEBUG("deter:" << det)
+
+  CBF_DEBUG("svd: "<< std::endl << q)
+
+  //! Calculating the Moore-Penrose-Pseudoinverse
+  FloatMatrix res(v.size1(), q.size2());
+  axpy_prod(v, q, res, true);
+  FloatMatrix res2(m.size2(), m.size1());
+  axpy_prod(res, ublas::trans(u), res2, true);
+
+  if (transpose){
+    result = ublas::trans(res2);
+  } else {
+    result = res2;
+  }
+
+  return det;
+}
 #endif
 
 #ifdef CBF_HAVE_XSD
