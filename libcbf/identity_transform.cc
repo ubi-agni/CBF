@@ -29,7 +29,7 @@ namespace CBF {
 			const CBFSchema::IdentityEffectorTransform &xml_instance
 		) {
 			init(xml_instance.Dimension());
-			CBF_DEBUG("[IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance)]: yay!!!")
+			CBF_DEBUG("[IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance)]: yay!!!");
 		}
 
 
@@ -39,7 +39,7 @@ namespace CBF {
 		) 
 			: SensorTransform(xml_instance)
 		{
-			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!")
+			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!");
 			init(xml_instance.Dimension());
 		}
 

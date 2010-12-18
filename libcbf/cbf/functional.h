@@ -49,7 +49,7 @@ struct ApplySensorTransform : public SensorTransform {
 	}
 
 	virtual void init(SensorTransformPtr operand) {
-		CBF_DEBUG("task space dim: " << operand->task_dim() << "  resource dim: " << operand->resource_dim())
+		CBF_DEBUG("task space dim: " << operand->task_dim() << "  resource dim: " << operand->resource_dim());
 		m_Result = FloatVector(operand->task_dim()); 
 		m_TaskJacobian = FloatMatrix(operand->task_dim(), operand->resource_dim());
 	}
@@ -75,13 +75,13 @@ struct ApplySensorTransform : public SensorTransform {
 	#endif
 
 	virtual void update(const FloatVector &resource_value) {
-		CBF_DEBUG("update")
+		CBF_DEBUG("update");
 		m_Operand->update(resource_value);
 		m_Result = m_VectorOperation(m_Operand->result());
 		m_TaskJacobian = m_MatrixOperation(m_Operand->task_jacobian());
 
-		CBF_DEBUG("result " << m_Result)
-		CBF_DEBUG("jac    " << m_TaskJacobian)
+		CBF_DEBUG("result " << m_Result);
+		CBF_DEBUG("jac    " << m_TaskJacobian);
 	}
 
 	virtual unsigned int task_dim() const
@@ -164,8 +164,8 @@ struct BlockWiseApplySensorTransform : public SensorTransform {
 		FloatMatrix tmp_jacobian = m_Operand->task_jacobian();
 		
 		for (unsigned int i = 0, n = m_Operand->task_dim(); i < n; i += m_Blocksize) {
-			CBF_DEBUG("i " << i)
-			CBF_DEBUG("vector")
+			CBF_DEBUG("i " << i);
+			CBF_DEBUG("vector");
 			ublas::vector_range<FloatVector> vr(
 				m_Result, 
 				ublas::range(i, i+m_Blocksize)
@@ -176,7 +176,7 @@ struct BlockWiseApplySensorTransform : public SensorTransform {
 			);
 			vr.assign(m_VectorOperation(vir));
 
-			CBF_DEBUG("matrix")
+			CBF_DEBUG("matrix");
 			ublas::matrix_range<FloatMatrix> mr(
 				m_TaskJacobian, 
 				ublas::range(i, i+m_Blocksize), 
@@ -289,8 +289,8 @@ struct BlockWiseInnerProductSensorTransform : public SensorTransform {
 		FloatMatrix tmp_jacobian2 = m_Operand2->task_jacobian();
 		
 		for (unsigned int i = 0, n = m_Operand1->task_dim(); i < n; i += m_Blocksize) {
-			CBF_DEBUG("i " << i)
-			CBF_DEBUG("vector")
+			CBF_DEBUG("i " << i);
+			CBF_DEBUG("vector");
 			ublas::vector_range<FloatVector> vr(
 				m_Result, 
 				ublas::range(i, i+m_Blocksize)
@@ -305,7 +305,7 @@ struct BlockWiseInnerProductSensorTransform : public SensorTransform {
 			);
 			vr.assign(m_VectorOperation(vir1, vir2));
 
-			CBF_DEBUG("matrix")
+			CBF_DEBUG("matrix");
 			ublas::matrix_range<FloatMatrix> mr(
 				m_TaskJacobian, 
 				ublas::range(i, i+m_Blocksize), 
@@ -427,8 +427,8 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 		m_TaskJacobian = m_InitMatrix;
 		
 		for (unsigned int i = 0, n = m_Operand->task_dim(); i < n; i += m_Blocksize) {
-			CBF_DEBUG("i " << i)
-			CBF_DEBUG("vector")
+			CBF_DEBUG("i " << i);
+			CBF_DEBUG("vector");
 
 			ublas::vector_range<FloatVector> vir(
 				tmp_result, 
@@ -436,7 +436,7 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 			);
 			m_Result.assign(m_VectorOperation(m_Result, vir));
 
-			CBF_DEBUG("matrix")
+			CBF_DEBUG("matrix");
 
 			ublas::matrix_range<FloatMatrix> mir(
 				tmp_jacobian, 

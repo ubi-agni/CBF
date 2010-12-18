@@ -7,7 +7,7 @@ namespace CBF {
 
 #ifdef CBF_HAVE_XSD
 	ControlBasis::ControlBasis(const CBFSchema::ControlBasis &xml_instance) {
-		CBF_DEBUG("Building Control Basis")
+		CBF_DEBUG("Building Control Basis");
 		for (
 			CBFSchema::ControlBasis::Controller_const_iterator it = 
 				xml_instance.Controller().begin();

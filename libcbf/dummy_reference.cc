@@ -28,10 +28,10 @@
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
 	DummyReference::DummyReference(const CBFSchema::DummyReference &xml_instance) {
-		CBF_DEBUG("constructing")
+		CBF_DEBUG("constructing");
 
 		//! Set references..
-		CBF_DEBUG("Setting Reference(s)...")
+		CBF_DEBUG("Setting Reference(s)...");
 		for (
 			CBFSchema::DummyReference::Vector_const_iterator it = 
 				xml_instance.Vector().begin(); 
@@ -44,7 +44,7 @@ namespace CBF {
 			//CBF_DEBUG("testing XMLFactory")
 			//boost::shared_ptr<FloatVector> t = XMLFactory<FloatVector>::instance()->create((CBFSchema::Object &)*it);
 
-			CBF_DEBUG("Extracting reference vector coefficients...")
+			CBF_DEBUG("Extracting reference vector coefficients...");
 			try {
 				tmp = create_vector(*it);
 			} catch(...) {
@@ -52,7 +52,7 @@ namespace CBF {
 				throw;
 			}
 	
-			CBF_DEBUG("Reference: " << tmp)
+			CBF_DEBUG("Reference: " << tmp);
 
 			m_References.push_back(tmp);
 			//PrimitiveControllerPtr controller(new PrimitiveController(*it));

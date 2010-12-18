@@ -40,15 +40,15 @@ namespace CBF {
 
 
 		m_TaskJacobian = ublas::zero_matrix<Float>(total_task_dim, total_resource_dim);
-		CBF_DEBUG("task_dim " << task_dim())
+		CBF_DEBUG("task_dim " << task_dim());
 		m_Result = FloatVector(task_dim());
-		CBF_DEBUG("m_Result " << m_Result)
+		CBF_DEBUG("m_Result " << m_Result);
 	}
 
 #if 0
 	void CompositeSensorTransform::set_resource(ResourcePtr resource) {
 		SensorTransform::set_resource(resource);
-		CBF_DEBUG("set_resource()")
+		CBF_DEBUG("set_resource()");
 		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i)
 			m_SensorTransforms[i]->set_resource(resource);
 	}
@@ -61,7 +61,7 @@ namespace CBF {
 			m_SensorTransforms[i]->update(resource_value);
 	
 			//! Assemble total jacobian..
-			CBF_DEBUG("range: " << current_task_pos << " " << current_task_pos + m_SensorTransforms[i]->task_jacobian().size1())
+			CBF_DEBUG("range: " << current_task_pos << " " << current_task_pos + m_SensorTransforms[i]->task_jacobian().size1());
 			ublas::matrix_range<FloatMatrix > mr(
 				m_TaskJacobian,
 				ublas::range(current_task_pos, current_task_pos + m_SensorTransforms[i]->task_jacobian().size1()),
@@ -72,16 +72,16 @@ namespace CBF {
 			FloatMatrix tmp;
 			tmp = m_SensorTransforms[i]->task_jacobian();
 	
-			CBF_DEBUG("tmp " << tmp)
+			CBF_DEBUG("tmp " << tmp);
 
 			mr.assign(tmp);
-			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian)
+			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian);
 	
 			ublas::vector<Float> tmp_result (m_SensorTransforms[i]->task_jacobian().size1());
 			tmp_result = m_SensorTransforms[i]->result();
-			CBF_DEBUG("tmp_result " << tmp_result)
+			CBF_DEBUG("tmp_result " << tmp_result);
 	
-			CBF_DEBUG("current_task_pos " << current_task_pos << " task_dim " << m_SensorTransforms[i]->task_jacobian().size1())
+			CBF_DEBUG("current_task_pos " << current_task_pos << " task_dim " << m_SensorTransforms[i]->task_jacobian().size1());
 			for (unsigned int j = 0; j < m_SensorTransforms[i]->task_jacobian().size1(); ++j) {
 				m_Result(current_task_pos + j) = tmp_result(j);
 			}

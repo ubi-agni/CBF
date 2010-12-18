@@ -57,14 +57,14 @@ FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step,
 	Float angle = acos(ublas::inner_prod(start, end));
 
 	if (fabs(angle) <= slerp_threshold) {
-		CBF_DEBUG("small angle")
+		CBF_DEBUG("small angle");
 		result = end;
 		return result;
 	}
 
 	result = start * (sin((1 - step)* angle)/sin(angle)) + (sin(step * angle)/sin(angle)) * end;
 
-	CBF_DEBUG(result)
+	CBF_DEBUG(result);
 
 	return result;
 }
@@ -240,14 +240,14 @@ Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
       q(i,i) = 1.0 / (q(i,i));
       det *= q(i,i); ////??????
     } else {
-      CBF_DEBUG("SINGULAR")
+      CBF_DEBUG("SINGULAR");
       q(i,i) = 0.0;
     }
   }
 
-  CBF_DEBUG("deter:" << det)
+  CBF_DEBUG("deter:" << det);
 
-  CBF_DEBUG("svd: "<< std::endl << q)
+  CBF_DEBUG("svd: "<< std::endl << q);
 
   //! Calculating the Moore-Penrose-Pseudoinverse
   FloatMatrix res(v.size1(), q.size2());
@@ -290,9 +290,9 @@ Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
     det *= q(i,i);
   }
 
-  CBF_DEBUG("deter:" << det)
+  CBF_DEBUG("deter:" << det);
 
-  CBF_DEBUG("svd: "<< std::endl << q)
+  CBF_DEBUG("svd: "<< std::endl << q);
 
   //! Calculating the Moore-Penrose-Pseudoinverse
   FloatMatrix res(v.size1(), q.size2());
@@ -333,7 +333,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance) {
 
 	if (boost_vector) {
 		std::stringstream stream(boost_vector->String());
-		CBF_DEBUG("string: " << stream.str())
+		CBF_DEBUG("string: " << stream.str());
 		ublas::vector<Float> v;
 		stream >> v;
 		if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
@@ -347,7 +347,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance) {
 boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance) {
 	boost::shared_ptr<FloatVector> v(new FloatVector);
 	std::stringstream stream(xml_instance.String());
-	CBF_DEBUG("string: " << stream.str())
+	CBF_DEBUG("string: " << stream.str());
 	stream >> *v;
 	if ((*v).size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
 
@@ -376,9 +376,9 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance)
 	if (m2) {
 		FloatMatrix matrix;
 		std::stringstream stream(std::string(m2->String()));
-		CBF_DEBUG("string: " << stream.str())
+		CBF_DEBUG("string: " << stream.str());
 		stream >> matrix;
-		CBF_DEBUG(matrix)
+		CBF_DEBUG(matrix);
 		if ((matrix.size1() == 0) && (matrix.size2() == 0)) {
 			CBF_THROW_RUNTIME_ERROR("Matrix is empty")
 		}

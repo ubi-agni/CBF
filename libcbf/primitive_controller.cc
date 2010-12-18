@@ -88,12 +88,12 @@ namespace CBF {
 			resource
 		);
 
-		CBF_DEBUG("init")
+		CBF_DEBUG("init");
 	}
 	
 
 	void PrimitiveController::check_dimensions() {
-		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim())
+		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim());
 
 		if (m_Reference->dim() != m_Potential->dim())
 			throw std::runtime_error("Reference and Potential dimensions mismatch");
@@ -127,22 +127,22 @@ namespace CBF {
 		m_EffectorTransform->update(m_Resource->get(), m_SensorTransform->task_jacobian());
 	
 		m_CurrentTaskPosition = m_SensorTransform->result();
-		CBF_DEBUG("currentTaskPosition: " << m_CurrentTaskPosition)
+		CBF_DEBUG("currentTaskPosition: " << m_CurrentTaskPosition);
 	
 		if (m_References.size() != 0) {	
 			CBF_DEBUG("have reference!");
 			//! then we do the gradient step
 			m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition);
-			CBF_DEBUG("gradientStep: " << m_GradientStep)
+			CBF_DEBUG("gradientStep: " << m_GradientStep);
  
 			//! Map gradient step into resource step via exec:
-			CBF_DEBUG("calling m_EffectorTransform->exec(): Type is: " << CBF_UNMANGLE(*m_EffectorTransform.get()))
+			CBF_DEBUG("calling m_EffectorTransform->exec(): Type is: " << CBF_UNMANGLE(*m_EffectorTransform.get()));
 			m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
 		} else {
 			m_ResourceStep = ublas::zero_vector<Float>(m_Resource->dim());
 		}
 	
-		CBF_DEBUG("resourceStep: " << m_ResourceStep)
+		CBF_DEBUG("resourceStep: " << m_ResourceStep);
 	
 		//! then we recursively call subordinate controllers.. and gather their 
 		//! effector transformed gradient steps.
@@ -151,7 +151,7 @@ namespace CBF {
 		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) {
 			m_SubordinateControllers[i]->update(cycle);
 			m_SubordinateGradientSteps[i] = m_SubordinateControllers[i]->result();
-			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i])
+			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i]);
 		}
 	
 		m_CombinedResults = ublas::zero_vector<Float>(m_Resource->dim());
@@ -172,7 +172,7 @@ namespace CBF {
 			m_InvJacobianTimesJacobian,
 			m_CombinedResults
 		);
-		CBF_DEBUG("combined_results * beta: " << m_CombinedResults)
+		CBF_DEBUG("combined_results * beta: " << m_CombinedResults);
 	
 		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
 	}
@@ -228,7 +228,7 @@ namespace CBF {
 	#ifdef CBF_HAVE_XSD
 		PrimitiveController::PrimitiveController(const CBFSchema::PrimitiveController &xml_instance)
 		{
-			CBF_DEBUG("Constructing")
+			CBF_DEBUG("Constructing");
 			if (xml_instance.Name())
 				m_Name = *xml_instance.Name();
 
@@ -265,7 +265,7 @@ namespace CBF {
 			}
 
 
-			CBF_DEBUG("Creating reference...")
+			CBF_DEBUG("Creating reference...");
 			ReferencePtr ref = 
 				XMLObjectFactory::instance()->create<Reference>(xml_instance.Reference());
 
@@ -277,13 +277,13 @@ namespace CBF {
 				XMLObjectFactory::instance()->create<Potential>(xml_instance.Potential());
 
 			//! Instantiate the Effector transform
-			CBF_DEBUG("Creating sensor transform...")
+			CBF_DEBUG("Creating sensor transform...");
 			SensorTransformPtr sens = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.SensorTransform());
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Instantiate the Effector transform
-			CBF_DEBUG("Creating effector transform...")
+			CBF_DEBUG("Creating effector transform...");
 			EffectorTransformPtr eff = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform());
 		
 			//CBF_DEBUG(m_SensorTransform.get())
@@ -291,17 +291,17 @@ namespace CBF {
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Create a resource if given...
-			CBF_DEBUG("Creating resource...")
+			CBF_DEBUG("Creating resource...");
 			ResourcePtr res = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource());
 			//! And bind to it...
-			CBF_DEBUG("Binding to resource...")
+			CBF_DEBUG("Binding to resource...");
 
-			CBF_DEBUG("Creating combination strategy...")
+			CBF_DEBUG("Creating combination strategy...");
 			CombinationStrategyPtr com = 
 				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy());
 
 			//! Instantiate the subordinate controllers
-			CBF_DEBUG("Creating subordinate controller(s)...")
+			CBF_DEBUG("Creating subordinate controller(s)...");
 			std::vector<PrimitiveControllerPtr> subs;
 			for (
 				::CBFSchema::PrimitiveController::PrimitiveController1_const_iterator it = xml_instance.PrimitiveController1().begin(); 
@@ -309,14 +309,14 @@ namespace CBF {
 				++it
 			)
 			{
-				CBF_DEBUG("Creating subordinate controller...")
-				CBF_DEBUG("------------------------")
+				CBF_DEBUG("Creating subordinate controller...");
+				CBF_DEBUG("------------------------");
 				//! First we see whether we can construct a controller from the xml_document
 				PrimitiveControllerPtr controller = XMLObjectFactory::instance()->create<PrimitiveController>(*it);
 				controller->m_Resource = m_Resource;
  				subs.push_back(controller);
 
-				CBF_DEBUG("------------------------")
+				CBF_DEBUG("------------------------");
 			}
 
 			init(

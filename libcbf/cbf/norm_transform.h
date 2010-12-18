@@ -54,7 +54,7 @@ struct NormSensorTransform : public SensorTransform {
 			m_TaskJacobian(0,i) = res2(i);
 		}
 
-		CBF_DEBUG(m_TaskJacobian)
+		CBF_DEBUG(m_TaskJacobian);
 	}
 
 	/**

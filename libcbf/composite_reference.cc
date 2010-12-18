@@ -53,7 +53,7 @@ namespace CBF {
 			}
 		
 			set_references(references);
-			CBF_DEBUG("dim: " << dim())
+			CBF_DEBUG("dim: " << dim());
 	}
 
 	static XMLDerivedFactory<CompositeReference, CBFSchema::CompositeReference> x;

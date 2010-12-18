@@ -114,19 +114,19 @@ namespace CBF {
 						CBF_UNMANGLE(T) << 
 						" with SchemaType: " << 
 						CBF_UNMANGLE(TType)
-					)
+					);
 					XMLObjectFactory::instance()->m_DerivedFactories[std::string(typeid(TType).name())] = this; 
 				}
 	
 			public:
 				virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) {
-					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(this))
+					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(this));
 					const TType* r = dynamic_cast<const TType*>(&xml_instance);
 					if (r) {
-						CBF_DEBUG("yes, i am the one")
+						CBF_DEBUG("yes, i am the one");
 						return boost::shared_ptr<Object>(new T(*r));
 					}
-					CBF_DEBUG("no i am not the one")
+					CBF_DEBUG("no i am not the one");
 					return boost::shared_ptr<Object>();
 				}
 		};
@@ -162,7 +162,7 @@ namespace CBF {
 					CBF_UNMANGLE(T) << 
 					" from a " << 
 					CBF_UNMANGLE(xml_instance)
-				)
+				);
 
 				if (m_Creators.find(typeid(xml_instance).name()) == m_Creators.end()) {
 					CBF_THROW_RUNTIME_ERROR(
@@ -170,7 +170,7 @@ namespace CBF {
 						"XMLCreator for type not found. Type: " << 
 						CBF_UNMANGLE(xml_instance) << 
 						" (Did you forget to register it?)"
-					)
+					);
 				}
 
 				return m_Creators[typeid(xml_instance).name()]->create(xml_instance);
@@ -201,7 +201,7 @@ namespace CBF {
 					CBF_UNMANGLE(TSchemaType) << 
 					" in registry " << 
 					CBF_UNMANGLE(T)
-				)
+				);
 
 				XMLFactory<T>::instance()->m_Creators[typeid(TSchemaType).name()] = this;
 			}
@@ -214,7 +214,7 @@ namespace CBF {
 					CBF_UNMANGLE(xml_instance) <<
 					" TSChemaType = " <<
 					CBF_UNMANGLE(TSchemaType)
-				)
+				);
 				const TSchemaType &tmp = dynamic_cast<const TSchemaType&>(xml_instance);
 				return m_Creator(tmp);
 			}
@@ -230,7 +230,7 @@ namespace CBF {
 		struct Constructor {
 			Constructor() { CBF_DEBUG("Constructor"); }
 			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
-				CBF_DEBUG("creating a " << CBF_UNMANGLE(T))
+				CBF_DEBUG("creating a " << CBF_UNMANGLE(T));
 				const TSchemaType &t = dynamic_cast<const TSchemaType&>(xml_instance);
 				return boost::shared_ptr<T>(new T(t));
 			}
@@ -261,7 +261,7 @@ namespace CBF {
 					CBF_UNMANGLE(T) << 
 					" and TSchemaType: " << 
 					CBF_UNMANGLE(TSchemaType)
-				)
+				);
 			}
 		};
 	#endif

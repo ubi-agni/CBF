@@ -43,7 +43,7 @@
 				__FUNCTION__ << \
 				"()\033[22;32m]: \033[22;37m" << \
 				arg <<  \
-				std::endl << std::flush;
+				std::endl << std::flush
 	#else
 		#define CBF_DEBUG(arg) \
 			std::cerr << \
@@ -59,7 +59,7 @@
 				__FUNCTION__ << \
 				"()]: " << \
 				arg <<  \
-				std::endl << std::flush;
+				std::endl << std::flush
 	#endif
 #endif
 

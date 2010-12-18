@@ -26,7 +26,7 @@ namespace CBF {
 #ifdef CBF_HAVE_XSD
 
 	Potential::Potential(const CBFSchema::Potential &xml_instance) {
-		CBF_DEBUG("Constructor")
+		CBF_DEBUG("Constructor");
 		m_MaxGradientStepNorm = xml_instance.MaxGradientStepNorm();
 	}
 

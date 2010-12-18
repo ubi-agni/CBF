@@ -227,7 +227,7 @@ namespace CBF {
 			m_Result = m_Operand->result();
 			m_TaskJacobian = m_Operand->task_jacobian();
 
-			CBF_DEBUG(m_Result.size())
+			CBF_DEBUG(m_Result.size());
 
 			for (
 				unsigned int current_row = 0, max_row = task_dim(); 

@@ -24,7 +24,7 @@ namespace CBF {
 			)
 		) 
 	{ 
-		CBF_DEBUG("MultiplyOperationSensorTransform")
+		CBF_DEBUG("MultiplyOperationSensorTransform");
 		m_Operand = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand());
 	}
 

@@ -36,7 +36,7 @@ namespace CBF {
 			Float angle = normalize_angle(acos(q3.w) * 2.0);
 			angle = fabs(angle);
 
-			CBF_DEBUG("angle [distance]: " << angle)
+			CBF_DEBUG("angle [distance]: " << angle);
 			return angle;
 		}
 
@@ -46,30 +46,30 @@ namespace CBF {
 			const std::vector<FloatVector > &references, 
 			const FloatVector &input
 		) {
-			CBF_DEBUG("[AxisAnglePotential]: input: " << input)
-			CBF_DEBUG("[AxisAnglePotential]: ref: " << references[0])
+			CBF_DEBUG("[AxisAnglePotential]: input: " << input);
+			CBF_DEBUG("[AxisAnglePotential]: ref: " << references[0]);
 			Quaternion in;
 			in.from_axis_angle3(input);
-			CBF_DEBUG("q_in: " << in)
+			CBF_DEBUG("q_in: " << in);
 
 			Quaternion ref;
 			ref.from_axis_angle3(references[0]);
-			CBF_DEBUG("q_ref: " << ref)
+			CBF_DEBUG("q_ref: " << ref);
 
 			Quaternion step = qslerp(in, ref, m_Coefficient);
-			CBF_DEBUG("step: " << step)
+			CBF_DEBUG("step: " << step);
 
 			Quaternion res = step  * in.conjugate();
-			CBF_DEBUG("res: " << res)
+			CBF_DEBUG("res: " << res);
 
 			result.resize(3);
 			res.to_axis_angle3(result);
-			CBF_DEBUG("result: " << result)
+			CBF_DEBUG("result: " << result);
 
 			if(norm(result) > m_MaxGradientStepNorm)
 				result *= m_MaxGradientStepNorm/norm(result);
 
-			CBF_DEBUG("Result: " << result)
+			CBF_DEBUG("Result: " << result);
 		}
 
 
@@ -79,8 +79,8 @@ namespace CBF {
 	#ifdef CBF_HAVE_XSD
 		AxisAnglePotential::AxisAnglePotential(const CBFSchema::AxisAnglePotential &xml_instance) :
 			Potential(xml_instance) {
-			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!")
-			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
+			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!");
+			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient());
 			m_Coefficient = xml_instance.Coefficient();
 		}
 

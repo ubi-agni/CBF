@@ -30,21 +30,21 @@ namespace CBF {
 
 
 void GenericEffectorTransform::update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
-	CBF_DEBUG("updating")
+	CBF_DEBUG("updating");
 
 	//m_SensorTransform->task_jacobian(m_Jacobian);
 	pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
 
-	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
+	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian);
 }
 
 void DampedGenericEffectorTransform::update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
-	CBF_DEBUG("updating")
+	CBF_DEBUG("updating");
 
 	//m_SensorTransform->task_jacobian(m_Jacobian);
 	damped_pseudo_inverse(task_jacobian, m_InverseTaskJacobian, m_DampingConstant);
 
-	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
+	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian);
 }
 
 
@@ -52,12 +52,12 @@ void DampedWeightedGenericEffectorTransform::update(
 	const FloatVector &resource_value, 
 	const FloatMatrix &task_jacobian
 ) {
-	CBF_DEBUG("updating")
+	CBF_DEBUG("updating");
 
 	//m_SensorTransform->task_jacobian(m_Jacobian);
 	damped_pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
 
-	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
+	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian);
 }
 
 

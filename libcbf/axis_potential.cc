@@ -26,8 +26,8 @@ namespace CBF {
 
 		AxisPotential::AxisPotential(const CBFSchema::AxisPotential &xml_instance) :
 			Potential(xml_instance) {
-			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!")
-			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient())
+			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!");
+			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient());
 			m_Coefficient = xml_instance.Coefficient();
 		}
 

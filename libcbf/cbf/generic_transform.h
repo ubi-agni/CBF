@@ -157,7 +157,7 @@ namespace CBF {
 		}
 	
 		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
-			CBF_DEBUG("update padded")
+			CBF_DEBUG("update padded");
 			pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
 
 			ublas::matrix_range<FloatMatrix> mr(
@@ -166,19 +166,19 @@ namespace CBF {
 				ublas::range(0, task_jacobian.size2())
 			);
 			mr.assign(task_jacobian);
-			CBF_DEBUG("padded jacobian: " << m_PaddedTaskJacobian)
+			CBF_DEBUG("padded jacobian: " << m_PaddedTaskJacobian);
 
 			pseudo_inverse(m_PaddedTaskJacobian, m_PaddedInverseTaskJacobian);
 		}
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
 			FloatVector res = ublas::prod(m_PaddedInverseTaskJacobian, input);
-			CBF_DEBUG("padded result: " << res)
+			CBF_DEBUG("padded result: " << res);
 			result = ublas::vector_range<FloatVector>(res, ublas::range(0, m_InverseTaskJacobian.size1()));
 		}
 
 		void init(unsigned int task_dim, unsigned int resource_dim, FloatVector diagonal) {
-			CBF_DEBUG("Padded transform init")
+			CBF_DEBUG("Padded transform init");
 			if (task_dim != diagonal.size()) CBF_THROW_RUNTIME_ERROR("dimension mismatch");
 
 			m_PaddedTaskJacobian = ublas::zero_matrix<Float>(task_dim, resource_dim + task_dim);

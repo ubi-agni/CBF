@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
 	}
 #endif
 
-	CBF_DEBUG("parsing XML")
+	CBF_DEBUG("parsing XML");
 	try {
 		std::auto_ptr<CBFSchema::ControlBasis> cbt
 			(CBFSchema::ControlBasis_
