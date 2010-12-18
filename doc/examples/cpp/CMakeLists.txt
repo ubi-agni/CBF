@@ -7,7 +7,7 @@ endif()
 include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 
-if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
+if(CBF_HAVE_KDL)
   include_directories(AFTER ${KDL_INCLUDE_DIRS})
 
   message(STATUS "  adding executable cbf_test_kdl_transforms")
@@ -19,6 +19,9 @@ if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
     cbf
     )
 
+  SET_TARGET_PROPERTIES(cbf_test_kdl_transforms PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+
+
   message(STATUS "  adding executable cbf_simple_test")
   add_executable(cbf_simple_test
     cbf_simple_test.cc
@@ -27,6 +30,9 @@ if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
   target_link_libraries(cbf_simple_test
     cbf
     )
+
+  SET_TARGET_PROPERTIES(cbf_simple_test PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+
 
   if(CBF_HAVE_MEMORY)
     message(STATUS "  adding executable cbf_simple_test_memory")
@@ -39,6 +45,8 @@ if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
     target_link_libraries(cbf_simple_test_memory
       cbf ${MEMORY_LDFLAGS}
       )
+	 SET_TARGET_PROPERTIES(cbf_simple_test_memory PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+
   else()
     message(STATUS "  not adding executable cbf_simple_test_memory")
     message(STATUS "  because Memory was not found")
@@ -53,6 +61,7 @@ if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
   target_link_libraries(cbf_test_axis_potential
     cbf
     )
+  SET_TARGET_PROPERTIES(cbf_test_axis_potential PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
 
   message(STATUS "  adding executable cbf_test_axis_potential2")
   add_executable(cbf_test_axis_potential2
@@ -62,6 +71,9 @@ if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
   target_link_libraries(cbf_test_axis_potential2
     cbf
     )
+
+  SET_TARGET_PROPERTIES(cbf_test_axis_potential2 PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+
 
   if(${CBF_HAVE_KDLCHAINVIZ})
     message(STATUS "adding executable cbf_test_kdl_transforms_view")
@@ -86,7 +98,9 @@ if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN2)
     else()
       message(STATUS "  linking cbf_test_kdl_transforms without Spacemouse")
     endif()
-  else()
+
+	 SET_TARGET_PROPERTIES(cbf_test_kdl_transforms_view PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+lse()
     message(STATUS "  not adding executable cbf_test_kdl_transforms_view because KDLCHAINVIZ was not found")
   endif()
 else()

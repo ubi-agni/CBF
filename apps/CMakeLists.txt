@@ -22,6 +22,8 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
     ${Boost_LIBRARIES}
     )
 
+  SET_TARGET_PROPERTIES(cbf_run_controller PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+
 else()
   message(STATUS "  not adding executable cbf_run_controller because xsd or boost-program-options was not found")
 endif()
