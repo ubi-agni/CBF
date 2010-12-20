@@ -17,6 +17,7 @@ namespace CBFSchema {
 
 namespace CBF {
 
+	/** @brief A SensorTransform wrapper that creates a window to display the current task space position */
 	struct QtSensorTransform : public SensorTransform {
 		QtSensorTransform(SensorTransformPtr operand) { init(operand); }
 

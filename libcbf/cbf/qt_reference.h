@@ -24,6 +24,7 @@ namespace CBFSchema {
 
 namespace CBF {
 
+/** @brief A Reference that can be set from a GUI window */
 struct QtReference : public Reference {
 	struct Control {
 		Control() : control_name("Control") { }
