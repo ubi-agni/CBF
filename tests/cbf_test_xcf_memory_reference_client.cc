@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(argv[1]));
 
 	std::stringstream xPath;
-//	xPath << "/p1:XCFMemoryReference/ReferenceName['" << argv[2] << "']";
+//	xPath << "/p1:XCFMemoryReferenceVector/ReferenceName['" << argv[2] << "']";
 	xPath << "/";
 
 	memoryPtr -> addNamespacePrefix("xmlns:p1", "http://www.cit-ec.uni-bielefeld.de/CBF");
@@ -42,16 +42,16 @@ int main(int argc, char **argv) {
 		results -> next(document);
 	} else {
 		CBF_DEBUG("XPath: " << xPath.str());
-		CBF_THROW_RUNTIME_ERROR("Could not find a xcf_memory_reference with the specified name "
+		CBF_THROW_RUNTIME_ERROR("Could not find an XCFMemoryReferenceVector with the specified name "
 					"on the memory_server.");
 	}
 
-	xmltio::XPath referenceVectorPath("/p1:XCFMemoryReference/Vector/String");
+	xmltio::XPath referenceVectorPath("/p1:XCFMemoryReferenceVector/Vector/String");
 	xmltio::Location referenceVectorLoc(document, referenceVectorPath);
 
 	std::istringstream s(document);
-	std::auto_ptr<CBFSchema::XCFMemoryReference> reference = 
-				CBFSchema::XCFMemoryReference_(s, xml_schema::flags::dont_validate);
+	std::auto_ptr<CBFSchema::XCFMemoryReferenceVector> reference = 
+				CBFSchema::XCFMemoryReferenceVector_(s, xml_schema::flags::dont_validate);
 
 	CBF_DEBUG("dimension: " << create_vector(reference -> Vector()));
 	
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 
 
 		CBF_DEBUG("Replacing document");
-		memoryPtr -> insert(referenceVectorLoc.getDocumentText());
+		memoryPtr -> replace(referenceVectorLoc.getDocumentText());
 	}
 }
 

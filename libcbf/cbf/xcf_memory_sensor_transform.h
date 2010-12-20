@@ -35,15 +35,22 @@ namespace CBF {
 		it behaves like the passed SensorTransform except that after making the usual 
 		update() calculations, it publishes the resuliting matrices on the XCFMemory
 		server.
-
-		@param uri The URI of the XCFMemory server on which the data should be published.
-		@param resultName The name of the XCFMemorySensorTransformResult.
-		@param m_SensorTransform The SensorTransformPtr of the used SensorTransform.
 	*/
 	struct XCFMemorySensorTransform : public SensorTransform {
 
+		/**
+			@brief Constructs an XCFMemorySensorTransform from an xml instance.
+		*/
 		XCFMemorySensorTransform(const CBFSchema::XCFMemorySensorTransform &xml_instance);
 
+		/**
+			@brief Constructs an XCFMemorySensorTransform. Valid SensorTransformPointer
+			and uri are needed.
+			
+			@param uri The URI of the XCFMemory server on which the data should be published.
+			@param result_name The name of the XCFMemorySensorTransformResult.
+			@param sensor_transform The SensorTransformPtr of the used SensorTransform.
+		*/
 		XCFMemorySensorTransform(
 					const std::string &uri, 
 					const std::string &result_name, 

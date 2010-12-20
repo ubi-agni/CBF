@@ -722,12 +722,24 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="XCFMemoryReference" type="CBF:XCFMemoryReference"/>
-  <xsd:complexType name="XCFMemoryReference">
+  <xsd:element name="XCFMemoryReferenceVector" type="CBF:XCFMemoryReferenceVector"/>
+  <xsd:complexType name="XCFMemoryReferenceVector">
 	 <xsd:sequence>
 		<xsd:element name="ReferenceName" type="xsd:string"/>
 		<xsd:element name="Vector" type="CBF:Vector"/>
 	 </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="XCFMemoryReference">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Reference">
+		  <xsd:sequence>
+			 <xsd:element name="URI" type="xsd:string"/>
+			 <xsd:element name="ReferenceName" type="xsd:string"/>
+			 <xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:element name="XCFMemorySensorTransformResult" type="CBF:XCFMemorySensorTransformResult"/>

@@ -27,22 +27,30 @@ namespace CBF {
 
 	namespace mi = memory::interface;
 
-//	XCFMemoryReference::XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance){
-//
-//	}
+	#ifdef CBF_HAVE_XSD
+		XCFMemoryReference::XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance)
+			:
+			m_MemoryPtr(mi::MemoryInterface::getInstance(xml_instance.URI())),
+			m_ReferenceName(xml_instance.ReferenceName()),
+			m_Dim(xml_instance.Dimension())
+		{
+			init();
+		}
+	#endif
 
 	XCFMemoryReference::XCFMemoryReference
-		(const std::string &uri, const std::string &referenceName, unsigned int dim) 
+		(const std::string &uri, const std::string &reference_name, unsigned int dim) 
 		: 
 		m_MemoryPtr(mi::MemoryInterface::getInstance(uri)),
-		m_ReferenceName(referenceName),
+		m_ReferenceName(reference_name),
 		m_Dim(dim)
 	{ 	
 		init();
 	}
 
 	void XCFMemoryReference::init() {
-		//Creating an XML-Document and inserting at XCFMemory. This is the Document we will observe.
+		//Creating an XCFMemoryReferenceVector xml and inserting at XCFMemory. 
+		// This way the Dimension will be published.
 		CBF_DEBUG("creating vector string");
 
 		std::stringstream vector_string;
@@ -56,10 +64,10 @@ namespace CBF {
 		CBF_DEBUG("creating vector doc");
 		CBFSchema::BoostVector vectorDoc(vector_string.str());
 
-		CBFSchema::XCFMemoryReference v(m_ReferenceName, vectorDoc);
+		CBFSchema::XCFMemoryReferenceVector v(m_ReferenceName, vectorDoc);
 
 		std::ostringstream s;
-		CBFSchema::XCFMemoryReference_ (s, v);
+		CBFSchema::XCFMemoryReferenceVector_ (s, v);
 
 		std::string document = m_MemoryPtr -> insert(s.str());
 
@@ -101,8 +109,8 @@ namespace CBF {
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
 
 		std::istringstream s(documentText);
-		std::auto_ptr<CBFSchema::XCFMemoryReference> reference = 
-				CBFSchema::XCFMemoryReference_(s, xml_schema::flags::dont_validate);
+		std::auto_ptr<CBFSchema::XCFMemoryReferenceVector> reference = 
+				CBFSchema::XCFMemoryReferenceVector_(s, xml_schema::flags::dont_validate);
 
 		CBF_DEBUG("create vector");
 		m_TempReference = create_vector(reference -> Vector());
