@@ -16,6 +16,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QLabel>
+#include <QtGui/QCheckBox>
 
 namespace CBFSchema {
 	class QtReference;
@@ -23,6 +24,7 @@ namespace CBFSchema {
 
 namespace CBF {
 
+/** @brief A Reference that can be set from a GUI window */
 struct QtReference : public Reference {
 	struct Control {
 		Control() : control_name("Control") { }
@@ -33,17 +35,22 @@ struct QtReference : public Reference {
 		Float initial_value;
 	};
 
-	QtReference(const std::vector<Control> &controls, std::string window_title = "CBF:QtReference") {
-		init(controls, window_title);
+	QtReference(const std::vector<Control> &controls, bool active = false, std::string window_title = "CBF:QtReference") {
+		init(controls, active, window_title);
 	}
 
 	QtReference(const CBFSchema::QtReference &xml_instance);
 
-	void init(std::vector<Control> controls, std::string window_title = "CBF:QtReference") {
+	void init(std::vector<Control> controls, bool active, std::string window_title = "CBF:QtReference") {
 		QGridLayout *layout = new QGridLayout();
 		m_Widget.setLayout(layout);
 
 		m_Values.resize(controls.size());
+
+		layout->addWidget(new QLabel("Active"), 0,0);
+		m_ActiveCheckBox = new QCheckBox();
+		m_ActiveCheckBox->setChecked(active);
+		layout->addWidget(m_ActiveCheckBox, 0, 1);
 
 		for (unsigned int i = 0; i < controls.size(); ++i) {
 			QDoubleSpinBox *s = new QDoubleSpinBox;
@@ -54,10 +61,10 @@ struct QtReference : public Reference {
 			s->setValue(controls[i].initial_value);
 			s->setKeyboardTracking(false);
 
-			layout->addWidget(s,i,1);
+			layout->addWidget(s,i+1,1);
 
 			QLabel *label = new QLabel(controls[i].control_name.c_str());
-			layout->addWidget(label, i, 0);
+			layout->addWidget(label, i+1, 0);
 
 			m_SpinBoxes.push_back(s);
 		}
@@ -82,8 +89,19 @@ struct QtReference : public Reference {
 		return m_Values.size();
 	}
 
+	virtual std::vector<FloatVector> &get() {
+		if (m_ActiveCheckBox->isChecked()) {
+			return m_References;
+		}
+		return m_EmptyReferenceVector;		
+	}
+
+	QCheckBox *m_ActiveCheckBox;
 	FloatVector m_Values;
 	QWidget m_Widget;
+
+	std::vector<FloatVector> m_EmptyReferenceVector;
+
 	std::vector<QDoubleSpinBox*> m_SpinBoxes;
 };
 

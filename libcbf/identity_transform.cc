@@ -43,9 +43,6 @@ namespace CBF {
 			init(xml_instance.Dimension());
 		}
 
-
-
-
 		static XMLDerivedFactory<
 			IdentitySensorTransform, 
 			CBFSchema::IdentitySensorTransform

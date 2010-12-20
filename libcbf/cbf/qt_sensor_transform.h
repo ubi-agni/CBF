@@ -4,6 +4,7 @@
 #include <QtGui/QGridLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QWidget>
+#include <QtGui/QCheckBox>
 
 #include <vector>
 
@@ -16,6 +17,7 @@ namespace CBFSchema {
 
 namespace CBF {
 
+	/** @brief A SensorTransform wrapper that creates a window to display the current task space position */
 	struct QtSensorTransform : public SensorTransform {
 		QtSensorTransform(SensorTransformPtr operand) { init(operand); }
 
@@ -34,6 +36,7 @@ namespace CBF {
 				layout->addWidget(name, i, 0);
 			}
 			layout->setColumnStretch(1,10);
+
 			m_Widget.show();
 		}
 
@@ -62,7 +65,7 @@ namespace CBF {
 		virtual const FloatVector &result() const {
 			return m_Operand->result();
 		}
-
+	
 		SensorTransformPtr m_Operand;
 		QWidget m_Widget;
 		std::vector<QLabel*> m_Labels;

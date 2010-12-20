@@ -258,6 +258,7 @@
 		<xsd:extension base="CBF:Reference">
 		  <xsd:sequence>
 			 <xsd:element name="WindowTitle" type="xsd:string" minOccurs="0"/>
+			 <xsd:element name="Active" type="xsd:boolean" minOccurs="0"/>
 			 <xsd:element name="Control" type="CBF:Control" minOccurs="1" maxOccurs="unbounded"/>
 		  </xsd:sequence>
 		</xsd:extension>

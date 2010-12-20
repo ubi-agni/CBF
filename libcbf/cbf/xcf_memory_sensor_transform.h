@@ -21,6 +21,8 @@
 #ifndef XCF_MEMORY_SENSOR_TRANSFORM_HH
 #define XCF_MEMORY_SENSOR_TRANSFORM_HH
 
+#include <cbf/config.h>
+
 #include <cbf/sensor_transform.h>
 #include <cbf/schemas.hxx>
 
