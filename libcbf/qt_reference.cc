@@ -25,11 +25,15 @@ namespace CBF {
 
 			controls.push_back(c);
 		}
-		if (xml_instance.WindowTitle()) {
-			init(controls, *(xml_instance.WindowTitle()));
+		bool active = false;
+		if (xml_instance.Active()) {
+			active = *(xml_instance.Active());
 		}
-		else {
-			init(controls);
+
+		if (xml_instance.WindowTitle()) {
+			init(controls, active, *(xml_instance.WindowTitle()));
+		} else {
+			init(controls, active);
 		}
 	}
 

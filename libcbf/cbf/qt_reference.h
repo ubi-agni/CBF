@@ -34,13 +34,13 @@ struct QtReference : public Reference {
 		Float initial_value;
 	};
 
-	QtReference(const std::vector<Control> &controls, std::string window_title = "CBF:QtReference") {
-		init(controls, window_title);
+	QtReference(const std::vector<Control> &controls, bool active = false, std::string window_title = "CBF:QtReference") {
+		init(controls, active, window_title);
 	}
 
 	QtReference(const CBFSchema::QtReference &xml_instance);
 
-	void init(std::vector<Control> controls, std::string window_title = "CBF:QtReference") {
+	void init(std::vector<Control> controls, bool active, std::string window_title = "CBF:QtReference") {
 		QGridLayout *layout = new QGridLayout();
 		m_Widget.setLayout(layout);
 
@@ -48,6 +48,7 @@ struct QtReference : public Reference {
 
 		layout->addWidget(new QLabel("Active"), 0,0);
 		m_ActiveCheckBox = new QCheckBox();
+		m_ActiveCheckBox->setChecked(active);
 		layout->addWidget(m_ActiveCheckBox, 0, 1);
 
 		for (unsigned int i = 0; i < controls.size(); ++i) {
