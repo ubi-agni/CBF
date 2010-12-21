@@ -116,7 +116,7 @@ if (CBF_HAVE_XCF)
   endif()
 
 else()
-  message(STATUS "  excluding xcf_vector_reference.cc, xcf_memory_sensor_transform and xcf_ressource.cc because xcf was not found")
+  message(STATUS "  excluding xcf_vector_reference.cc, xcf_memory_sensor_transform.cc and xcf_ressource.cc because xcf was not found")
 endif()
 
 if (CBF_HAVE_QT)
@@ -124,6 +124,8 @@ if (CBF_HAVE_QT)
   set(CBF_SOURCES ${CBF_SOURCES} qt_sensor_transform.cc)
   set(CBF_INCLUDES ${CBF_INCLUDES} ${QT_INCLUDES})
   set(CBF_LIBS ${CBF_LIBS} ${QT_LIBRARIES})
+else()
+  message(STATUS "  excluding qt_reference.cc and qt_sensor_transform.cc because qt was not found")
 endif()
 
 if (CBF_HAVE_XRI)
