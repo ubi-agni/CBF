@@ -24,11 +24,14 @@
 #include <cbf/config.h>
 
 #include <cbf/sensor_transform.h>
-#include <cbf/schemas.hxx>
 
 #include <Memory/Interface.hpp>
 #include <xmltio/Location.hpp>
 #include <xmltio/XPath.hpp>
+
+namespace CBFSchema {
+	class XCFMemorySensorTransform;
+}
 
 namespace CBF {
 

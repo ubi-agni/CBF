@@ -7,7 +7,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/schemas.hxx>
 #include <cbf/utilities.h>
-#include <cbf/schemas.hxx>
+
 
 #include <xcf/ServerComponent.hpp>
 #include <IceUtil/Monitor.h> 

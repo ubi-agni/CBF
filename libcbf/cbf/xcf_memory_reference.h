@@ -25,7 +25,7 @@
 #include <cbf/types.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
-#include <cbf/schemas.hxx>
+
 
 #include <IceUtil/Monitor.h> 
 #include <IceUtil/RecMutex.h>
