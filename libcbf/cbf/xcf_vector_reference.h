@@ -5,7 +5,6 @@
 #include <cbf/types.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
-#include <cbf/schemas.hxx>
 #include <cbf/utilities.h>
 
 
