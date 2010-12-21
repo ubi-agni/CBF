@@ -103,7 +103,7 @@ if (CBF_HAVE_XCF)
     set(CBF_LIBS ${CBF_LIBS} ${XMLTIO_LDFLAGS})
     set(CBF_INCLUDES ${CBF_INCLUDES} ${XMLTIO_INCLUDE_DIRS})
 
-    if(CBF_HAVE_MEMORY)
+    if(CBF_HAVE_MEMORY AND CBF_HAVE_XSD)
       set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_sensor_transform.cc xcf_memory_reference.cc)
       set(CBF_LIBS ${CBF_LIBS} ${MEMORY_LDFLAGS})
       set(CBF_INCLUDES ${CBF_INCLUDES} ${MEMORY_INCLUDE_DIRS})
