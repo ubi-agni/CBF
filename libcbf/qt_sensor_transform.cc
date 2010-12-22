@@ -1,6 +1,5 @@
 #include <cbf/qt_sensor_transform.h>
 #include <cbf/xml_factory.h>
-#include <cbf/schemas.hxx>
 
 namespace CBF {
 
