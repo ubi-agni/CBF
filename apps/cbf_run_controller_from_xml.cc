@@ -143,8 +143,8 @@ int main(int argc, char *argv[]) {
 	try {
 		std::auto_ptr<CBFSchema::ControlBasis> cbt
 			(CBFSchema::ControlBasis_
-				//(control_basis_name, err_handler, xml_schema::flags::dont_validate));
-				(control_basis_name));//, err_handler, xml_schema::flags::dont_validate));
+				(control_basis_name, err_handler, xml_schema::flags::dont_validate));
+				//(control_basis_name));//, err_handler, xml_schema::flags::dont_validate));
 
 		CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));
 	
