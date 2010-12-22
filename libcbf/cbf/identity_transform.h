@@ -21,6 +21,8 @@
 #ifndef CBF_IDENTITY_TRANSFORM_HH
 #define CBF_IDENTITY_TRANSFORM_HH
 
+#include <cbf/config.h>
+
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 #include <cbf/functional.h>

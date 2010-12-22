@@ -43,7 +43,7 @@
 #endif
 
 #ifdef CBF_HAVE_XSD
-	#include <cbf/schemas.hxx>
+	#include <cbf/xml_factory.h>
 	#include <sstream>
 	#include <boost/numeric/ublas/io.hpp>
 #endif

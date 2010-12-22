@@ -2,6 +2,7 @@
 #define CBF_NAMESPACE_HH
 
 #include <cbf/object.h>
+
 #include <boost/shared_ptr.hpp>
 #include <map>
 

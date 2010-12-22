@@ -21,6 +21,8 @@
 #ifndef CBF_XCF_MEMORY_REFERENCE_HH
 #define CBF_XCF_MEMORY_REFERENCE_HH
 
+#include <cbf/config.h>
+
 #include <cbf/reference.h>
 #include <cbf/types.h>
 #include <cbf/exceptions.h>

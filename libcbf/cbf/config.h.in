@@ -7,3 +7,4 @@
 #cmakedefine CBF_DEBUG_COLOR
 #cmakedefine CBF_HAVE_QT
 
+#undef cbf
