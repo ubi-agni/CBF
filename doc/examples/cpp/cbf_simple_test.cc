@@ -32,7 +32,6 @@
 using namespace CBF;
 
 int main() {
-#if 0
 	DummyReferencePtr reference(new DummyReference(1,3));
 
 	//! Create a PrimitiveController...
@@ -59,5 +58,4 @@ int main() {
 		before finished() to initialize internal state...
 	*/
 	do { c->step(); std::cout << "step" << std::endl; } while (c->finished() == false);
-#endif
 }

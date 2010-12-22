@@ -31,6 +31,8 @@
 #include <cbf/utilities.h>
 #include <cbf/exceptions.h>
 
+#include <algorithm>
+
 #include <boost/numeric/ublas/io.hpp>
 
 namespace CBFSchema {
@@ -153,6 +155,16 @@ namespace CBF {
 			unsigned int resource_dim, 
 			FloatVector diagonal_elements
 		) { 
+			init(task_dim, resource_dim, diagonal_elements);
+		}
+
+		PaddedEffectorTransform(
+			unsigned int task_dim, 
+			unsigned int resource_dim, 
+			float diagonal
+		) { 
+			FloatVector diagonal_elements(task_dim);
+			std::fill(diagonal_elements.begin(), diagonal_elements.end(), diagonal);
 			init(task_dim, resource_dim, diagonal_elements);
 		}
 	

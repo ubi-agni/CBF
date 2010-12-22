@@ -17,11 +17,13 @@ namespace CBF {
 	*/
 	class XSDErrorHandler : public xml_schema::error_handler
 	{
-		virtual bool handle (const std::basic_string<char>& id,
+		virtual bool handle (
+			const std::string& id,
 			unsigned long line,
 			unsigned long column,
 			severity,
-			const std::basic_string<char>& message) {
+			const std::string& message
+		) {
 				std::cerr 
 					<< "[ParsingErrorHandler]: \"" 
 					<< message <<"\"" 

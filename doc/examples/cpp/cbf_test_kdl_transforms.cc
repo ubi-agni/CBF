@@ -37,7 +37,7 @@
 // #include <kdl/jacobian.hpp>
 #include <kdl/chain.hpp>
 
-#define NUM_OF_STEPS 1000 
+#define NUM_OF_STEPS 1000
 #define NUM_OF_RUNS 1
 
 
@@ -45,8 +45,6 @@ int main(int argc, char *argv[]) {
 	srand(1);
 
 	CBF::PrimitiveControllerPtr controller;
-	for (int i = 0; i < 3; ++i)
-
 	{
 		//! Build up a fairly simple KDL::Chain
 		boost::shared_ptr<KDL::Chain> chain (new KDL::Chain);
@@ -75,7 +73,7 @@ int main(int argc, char *argv[]) {
 				ref,
 				CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)),
 				CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
-				CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(3, 12)),
+				CBF::EffectorTransformPtr(new CBF::PaddedEffectorTransform(3, 12, 1.5)),
 				std::vector<CBF::PrimitiveControllerPtr>(),
 				CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
 				CBF::ResourcePtr(new CBF::DummyResource(12))
@@ -84,7 +82,7 @@ int main(int argc, char *argv[]) {
 
 		unsigned int total_steps = 0;
 		for (unsigned int run = 0; run < NUM_OF_RUNS; ++run) {
-			//std::cout << "[test_kdl_transforms]: run: " << run << std::endl;
+			std::cout << "[test_kdl_transforms]: run: " << run << std::endl;
 			//! Execute until convergence or NUM_OF_STEPS, whatever comes first
 			unsigned int i = 0;
 			do {

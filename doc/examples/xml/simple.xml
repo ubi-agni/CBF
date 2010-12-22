@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <cbf:ControlBasis
-	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF">
-<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
+	xsi:schemaLocation="http://www.cit-ec.uni-bielefeld.de/CBF /home/tapas/src/uni/CBF/schemas/schemas.xsd">
+<Controller xsi:type="cbf:PrimitiveController">
  <Name>foo</Name>
 
  <Coefficient> 1 </Coefficient>
