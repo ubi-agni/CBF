@@ -6,6 +6,7 @@
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
+#include <cbf/xml_factory.h>
 
 
 #include <xcf/ServerComponent.hpp>

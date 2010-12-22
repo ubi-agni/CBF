@@ -21,6 +21,8 @@
 #include <cbf/xcf_memory_reference.h>
 #include <cbf/utilities.h>
 
+#include <cbf/xml_factory.h>
+
 #include <boost/bind.hpp>
 
 namespace CBF {
