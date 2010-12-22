@@ -253,7 +253,7 @@ Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
     }
   }
 
-  CBF_DEBUG("determinant: " << det);
+  CBF_DEBUG("det: " << det);
 
   CBF_DEBUG("svd: "<< std::endl << q);
 
@@ -298,7 +298,7 @@ Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
     q(i,i) = q(i,i) / (damping_constant + (q(i,i) * q(i,i)));
   }
 
-  CBF_DEBUG("determinant: " << det);
+  CBF_DEBUG("det: " << det);
 
   CBF_DEBUG("svd: "<< std::endl << q);
 
