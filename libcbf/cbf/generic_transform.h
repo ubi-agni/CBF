@@ -78,7 +78,7 @@ namespace CBF {
 	
 		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
-		DampedGenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim,	Float damping_constant = 0.1)
+		DampedGenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim,	Float damping_constant = 0.5)
 		{
 			init(task_dim, resource_dim, damping_constant);
 		}

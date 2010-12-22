@@ -25,6 +25,7 @@
 #include <cbf/difference_sensor_transform.h>
 #include <cbf/kdl_transforms.h>
 #include <cbf/generic_transform.h>
+#include <cbf/transpose_transform.h>
 #include <cbf/convergence_criterion.h>
 #include <cbf/combination_strategy.h>
 
@@ -83,7 +84,7 @@ int main() {
 	CBF::DifferenceSensorTransformPtr st
 		(new CBF::DifferenceSensorTransform(st1, st2));
 
-	CBF::DampedGenericEffectorTransformPtr et(
+	CBF::EffectorTransformPtr et(
 		new CBF::DampedGenericEffectorTransform(3, NUM_OF_JOINT_TRIPLES * 3)
 	);
 	// CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(st));
@@ -95,7 +96,7 @@ int main() {
 	//! The X-Direction..
 	//! Gah, screw c++.. This could be so much easier :D
 	CBF::DummyReferencePtr dref(new CBF::DummyReference(1,3));
-	double ref[] = {-1, -1, 1};
+	double ref[] = {-1, 1, 1};
 	CBF::FloatVector vref(3);
 	std::copy(ref, ref+3, vref.begin());
 	dref->set_reference(vref);
@@ -105,7 +106,7 @@ int main() {
 	//! Create our primitive controller
 	CBF::PrimitiveControllerPtr pc(
 		new CBF::PrimitiveController(
-			1.0,
+			0.1,
 			std::vector<CBF::ConvergenceCriterionPtr>(),
 			dref,
 			p,

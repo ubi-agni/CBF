@@ -15,10 +15,12 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Florian Paul Schmidt
+    Copyright 2009, 2010 Florian Paul Schmidt, Viktor Richter
 */
 
 #include <cbf/svd.h>
+#include <cbf/config.h>
+#include <cbf/debug_macros.h>
 
 namespace CBF {
 
@@ -28,16 +30,20 @@ int svd(
 ) {
 	int i,j,k,l(0),l1,iter,retval;
 	Float c,f,g,h,s,x,y,z;
-	Float *e;
 
 	int m = a.size1();
 	int n = a.size2();
 
-	q.clear();
+	FloatVector e(n);
+
+	q *= 0.0;
+	u *= 0.0;
+	v *= 0.0;
+	//q.clear();
 	u.clear();
 	v.clear();
 
-	e = (Float *)calloc(n,sizeof(Float));
+	//e = (Float *)calloc(n,sizeof(Float));
 	retval = 0;
 
 	/* Copy 'a' to 'u' */		
@@ -262,7 +268,10 @@ int svd(
 		} /* end z */
 	} /* end k */
 
-	free(e);
+	CBF_DEBUG("q: " << q);
+	CBF_DEBUG("u: " << u);
+	CBF_DEBUG("v: " << v);
+
 	return retval;
 }	// C++ fallback for SVD with boost matrices
 } //namespace

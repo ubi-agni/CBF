@@ -54,7 +54,15 @@
 namespace CBF {
 
 FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
-	Float angle = acos(ublas::inner_prod(start, end));
+	CBF_DEBUG("start: " << start);
+	CBF_DEBUG("end: " << end);
+	Float inner = ublas::inner_prod(start/ublas::norm_2(start), end/ublas::norm_2(start));
+	CBF_DEBUG("inner: " << 1.0 - inner);
+	if (inner > 1.0) inner = 1.0;
+	if (inner < -1.0) inner = -1.0;
+
+	Float angle = acos(inner);
+	CBF_DEBUG("angle: " << angle);
 
 	if (fabs(angle) <= slerp_threshold) {
 		CBF_DEBUG("small angle");
@@ -236,16 +244,16 @@ Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
   //! Working through the singularValues Matrix calculating the determinant
   Float det = 1.0;
   for (int i = 0; i < m.size2(); ++i) {
+    det *= q(i,i); ////??????
     if (fabs(q(i,i)) > pseudo_inv_precision_threshold){
       q(i,i) = 1.0 / (q(i,i));
-      det *= q(i,i); ////??????
     } else {
       CBF_DEBUG("SINGULAR");
       q(i,i) = 0.0;
     }
   }
 
-  CBF_DEBUG("deter:" << det);
+  CBF_DEBUG("determinant: " << det);
 
   CBF_DEBUG("svd: "<< std::endl << q);
 
@@ -286,11 +294,11 @@ Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
   Float det = 1.0;
   //! We use the ordinary reciprocal for testing purposes here
   for (int i = 0; i < m.size2(); ++i) {
-    q(i,i) = q(i,i) / (damping_constant + (q(i,i) * q(i,i)));
     det *= q(i,i);
+    q(i,i) = q(i,i) / (damping_constant + (q(i,i) * q(i,i)));
   }
 
-  CBF_DEBUG("deter:" << det);
+  CBF_DEBUG("determinant: " << det);
 
   CBF_DEBUG("svd: "<< std::endl << q);
 

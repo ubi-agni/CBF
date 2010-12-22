@@ -65,7 +65,7 @@ inline Float normalize_angle(Float angle) {
 	return fmod(tmp - M_PI, 2.0 * M_PI) + M_PI;
 }
 
-const Float slerp_threshold = 0.01;
+const Float slerp_threshold = 0.001;
 /** 
 	@brief Calculates the result of n-dimensional SLERP.
 

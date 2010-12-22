@@ -124,7 +124,10 @@ namespace CBF {
 
 		//! Fill vector with data from sensor transform
 		m_SensorTransform->update(m_Resource->get());
+		CBF_DEBUG("jacobian: " << m_SensorTransform->task_jacobian());
+
 		m_EffectorTransform->update(m_Resource->get(), m_SensorTransform->task_jacobian());
+		CBF_DEBUG("inv. jacobian: " << m_EffectorTransform->inverse_task_jacobian());
 	
 		m_CurrentTaskPosition = m_SensorTransform->result();
 		CBF_DEBUG("currentTaskPosition: " << m_CurrentTaskPosition);
