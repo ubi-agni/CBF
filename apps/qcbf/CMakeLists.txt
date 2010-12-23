@@ -15,6 +15,7 @@ message(STATUS "In subdirectory apps/qcbf:")
 #	 )
 #endif()
 #
+
 if(CBF_HAVE_PYXBGEN)
   message(STATUS "  creating target for pycbf.py from schemas.xsd")
   add_custom_command(

@@ -50,6 +50,15 @@ set(CBF_LIBS "")
 set(CBF_INCLUDES "")
 set(CBF_LINKDIRS "")
 
+
+
+if (CBF_HAVE_XCF)
+  set(CBF_LIBS ${CBF_LIBS} ${XCF_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${XCF_INCLUDE_DIRS}) 
+endif()
+
+
+
 if(CBF_HAVE_XSD)
   link_directories("${PROJECT_BINARY_DIR}/schemas")
   set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_BIN_DIR}/libcbf" ${XSD_INC})
@@ -58,29 +67,40 @@ else()
   message(STATUS "  excluding plugin_pool.cc because xsd was not found")
 endif()
 
+
+
 if(CBF_HAVE_CPPAD)
   set(CBF_SOURCES ${CBF_SOURCES} cppad_sensor_transform.cc)
   set(CBF_INCLUDES ${CBF_INCLUDES} ${CPPAD_PATH})
 endif()
 
 
+
 if(CBF_HAVE_KDL)
   set(CBF_SOURCES ${CBF_SOURCES} kdl_transforms.cc)
-  if(CBF_HAVE_XSD)
-    set(CBF_SOURCES ${CBF_SOURCES} c_api.cc)
-  endif()
   set(CBF_LIBS ${CBF_LIBS} ${KDL_LDFLAGS})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${KDL_INCLUDE_DIRS})
-  set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_BINARY_DIR}/libcbf/cbf/")
 else()
-  message(STATUS "  excluding kdl_transforms.cc and c_api.cc because KDL was not found")
+  message(STATUS "  excluding kdl_transforms.cc because KDL was not found")
 endif()
+
+
+
+if(CBF_HAVE_KDL AND CBF_HAVE_XSD)
+  set(CBF_SOURCES ${CBF_SOURCES} c_api.cc)
+else()
+  message(STATUS "  excluding c_api.cc because KDL or XSD was not found")
+endif()
+
+
 
 if (CBF_HAVE_SPACEMOUSE)
   set(CBF_SOURCES ${CBF_SOURCES} spacenavi_reference.cc)
 else()
   message(STATUS "  excluding spacenavi_reference.cc because spacemouse was not found")
 endif()
+
+
 
 if (CBF_HAVE_MEMORY)
   set(CBF_SOURCES ${CBF_SOURCES} memory_resource.cc)
@@ -90,36 +110,37 @@ else()
   message(STATUS "  excluding memory_ressource.cc because memory was not found")
 endif()
 
-if (CBF_HAVE_XCF)
-  set(CBF_LIBS ${CBF_LIBS} ${XCF_LDFLAGS})
-  set(CBF_INCLUDES ${CBF_INCLUDES} ${XCF_INCLUDE_DIRS}) 
 
-  if (CBF_HAVE_XSD)
-    set(CBF_SOURCES ${CBF_SOURCES} xcf_vector_reference.cc)
-  else()
-    message(STATUS "  excluding xcf_vector_reference.cc because xsd was not found")
-  endif()
 
-  if (CBF_HAVE_XMLTIO)
-    set(CBF_SOURCES ${CBF_SOURCES} xcf_resource.cc)
-    set(CBF_LIBS ${CBF_LIBS} ${XMLTIO_LDFLAGS})
-    set(CBF_INCLUDES ${CBF_INCLUDES} ${XMLTIO_INCLUDE_DIRS})
-
-    if(CBF_HAVE_MEMORY AND CBF_HAVE_XSD)
-      set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_sensor_transform.cc xcf_memory_reference.cc)
-      set(CBF_LIBS ${CBF_LIBS} ${MEMORY_LDFLAGS})
-      set(CBF_INCLUDES ${CBF_INCLUDES} ${MEMORY_INCLUDE_DIRS})
-    else()
-      message(STATUS "  excluding xcf_memoy_sensor_transform.cc and xcf_memory_reference.cc because memory was not found")
-    endif() 
-
-  else()
-    message(STATUS "  excluding xcf_resource.cc and xcf_memoy_sensor_transform.cc because xmltio was not found")
-  endif()
-
+if (CBF_HAVE_XCF AND CBF_HAVE_XSD)
+  set(CBF_SOURCES ${CBF_SOURCES} xcf_vector_reference.cc)
 else()
-  message(STATUS "  excluding xcf_vector_reference.cc, xcf_memory_sensor_transform.cc and xcf_ressource.cc because xcf was not found")
+  message(STATUS "  excluding xcf_vector_reference.cc because XCF or XSD was not found")
 endif()
+
+
+
+if (CBF_HAVE_XCF AND CBF_HAVE_XMLTIO)
+  set(CBF_SOURCES ${CBF_SOURCES} xcf_resource.cc)
+  set(CBF_LIBS ${CBF_LIBS} ${XMLTIO_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${XMLTIO_INCLUDE_DIRS})
+else()
+  message(STATUS "  excluding xcf_resource.cc because XCF or xmltio was not found")
+endif()
+
+
+
+if(CBF_HAVE_XCF AND CBF_HAVE_XMLTIO AND CBF_HAVE_MEMORY AND CBF_HAVE_XSD)
+  set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_sensor_transform.cc xcf_memory_reference.cc)
+  set(CBF_LIBS ${CBF_LIBS} ${MEMORY_LDFLAGS})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${MEMORY_INCLUDE_DIRS})
+else()
+  message(STATUS "  excluding xcf_memoy_sensor_transform.cc and xcf_memory_reference.cc")
+  message(STATUS "  because XCF, memory, xmltio or XSD was not found")
+endif()
+
+
+
 
 if (CBF_HAVE_QT)
   set(CBF_SOURCES ${CBF_SOURCES} qt_reference.cc)
@@ -130,6 +151,8 @@ else()
   message(STATUS "  excluding qt_reference.cc and qt_sensor_transform.cc because qt was not found")
 endif()
 
+
+
 if (CBF_HAVE_XRI)
   set(CBF_SOURCES ${CBF_SOURCES} robotinterface_resource.cc)
   set(CBF_LIBS ${CBF_LIBS} ${XRI_LDFLAGS})
@@ -138,10 +161,12 @@ else()
   message(STATUS "  excluding roboterinterface_ressource.cc because xri was not found")
 endif()
 
+
+
 if (CBF_HAVE_EIGEN2)
- set(CBF_INCLUDES ${CBF_INCLUDES} ${EIGEN2_INC})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${EIGEN2_INC})
 else()
-message(STATUS "  excluding generic_transform.cc because eigen2 was not found")
+  message(STATUS "  excluding generic_transform.cc because eigen2 was not found")
 endif()
 
 
@@ -154,7 +179,10 @@ add_library(cbf SHARED
 
 target_link_libraries(cbf ${CBF_LIBS})
 
-SET_TARGET_PROPERTIES(cbf PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+SET_TARGET_PROPERTIES(cbf
+  PROPERTIES VERSION ${CBF_VERSION_MAJOR} 
+  SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+  )
 
 install(TARGETS cbf
   RUNTIME DESTINATION bin
