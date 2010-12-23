@@ -31,7 +31,7 @@ SET_TARGET_PROPERTIES(cbf_simple_test
   )
 
 
-if(CBF_HAVE_MEMORY)
+if(CBF_HAVE_MEMORY AND CBF_HAVE_XSD)
   message(STATUS "  adding executable cbf_simple_test_memory")
 
   add_executable(cbf_simple_test_memory
