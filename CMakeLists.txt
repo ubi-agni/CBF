@@ -6,6 +6,8 @@ project(CBF)
 set(CBF_VERSION_MAJOR 0)
 set(CBF_VERSION_MINOR 1)
 
+enable_testing()
+
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREAD OFF)
 

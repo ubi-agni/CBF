@@ -35,6 +35,7 @@ SET_TARGET_PROPERTIES(cbf_test_functional
   SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
   )
 
+add_test(cbf_test_functional ${PROJECT_BINARY_DIR}/tests/cbf_test_functional cbf_test_functional)
 
 
 if(CBF_HAVE_CPPAD)
@@ -155,4 +156,7 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD AND CBF_HAVE_QT)
     message(STATUS "  not adding executable: cbf_q_xcf_vector_reference_client")
     message(STATUS "  because xcf, xsd or qt was not found")
 endif()
+
+
+
 

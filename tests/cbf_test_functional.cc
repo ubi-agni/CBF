@@ -121,4 +121,6 @@ int main() {
 	std::cout << "s6" << std::endl;
 	std::cout << "result   " << s6->result() << std::endl;
 	std::cout << "jacobian " << s6->task_jacobian() << std::endl;
+
+	return EXIT_SUCCESS;
 }
