@@ -37,10 +37,22 @@ int main(int argc, char **argv) {
 	memoryPtr -> addNamespacePrefix("xmlns:p1", "http://www.cit-ec.uni-bielefeld.de/CBF");
 	mi::ResultsPtr results = memoryPtr -> query(xPath.str(), mi::MemoryInterface::LazyEvaluation);
 
-	std::string document;	
-	if(results -> hasNext()){
+	std::string document;
+	bool noDocumentFound = true;
+	std::auto_ptr<CBFSchema::XCFMemoryReferenceVector> reference;
+	while(noDocumentFound && (results -> hasNext())){ 
 		results -> next(document);
-	} else {
+		try{
+			CBF_DEBUG("Parsing as XCFmemoryReferenceVector: " << document);
+			std::istringstream s(document);
+			reference = CBFSchema::XCFMemoryReferenceVector_(s, xml_schema::flags::dont_validate);
+			noDocumentFound = false;
+		} catch (...){
+			CBF_DEBUG("Could not parse document. Trying next.");
+		}
+	}
+
+	if (noDocumentFound){
 		CBF_DEBUG("XPath: " << xPath.str());
 		CBF_THROW_RUNTIME_ERROR("Could not find an XCFMemoryReferenceVector with the specified name "
 					"on the memory_server.");
@@ -48,10 +60,6 @@ int main(int argc, char **argv) {
 
 	xmltio::XPath referenceVectorPath("/p1:XCFMemoryReferenceVector/Vector/String");
 	xmltio::Location referenceVectorLoc(document, referenceVectorPath);
-
-	std::istringstream s(document);
-	std::auto_ptr<CBFSchema::XCFMemoryReferenceVector> reference = 
-				CBFSchema::XCFMemoryReferenceVector_(s, xml_schema::flags::dont_validate);
 
 	CBF_DEBUG("dimension: " << create_vector(reference -> Vector()));
 	

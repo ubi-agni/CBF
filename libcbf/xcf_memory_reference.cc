@@ -38,6 +38,8 @@ namespace CBF {
 		{
 			init();
 		}
+
+		static XMLDerivedFactory<XCFMemoryReference, CBFSchema::XCFMemoryReference> x;
 	#endif
 
 	XCFMemoryReference::XCFMemoryReference

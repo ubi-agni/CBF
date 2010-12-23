@@ -38,7 +38,7 @@ namespace CBF {
 			m_ResultName = xml_instance.ResultName();
 		}
 
-		static XMLDerivedFactory<XCFMemorySensorTransform, CBFSchema::XCFMemorySensorTransform> x;	
+		static XMLDerivedFactory<XCFMemorySensorTransform, CBFSchema::XCFMemorySensorTransform> x;
 	#endif
 
 	XCFMemorySensorTransform::XCFMemorySensorTransform(
