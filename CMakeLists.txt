@@ -81,7 +81,11 @@ pkg_check_modules(EIGEN2 eigen2)
 if (EIGEN2_FOUND)
   message(STATUS "  found")
   set(CBF_HAVE_EIGEN2 1)
+else()
+  set(CBF_HAVE_EIGEN2 1)
+  include_directories(eigen)
 endif()
+
 
 message(STATUS "Looking for QT4")
 pkg_check_modules(QT QtCore QtGui)
