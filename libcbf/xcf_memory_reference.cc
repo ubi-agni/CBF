@@ -57,13 +57,10 @@ namespace CBF {
 		// This way the Dimension will be published.
 		CBF_DEBUG("creating vector string");
 
+		FloatVector floatVector(m_Dim);
+		floatVector.clear();
 		std::stringstream vector_string;
-		vector_string << "[" << m_Dim << "](";
-		for (unsigned int i = 0; i < m_Dim; ++i) {
-			vector_string << 0;
-			if ( i !=  m_Dim -1 ) vector_string << ",";
-		}
-		vector_string << ")";
+		vector_string << floatVector;
 
 		CBF_DEBUG("creating vector doc");
 		CBFSchema::BoostVector vectorDoc(vector_string.str());

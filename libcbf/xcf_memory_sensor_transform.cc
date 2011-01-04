@@ -59,41 +59,15 @@ namespace CBF {
 
 	void XCFMemorySensorTransform::send(){
 
-		//Getting the result vector from the SensorTransform.
-		FloatVector result = m_SensorTransform -> result();
-
-		//Getting the task-jacobian matrix from the SensorTransform.
-		FloatMatrix task_jacobian = m_SensorTransform -> task_jacobian();
-
-		std::stringstream vector_string, matrix_string;
-
-		//Creating an XML-string for the result vector.
+		//Getting the result vector from the SensorTransform, converting to string.
 		CBF_DEBUG("creating vector string");
-		vector_string << "[" << result.size() << "](";
-		for (unsigned int i = 0; i < result.size(); ++i) {
-			vector_string << result(i);
-			if ( i !=  result.size() -1 ) vector_string << ",";
-		}
-
-		vector_string << ")";
-
-		//Creating an XML-string for the task-jacobian.
-		unsigned int i,j,m,n;
-		m = task_jacobian.size1();
-		n = task_jacobian.size2();
-
+		std::stringstream vector_string;
+		vector_string << m_SensorTransform -> result();
+		
+		//Getting the task-jacobian matrix from the SensorTransform, converting to string.
 		CBF_DEBUG("creating matrix string");
-		matrix_string << "[" << m << "," << n << "](";
-		for (i = 0; i < m ; ++i) {
-			matrix_string << "(";
-			for (j = 0; j < n ; j++){
-				matrix_string << task_jacobian(i,j);
-				if (j != n -1 ) matrix_string << ",";
-			}
-			matrix_string << ")";
-			if (i != m - 1) matrix_string << ",";
-		}
-		matrix_string << ")";		
+		std::stringstream matrix_string;
+		matrix_string << m_SensorTransform -> task_jacobian();
 
 		if(m_ResultLocationPtr == NULL){
 			//First insert the XML-document
