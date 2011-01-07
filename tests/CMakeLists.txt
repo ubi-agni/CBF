@@ -60,11 +60,12 @@ endif()
 
 
 
-if(CBF_HAVE_XCF AND CBF_HAVE_XSD)
+if(CBF_HAVE_MEMORY AND CBF_HAVE_XCF AND CBF_HAVE_XMLTIO AND CBF_HAVE_XSD)
   message(STATUS "  adding executable: cbf_test_xcf_reference")
   message(STATUS "  adding executable: cbf_test_xcf_reference_client")
   message(STATUS "  adding executable: cbf_test_xcf_memory_reference")
   message(STATUS "  adding executable: cbf_test_xcf_memory_reference_client")
+  message(STATUS "  adding executable: cbf_test_xcf_memory_resource_adder")
 
   add_executable(cbf_test_xcf_reference
     cbf_test_xcf_reference.cc
@@ -122,13 +123,28 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD)
     )
 
 
+  add_executable(cbf_test_xcf_memory_resource_adder
+    cbf_test_xcf_memory_resource_adder.cc
+    )
+
+  target_link_libraries(cbf_test_xcf_memory_resource_adder
+    cbf
+    )
+
+  SET_TARGET_PROPERTIES(cbf_test_xcf_memory_resource_adder
+    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
+    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+    )
+
+
 else()
   message(STATUS "  not adding executables:")
   message(STATUS "  -cbf_test_xcf_reference")
   message(STATUS "  -cbf_test_xcf_reference_client")
   message(STATUS "  -cbf_test_xcf_memory_reference")
   message(STATUS "  -cbf_test_xcf_memory_reference_client")
-  message(STATUS "  because xcf or xsd was not found")
+  message(STATUS "  -cbf_test_xcf_memory_resource_adder")
+  message(STATUS "  because memory, xcf, xmltio or xsd was not found")
 endif()
 
 
