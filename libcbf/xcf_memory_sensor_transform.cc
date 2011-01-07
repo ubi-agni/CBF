@@ -15,7 +15,7 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Viktor Richter
+    Copyright 2010 Viktor Richter
 */
 
 /* -*- mode: c-non-suck; -*- */
@@ -34,7 +34,7 @@ namespace CBF {
 			SensorTransformPtr pt = (XMLObjectFactory::instance() 
 						-> create<SensorTransform>(xml_instance.SensorTransform1()));
 			m_SensorTransform = pt;
-			m_MemoryPtr = memory::interface::MemoryInterface::getInstance(xml_instance.URI());
+			m_MemoryInterface = memory::interface::MemoryInterface::getInstance(xml_instance.URI());
 			m_ResultName = xml_instance.ResultName();
 		}
 
@@ -47,7 +47,7 @@ namespace CBF {
 					SensorTransformPtr sensor_transform
 					)
 	{
-		m_MemoryPtr = memory::interface::MemoryInterface::getInstance(uri);
+		m_MemoryInterface = memory::interface::MemoryInterface::getInstance(uri);
 		m_ResultName = result_name;
 		m_SensorTransform = sensor_transform;
 	}
@@ -89,13 +89,15 @@ namespace CBF {
 			//Insert the result-XML at the server.
 			CBF_DEBUG("insert result at memory-server");
 		
-			std::string documentText = m_MemoryPtr -> insert(s.str());
+			std::string documentText = m_MemoryInterface -> insert(s.str());
 
 			xmltio::XPath rPath(ResultXPathString());
 			xmltio::XPath tjPath(TeskJacobianXPathString());
 
-			m_ResultLocationPtr = LocationPtr(new xmltio::Location(documentText,rPath));
-			m_TaskJacobianLocationPtr = LocationPtr(new xmltio::Location(documentText,tjPath));
+			m_ResultLocationPtr = 
+				boost::shared_ptr<xmltio::Location>(new xmltio::Location(documentText,rPath));
+			m_TaskJacobianLocationPtr = 
+				boost::shared_ptr<xmltio::Location>(new xmltio::Location(documentText,tjPath));
 		} else {
 			//Edit the document and replace the one on the memory
 
@@ -108,7 +110,7 @@ namespace CBF {
 			 * Because the xmltio::Location holds the whole document we can take the 
 			 * one from the result-Location.
 			*/
-			m_MemoryPtr -> replace(m_ResultLocationPtr -> getDocumentText());
+			m_MemoryInterface -> replace(m_ResultLocationPtr -> getDocumentText());
 		
 
 		}

@@ -15,7 +15,7 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Viktor Richter
+    Copyright 2010 Viktor Richter
 */
 
 #ifndef CBF_XCF_MEMORY_REFERENCE_HH
@@ -56,11 +56,16 @@ namespace CBF {
 */
 struct XCFMemoryReference : public Reference {
 
+	/**
+		@brief Creates an XCFMemoryReference from an xml-instance.
+
+		@param xml_instance An instance of a CBFSchema::XCFMemoryReference.
+	*/
 	XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance);
 
 	/**
-		Creates an XCFMemoryReference connecting to the Memory named URI
-		and adds a subscription for the resource named resource_name.
+		@brief Creates an XCFMemoryReference connecting to the Memory named URI
+		and adds a subscription for the resource named reference_name.
 		The constructor also expects a dimension argument. Later RMIs
 		are checked for matching dimensionality.
 
@@ -103,7 +108,7 @@ struct XCFMemoryReference : public Reference {
 	/**
 		@brief: The pointer to the XCFMemory server.
 	*/
-	memory::interface::MemoryInterface::pointer m_MemoryPtr;
+	memory::interface::MemoryInterface::pointer m_MemoryInterface;
 
 	/**
 		@brief The name of the XCFMemoryReference.
@@ -125,7 +130,7 @@ struct XCFMemoryReference : public Reference {
 	*/
 	const char* XPathString(){
 		std::stringstream xPathStream;
-		xPathStream << "/p1:XCFMemoryReferenceVector/ReferenceName['" << m_ReferenceName << "']";
+		xPathStream << "/p1:XCFMemoryReferenceVector[ReferenceName='" << m_ReferenceName << "']";
 		return xPathStream.str().c_str();
 	}
 };

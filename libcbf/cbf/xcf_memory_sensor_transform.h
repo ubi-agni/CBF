@@ -15,7 +15,7 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Viktor Richter
+    Copyright 2010 Viktor Richter
 */
 
 #ifndef XCF_MEMORY_SENSOR_TRANSFORM_HH
@@ -108,10 +108,6 @@ namespace CBF {
 		*/
 		virtual void send();
 
-		/**
-			@brief: A shared pointer to an xmltio::Location.
-		*/
-		typedef boost::shared_ptr<xmltio::Location> LocationPtr;
 
 		protected:
 
@@ -119,13 +115,13 @@ namespace CBF {
 			@brief: Points to the 'Result' element of 
 			the inserted XCFMemorySensorTransformResult document.
 		*/
-		LocationPtr m_ResultLocationPtr;
+		boost::shared_ptr<xmltio::Location> m_ResultLocationPtr;
 
 		/**
 			@brief: Points to the 'TaskJacobian' element of 
 			the inserted XCFMemorySensorTransformResult document.
 		*/
-		LocationPtr m_TaskJacobianLocationPtr;
+		boost::shared_ptr<xmltio::Location> m_TaskJacobianLocationPtr;
 
 		/**
 			@brief: The name of the XCFMemorySensorTransformResult.
@@ -140,7 +136,7 @@ namespace CBF {
 		/**
 			@brief: The pointer to the XCFMemory server.
 		*/
-		memory::interface::MemoryInterface::pointer m_MemoryPtr;
+		memory::interface::MemoryInterface::pointer m_MemoryInterface;
 
 		/**
 			@brief: Returns the string that points to the Result 

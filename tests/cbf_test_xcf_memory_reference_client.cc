@@ -19,6 +19,10 @@
 using namespace CBF;
 namespace mi = memory::interface;
 
+/**
+	@brief This app can be used to send XCFMemoryReferenceVectors to an active_memory.
+	Usage: cbf_test_xcf_memory_reference_client 'memory_server-uri' 'ResourceName'
+*/
 int main(int argc, char **argv) {
 	if (argc < 3) {
 		std::cout << "Usage: cbf_test_xcf_memory_reference_client "
@@ -31,11 +35,13 @@ int main(int argc, char **argv) {
 	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(argv[1]));
 
 	std::stringstream xPath;
+//	xPath << "/*[local-name()='p1' and namespace-uri()='http://www.cit-ec.uni-bielefeld.de/CBF']";
 //	xPath << "/p1:XCFMemoryReferenceVector/ReferenceName['" << argv[2] << "']";
 	xPath << "/";
 
 	memoryPtr -> addNamespacePrefix("xmlns:p1", "http://www.cit-ec.uni-bielefeld.de/CBF");
-	mi::ResultsPtr results = memoryPtr -> query(xPath.str(), mi::MemoryInterface::LazyEvaluation);
+
+	mi::ResultsPtr results = memoryPtr -> query(xPath.str(), 0x04);
 
 	std::string document;
 	bool noDocumentFound = true;
@@ -55,7 +61,7 @@ int main(int argc, char **argv) {
 	if (noDocumentFound){
 		CBF_DEBUG("XPath: " << xPath.str());
 		CBF_THROW_RUNTIME_ERROR("Could not find an XCFMemoryReferenceVector with the specified name "
-					"on the memory_server.");
+					"on the memory_server or XML was not parsable");
 	}
 
 	xmltio::XPath referenceVectorPath("/p1:XCFMemoryReferenceVector/Vector/String");

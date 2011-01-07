@@ -15,7 +15,7 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Viktor Richter
+    Copyright 2010 Viktor Richter
 */
 
 #include <cbf/xcf_memory_reference.h>
@@ -32,7 +32,7 @@ namespace CBF {
 	#ifdef CBF_HAVE_XSD
 		XCFMemoryReference::XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance)
 			:
-			m_MemoryPtr(mi::MemoryInterface::getInstance(xml_instance.URI())),
+			m_MemoryInterface(mi::MemoryInterface::getInstance(xml_instance.URI())),
 			m_ReferenceName(xml_instance.ReferenceName()),
 			m_Dim(xml_instance.Dimension())
 		{
@@ -45,7 +45,7 @@ namespace CBF {
 	XCFMemoryReference::XCFMemoryReference
 		(const std::string &uri, const std::string &reference_name, unsigned int dim) 
 		: 
-		m_MemoryPtr(mi::MemoryInterface::getInstance(uri)),
+		m_MemoryInterface(mi::MemoryInterface::getInstance(uri)),
 		m_ReferenceName(reference_name),
 		m_Dim(dim)
 	{ 	
@@ -70,7 +70,7 @@ namespace CBF {
 		std::ostringstream s;
 		CBFSchema::XCFMemoryReferenceVector_ (s, v);
 
-		std::string document = m_MemoryPtr -> insert(s.str());
+		std::string document = m_MemoryInterface -> insert(s.str());
 
 		CBF_DEBUG("Document" << document);
 
@@ -87,9 +87,9 @@ namespace CBF {
 
 		mi::TriggeredAction triggeredAction(f);
 
-		//m_MemoryPtr -> addNamespacePrefix("p1", "http://www.cit-ec.uni-bielefeld.de/CBF");
+		//m_MemoryInterface -> addNamespacePrefix("p1", "http://www.cit-ec.uni-bielefeld.de/CBF");
 
-		m_MemoryPtr -> add(condition, triggeredAction);
+		m_MemoryInterface -> add(condition, triggeredAction);
 	}
 
 	void XCFMemoryReference::update()  {
