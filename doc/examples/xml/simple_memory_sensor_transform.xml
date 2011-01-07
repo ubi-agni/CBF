@@ -29,7 +29,7 @@
    <Dimension> 3 </Dimension>
   </SensorTransform>
   <URI>xcf:wb</URI>
-  <ResultName>SimpleMemory</ResultName>
+  <ResultName>SimpleMemorySensorTransform</ResultName>
  </SensorTransform>
 
  <EffectorTransform xsi:type="cbf:TransposeEffectorTransform">

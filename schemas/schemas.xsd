@@ -765,6 +765,37 @@
   </xsd:complexType>
 
 
+  <xsd:complexType name="XCFMemoryResource">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Resource">
+		  <xsd:sequence>
+			 <xsd:element name="Resource" type="CBF:Resource"/>
+			 <xsd:element name="URI" type="xsd:string"/>
+			 <xsd:element name="ResourceName" type="xsd:string"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <xsd:element name="XCFMemoryResourceState" type="CBF:XCFMemoryResourceState"/>
+  <xsd:complexType name="XCFMemoryResourceState">
+	 <xsd:sequence>
+		<xsd:element name="ResourceName" type="xsd:string"/>
+		<xsd:element name="Vector" type="CBF:Vector"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:element name="XCFMemoryResourceAdd" type="CBF:XCFMemoryResourceAdd"/>
+  <xsd:complexType name="XCFMemoryResourceAdd">
+	 <xsd:sequence>
+		<xsd:element name="ResourceName" type="xsd:string"/>
+		<xsd:element name="Vector" type="CBF:Vector"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+
   <xsd:complexType name="CompositeSensorTransform">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:SensorTransform">

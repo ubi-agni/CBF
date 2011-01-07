@@ -196,9 +196,14 @@ endif()
 
 
 if(CBF_HAVE_MEMORY AND CBF_HAVE_XCF AND CBF_HAVE_XMLTIO AND CBF_HAVE_XSD)
-  set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_sensor_transform.cc xcf_memory_reference.cc)
+  set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_sensor_transform.cc)
+  set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_reference.cc)
+  set(CBF_SOURCES ${CBF_SOURCES} xcf_memory_resource.cc)
 else()
-  message(STATUS "  excluding xcf_memoy_sensor_transform.cc and xcf_memory_reference.cc")
+  message(STATUS "  excluding")
+  message(STATUS "  - xcf_memoy_sensor_transform.cc")
+  message(STATUS "  - xcf_memory_reference.cc")
+  message(STATUS "  - xcf_memory_resource.cc")
   message(STATUS "  because XCF, memory, xmltio or XSD was not found")
 endif()
 
