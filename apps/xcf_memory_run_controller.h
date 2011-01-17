@@ -89,10 +89,9 @@ struct XCFMemoryRunController {
 		@brief Returns the string that identifies the XML-document which is listened for.
 	*/
 	const char* XPathString(){
-//		std::stringstream xPathStream;
-//		xPathStream << "/XCFMemoryRunController[ControllerName='" << m_ControllerName << "']";
-//		return xPathStream.str().c_str();
-		return "/";
+		std::stringstream xPathStream;
+		xPathStream << "/p1:XCFMemoryRunController[ControllerName='" << m_ControllerName << "']";
+		return xPathStream.str().c_str();
 	}
 
 	/**
