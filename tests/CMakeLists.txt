@@ -1,5 +1,6 @@
 message(STATUS "In subdirectory tests:")
 
+
 include_directories(${PROJECT_SOURCE_DIR}/libcbf/ ${PROJECT_BINARY_DIR}/libcbf/)
 
 if(CBF_HAVE_CPPAD)
@@ -20,44 +21,35 @@ if(CBF_HAVE_QT)
 endif()
 
 
-
 message(STATUS "  adding executable: cbf_test_functional")
 add_executable(cbf_test_functional
   cbf_test_functional.cc
   )
-
 target_link_libraries(cbf_test_functional
   cbf
   )  
-
-SET_TARGET_PROPERTIES(cbf_test_functional
+set_target_properties(cbf_test_functional
   PROPERTIES VERSION ${CBF_VERSION_MAJOR}
   SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
   )
-
 add_test(cbf_test_functional ${PROJECT_BINARY_DIR}/tests/cbf_test_functional cbf_test_functional)
 
 
 if(CBF_HAVE_CPPAD)
   message(STATUS "  adding executable: cbf_test_cppad")
-
   add_executable(cbf_test_cppad
     cbf_test_cppad.cc
     )
-
   target_link_libraries(cbf_test_cppad
     cbf
     )
-
-  SET_TARGET_PROPERTIES(cbf_test_cppad
+  set_target_properties(cbf_test_cppad
     PROPERTIES VERSION ${CBF_VERSION_MAJOR}
     SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
     )
-
 else()
   message(STATUS "  not adding executable: cbf_test_cppad because cppad was not found.")
 endif()
-
 
 
 if(CBF_HAVE_MEMORY AND CBF_HAVE_XCF AND CBF_HAVE_XMLTIO AND CBF_HAVE_XSD)
@@ -70,72 +62,47 @@ if(CBF_HAVE_MEMORY AND CBF_HAVE_XCF AND CBF_HAVE_XMLTIO AND CBF_HAVE_XSD)
   add_executable(cbf_test_xcf_reference
     cbf_test_xcf_reference.cc
     )
-
   target_link_libraries(cbf_test_xcf_reference
     cbf
     )
 
-  SET_TARGET_PROPERTIES(cbf_test_xcf_reference 
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-    )
-
-
   add_executable(cbf_test_xcf_reference_client
     cbf_test_xcf_reference_client.cc
     )
-
   target_link_libraries(cbf_test_xcf_reference_client
     cbf
     )
 
-  SET_TARGET_PROPERTIES(cbf_test_xcf_reference_client
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-    )
-
-
   add_executable(cbf_test_xcf_memory_reference
     cbf_test_xcf_memory_reference.cc
     )
-
   target_link_libraries(cbf_test_xcf_memory_reference
     cbf
     )
 
-  SET_TARGET_PROPERTIES(cbf_test_xcf_memory_reference
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-    )
-
-
   add_executable(cbf_test_xcf_memory_reference_client
     cbf_test_xcf_memory_reference_client.cc
     )
-
   target_link_libraries(cbf_test_xcf_memory_reference_client
     cbf
     )
 
-  SET_TARGET_PROPERTIES(cbf_test_xcf_memory_reference_client
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-    )
-
-
   add_executable(cbf_test_xcf_memory_resource_adder
     cbf_test_xcf_memory_resource_adder.cc
     )
-
   target_link_libraries(cbf_test_xcf_memory_resource_adder
     cbf
     )
 
-  SET_TARGET_PROPERTIES(cbf_test_xcf_memory_resource_adder
+  set_target_properties(
+    cbf_test_xcf_reference
+    cbf_test_xcf_reference_client
+    cbf_test_xcf_memory_reference
+    cbf_test_xcf_memory_reference_client
+    cbf_test_xcf_memory_resource_adder
     PROPERTIES VERSION ${CBF_VERSION_MAJOR}
     SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
     )
-
 
 else()
   message(STATUS "  not adding executables:")
@@ -148,7 +115,6 @@ else()
 endif()
 
 
-
 if(CBF_HAVE_XCF AND CBF_HAVE_XSD AND CBF_HAVE_QT)
   message(STATUS "  adding executable: cbf_q_xcf_vector_reference_client")
 
@@ -157,13 +123,11 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD AND CBF_HAVE_QT)
   add_executable(cbf_q_xcf_vector_reference_client
     cbf_q_xcf_vector_reference_client.cc ${MOC_SOURCES}
     )
-
   target_link_libraries(cbf_q_xcf_vector_reference_client
     ${QT_LIBRARIES}
     cbf
     )
-
-  SET_TARGET_PROPERTIES(cbf_q_xcf_vector_reference_client  
+  set_target_properties(cbf_q_xcf_vector_reference_client  
     PROPERTIES VERSION ${CBF_VERSION_MAJOR}
     SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
     )

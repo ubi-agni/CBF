@@ -796,6 +796,15 @@
   </xsd:complexType>
 
 
+  <xsd:element name="XCFMemoryRunController" type="CBF:XCFMemoryRunController"/>
+  <xsd:complexType name="XCFMemoryRunController">
+	 <xsd:sequence>
+		<xsd:element name="ControllerName" type="xsd:string"/>
+		<xsd:element name="ControlBasis" type="CBF:ControlBasis"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+
   <xsd:complexType name="CompositeSensorTransform">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:SensorTransform">

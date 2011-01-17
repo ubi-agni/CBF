@@ -20,7 +20,7 @@ using namespace CBF;
 namespace mi = memory::interface;
 
 /**
-	@brief This app can be used to call the 'add' event on an XCFMemoryResource.
+	@brief This app can be used to send a XCFMemoryResourceAdd document to an active_memory.
 	Usage: cbf_test_xcf_memory_reference_client 'memory_server-uri' 'ResourceName'
 */
 int main(int argc, char **argv) {
