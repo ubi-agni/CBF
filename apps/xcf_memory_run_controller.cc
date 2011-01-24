@@ -26,46 +26,203 @@ namespace CBF {
 
 namespace mi = memory::interface;
 
-		XCFMemoryRunController::XCFMemoryRunController(
-				std::string controller_name,
+	XCFMemoryRunController::XCFMemoryRunController(
+				std::string run_controller_name,
 				std::string active_memory_name,
-				CBFRunControllerPtr run_controller
+				unsigned int sleep_time,
+				unsigned int steps,
+				unsigned int verbosity_level
+				#ifdef CBF_HAVE_QT
+					,bool qt_support
+				#endif
 				)
 		:
-		m_ControllerName(controller_name),
+		m_RunControllerName(run_controller_name),
 		m_MemoryInterface(mi::MemoryInterface::getInstance(active_memory_name)),
-		m_RunController(run_controller)
+		m_RunController(new CBFRunController(
+			sleep_time,
+			steps,
+			verbosity_level
+			#ifdef CBF_HAVE_QT
+				,qt_support
+			#endif
+			)),
+		m_ControllerMap()
 	{
-		CBF_DEBUG("Subscribing at active_memory");
+		unsigned int event = memory::interface::Event::INSERT | memory::interface::Event::REPLACE;
 
-		mi::Condition condition(memory::interface::Event::INSERT, XPathString());
-		mi::TriggeredAction triggered_action(boost::bind(&XCFMemoryRunController::start_controller, this, _1));
-
+		CBF_DEBUG("Subscribing Add at active_memory");
+		mi::Condition condition(event, addXPath());
+		mi::TriggeredAction triggered_action(boost::bind(&XCFMemoryRunController::triggered_action_add, this, _1));
 		mi::Subscription subscription(condition, triggered_action);
+		m_MemoryInterface -> subscribe(subscription);
 
+		CBF_DEBUG("Subscribing Options at active_memory");
+		condition = mi::Condition(event, optionsXPath());
+		triggered_action = mi::TriggeredAction(boost::bind(&XCFMemoryRunController::triggered_action_options, this, _1));
+		subscription = mi::Subscription(condition, triggered_action);
+		m_MemoryInterface -> subscribe(subscription);
+
+		CBF_DEBUG("Subscribing Add at active_memory");
+		condition = mi::Condition(event, executeXPath());
+		triggered_action = mi::TriggeredAction(boost::bind(&XCFMemoryRunController::triggered_action_execute, this, _1));
+		subscription = mi::Subscription(condition, triggered_action);
+		m_MemoryInterface -> subscribe(subscription);
+
+		CBF_DEBUG("Subscribing Add at active_memory");
+		condition = mi::Condition(event, stopXPath());
+		triggered_action = mi::TriggeredAction(boost::bind(&XCFMemoryRunController::triggered_action_stop, this, _1));
+		subscription = mi::Subscription(condition, triggered_action);
+		m_MemoryInterface -> subscribe(subscription);
+
+		CBF_DEBUG("Subscribing Add at active_memory");
+		condition = mi::Condition(event, loadControllersXPath());
+		triggered_action = mi::TriggeredAction(boost::bind(&XCFMemoryRunController::triggered_action_load_controllers, this, _1));
+		subscription = mi::Subscription(condition, triggered_action);
 		m_MemoryInterface -> subscribe(subscription);
 	}
 
-	void XCFMemoryRunController::start_controller(const memory::interface::Event &event){
+	void XCFMemoryRunController::triggered_action_add(const memory::interface::Event &event){
 		CBF_DEBUG("doc: " << event.getDocument());
 	
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
-//		std::string controlBasisText = event.getDocument().getRootLocation()["ControlBasis"].getTextValue();
 
-		CBF_DEBUG("parsing XML");
+		CBF_DEBUG("parsing XML for controllers, adding");
 		try {
 			std::istringstream s(documentText);
-			std::auto_ptr<CBFSchema::XCFMemoryRunController> run_controller = 
-				CBFSchema::XCFMemoryRunController_(s, xml_schema::flags::dont_validate);
+			std::auto_ptr<CBFSchema::XCFMemoryRunControllerAdd> controllerAdd = 
+				CBFSchema::XCFMemoryRunControllerAdd_(s, xml_schema::flags::dont_validate);
 
-			CBF::ControlBasisPtr control_basis(new CBF::ControlBasis(run_controller -> ControlBasis()));
+			CBF_DEBUG("parsing XML for optional ControlBasis");
+			if(controllerAdd -> ControlBasis().present()){
+				CBFSchema::ControlBasis cb = controllerAdd -> ControlBasis().get();
+				std::string name;
+				for (CBFSchema::ControlBasis::Controller_const_iterator it =
+					cb.Controller().begin();
+					it != cb.Controller().end();
+					++it)
+				{
+					if(it -> Name().present()){
+						std::string name = it -> Name().get();
+						m_ControllerMap[name] = *it;
+					} else {
+						CBF_DEBUG("controller has no name. ignoring");
+					}
+				}
+			}
 
-			CBF_DEBUG("setting the control_basis");
-			m_RunController -> setControlBasis(control_basis);
-			m_RunController -> start_controller();
+			CBF_DEBUG("parsing XML for list of controllers");
+			for (CBFSchema::XCFMemoryRunControllerAdd::Controller_sequence::const_iterator it 
+					= controllerAdd -> Controller().begin();
+				it != controllerAdd -> Controller().end();
+				++it)
+			{
+				if(it -> Name().present()){
+					std::string name = it -> Name().get();
+					m_ControllerMap[name] = *it;
+				} else {
+					CBF_DEBUG("controller has no name. ignoring");
+				}
+			}
+		} catch (...){
+			CBF_DEBUG("Could not parse document as XCFMemoryRunControllerAdd");
+		}
+	}
+
+	void XCFMemoryRunController::triggered_action_options(const memory::interface::Event &event){
+		CBF_DEBUG("doc: " << event.getDocument());
+	
+		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
+
+		CBF_DEBUG("parsing XML for options");
+		try {
+			std::istringstream s(documentText);
+			std::auto_ptr<CBFSchema::XCFMemoryRunControllerOptions> controllerOpt = 
+				CBFSchema::XCFMemoryRunControllerOptions_(s, xml_schema::flags::dont_validate);
+
+			if(controllerOpt -> SleepTime().present()){
+				CBF_DEBUG("parsing XML for sleep time");
+				unsigned int time = controllerOpt -> SleepTime().get();
+				CBF_DEBUG("changing sleep_time");
+				m_RunController -> setSleepTime(time);
+			}
+
+			if(controllerOpt -> Steps().present()){
+				CBF_DEBUG("parsing XML for steps");
+				unsigned int steps = controllerOpt -> Steps().get();
+				m_RunController -> setStepCount(steps);
+			}
 
 		} catch (...){
-			CBF_DEBUG("Could not parse document as ControlBasis");
+			CBF_DEBUG("Could not parse document as XCFMemoryRunControllerOptions");
+		}
+	}
+
+	void XCFMemoryRunController::triggered_action_execute(const memory::interface::Event &event){
+		CBF_DEBUG("doc: " << event.getDocument());
+	
+		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
+
+		CBF_DEBUG("parsing XML for controller name");
+		try {
+			std::istringstream s(documentText);
+			std::auto_ptr<CBFSchema::XCFMemoryRunControllerExecute> controllerEx = 
+				CBFSchema::XCFMemoryRunControllerExecute_(s, xml_schema::flags::dont_validate);
+
+			CBF_DEBUG("parsing controller name");
+			std::string controller_name = controllerEx -> ControllerName();
+
+			CBF_DEBUG("starting controller called: " << controller_name);
+			m_RunController -> start_controller(controller_name);
+		} catch (...){
+			CBF_DEBUG("Could not parse document as XCFMemoryRunControllerExecute");
+		}
+	}
+
+	void XCFMemoryRunController::triggered_action_stop(const memory::interface::Event &event){
+		CBF_DEBUG("doc: " << event.getDocument());
+		CBF_DEBUG("stopping controller");
+		m_RunController -> stop_controller();
+	}
+
+	void XCFMemoryRunController::triggered_action_load_controllers(const memory::interface::Event &event){
+		CBF_DEBUG("doc: " << event.getDocument());
+	
+		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
+
+		CBF_DEBUG("parsing XML for controller names");
+		try {
+			std::istringstream s(documentText);
+			std::auto_ptr<CBFSchema::XCFMemoryRunControllerLoadControllers> controllerLC = 
+				CBFSchema::XCFMemoryRunControllerLoadControllers_(s, xml_schema::flags::dont_validate);
+
+			CBFSchema::ControlBasis controlBasis;
+
+			CBF_DEBUG("parsing controller names");
+			for (CBFSchema::XCFMemoryRunControllerLoadControllers::
+					ControllerName_sequence::const_iterator it 
+					= controllerLC -> ControllerName().begin();
+				it != controllerLC -> ControllerName().end();
+				++it)
+			{
+				if (m_ControllerMap.find(*it) != m_ControllerMap.end()) {
+					controlBasis.Controller().push_back(m_ControllerMap[*it]);	
+				} else {
+					CBF_DEBUG("Could not find controller named: " << *it << ". Ignoring.");
+				}
+			}
+
+			CBF_DEBUG("creating control_basis");
+			CBF::ControlBasisPtr control_basis(new CBF::ControlBasis(controlBasis));
+
+			if(control_basis -> controllers().size() > 0){
+				CBF_DEBUG("setting the control_basis");
+				m_RunController -> setControlBasis(control_basis);
+			} else {
+				CBF_DEBUG("not setting control_basis because basis is empty");
+			}
+		} catch (...){
+			CBF_DEBUG("Could not parse document as XCFMemoryRunControllerLoadContrroller");
 		}
 	}
 

@@ -796,11 +796,57 @@
   </xsd:complexType>
 
 
-  <xsd:element name="XCFMemoryRunController" type="CBF:XCFMemoryRunController"/>
-  <xsd:complexType name="XCFMemoryRunController">
+  <xsd:element name="XCFMemoryRunControllerAdd" type="CBF:XCFMemoryRunControllerAdd"/>
+  <xsd:complexType name="XCFMemoryRunControllerAdd">
 	 <xsd:sequence>
+		<xsd:element name="RunControllerName" type="xsd:string"/>
+		<xsd:element name="ControlBasis" type="CBF:ControlBasis" minOccurs="0"/>
+		<xsd:element name="Controller" type="CBF:Controller" minOccurs="0" maxOccurs="unbounded"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:element name="XCFMemoryRunControllerOptions" type="CBF:XCFMemoryRunControllerOptions"/>
+  <xsd:complexType name="XCFMemoryRunControllerOptions">
+	 <xsd:sequence>
+		<xsd:element name="RunControllerName" type="xsd:string"/>
+		<xsd:element name="SleepTime" type="xsd:nonNegativeInteger" minOccurs="0"/>
+		<xsd:element name="Steps" type="xsd:nonNegativeInteger" minOccurs="0"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:element name="XCFMemoryRunControllerExecute" type="CBF:XCFMemoryRunControllerExecute"/>
+  <xsd:complexType name="XCFMemoryRunControllerExecute">
+	 <xsd:sequence>
+		<xsd:element name="RunControllerName" type="xsd:string"/>
 		<xsd:element name="ControllerName" type="xsd:string"/>
-		<xsd:element name="ControlBasis" type="CBF:ControlBasis"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:element name="XCFMemoryRunControllerStop" type="CBF:XCFMemoryRunControllerStop"/>
+  <xsd:complexType name="XCFMemoryRunControllerStop">
+	 <xsd:sequence>
+		<xsd:element name="RunControllerName" type="xsd:string"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:element name="XCFMemoryRunControllerLoadControllers" type="CBF:XCFMemoryRunControllerLoadControllers"/>
+  <xsd:complexType name="XCFMemoryRunControllerLoadControllers">
+	 <xsd:sequence>
+		<xsd:element name="RunControllerName" type="xsd:string"/>
+		<xsd:element name="ControllerName" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+	 </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:element name="XCFMemoryRunControllerNotification" type="CBF:XCFMemoryRunControllerNotification"/>
+  <xsd:complexType name="XCFMemoryRunControllerNotification">
+	 <xsd:sequence>
+		<xsd:element name="RunControllerName" type="xsd:string"/>
+		<xsd:element name="Note" type="xsd:string"/>
 	 </xsd:sequence>
   </xsd:complexType>
 

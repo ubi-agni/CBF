@@ -39,26 +39,24 @@ namespace CBF {
 
 /**
 	@brief A struct that runs a controller from a controller 
-	name and control basis pointer.
+	name and a control basis pointer.
 */
 struct CBFRunController {
 	public:
 
 	/**
 		@brief Creates a CBFRunController struct, does not start to run the controller.
-		Execution can be started with start_controller().
+		Execution can be started with start_controller() after a control_basis was set.
 
-		@param controller_name The name of the controller to run.
 		@param sleep-time The sleep time after each step of execution in milliseconds.
 		@param steps The count of steps to execute. Setting steps to 0 lets the controller run
-		until convergence, setting it to a value less then 0 stops the execution.
+		until convergence.
 		@param verbosity_level Sets the verbosity level.
 		@param qt_support Switches the qt-support. Only available when Qt was found.
 		A QApplication needs to be created by the initializing program.
 				
 	*/	
 	CBFRunController(
-				std::string controller_name,
 				unsigned int sleep_time = 0,
 				unsigned int steps = 0,
 				unsigned int verbosity_level = 0
@@ -90,8 +88,7 @@ struct CBFRunController {
 
 	/**
 		@brief Changes the amount of steps (thread-save).
-		If at start_controller() the amount of steps was 0 
-		a value less than 0 will stop the execution.
+
 		If at start_controller() the amount of steps was greater then 0
 		a value less or equal 0 will stop the execution.
 	*/
@@ -121,31 +118,34 @@ struct CBFRunController {
 		/**
 			@brief Switches the Qt-support (thread-save). Only works 
 			before start_controller() was called.
+
+			qt_support must not be set to true without an initialized QApplication.
 		*/
 		void setQTSupport(bool qt_support);
 
 		/**
-			@brief Returns if Qt-support is on (thread-save).
+			@brief Returns whether Qt-support is on (thread-save).
 		*/
 		bool qtSupport();
 	#endif	
 
 	/**
-		@brief Starts to run the controller. Waits for m_SleepTime milliseconds 
-		after each step.
-		If m_Steps == 0 the controller runs until convergence or 
-		until steps is set to < 0 via setStepCount().
+		@brief Starts to run the controller 'controller_name' from the m_ControlBasis. 
+		m_ControlBasis must be set before. Waits for m_SleepTime milliseconds after each 
+		step of execution. Execution can be stopped through stop_controller().
+
+		If m_Steps == 0 the controller runs until convergence.
 		If m_Steps > 0 this amount of steps will be performed.
 	*/
-	void start_controller();
+	void start_controller(std::string controller_name);
+
+	/**
+		@brief Stops the controller from execution before the next step is performed.
+	*/
+	void stop_controller();
 
 
 	private:
-
-	/**
-		@brief Holds the name of the controller to run.
-	*/
-	std::string m_ControllerName;
 
 	/**
 		@brief Holds the ControlBasisPtr.
@@ -217,13 +217,20 @@ struct CBFRunController {
 	#endif
 
 	/**
-		@brief a thread safe way to check whether the controller is already running.
-		and set it.
+		@brief a thread safe way to check whether the controller
+		is already running and set it.
 
 		@param running A boolean to set the controller to.
 		@return Whether the controller was running before.
 	*/
 	bool checkControllerRuns(bool running);
+
+	/**
+		@brief a thread safe way to check whether the controller is running.
+
+		@return Whether the controller is running.
+	*/
+	bool checkControllerRuns();
 
 	/**
 		@brief a thread safe way to check whether the ControlBasis is already set.

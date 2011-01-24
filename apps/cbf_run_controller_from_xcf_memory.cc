@@ -42,6 +42,9 @@
 
 namespace po = boost::program_options;
 
+const unsigned int SLEEP_TIME = 0;
+const unsigned int STEPS = 0;
+
 int main(int argc, char *argv[]) {
 	po::options_description options_description("Allowed options");
 	options_description.add_options() 
@@ -50,24 +53,14 @@ int main(int argc, char *argv[]) {
 			"produce help message"
 		)
 		(
-			"sleep-time", 
-			po::value<unsigned int>(), 
-			"time to sleep between cycles in milliseconds"
-		)
-		(
-			"steps", 
-			po::value<unsigned int>(), 
-			"run exact number of steps. 0 means: never stop"
-		)
-		(
-			"controller", 
+			"runcontrollername", 
 			po::value<std::string>(), 
-			"Name of a controller to run"
+			"Name of the XCFMemoryRunController to listen to."
 		)
 		(
 			"active-memory", 
 			po::value<std::string>(), 
-			"Name of the active_memory that is to connect to"
+			"Name of the active_memory to connect to"
 		)
 		(
 			"verbose",
@@ -101,13 +94,13 @@ int main(int argc, char *argv[]) {
 		return(EXIT_SUCCESS);
 	}
 
-	std::string controller_name;
-	if (!variables_map.count("controller")) {
-		std::cout << "No controller name specified" << std::endl;
+	std::string run_controller_name;
+	if (!variables_map.count("runcontrollername")) {
+		std::cout << "No XCFMemoryRunController name specified" << std::endl;
 		std::cout << options_description << std::endl;
 		return(EXIT_FAILURE);
 	} else {
-		controller_name = variables_map["controller"].as<std::string>();
+		run_controller_name = variables_map["runcontrollername"].as<std::string>();
 	}
 
 	std::string active_memory_name;
@@ -119,19 +112,10 @@ int main(int argc, char *argv[]) {
 		active_memory_name = variables_map["active-memory"].as<std::string>();
 	}
 
-	unsigned int sleep_time = 0;
-	if (variables_map.count("sleep-time"))
-		sleep_time = variables_map["sleep-time"].as<unsigned int>();
-
-	unsigned int steps = 0;
-	if (variables_map.count("steps"))
-		steps = variables_map["steps"].as<unsigned int>();
-
 	unsigned int verbosity_level = 0;
-	if (variables_map.count("verbose"))
-		verbosity_level = variables_map["verbose"].as<unsigned int>();
-
-
+		if (variables_map.count("verbose")) {
+			verbosity_level = variables_map["verbose"].as<bool>();
+		}
 
 	#ifdef CBF_HAVE_QT
 		bool qt_support = false;
@@ -140,7 +124,6 @@ int main(int argc, char *argv[]) {
 		}
 	#endif
 
-	CBF_DEBUG("creating CBFRunController");
 	#ifdef CBF_HAVE_QT
 		QApplication *app;
 		if (qt_support) {
@@ -148,14 +131,13 @@ int main(int argc, char *argv[]) {
 		}
 	#endif
 
-	CBF::CBFRunControllerPtr rcPtr(new CBF::CBFRunController(controller_name, sleep_time, steps, verbosity_level
-			#ifdef CBF_HAVE_QT
-				,qt_support
-			#endif
-			));
-
 	CBF_DEBUG("creating XCFMemoryRunController");
-	CBF::XCFMemoryRunController controller(controller_name, active_memory_name, rcPtr);
+	CBF::XCFMemoryRunController controller(run_controller_name, active_memory_name,
+				SLEEP_TIME, STEPS, verbosity_level
+				#ifdef CBF_HAVE_QT
+					,qt_support
+				#endif
+					);
 
 	CBF_DEBUG("waiting...");
 	while(true){

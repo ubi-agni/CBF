@@ -41,6 +41,8 @@ namespace po = boost::program_options;
 namespace mi = memory::interface;
 
 int main(int argc, char *argv[]) {
+
+}/**
 	po::options_description options_description("Allowed options");
 	options_description.add_options() 
 		(
@@ -136,4 +138,4 @@ int main(int argc, char *argv[]) {
 
 	return EXIT_SUCCESS;
 }
-
+*/

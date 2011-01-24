@@ -28,6 +28,10 @@
 
 #include <cbf_run_controller.h>
 
+#ifdef CBF_HAVE_XSD
+	#include <cbf/schemas.hxx>
+#endif
+
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>
 #endif
@@ -36,6 +40,9 @@
 #include <Memory/Subscription.hpp>
 #include <Memory/Interface.hpp>
 #include <Memory/Event.hpp>
+
+#include <memory>
+#include <map>
 
 namespace CBF {
 
@@ -49,17 +56,22 @@ struct XCFMemoryRunController {
 
 	/**
 		@brief This struct connects to an active_memory and subscribes for
-		XCFMemoryRunController-documents with the specified controller-name.
-		When the specified document ist inserted, the XCFMemoryRunController
-		starts the execution of the controller.
+		XCFMemoryRunController-documents with the specified RunController-name.
+		When a document ist inserted, the XCFMemoryRunController performs the
+		corresponding actions.
 
-		@param controller_name The name of the controller to listen for.
+		@param controller_name The name of the RunController to listen for.
 		@param active_memory_name The name of the active_memory to connect to.
 		@param run_controller The CBFRunController on which the execution is performed.
 				
-	*/	
-	XCFMemoryRunController(std::string controller_name, std::string active_memory_name,
-				CBFRunControllerPtr run_controller
+	*/
+	XCFMemoryRunController(std::string run_controller_name, std::string active_memory_name,
+				unsigned int sleep_time = 0,
+				unsigned int steps = 0,
+				unsigned int verbosity_level = 0
+				#ifdef CBF_HAVE_QT
+					,bool qt_support = false
+				#endif
 				);
 
 	/**
@@ -71,9 +83,9 @@ struct XCFMemoryRunController {
 	private:
 
 	/**
-		@brief Holds the name of the controller to run.
+		@brief Holds the name of the XCFMemoryRunController to listen to.
 	*/
-	std::string m_ControllerName;
+	std::string m_RunControllerName;
 
 	/**
 		@brief Holds the pointer to the MemoryInterface.
@@ -86,21 +98,103 @@ struct XCFMemoryRunController {
 	CBFRunControllerPtr m_RunController;
 
 	/**
-		@brief Returns the string that identifies the XML-document which is listened for.
+		@brief A map that holds controllers identified by their names.
 	*/
-	const char* XPathString(){
+	std::map<std::string, CBFSchema::Controller> m_ControllerMap;
+
+	/**
+		@brief Returns the string that identifies the XML-document that
+		adds controllers.
+	*/
+	const char* addXPath(){
 		std::stringstream xPathStream;
-		xPathStream << "/p1:XCFMemoryRunController[ControllerName='" << m_ControllerName << "']";
+		xPathStream << "/p1:XCFMemoryRunControllerAdd[RunControllerName='";
+		xPathStream << m_RunControllerName << "']";
+		return xPathStream.str().c_str();
+	}
+	/**
+		@brief Returns the string that identifies the XML-document that
+		sets the Controllers sleep-time and steps.
+	*/
+	const char* optionsXPath(){
+		std::stringstream xPathStream;
+		xPathStream << "/p1:XCFMemoryRunControllerOptions[RunControllerName='";
+		xPathStream << m_RunControllerName << "']";
+		return xPathStream.str().c_str();
+	}
+	/**
+		@brief Returns the string that identifies the XML-document that
+		starts the execution of a controller.
+	*/
+	const char* executeXPath(){
+		std::stringstream xPathStream;
+		xPathStream << "/p1:XCFMemoryRunControllerExecute[RunControllerName='";
+		xPathStream << m_RunControllerName << "']";
+		return xPathStream.str().c_str();
+	}
+	/**
+		@brief Returns the string that identifies the XML-document that
+		stops execution of a controller.
+	*/
+	const char* stopXPath(){
+		std::stringstream xPathStream;
+		xPathStream << "/p1:XCFMemoryRunControllerStop[RunControllerName='";
+		xPathStream << m_RunControllerName << "']";
+		return xPathStream.str().c_str();
+	}
+	/**
+		@brief Returns the string that identifies the XML-document that
+		loads controllers as a control_basis.
+	*/
+	const char* loadControllersXPath(){
+		std::stringstream xPathStream;
+		xPathStream << "/p1:XCFMemoryRunControllerLoadControllers[RunControllerName='";
+		xPathStream << m_RunControllerName << "']";
 		return xPathStream.str().c_str();
 	}
 
 	/**
 		@brief The function that will be called by the active_memory when 
-		a XCFMemoryRunController document is available.	It sets
-		the ControlBasis and starts the CBFRunController.
+		a XCFMemoryRunControllerAdd document is available. It Adds
+		controllers to the m_ControllerMap.
 	*/
-	void start_controller(const memory::interface::Event &event);
+	void triggered_action_add(const memory::interface::Event &event);
+
+	/**
+		@brief The function that will be called by the active_memory when 
+		a XCFMemoryRunControllerAdd document is available. It Adds
+		controllers to the m_ControllerMap.
+	*/
+	void triggered_action_options(const memory::interface::Event &event);
+
+	/**
+		@brief The function that will be called by the active_memory when 
+		a XCFMemoryRunControllerAdd document is available. It Adds
+		controllers to the m_ControllerMap.
+	*/
+	void triggered_action_execute(const memory::interface::Event &event);
+
+	/**
+		@brief The function that will be called by the active_memory when 
+		a XCFMemoryRunControllerAdd document is available. It Adds
+		controllers to the m_ControllerMap.
+	*/
+	void triggered_action_stop(const memory::interface::Event &event);
+
+	/**
+		@brief The function that will be called by the active_memory when 
+		a XCFMemoryRunControllerAdd document is available. It Adds
+		controllers to the m_ControllerMap.
+	*/
+	void triggered_action_load_controllers(const memory::interface::Event &event);
 
 };
+
+/**
+	@brief A shared pointer to a CBFRunController.
+*/
+typedef boost::shared_ptr<XCFMemoryRunController> XCFMemoryRunControllerPtr;
+
+
 } //namespace
 #endif
