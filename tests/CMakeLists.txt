@@ -20,6 +20,10 @@ if(CBF_HAVE_QT)
   include_directories(${PROJECT_SOURCE_DIR}/tests)
 endif()
 
+if(CBF_HAVE_MEMORY)
+  include_directories(${MEMORY_INCLUDE_DIRS})
+endif()
+
 
 message(STATUS "  adding executable: cbf_test_functional")
 add_executable(cbf_test_functional
@@ -118,10 +122,10 @@ endif()
 if(CBF_HAVE_XCF AND CBF_HAVE_XSD AND CBF_HAVE_QT)
   message(STATUS "  adding executable: cbf_q_xcf_vector_reference_client")
 
-  QT4_WRAP_CPP(MOC_SOURCES cbf_q_xcf_vector_reference_client.h)
+  QT4_WRAP_CPP(MOC_SOURCES_1 cbf_q_xcf_vector_reference_client.h)
 
   add_executable(cbf_q_xcf_vector_reference_client
-    cbf_q_xcf_vector_reference_client.cc ${MOC_SOURCES}
+    cbf_q_xcf_vector_reference_client.cc ${MOC_SOURCES_1}
     )
   target_link_libraries(cbf_q_xcf_vector_reference_client
     ${QT_LIBRARIES}
@@ -135,6 +139,31 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD AND CBF_HAVE_QT)
   else()
     message(STATUS "  not adding executable: cbf_q_xcf_vector_reference_client")
     message(STATUS "  because xcf, xsd or qt was not found")
+endif()
+
+
+if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY AND CBF_HAVE_QT)
+  message(STATUS "  adding executable: cbf_q_xcf_memory_run_controller_operator")
+
+  QT4_WRAP_CPP(MOC_SOURCES_2 cbf_q_xcf_memory_run_controller_operator.h)
+
+  add_executable(cbf_q_xcf_memory_run_controller_operator 
+    cbf_q_xcf_memory_run_controller_operator.cc ${MOC_SOURCES_2}
+    )
+  target_link_libraries(cbf_q_xcf_memory_run_controller_operator
+    cbf
+    ${Boost_LIBRARIES}
+    ${MEMORY_LDFLAGS}
+    ${QT_LIBRARIES}
+    )
+  set_target_properties(cbf_q_xcf_memory_run_controller_operator
+    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
+    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+
+else()
+  message(STATUS "  not adding executable ")
+  message(STATUS "  -xcf_memory_controller_publisher")
+  message(STATUS "   because xsd, boost-program-options, memory or qt was not found")
 endif()
 
 

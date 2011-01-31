@@ -50,7 +50,7 @@ namespace CBF {
 	}
 
 	void XCFMemoryResource::init(){
-		CBF_DEBUG("Subscription XPath: " << memorySubscriptionXPath());
+		CBF_DEBUG("Subscription XPath: '" << memorySubscriptionXPath() << "'");
 		mi::Condition condition(eventType, memorySubscriptionXPath());
 		mi::TriggeredAction triggered_action(boost::bind(&XCFMemoryResource::triggered_action, this, _1));
 

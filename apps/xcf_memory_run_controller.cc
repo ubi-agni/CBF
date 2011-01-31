@@ -22,6 +22,8 @@
 #include <boost/bind.hpp>
 #include <cbf/schemas.hxx>
 
+#include <memory>
+
 namespace CBF {
 
 namespace mi = memory::interface;
@@ -53,31 +55,37 @@ namespace mi = memory::interface;
 
 		CBF_DEBUG("Subscribing Add at active_memory");
 		mi::Condition condition(event, addXPath());
-		mi::TriggeredAction triggered_action(boost::bind(&XCFMemoryRunController::triggered_action_add, this, _1));
+		mi::TriggeredAction triggered_action(boost::bind(
+				&XCFMemoryRunController::triggered_action_add, this, _1));
 		mi::Subscription subscription(condition, triggered_action);
 		m_MemoryInterface -> subscribe(subscription);
 
 		CBF_DEBUG("Subscribing Options at active_memory");
+		CBF_DEBUG("Options XPath: " << optionsXPath());
 		condition = mi::Condition(event, optionsXPath());
-		triggered_action = mi::TriggeredAction(boost::bind(&XCFMemoryRunController::triggered_action_options, this, _1));
+		triggered_action = mi::TriggeredAction(boost::bind(
+				&XCFMemoryRunController::triggered_action_options, this, _1));
 		subscription = mi::Subscription(condition, triggered_action);
 		m_MemoryInterface -> subscribe(subscription);
 
-		CBF_DEBUG("Subscribing Add at active_memory");
+		CBF_DEBUG("Subscribing Execute at active_memory");
 		condition = mi::Condition(event, executeXPath());
-		triggered_action = mi::TriggeredAction(boost::bind(&XCFMemoryRunController::triggered_action_execute, this, _1));
+		triggered_action = mi::TriggeredAction(boost::bind(
+				&XCFMemoryRunController::triggered_action_execute, this, _1));
 		subscription = mi::Subscription(condition, triggered_action);
 		m_MemoryInterface -> subscribe(subscription);
 
-		CBF_DEBUG("Subscribing Add at active_memory");
+		CBF_DEBUG("Subscribing Stop at active_memory");
 		condition = mi::Condition(event, stopXPath());
-		triggered_action = mi::TriggeredAction(boost::bind(&XCFMemoryRunController::triggered_action_stop, this, _1));
+		triggered_action = mi::TriggeredAction(boost::bind(
+				&XCFMemoryRunController::triggered_action_stop, this, _1));
 		subscription = mi::Subscription(condition, triggered_action);
 		m_MemoryInterface -> subscribe(subscription);
 
-		CBF_DEBUG("Subscribing Add at active_memory");
+		CBF_DEBUG("Subscribing LoadControllers at active_memory");
 		condition = mi::Condition(event, loadControllersXPath());
-		triggered_action = mi::TriggeredAction(boost::bind(&XCFMemoryRunController::triggered_action_load_controllers, this, _1));
+		triggered_action = mi::TriggeredAction(boost::bind(
+				&XCFMemoryRunController::triggered_action_load_controllers, this, _1));
 		subscription = mi::Subscription(condition, triggered_action);
 		m_MemoryInterface -> subscribe(subscription);
 	}
@@ -97,14 +105,19 @@ namespace mi = memory::interface;
 			if(controllerAdd -> ControlBasis().present()){
 				CBFSchema::ControlBasis cb = controllerAdd -> ControlBasis().get();
 				std::string name;
+
 				for (CBFSchema::ControlBasis::Controller_const_iterator it =
 					cb.Controller().begin();
 					it != cb.Controller().end();
 					++it)
 				{
 					if(it -> Name().present()){
-						std::string name = it -> Name().get();
-						m_ControllerMap[name] = *it;
+						std::string name = it -> Name().get();					
+
+						m_ControllerMap[name] = 
+							boost::shared_ptr<CBFSchema::Controller>(it -> _clone());
+
+						CBF_DEBUG("added controller named: " << name);
 					} else {
 						CBF_DEBUG("controller has no name. ignoring");
 					}
@@ -118,8 +131,12 @@ namespace mi = memory::interface;
 				++it)
 			{
 				if(it -> Name().present()){
-					std::string name = it -> Name().get();
-					m_ControllerMap[name] = *it;
+					std::string name = it -> Name().get();					
+
+					m_ControllerMap[name] = 
+						boost::shared_ptr<CBFSchema::Controller>(it -> _clone());
+
+					CBF_DEBUG("added controller named: " << name);
 				} else {
 					CBF_DEBUG("controller has no name. ignoring");
 				}
@@ -143,13 +160,14 @@ namespace mi = memory::interface;
 			if(controllerOpt -> SleepTime().present()){
 				CBF_DEBUG("parsing XML for sleep time");
 				unsigned int time = controllerOpt -> SleepTime().get();
-				CBF_DEBUG("changing sleep_time");
+				CBF_DEBUG("changing sleep_time to: " << time);
 				m_RunController -> setSleepTime(time);
 			}
 
 			if(controllerOpt -> Steps().present()){
 				CBF_DEBUG("parsing XML for steps");
 				unsigned int steps = controllerOpt -> Steps().get();
+				CBF_DEBUG("changing step count to: " << steps);
 				m_RunController -> setStepCount(steps);
 			}
 
@@ -173,7 +191,12 @@ namespace mi = memory::interface;
 			std::string controller_name = controllerEx -> ControllerName();
 
 			CBF_DEBUG("starting controller called: " << controller_name);
-			m_RunController -> start_controller(controller_name);
+
+			try {
+				m_RunController -> start_controller(controller_name);
+			} catch (...) {
+				CBF_DEBUG("Controller: " << controller_name << " not in control_basis");
+			}
 		} catch (...){
 			CBF_DEBUG("Could not parse document as XCFMemoryRunControllerExecute");
 		}
@@ -206,14 +229,19 @@ namespace mi = memory::interface;
 				++it)
 			{
 				if (m_ControllerMap.find(*it) != m_ControllerMap.end()) {
-					controlBasis.Controller().push_back(m_ControllerMap[*it]);	
+
+					controlBasis.Controller().push_back(*(m_ControllerMap[*it]));	
 				} else {
 					CBF_DEBUG("Could not find controller named: " << *it << ". Ignoring.");
 				}
 			}
 
-			CBF_DEBUG("creating control_basis");
+			std::ostringstream t;
+			CBFSchema::ControlBasis_ (t, controlBasis);
+			
+			CBF_DEBUG("creating control_basis" << t.str());
 			CBF::ControlBasisPtr control_basis(new CBF::ControlBasis(controlBasis));
+			CBF_DEBUG("control_basis created");
 
 			if(control_basis -> controllers().size() > 0){
 				CBF_DEBUG("setting the control_basis");
@@ -221,8 +249,8 @@ namespace mi = memory::interface;
 			} else {
 				CBF_DEBUG("not setting control_basis because basis is empty");
 			}
-		} catch (...){
-			CBF_DEBUG("Could not parse document as XCFMemoryRunControllerLoadContrroller");
+		} catch (const xml_schema::exception& e){
+			CBF_DEBUG(e);
 		}
 	}
 

@@ -48,12 +48,31 @@ namespace CBF {
 			return;
 		}
 
+		if (m_ControlBasis -> controllers().find(controller_name) 
+			== m_ControlBasis -> controllers().end()){
+			std::cout << "controller name not found in control basis" << std::endl;
+			return;			
+		}
+
 		if(checkControllerRuns(true)){
 			std::cout << "a controller is already running." << std::endl;
 			return;
 		}
 
-		if(stepCount() > 0){
+		while ((stepCount() == 0) && (m_ControlBasis->controllers()[controller_name]->step() == false)) {
+
+			if (!checkControllerRuns()) //stops execution
+				{break; }
+
+			if (verbosityLevel())
+				{ std::cout << "step" << std::endl; }
+
+			usleep(sleepTime() * 1000);
+			#ifdef CBF_HAVE_QT
+				if (qtSupport()) QApplication::processEvents();
+			#endif
+		}
+		if  (stepCount() > 0){
 			while(stepCount() > 0){
 				if (verbosityLevel())
 					{ std::cout << "step" << std::endl; }
@@ -61,30 +80,15 @@ namespace CBF {
 				if (!checkControllerRuns()) //stops execution
 					{break; }
 
-				m_ControlBasis->controllers()[controller_name]->step();
+				m_ControlBasis -> controllers()[controller_name]->step();
 				usleep(sleepTime() * 1000);
 				#ifdef CBF_HAVE_QT
 					if (qtSupport()) QApplication::processEvents();
 				#endif
 				decStepCount();
 			}
-			stop_controller();
-		} else {
-			while (m_ControlBasis->controllers()[controller_name]->step() == false) {
-
-				if (!checkControllerRuns()) //stops execution
-					{break; }
-
-				if (verbosityLevel())
-					{ std::cout << "step" << std::endl; }
-
-				usleep(sleepTime() * 1000);
-				#ifdef CBF_HAVE_QT
-					if (qtSupport()) QApplication::processEvents();
-				#endif
-			}
-			stop_controller();
 		}
+		stop_controller();
 	}
 
 	void CBFRunController::stop_controller(){

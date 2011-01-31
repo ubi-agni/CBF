@@ -37,7 +37,6 @@ endif()
 
 if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY)
   message(STATUS "  adding executable: cbf_xcf_memory_run_controller")
-  message(STATUS "  adding executable: xcf_memory_controller_publisher")
 
   add_executable(cbf_xcf_memory_run_controller 
     cbf_run_controller_from_xcf_memory.cc
@@ -53,23 +52,9 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY)
     PROPERTIES VERSION ${CBF_VERSION_MAJOR}
     SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
 
-  add_executable(xcf_memory_controller_publisher 
-    xcf_memory_controller_publisher.cc
-    )
-  target_link_libraries(xcf_memory_controller_publisher
-    cbf
-    ${Boost_LIBRARIES}
-    ${MEMORY_LDFLAGS}
-    )
-  set_target_properties(xcf_memory_controller_publisher
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
-
-
 else()
-  message(STATUS "  not adding executables ")
+  message(STATUS "  not adding executable ")
   message(STATUS "  -cbf_xcf_memory_run_controller")
-  message(STATUS "  -xcf_memory_controller_publisher")
   message(STATUS "   because xsd, boost-program-options or memory was not found")
 endif()
 

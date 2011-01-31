@@ -100,7 +100,7 @@ struct XCFMemoryRunController {
 	/**
 		@brief A map that holds controllers identified by their names.
 	*/
-	std::map<std::string, CBFSchema::Controller> m_ControllerMap;
+	std::map<std::string, boost::shared_ptr<CBFSchema::Controller> > m_ControllerMap;
 
 	/**
 		@brief Returns the string that identifies the XML-document that
@@ -118,7 +118,7 @@ struct XCFMemoryRunController {
 	*/
 	const char* optionsXPath(){
 		std::stringstream xPathStream;
-		xPathStream << "/p1:XCFMemoryRunControllerOptions[RunControllerName='";
+		xPathStream << "/p1:XCFMemoryRunControllerOptions [RunControllerName='";
 		xPathStream << m_RunControllerName << "']";
 		return xPathStream.str().c_str();
 	}
