@@ -49,6 +49,8 @@ namespace CBF {
 /**
 	@brief A struct that runs a controller from an XCFMemoryRunController 
 	document provided by an active_memory.
+	It reacts on the following xml-documents:
+		XCFMemoryRunController[Add | Options | Execute | Stop | LoadControllers]
 */
 struct XCFMemoryRunController {
 
@@ -60,9 +62,14 @@ struct XCFMemoryRunController {
 		When a document ist inserted, the XCFMemoryRunController performs the
 		corresponding actions.
 
-		@param controller_name The name of the RunController to listen for.
+		@param run_controller_name The name of the RunController to listen for.
 		@param active_memory_name The name of the active_memory to connect to.
-		@param run_controller The CBFRunController on which the execution is performed.
+		@param sleep-time (CBFRunController) The sleep time after each step of execution in milliseconds.
+		@param steps (CBFRunController) The count of steps to execute. Setting steps to 0 lets the controller run
+		until convergence.
+		@param (CBFRunController) verbosity_level Sets the verbosity level.
+		@param qt_support (CBFRunController) Switches the qt-support. Only available when Qt was found.
+		A QApplication needs to be created by the initializing program.
 				
 	*/
 	XCFMemoryRunController(std::string run_controller_name, std::string active_memory_name,
@@ -162,36 +169,36 @@ struct XCFMemoryRunController {
 
 	/**
 		@brief The function that will be called by the active_memory when 
-		a XCFMemoryRunControllerAdd document is available. It Adds
-		controllers to the m_ControllerMap.
+		a XCFMemoryRunControllerOptions document is available. It sets
+		the sleep time and steps.
 	*/
 	void triggered_action_options(const memory::interface::Event &event);
 
 	/**
 		@brief The function that will be called by the active_memory when 
-		a XCFMemoryRunControllerAdd document is available. It Adds
-		controllers to the m_ControllerMap.
+		a XCFMemoryRunControllerExecute document is available. It starts
+		the execution of a controller.
 	*/
 	void triggered_action_execute(const memory::interface::Event &event);
 
 	/**
 		@brief The function that will be called by the active_memory when 
-		a XCFMemoryRunControllerAdd document is available. It Adds
-		controllers to the m_ControllerMap.
+		a XCFMemoryRunControllerStop document is available. It stops
+		the execution of a controller.
 	*/
 	void triggered_action_stop(const memory::interface::Event &event);
 
 	/**
 		@brief The function that will be called by the active_memory when 
-		a XCFMemoryRunControllerAdd document is available. It Adds
-		controllers to the m_ControllerMap.
+		a XCFMemoryRunControllerLoadControllers document is available. It 
+		creates a control_basis and sets it in m_RunController.
 	*/
 	void triggered_action_load_controllers(const memory::interface::Event &event);
 
 };
 
 /**
-	@brief A shared pointer to a CBFRunController.
+	@brief A shared pointer to a XCFMemoryRunController.
 */
 typedef boost::shared_ptr<XCFMemoryRunController> XCFMemoryRunControllerPtr;
 

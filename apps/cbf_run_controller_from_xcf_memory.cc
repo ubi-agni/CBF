@@ -132,6 +132,10 @@ int main(int argc, char *argv[]) {
 	#endif
 
 	CBF_DEBUG("creating XCFMemoryRunController");
+	/*
+	* Creating an XCFMemoryRunController with all the options that were set.
+	* after that this thread goes to sleep.
+	*/
 	CBF::XCFMemoryRunController controller(run_controller_name, active_memory_name,
 				SLEEP_TIME, STEPS, verbosity_level
 				#ifdef CBF_HAVE_QT
@@ -141,13 +145,8 @@ int main(int argc, char *argv[]) {
 
 	CBF_DEBUG("waiting...");
 	while(true){
-//		std::string input;
-//		std::cout << "you can stop the program with 'quit'" << std::endl << "> ";
-//		std::cin >> input;
-//		if(input == "quit"){
-//			break;
-//		}
-	usleep(1000 * 1000);
+		// ähm simply waiting. controller will run everything 
+		usleep(10000 * 10000);
 	}
 
 	CBF_DEBUG("Quitting with success");

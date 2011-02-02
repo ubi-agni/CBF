@@ -28,16 +28,35 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QVBoxLayout>
 
+/**
+	@brief A struct that can be used to create XCFMemoryRunController[...] documents
+	and send them to an active_memory.
+*/
 class XcfMemoryRunControllerOperator : public QWidget {
 	Q_OBJECT
 
 	private:
 
+		/**
+			@brief The name of the XCFMemoryRunController. This name will be used in
+			all XCFMemoryRunController documents.
+		*/
 		std::string m_RunControllerName;
+
+		/**
+			@brief A pointer is used to send documents to an active_memory.
+		*/
 		memory::interface::MemoryInterface::pointer m_MemoryInterface;		
 
 	public:
 
+		/**
+			@brief Sets the run_controller_name and connects to an active_memory
+			throws a runtime_error when connection can't be established.
+
+			@param active_memory_name The name/location of the actice_memory
+			@param run_controller_name The name of the XCFMemoryRunController to control.
+		*/
 		XcfMemoryRunControllerOperator(std::string active_memory_name, std::string run_controller_name)
 		:
 		m_RunControllerName(run_controller_name)
@@ -50,10 +69,38 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		}
 
 	public slots:
+		/**
+			@brief Opens a FileDialog in which an xml-file with a control_basis can be chosen.
+			This control_basis is send in an XCFMemoryRunControllerAdd.
+		*/
 		void add_control_basis();
+
+		/**
+			@brief Opens a Dialog in which a time can be chosen.
+			The time is send in an XCFMemoryRunControllerOptions.
+		*/
 		void set_time();
+
+		/**
+			@brief Opens a Dialog in which a step count can be chosen.
+			The step count is send in an XCFMemoryRunControllerOptions.
+		*/
 		void set_steps();
+
+		/**
+			@brief Opens a Dialog in which a controller names can be defined.
+			The controller name is send in an XCFMemoryRunControllerExecute.
+		*/
 		void execute();
+
+		/**
+			Sends an XCFMemoryRunControllerStop.
+		*/
 		void stop();
+
+		/**
+			@brief Opens a Dialog in which a list of controller names can be defined.
+			The controller names are send in an XCFMemoryRunControllerLoadControllers.
+		*/
 		void load_controllers();
 };

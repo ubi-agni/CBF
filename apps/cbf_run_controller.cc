@@ -40,29 +40,36 @@ namespace CBF {
 			,m_QtSupport(qt_support)
 		#endif
 	{
+	//everything already initialized
 	}
 
 	void CBFRunController::start_controller(std::string controller_name){
+
+		//does not start if the controll_basis is not set.
 		if(!checkControlBasisSet()){
 			std::cout << "controll_basis is not set" << std::endl;
 			return;
 		}
 
+		//does nothing when the controller is not in the control_basis
 		if (m_ControlBasis -> controllers().find(controller_name) 
 			== m_ControlBasis -> controllers().end()){
 			std::cout << "controller name not found in control basis" << std::endl;
 			return;			
 		}
 
+		//does nothing if the controller is already running.
 		if(checkControllerRuns(true)){
 			std::cout << "a controller is already running." << std::endl;
 			return;
 		}
 
+		// if the stepcount is 0 we are stepp()ing till convergence
+		// setting stepCount != 0 in execution will make us leave the while-clause
 		while ((stepCount() == 0) && (m_ControlBasis->controllers()[controller_name]->step() == false)) {
 
 			if (!checkControllerRuns()) //stops execution
-				{break; }
+				{return; }
 
 			if (verbosityLevel())
 				{ std::cout << "step" << std::endl; }
@@ -72,22 +79,22 @@ namespace CBF {
 				if (qtSupport()) QApplication::processEvents();
 			#endif
 		}
-		if  (stepCount() > 0){
-			while(stepCount() > 0){
-				if (verbosityLevel())
-					{ std::cout << "step" << std::endl; }
+		// does stepCount() steps
+		while(stepCount() > 0){
+			if (verbosityLevel())
+				{ std::cout << "step" << std::endl; }
 
-				if (!checkControllerRuns()) //stops execution
-					{break; }
+			if (!checkControllerRuns()) //stops execution
+				{return; }
 
-				m_ControlBasis -> controllers()[controller_name]->step();
-				usleep(sleepTime() * 1000);
-				#ifdef CBF_HAVE_QT
-					if (qtSupport()) QApplication::processEvents();
-				#endif
-				decStepCount();
-			}
+			m_ControlBasis -> controllers()[controller_name]->step();
+			usleep(sleepTime() * 1000);
+			#ifdef CBF_HAVE_QT
+				if (qtSupport()) QApplication::processEvents();
+			#endif
+			decStepCount();
 		}
+		//setting m_ControllerRunning to false.
 		stop_controller();
 	}
 
@@ -133,13 +140,9 @@ namespace CBF {
 
 	bool CBFRunController::checkControllerRuns(bool running){
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
-		if(m_ControllerRunning){
-			m_ControllerRunning = running;
-			return true;
-		} else {
-			m_ControllerRunning = running;
-			return false;		
-		}
+		bool was_running = m_ControllerRunning;		
+		m_ControllerRunning = running;
+		return was_running;
 	}
 
 	bool CBFRunController::checkControllerRuns(){
@@ -153,6 +156,7 @@ namespace CBF {
 	}
 
 	void CBFRunController::setControlBasis(CBF::ControlBasisPtr control_basis){
+		//controller should not be working when we change the control_basis
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
 		if(!m_ControllerRunning){
 			m_ControlBasis = control_basis;

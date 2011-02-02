@@ -51,6 +51,7 @@ namespace mi = memory::interface;
 			)),
 		m_ControllerMap()
 	{
+		// we only, listen to insert and replace events.
 		unsigned int event = memory::interface::Event::INSERT | memory::interface::Event::REPLACE;
 
 		CBF_DEBUG("Subscribing Add at active_memory");
@@ -97,23 +98,30 @@ namespace mi = memory::interface;
 
 		CBF_DEBUG("parsing XML for controllers, adding");
 		try {
+			// parsing the XCFMemoryRunControllerAdd document.
 			std::istringstream s(documentText);
 			std::auto_ptr<CBFSchema::XCFMemoryRunControllerAdd> controllerAdd = 
 				CBFSchema::XCFMemoryRunControllerAdd_(s, xml_schema::flags::dont_validate);
 
 			CBF_DEBUG("parsing XML for optional ControlBasis");
 			if(controllerAdd -> ControlBasis().present()){
+			// if a ControlBasis exists.
 				CBFSchema::ControlBasis cb = controllerAdd -> ControlBasis().get();
 				std::string name;
 
+				// getting every controller from the control_basis.
 				for (CBFSchema::ControlBasis::Controller_const_iterator it =
 					cb.Controller().begin();
 					it != cb.Controller().end();
 					++it)
 				{
+					// ignoring controllers without a name.
 					if(it -> Name().present()){
 						std::string name = it -> Name().get();					
-
+						// saving a copy of the controller in a map.
+						// the copy must be polymorphic.
+						// the controller is mapped to its name.
+						// a second controller with the same name will overwrite the first.
 						m_ControllerMap[name] = 
 							boost::shared_ptr<CBFSchema::Controller>(it -> _clone());
 
@@ -125,14 +133,19 @@ namespace mi = memory::interface;
 			}
 
 			CBF_DEBUG("parsing XML for list of controllers");
+			// getting every controller from the list of controllers.
 			for (CBFSchema::XCFMemoryRunControllerAdd::Controller_sequence::const_iterator it 
 					= controllerAdd -> Controller().begin();
 				it != controllerAdd -> Controller().end();
 				++it)
 			{
+				// ignoring controllers without a name.
 				if(it -> Name().present()){
-					std::string name = it -> Name().get();					
-
+					std::string name = it -> Name().get();
+					// saving a copy of the controller in a map.
+					// the copy must be polymorphic.
+					// the controller is mapped to its name.
+					// a second controller with the same name will overwrite the first.
 					m_ControllerMap[name] = 
 						boost::shared_ptr<CBFSchema::Controller>(it -> _clone());
 
@@ -148,15 +161,17 @@ namespace mi = memory::interface;
 
 	void XCFMemoryRunController::triggered_action_options(const memory::interface::Event &event){
 		CBF_DEBUG("doc: " << event.getDocument());
-	
+
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
 
 		CBF_DEBUG("parsing XML for options");
 		try {
+			// parsing the XCFMemoryRunControllerOptions document.
 			std::istringstream s(documentText);
 			std::auto_ptr<CBFSchema::XCFMemoryRunControllerOptions> controllerOpt = 
 				CBFSchema::XCFMemoryRunControllerOptions_(s, xml_schema::flags::dont_validate);
 
+			// if the SleepTime element exists set the sleep_time of the RunController
 			if(controllerOpt -> SleepTime().present()){
 				CBF_DEBUG("parsing XML for sleep time");
 				unsigned int time = controllerOpt -> SleepTime().get();
@@ -164,6 +179,7 @@ namespace mi = memory::interface;
 				m_RunController -> setSleepTime(time);
 			}
 
+			// if the Steps element exists set the step_count of the RunController
 			if(controllerOpt -> Steps().present()){
 				CBF_DEBUG("parsing XML for steps");
 				unsigned int steps = controllerOpt -> Steps().get();
@@ -183,16 +199,19 @@ namespace mi = memory::interface;
 
 		CBF_DEBUG("parsing XML for controller name");
 		try {
+			// parsing the XCFMemoryRunControllerExecute document.
 			std::istringstream s(documentText);
 			std::auto_ptr<CBFSchema::XCFMemoryRunControllerExecute> controllerEx = 
 				CBFSchema::XCFMemoryRunControllerExecute_(s, xml_schema::flags::dont_validate);
 
 			CBF_DEBUG("parsing controller name");
+			// get the name of the controller to run.
 			std::string controller_name = controllerEx -> ControllerName();
 
 			CBF_DEBUG("starting controller called: " << controller_name);
 
 			try {
+				// run the specified controller.
 				m_RunController -> start_controller(controller_name);
 			} catch (...) {
 				CBF_DEBUG("Controller: " << controller_name << " not in control_basis");
@@ -205,6 +224,7 @@ namespace mi = memory::interface;
 	void XCFMemoryRunController::triggered_action_stop(const memory::interface::Event &event){
 		CBF_DEBUG("doc: " << event.getDocument());
 		CBF_DEBUG("stopping controller");
+		// just stop the controller
 		m_RunController -> stop_controller();
 	}
 
@@ -215,21 +235,26 @@ namespace mi = memory::interface;
 
 		CBF_DEBUG("parsing XML for controller names");
 		try {
+			// parsing the XCFMemoryRunControllerLoadControllers document.
 			std::istringstream s(documentText);
 			std::auto_ptr<CBFSchema::XCFMemoryRunControllerLoadControllers> controllerLC = 
 				CBFSchema::XCFMemoryRunControllerLoadControllers_(s, xml_schema::flags::dont_validate);
 
+			// we fill this controll_basis with controllers and then we will 
+			// create a CBFControlBasis from it.
 			CBFSchema::ControlBasis controlBasis;
 
 			CBF_DEBUG("parsing controller names");
+			// for every controller_name in the document
 			for (CBFSchema::XCFMemoryRunControllerLoadControllers::
 					ControllerName_sequence::const_iterator it 
 					= controllerLC -> ControllerName().begin();
 				it != controllerLC -> ControllerName().end();
 				++it)
 			{
+				// find the corrresponding controller in our map.
 				if (m_ControllerMap.find(*it) != m_ControllerMap.end()) {
-
+					// add controller to control_basis
 					controlBasis.Controller().push_back(*(m_ControllerMap[*it]));	
 				} else {
 					CBF_DEBUG("Could not find controller named: " << *it << ". Ignoring.");
@@ -240,17 +265,19 @@ namespace mi = memory::interface;
 			CBFSchema::ControlBasis_ (t, controlBasis);
 			
 			CBF_DEBUG("creating control_basis" << t.str());
+			//init the CBF::ControlBasis
 			CBF::ControlBasisPtr control_basis(new CBF::ControlBasis(controlBasis));
 			CBF_DEBUG("control_basis created");
 
 			if(control_basis -> controllers().size() > 0){
 				CBF_DEBUG("setting the control_basis");
+				// set the control_basis
 				m_RunController -> setControlBasis(control_basis);
 			} else {
 				CBF_DEBUG("not setting control_basis because basis is empty");
 			}
 		} catch (const xml_schema::exception& e){
-			CBF_DEBUG(e);
+			CBF_DEBUG("There was an xml_schema exception" << e);
 		}
 	}
 

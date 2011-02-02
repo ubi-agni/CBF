@@ -39,7 +39,8 @@ namespace CBF {
 
 /**
 	@brief A struct that runs a controller from a controller 
-	name and a control basis pointer.
+	name and a control basis pointer. The execution of the controller
+	and all functions are (meant to be) threadsafe.
 */
 struct CBFRunController {
 	public:
