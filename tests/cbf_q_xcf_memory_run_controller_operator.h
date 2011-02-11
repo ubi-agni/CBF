@@ -76,6 +76,12 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		void add_control_basis();
 
 		/**
+			@brief Opens a FileDialog in which an xml-file with a controller can be chosen.
+			This control_basis is send in an XCFMemoryRunControllerAdd.
+		*/
+		void add_controller();
+
+		/**
 			@brief Opens a Dialog in which a time can be chosen.
 			The time is send in an XCFMemoryRunControllerOptions.
 		*/

@@ -122,10 +122,10 @@ struct XCFMemoryResource : public Resource {
 		/**
 			@brief Returns the xPath for the condition of the subscription at the memory.
 		*/
-		const char* memorySubscriptionXPath(){
+		const std::string memorySubscriptionXPath(){
 			std::stringstream xPathStream;
 			xPathStream << "/p1:XCFMemoryResourceAdd[ResourceName='" << m_ResourceName << "']";
-			return xPathStream.str().c_str();
+			return xPathStream.str();
 		}
 
 
@@ -133,7 +133,7 @@ struct XCFMemoryResource : public Resource {
 			@brief Returns the xPath for the Location of the vector in the
 			XCFMemoryResourceState-document.
 		*/
-		inline const char* documentVectorLocationXPath(){
+		inline std::string documentVectorLocationXPath(){
 			return "/p1:XCFMemoryResourceState/Vector/String";
 		}
 

@@ -43,25 +43,24 @@ namespace CBF {
 	//everything already initialized
 	}
 
-	void CBFRunController::start_controller(std::string controller_name){
+	void CBFRunController::start_controller(std::string controller_name)
+		throw(ControlBasisNotSetException, ControllerNotFoundExcepption, ControllerRunningException)
+	{
 
 		//does not start if the controll_basis is not set.
 		if(!checkControlBasisSet()){
-			std::cout << "controll_basis is not set" << std::endl;
-			return;
+			throw ControlBasisNotSetException();
 		}
 
 		//does nothing when the controller is not in the control_basis
 		if (m_ControlBasis -> controllers().find(controller_name) 
 			== m_ControlBasis -> controllers().end()){
-			std::cout << "controller name not found in control basis" << std::endl;
-			return;			
+			throw ControllerNotFoundExcepption();
 		}
 
 		//does nothing if the controller is already running.
 		if(checkControllerRuns(true)){
-			std::cout << "a controller is already running." << std::endl;
-			return;
+			throw ControllerRunningException();
 		}
 
 		// if the stepcount is 0 we are stepp()ing till convergence
@@ -115,7 +114,6 @@ namespace CBF {
 	void CBFRunController::setStepCount(unsigned int steps){
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_StepsMonitor);
 		m_Steps = steps;
-		
 	}
 
 	unsigned int CBFRunController::stepCount(){
@@ -155,14 +153,28 @@ namespace CBF {
 		return m_ControlBasisSet;
 	}
 
-	void CBFRunController::setControlBasis(CBF::ControlBasisPtr control_basis){
+	void CBFRunController::setControlBasis(CBF::ControlBasisPtr control_basis) 
+		throw(ControllerRunningException)
+	{
 		//controller should not be working when we change the control_basis
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
 		if(!m_ControllerRunning){
 			m_ControlBasis = control_basis;
 			m_ControlBasisSet = true;
 		} else {
-			std::cout << "could not set control_basis because controller is running" << std::endl;
+			throw ControllerRunningException();
+		}
+	}
+
+	const CBF::ControlBasisPtr CBFRunController::getControlBasis() 
+		 throw(ControlBasisNotSetException)
+	{
+		//controller should not be working while we copy the control_basis
+		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
+		if (m_ControlBasisSet) {
+			return CBF::ControlBasisPtr(new CBF::ControlBasis(*m_ControlBasis));
+		} else {
+			throw ControlBasisNotSetException();
 		}
 	}
 

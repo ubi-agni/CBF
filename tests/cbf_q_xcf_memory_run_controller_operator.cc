@@ -107,7 +107,8 @@ int main(int argc, char *argv[]) {
 
 	//Initializing the Applictaions main-window.
 	QWidget *window = new QWidget();
-	QPushButton add("add");
+	QPushButton add_cb("add control basis");
+	QPushButton add_c("add controller");
 	QPushButton execute("execute");
 	QPushButton stop("stop");
 	QPushButton sleep_time("sleep time");
@@ -116,7 +117,8 @@ int main(int argc, char *argv[]) {
 	QPushButton quit("quit");
 
 	// connecting buttons to the corresponding slots.
-	QObject::connect(&add, SIGNAL(clicked()), &op, SLOT(add_control_basis()));
+	QObject::connect(&add_cb, SIGNAL(clicked()), &op, SLOT(add_control_basis()));
+	QObject::connect(&add_c, SIGNAL(clicked()), &op, SLOT(add_controller()));
 	QObject::connect(&execute, SIGNAL(clicked()), &op, SLOT(execute()));
 	QObject::connect(&stop, SIGNAL(clicked()), &op, SLOT(stop()));
 	QObject::connect(&sleep_time, SIGNAL(clicked()), &op, SLOT(set_time()));
@@ -126,7 +128,8 @@ int main(int argc, char *argv[]) {
 
 	// layouting the main window
 	QVBoxLayout *windowLayout = new QVBoxLayout(window);
-	windowLayout -> addWidget(&add);
+	windowLayout -> addWidget(&add_cb);
+	windowLayout -> addWidget(&add_c);
 	windowLayout -> addWidget(&load);
 	windowLayout -> addWidget(&execute);
 	windowLayout -> addWidget(&stop);
@@ -144,7 +147,7 @@ int main(int argc, char *argv[]) {
 void XcfMemoryRunControllerOperator::add_control_basis(){
 	// getting the name of the xml file.
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "../doc/examples/xml/", tr("XML (*.xml)"));
-	std::string control_basis_name = fileName.toStdString();
+	std::string control_basis = fileName.toStdString();
 
 	CBF::XSDErrorHandler err_handler;
 
@@ -152,7 +155,7 @@ void XcfMemoryRunControllerOperator::add_control_basis(){
 		// trying to parse the file as a control_basis
 		std::auto_ptr<CBFSchema::ControlBasis> cbt
 			(CBFSchema::ControlBasis_
-				(control_basis_name, err_handler, xml_schema::flags::dont_validate));
+				(control_basis, err_handler, xml_schema::flags::dont_validate));
 
 		//CBF_DEBUG("checking if control_basis is compilable");
 		//CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));
@@ -161,6 +164,38 @@ void XcfMemoryRunControllerOperator::add_control_basis(){
 		CBFSchema::XCFMemoryRunControllerAdd v(m_RunControllerName);
 		// setting the control_basis
 		v.ControlBasis(cbt);
+
+		std::ostringstream s;
+		CBFSchema::XCFMemoryRunControllerAdd_ (s, v);
+		// sending the document to the active_memory
+		m_MemoryInterface -> insert(s.str());
+
+	} catch (const xml_schema::exception& e) {
+		std::cerr << "Error during parsing:" << std::endl;
+		std::cerr << e << std::endl;
+	}
+}
+void XcfMemoryRunControllerOperator::add_controller(){
+	// getting the name of the xml file.
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "../doc/examples/xml/", tr("XML (*.xml)"));
+	std::string controller = fileName.toStdString();
+
+	CBF::XSDErrorHandler err_handler;
+
+	try {
+		// trying to parse the file as a control_basis
+		std::auto_ptr<CBFSchema::Controller> contr
+			(CBFSchema::Controller_
+				(controller, err_handler, xml_schema::flags::dont_validate));
+
+		//CBF_DEBUG("checking if controller is compilable");
+		//CBF::ControllerPtr cb(new CBF::Controller(*cbt));
+
+		// creating the XCFMemoryRunControllerAdd document.
+		CBFSchema::XCFMemoryRunControllerAdd v(m_RunControllerName);
+		// setting the control_basis
+		
+		v.Controller().push_back(contr);
 
 		std::ostringstream s;
 		CBFSchema::XCFMemoryRunControllerAdd_ (s, v);

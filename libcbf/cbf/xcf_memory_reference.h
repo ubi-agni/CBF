@@ -128,10 +128,10 @@ struct XCFMemoryReference : public Reference {
 	/**
 		@brief Returns the string that identifies the XML-document which is listened for.
 	*/
-	const char* XPathString(){
+	const std::string XPathString(){
 		std::stringstream xPathStream;
 		xPathStream << "/p1:XCFMemoryReferenceVector[ReferenceName='" << m_ReferenceName << "']";
-		return xPathStream.str().c_str();
+		return xPathStream.str();
 	}
 };
 

@@ -26,6 +26,8 @@
 #include <cbf/control_basis.h>
 #include <cbf/debug_macros.h>
 
+#include <cbf/schemas.hxx>
+
 #include <cbf_run_controller.h>
 
 #ifdef CBF_HAVE_XSD
@@ -56,6 +58,8 @@ struct XCFMemoryRunController {
 
 	public:
 
+	enum NotificationLevel { NOTHING = 0x0 , ERROR = 0x1, INFO = 0x2, ALL = 0x3};
+
 	/**
 		@brief This struct connects to an active_memory and subscribes for
 		XCFMemoryRunController-documents with the specified RunController-name.
@@ -73,6 +77,7 @@ struct XCFMemoryRunController {
 				
 	*/
 	XCFMemoryRunController(std::string run_controller_name, std::string active_memory_name,
+				NotificationLevel notification_level = NOTHING,
 				unsigned int sleep_time = 0,
 				unsigned int steps = 0,
 				unsigned int verbosity_level = 0
@@ -100,6 +105,11 @@ struct XCFMemoryRunController {
 	memory::interface::MemoryInterface::pointer m_MemoryInterface;
 
 	/**
+		@brief Tells which type of notifications will be send.
+	*/
+	NotificationLevel m_NotificationLevel;
+
+	/**
 		@brief Holds the CBFRunController which is used for the execution..
 	*/
 	CBFRunControllerPtr m_RunController;
@@ -108,6 +118,16 @@ struct XCFMemoryRunController {
 		@brief A map that holds controllers identified by their names.
 	*/
 	std::map<std::string, boost::shared_ptr<CBFSchema::Controller> > m_ControllerMap;
+
+	/**
+		@brief A counter that is used for Notifications.
+	*/
+	unsigned int m_Added;
+
+	/**
+		@brief A counter that is used for Notifications.
+	*/
+	unsigned int m_Ignored;
 
 	/**
 		@brief Returns the string that identifies the XML-document that
@@ -168,6 +188,13 @@ struct XCFMemoryRunController {
 	void triggered_action_add(const memory::interface::Event &event);
 
 	/**
+		@brief A helper-function for triggered_action_add().
+	*/
+	void add_controllers_to_map(
+		CBFSchema::ControlBasis::Controller_sequence* controllers,
+		std::ostringstream* names, std::ostringstream* overwritten);
+
+	/**
 		@brief The function that will be called by the active_memory when 
 		a XCFMemoryRunControllerOptions document is available. It sets
 		the sleep time and steps.
@@ -194,6 +221,16 @@ struct XCFMemoryRunController {
 		creates a control_basis and sets it in m_RunController.
 	*/
 	void triggered_action_load_controllers(const memory::interface::Event &event);
+
+	/**
+		@brief Sends (not inserts) an XCFMemoryRunControllerNotification document.
+		Whether a notification will be send defines the m_NotificationLevel.
+
+		@param note Will be filled into the 'Note' element.
+		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param notification_level The NL of this notification
+	*/
+	void notify(std::string note, int documentID, NotificationLevel notification_level);
 
 };
 

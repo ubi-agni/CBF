@@ -35,7 +35,53 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <stdexcept>
+
 namespace CBF {
+
+/**
+	@brief An exception that will be thrown, when an action is called,
+	which can not be done while the controller is running.
+*/
+struct ControllerRunningException : std::runtime_error {
+
+	public:
+		ControllerRunningException() 
+			: 
+			std::runtime_error ("action impossible while controller is running")
+		{ }	
+};
+
+/**
+	@brief An exception that will be thrown, when an action is called,
+	which needs th control basis to be set first.
+*/
+struct ControlBasisNotSetException : std::runtime_error {
+
+	public:
+		ControlBasisNotSetException() 
+			: 
+			std::runtime_error ("action impossible while control basis is not sets")
+		{ }	
+};
+
+/**
+	@brief An exception that will be thrown, when start_controller() is called with a
+	conntroller_name, that does not exist in the control basis
+*/
+struct ControllerNotFoundExcepption : std::runtime_error {
+
+	public:
+		ControllerNotFoundExcepption()
+			: 
+			std::runtime_error ("could not find the controller in control basis")
+		{ }
+};
+
+
+
+
+
 
 /**
 	@brief A struct that runs a controller from a controller 
@@ -75,7 +121,12 @@ struct CBFRunController {
 	/**
 		@brief Sets the ControlBasis when the controller is not running (thread safe).
 	*/
-	void setControlBasis(CBF::ControlBasisPtr control_basis);
+	void setControlBasis(CBF::ControlBasisPtr control_basis) throw(ControllerRunningException);
+
+	/**
+		@brief Returns a ControlBasisPtr with a copy of the control basis.
+	*/
+	const CBF::ControlBasisPtr getControlBasis() throw(ControlBasisNotSetException);
 
 	/**
 		@brief Changes the sleep-time (thread-save).
@@ -138,7 +189,8 @@ struct CBFRunController {
 		If m_Steps == 0 the controller runs until convergence.
 		If m_Steps > 0 this amount of steps will be performed.
 	*/
-	void start_controller(std::string controller_name);
+	void start_controller(std::string controller_name) 
+		throw(ControlBasisNotSetException, ControllerNotFoundExcepption, ControllerRunningException);
 
 	/**
 		@brief Stops the controller from execution before the next step is performed.

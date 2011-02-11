@@ -63,6 +63,11 @@ int main(int argc, char *argv[]) {
 			"Name of the active_memory to connect to"
 		)
 		(
+			"nlevel",
+			po::value<unsigned int>(),
+			"Notification Level: 0 = nothing, 1 = only error, 2 = only info, 3 = all"
+		)
+		(
 			"verbose",
 			po::value<unsigned int>(),
 			"Verbosity level"
@@ -112,9 +117,26 @@ int main(int argc, char *argv[]) {
 		active_memory_name = variables_map["active-memory"].as<std::string>();
 	}
 
+	unsigned int notification_level = 0;
+		if (variables_map.count("nlevel")) {
+			notification_level = variables_map["nlevel"].as<unsigned int>();
+		}
+	CBF::XCFMemoryRunController::NotificationLevel nlvl = CBF::XCFMemoryRunController::NOTHING;
+	switch (notification_level) {
+	case 1 : 
+		nlvl = CBF::XCFMemoryRunController::ERROR;
+		break;
+	case 2 : 
+		nlvl = CBF::XCFMemoryRunController::INFO;
+		break;
+	case 3 : 
+		nlvl = CBF::XCFMemoryRunController::ALL;
+		break;
+	}
+
 	unsigned int verbosity_level = 0;
 		if (variables_map.count("verbose")) {
-			verbosity_level = variables_map["verbose"].as<bool>();
+			verbosity_level = variables_map["verbose"].as<unsigned int>();
 		}
 
 	#ifdef CBF_HAVE_QT
@@ -137,7 +159,7 @@ int main(int argc, char *argv[]) {
 	* after that this thread goes to sleep.
 	*/
 	CBF::XCFMemoryRunController controller(run_controller_name, active_memory_name,
-				SLEEP_TIME, STEPS, verbosity_level
+				nlvl, SLEEP_TIME, STEPS, verbosity_level
 				#ifdef CBF_HAVE_QT
 					,qt_support
 				#endif

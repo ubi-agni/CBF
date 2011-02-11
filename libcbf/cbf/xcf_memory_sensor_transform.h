@@ -142,7 +142,7 @@ namespace CBF {
 			@brief: Returns the string that points to the Result 
 			element in the XCFMemorySensorTransformResult document.
 		*/
-		inline const char* ResultXPathString(){
+		inline std::string ResultXPathString(){
 			return "/p1:XCFMemorySensorTransformResult/Result/String";
 		}
 
@@ -150,7 +150,7 @@ namespace CBF {
 			@brief: Returns the string that points to the TaskJacobian 
 			element in the XCFMemorySensorTransformResult document.
 		*/
-		inline const char* TeskJacobianXPathString(){
+		inline std::string TeskJacobianXPathString(){
 			return "/p1:XCFMemorySensorTransformResult/TaskJacobian/String";
 		}
 

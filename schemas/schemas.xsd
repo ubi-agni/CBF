@@ -847,6 +847,7 @@
 	 <xsd:sequence>
 		<xsd:element name="RunControllerName" type="xsd:string"/>
 		<xsd:element name="Note" type="xsd:string"/>
+		<xsd:element name="DocumentID" type="xsd:nonNegativeInteger"/>
 	 </xsd:sequence>
   </xsd:complexType>
 
