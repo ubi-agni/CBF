@@ -5,20 +5,34 @@
 namespace CBF {
 
 	bool TaskSpaceDistanceThreshold::check_convergence(const PrimitiveController &p) {
+		CBF_DEBUG("check convergence");
+		const std::vector<FloatVector> &refs = p.m_Reference->get();
+
+		for (unsigned int i = 0, size = refs.size(); i < size; ++i) {
+			CBF_DEBUG("norm of task space distance: " << ublas::norm_2(p.m_CurrentTaskPosition - p.m_Reference->get()[i]));
+			if (ublas::norm_2(p.m_CurrentTaskPosition - p.m_Reference->get()[i]) < m_Threshold)
+				return true;
+		}
+
 		return false;
 	}
 	
 	bool ResourceStepNormThreshold::check_convergence(const PrimitiveController &p) {
+		CBF_DEBUG("check convergence");
+
 		return false;
 	}
 	
 	
 	#ifdef CBF_HAVE_XSD
 		TaskSpaceDistanceThreshold::TaskSpaceDistanceThreshold(const CBFSchema::TaskSpaceDistanceThreshold &xml_instance) {
-
+			m_Threshold = xml_instance.Threshold();
+			CBF_DEBUG("task space threshold: " << m_Threshold);
 		}
 
  		ResourceStepNormThreshold::ResourceStepNormThreshold(const CBFSchema::ResourceStepNormThreshold &xml_instance) {
+			m_Threshold = xml_instance.Threshold();
+			CBF_DEBUG("resource space threshold: " << m_Threshold);
 
 		}
 

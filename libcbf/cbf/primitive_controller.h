@@ -61,6 +61,10 @@ namespace CBF {
 		projected into the null space of this controller.
 	*/
 	struct PrimitiveController : public Controller {
+
+		friend class TaskSpaceDistanceThreshold;
+		friend class ResourceStepNormThreshold;
+
 		PrimitiveController(const CBFSchema::PrimitiveController &xml_instance);
 
 		/**

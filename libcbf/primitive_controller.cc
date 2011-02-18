@@ -187,8 +187,10 @@ namespace CBF {
 	}
 	
 	bool PrimitiveController::check_convergence() {
+		CBF_DEBUG("check_convergence");
 		m_Converged = false;
 
+		CBF_DEBUG("# of criteria: " << m_ConvergenceCriteria.size());
 		for (unsigned int i = 0, max = m_ConvergenceCriteria.size(); i < max; ++i) {
 			if (m_ConvergenceCriteria[i]->check_convergence(*this)) {
 				m_Converged = true;
@@ -245,6 +247,7 @@ namespace CBF {
 				it != xml_instance.ConvergenceCriterion().end();
 				++it
 			) {
+				CBF_DEBUG("adding criterion");
 				ConvergenceCriterionPtr criterion = XMLObjectFactory::instance()->create<ConvergenceCriterion>(*it);
 				criteria.push_back(criterion);
 #if 0
@@ -267,6 +270,7 @@ namespace CBF {
 #endif
 			}
 
+			m_ConvergenceCriteria = criteria;
 
 			CBF_DEBUG("Creating reference...");
 			ReferencePtr ref = 
