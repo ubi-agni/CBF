@@ -20,6 +20,9 @@ namespace CBF {
 	bool ResourceStepNormThreshold::check_convergence(const PrimitiveController &p) {
 		CBF_DEBUG("check convergence");
 
+		if (ublas::norm_2(p.m_ResourceStep) < m_Threshold)
+			return true;
+
 		return false;
 	}
 	

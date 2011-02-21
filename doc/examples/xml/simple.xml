@@ -8,7 +8,7 @@
 
  <Coefficient> 1 </Coefficient>
 
- <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
+ <ConvergenceCriterion xsi:type="cbf:ResourceStepNormThreshold">
   <Threshold> 0.01 </Threshold>
  </ConvergenceCriterion>
 
