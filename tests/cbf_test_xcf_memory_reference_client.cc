@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	}
 
 
-	CBF_DEBUG("connecting to XCFMemory");
+	CBF_DEBUG("connecting to XCFMemory...");
 	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(argv[1]));
 
 	std::stringstream xPath;
