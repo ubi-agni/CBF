@@ -4,7 +4,7 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	RobotInterfaceResource::RobotInterfaceResource(const CBFSchema::RobotInterfaceResource &xml_instance) {
+	RobotInterfaceResource::RobotInterfaceResource(const CBFSchema::RobotInterfaceResource &xml_instance, ObjectNamespacePtr object_namespace) {
 		init(
 			xml_instance.SendMemoryName(), 
 			xml_instance.RecvMemoryName(), 

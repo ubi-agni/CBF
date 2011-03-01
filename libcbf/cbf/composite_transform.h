@@ -24,6 +24,7 @@
 #define CBF_COMPOSITE_TRANSFORM_HH
 
 #include <cbf/sensor_transform.h>
+#include <cbf/namespace.h>
 
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -59,7 +60,7 @@ namespace CBF {
 				set_transforms(transforms);
 			}
 
-			CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance);
+			CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2)
 			{

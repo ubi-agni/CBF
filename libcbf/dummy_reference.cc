@@ -27,7 +27,7 @@
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-	DummyReference::DummyReference(const CBFSchema::DummyReference &xml_instance) {
+	DummyReference::DummyReference(const CBFSchema::DummyReference &xml_instance, ObjectNamespacePtr object_namespace) {
 		CBF_DEBUG("constructing");
 
 		//! Set references..
@@ -46,7 +46,7 @@ namespace CBF {
 
 			CBF_DEBUG("Extracting reference vector coefficients...");
 			try {
-				tmp = create_vector(*it);
+				tmp = create_vector(*it, object_namespace);
 			} catch(...) {
 				CBF_DEBUG("extracting cefficients failed");
 				throw;

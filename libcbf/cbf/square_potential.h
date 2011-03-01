@@ -27,6 +27,7 @@
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
 #include <cbf/config.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -40,7 +41,7 @@ namespace ublas = boost::numeric::ublas;
 	@brief A squared potential functions
 */
 struct SquarePotential : public Potential {
-	SquarePotential(const CBFSchema::SquarePotential &xml_instance);
+	SquarePotential(const CBFSchema::SquarePotential &xml_instance, ObjectNamespacePtr object_namespace);
 
 	Float m_Coefficient;
 

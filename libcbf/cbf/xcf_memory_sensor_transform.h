@@ -22,6 +22,7 @@
 #define XCF_MEMORY_SENSOR_TRANSFORM_HH
 
 #include <cbf/config.h>
+#include <cbf/namespace.h>
 
 #include <cbf/sensor_transform.h>
 
@@ -46,7 +47,7 @@ namespace CBF {
 		/**
 			@brief Constructs an XCFMemorySensorTransform from an xml instance.
 		*/
-		XCFMemorySensorTransform(const CBFSchema::XCFMemorySensorTransform &xml_instance);
+		XCFMemorySensorTransform(const CBFSchema::XCFMemorySensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		/**
 			@brief Constructs an XCFMemorySensorTransform. Valid SensorTransformPointer

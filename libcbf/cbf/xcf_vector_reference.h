@@ -7,6 +7,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_factory.h>
+#include <cbf/namespace.h>
 
 
 #include <xcf/ServerComponent.hpp>
@@ -34,7 +35,7 @@ namespace CBF {
 	to see how to remotely call this method
 */
 struct XCFVectorReference : public Reference {
-	XCFVectorReference(const CBFSchema::XCFVectorReference &xml_instance);
+	XCFVectorReference(const CBFSchema::XCFVectorReference &xml_instance, ObjectNamespacePtr object_namespace);
 
 	XCF::ServerPtr m_XCFServer;
 	unsigned int m_Dim;
@@ -159,7 +160,7 @@ struct XCFVectorReference : public Reference {
 		std::istringstream s(xml_in);
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector");
-		m_TempReference = create_vector(*v);
+		m_TempReference = create_vector(*v, ObjectNamespacePtr(new ObjectNamespace));
 
 		CBF_DEBUG("vector created");
 		if (m_TempReference.size() != dim()) {

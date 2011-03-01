@@ -2,6 +2,7 @@
 #define CBF_TRANSPOSE_TRANSFORM_HH
 
 #include <cbf/effector_transform.h>
+#include <cbf/namespace.h>
 
 namespace CBFSchema { class TransposeEffectorTransform; }
 
@@ -12,7 +13,7 @@ struct TransposeEffectorTransform : public EffectorTransform {
 		m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
 	}
 
-	TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance);
+	TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 	virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
 		m_InverseTaskJacobian = ublas::trans(task_jacobian);

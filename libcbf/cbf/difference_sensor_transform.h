@@ -22,6 +22,7 @@
 #define CBF_DIFFERENCE_SENSOR_TRANSFORM
 
 #include <cbf/sensor_transform.h>
+#include <cbf/namespace.h>
 
 #include <vector>
 #include <cassert>
@@ -35,7 +36,7 @@ namespace CBF {
 		operating on the same resources..
 	*/
 	struct DifferenceSensorTransform : public SensorTransform {
-		DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance);
+		DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr()) 
 		{

@@ -52,7 +52,7 @@ struct XCFMemoryResource : public Resource {
 
 		@param xml_instance An instance of a CBFSchema::XCFMemoryResource.
 	*/	
-	XCFMemoryResource(const CBFSchema::XCFMemoryResource &xml_instance);	
+	XCFMemoryResource(const CBFSchema::XCFMemoryResource &xml_instance, ObjectNamespacePtr object_namespace);	
 
 	/**
 		@brief Creates an XCFMemoryResource connecting to the Memory named URI

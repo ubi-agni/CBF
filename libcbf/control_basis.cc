@@ -6,7 +6,7 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	ControlBasis::ControlBasis(const CBFSchema::ControlBasis &xml_instance) {
+	ControlBasis::ControlBasis(const CBFSchema::ControlBasis &xml_instance, ObjectNamespacePtr object_namespace) {
 		CBF_DEBUG("Building Control Basis");
 		for (
 			CBFSchema::ControlBasis::Controller_const_iterator it = 
@@ -15,7 +15,7 @@ namespace CBF {
 			++it)
 		{
 			ControllerPtr c = 
-				XMLObjectFactory::instance()->create<Controller>(*it);
+				XMLObjectFactory::instance()->create<Controller>(*it, object_namespace);
 
 			if (m_Controllers.find(c->name()) != m_Controllers.end()) {
 				CBF_THROW_RUNTIME_ERROR("Name: " << c->name() << " already in basis");

@@ -25,6 +25,7 @@
 
 #include <cbf/config.h>
 #include <cbf/controller.h>
+#include <cbf/namespace.h>
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -39,7 +40,7 @@ namespace CBF {
 		This controller can be used to execute sequences of controllers. Each controller in the sequence is run until finished. When the last controller finished, the ControllerSequence finished, too.
 	*/
 	struct ControllerSequence : public Controller {
-		ControllerSequence (const CBFSchema::ControllerSequence &xml_instance);
+		ControllerSequence (const CBFSchema::ControllerSequence &xml_instance, ObjectNamespacePtr object_namespace);
 
 		std::vector<ControllerPtr> m_Controllers;
 		std::vector<ControllerPtr>::iterator m_Iterator;

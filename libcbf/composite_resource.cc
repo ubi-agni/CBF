@@ -24,7 +24,7 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	CompositeResource::CompositeResource(const CBFSchema::CompositeResource &xml_instance) {
+	CompositeResource::CompositeResource(const CBFSchema::CompositeResource &xml_instance, ObjectNamespacePtr object_namespace) {
 			std::vector<ResourcePtr> resources;
 		
 			//! Instantiate the subordinate resources
@@ -35,7 +35,7 @@ namespace CBF {
 				++it
 			)
 			{
-				ResourcePtr tr(XMLObjectFactory::instance()->create<Resource>(*it));
+				ResourcePtr tr(XMLObjectFactory::instance()->create<Resource>(*it, object_namespace));
 				resources.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}

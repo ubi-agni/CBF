@@ -19,6 +19,7 @@
 */
 
 #include <cbf/controller_sequence.h>
+#include <cbf/namespace.h>
 #include <iostream>
 
 #ifdef CBF_HAVE_XSD
@@ -28,7 +29,7 @@
 namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
-		ControllerSequence::ControllerSequence(const CBFSchema::ControllerSequence &xml_instance) {
+		ControllerSequence::ControllerSequence(const CBFSchema::ControllerSequence &xml_instance, ObjectNamespacePtr object_namespace) {
 			std::cout << "[ControllerSequence(const ControllerSequenceType &xml_instance)]: " << std::endl;
 		
 			//! Instantiate the subordinate controllers
@@ -39,7 +40,7 @@ namespace CBF {
 				++it
 			)
 			{
-					ControllerPtr controller(XMLObjectFactory::instance()->create<Controller>(*it));
+					ControllerPtr controller(XMLObjectFactory::instance()->create<Controller>(*it, object_namespace));
 					m_Controllers.push_back(controller);
 			}
 		

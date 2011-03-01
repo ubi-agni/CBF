@@ -25,6 +25,7 @@
 
 #include <cbf/types.h>
 #include <cbf/object.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -66,7 +67,10 @@ typedef boost::shared_ptr<CombinationStrategy> CombinationStrategyPtr;
 	result vector beforehand yourself if needed..
 */
 struct AddingStrategy : public CombinationStrategy {
-	AddingStrategy (const ::CBFSchema::AddingStrategy &xml_instance);
+	AddingStrategy (
+		const ::CBFSchema::AddingStrategy &xml_instance,
+		ObjectNamespacePtr object_namespace
+	);
 
 	AddingStrategy() { }
 

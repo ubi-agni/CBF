@@ -25,6 +25,7 @@
 
 #include <cbf/config.h>
 #include <cbf/resource.h>
+#include <cbf/namespace.h>
 
 #include <vector>
 #include <algorithm>
@@ -43,7 +44,7 @@ struct CompositeResource : public Resource
 		FloatVector m_ResourceValues;
 
 	public:
-		CompositeResource(const CBFSchema::CompositeResource &xml_instance);
+		CompositeResource(const CBFSchema::CompositeResource &xml_instance, ObjectNamespacePtr object_namespace);
 
 		CompositeResource(std::vector<ResourcePtr> resources = std::vector<ResourcePtr>()) {
 			set_resources(resources);

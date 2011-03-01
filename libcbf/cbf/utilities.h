@@ -24,7 +24,7 @@
 #define CBF_UTILITIES_HH
 
 #include <cbf/types.h>
-
+#include <cbf/namespace.h>
 #include <cbf/config.h>
 
 #include <boost/numeric/ublas/matrix.hpp>
@@ -133,15 +133,15 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j);
 */
 FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &j);
 
-FloatVector create_vector(const CBFSchema::Vector &xml_instance);
-FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance);
+FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace);
+FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespacePtr object_namespace);
 
-boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_instance);
-boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance);
-boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance);
+boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace);
+boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance, ObjectNamespacePtr object_namespace);
+boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance, ObjectNamespacePtr object_namespace);
 
-boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance);
-boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance);
+boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance, ObjectNamespacePtr object_namespace);
+boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance, ObjectNamespacePtr object_namespace);
 
 
 } // namespace

@@ -59,8 +59,8 @@ namespace CBF {
 
 
 #ifdef CBF_HAVE_XSD
-	SquarePotential::SquarePotential(const CBFSchema::SquarePotential &xml_instance) :
-		Potential(xml_instance) 
+	SquarePotential::SquarePotential(const CBFSchema::SquarePotential &xml_instance, ObjectNamespacePtr object_namespace) :
+		Potential(xml_instance, object_namespace) 
 	{
 		CBF_DEBUG("[SquarePotential(const SquaredPotentialType &xml_instance)]: yay!");
 		CBF_DEBUG("Coefficient: " << xml_instance.Coefficient());

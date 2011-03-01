@@ -5,10 +5,10 @@ namespace CBF {
 
 #ifdef CBF_HAVE_XSD
 
-MaskingResource::MaskingResource(const CBFSchema::MaskingResource &xml_instance) {
+MaskingResource::MaskingResource(const CBFSchema::MaskingResource &xml_instance, ObjectNamespacePtr object_namespace) {
 	ResourcePtr resource 
 		= XMLObjectFactory::instance()->create<Resource>
-			(xml_instance.Resource1());
+			(xml_instance.Resource1(), object_namespace);
 
 	std::vector<unsigned int> indexes;
 

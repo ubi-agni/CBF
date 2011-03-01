@@ -67,9 +67,11 @@ int main(int argc, char **argv) {
 	xmltio::XPath referenceVectorPath("/p1:XCFMemoryReferenceVector/Vector/String");
 	xmltio::Location referenceVectorLoc(document, referenceVectorPath);
 
-	CBF_DEBUG("dimension: " << create_vector(reference -> Vector()));
+	ObjectNamespacePtr object_namespace(new ObjectNamespace);
+
+	CBF_DEBUG("dimension: " << create_vector(reference -> Vector(), object_namespace));
 	
-	unsigned int dim = (create_vector(reference -> Vector())).size();
+	unsigned int dim = (create_vector(reference -> Vector(), object_namespace)).size();
 
 	while(true) {
 		std::cout << "Enter " << dim << " values" << std::endl;

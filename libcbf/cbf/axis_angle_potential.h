@@ -25,6 +25,7 @@
 #include <cbf/types.h>
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -40,7 +41,7 @@ namespace CBF {
 		direction and length of the axis.
 	*/
 	struct AxisAnglePotential : public Potential {
-		AxisAnglePotential(const CBFSchema::AxisAnglePotential &xml_instance);
+		AxisAnglePotential(const CBFSchema::AxisAnglePotential &xml_instance, ObjectNamespacePtr object_namespace);
 
 		//! @brief  This coefficient determines the rate of convergence. Choose between 0 and 1.
 		Float m_Coefficient;

@@ -36,7 +36,7 @@ typedef boost::shared_ptr<LinearSensorTransform> LinearSensorTransformPtr;
 	@brief A linear sensor transform
 */
 struct LinearSensorTransform : public SensorTransform {
-	LinearSensorTransform (const CBFSchema::LinearSensorTransform &xml_instance);
+	LinearSensorTransform (const CBFSchema::LinearSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 	void update(const FloatVector &resource_value) {
 		m_Result = ublas::prod(m_CoefficientMatrix, resource_value);

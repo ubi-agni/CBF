@@ -22,6 +22,8 @@
 #include <boost/bind.hpp>
 //#include <xsd/cxx/tree/types.hxx>
 
+#include <cbf/namespace.h>
+
 #include <memory>
 
 namespace CBF {
@@ -330,7 +332,8 @@ namespace mi = memory::interface;
 			
 			CBF_DEBUG("creating control_basis" << t.str());
 			//init the CBF::ControlBasis
-			CBF::ControlBasisPtr control_basis(new CBF::ControlBasis(controlBasis));
+			ObjectNamespacePtr object_namespace(new ObjectNamespace);
+			CBF::ControlBasisPtr control_basis(new CBF::ControlBasis(controlBasis, object_namespace));
 			CBF_DEBUG("control_basis created");
 
 			if(control_basis -> controllers().size() > 0){

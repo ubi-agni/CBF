@@ -40,9 +40,9 @@ namespace CBF {
 
 
 	#ifdef CBF_HAVE_XSD
-		DummyResource::DummyResource(const CBFSchema::DummyResource &xml_instance)
+		DummyResource::DummyResource(const CBFSchema::DummyResource &xml_instance, ObjectNamespacePtr object_namespace)
 		{
-			m_Variables = create_vector(xml_instance.Vector());
+			m_Variables = create_vector(xml_instance.Vector(), object_namespace);
 			CBF_DEBUG("current values: " << m_Variables);
 		
 		}

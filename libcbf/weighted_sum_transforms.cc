@@ -24,7 +24,7 @@
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		WeightedSumSensorTransform::WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance) 
+		WeightedSumSensorTransform::WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) 
 		{
 			CBF_DEBUG("yay!!!");
 		
@@ -38,7 +38,7 @@ namespace CBF {
 				++it
 			)
 			{
-				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it));
+				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it, object_namespace));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}
@@ -48,7 +48,7 @@ namespace CBF {
 
 			set_transforms(transforms);
 
-			m_Weights = create_vector(xml_instance.Weights());
+			m_Weights = create_vector(xml_instance.Weights(), object_namespace);
 			if (m_Weights.size() != m_Transforms.size())
 				throw std::runtime_error ("[WeightedSumSensorTransform]: Mismatching number of weights and transforms");
 		}
