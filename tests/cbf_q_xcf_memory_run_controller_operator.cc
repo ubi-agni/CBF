@@ -171,8 +171,11 @@ void XcfMemoryRunControllerOperator::add_control_basis(){
 		m_MemoryInterface -> insert(s.str());
 
 	} catch (const xml_schema::exception& e) {
-		std::cerr << "Error during parsing:" << std::endl;
-		std::cerr << e << std::endl;
+		std::cerr << "Error during parsing: " << e << std::endl;
+	} catch (const std::exception& e) {
+		std::cerr << "Unexpected exception: " << e.what() << std::endl;
+	} catch (...) {
+		std::cerr << "Unknown unexpected exception." << std::endl;
 	}
 }
 void XcfMemoryRunControllerOperator::add_controller(){
@@ -203,8 +206,11 @@ void XcfMemoryRunControllerOperator::add_controller(){
 		m_MemoryInterface -> insert(s.str());
 
 	} catch (const xml_schema::exception& e) {
-		std::cerr << "Error during parsing:" << std::endl;
-		std::cerr << e << std::endl;
+		std::cerr << "Error during parsing: " << e << std::endl;
+	} catch (const std::exception& e) {
+		std::cerr << "Unexpected exception: " << e.what() << std::endl;
+	} catch (...) {
+		std::cerr << "Unknown unexpected exception." << std::endl;
 	}
 }
 
