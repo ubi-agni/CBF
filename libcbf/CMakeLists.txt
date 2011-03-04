@@ -41,6 +41,7 @@ set(CBF_SOURCES
   svd.cc
   convergence_criterion.cc
   generic_transform.cc
+  object_reference.cc
   )
 
 #add_definitions("-DCBF=CBF { } struct ERROR {NO_CONFIG_H_INCLUDED}\; namespace CBF")
