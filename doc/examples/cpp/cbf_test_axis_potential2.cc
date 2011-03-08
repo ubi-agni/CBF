@@ -40,38 +40,38 @@ int main() {
 	boost::shared_ptr<KDL::Chain> chain1 (new KDL::Chain);
 	for (unsigned int i = 0; i < NUM_OF_JOINT_TRIPLES; ++i) {
 		chain1->addSegment(
-			KDL::Segment(
-				KDL::Joint::RotX, KDL::Frame(KDL::Vector(0,0,0.1))));
+			KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
+							 KDL::Frame(KDL::Vector(0,0,0.1))));
 
 		chain1->addSegment(
-			KDL::Segment(
-				KDL::Joint::RotY, KDL::Frame(KDL::Vector(0,0,0.1))));
+			KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
+							 KDL::Frame(KDL::Vector(0,0,0.1))));
 
 		chain1->addSegment(
-			KDL::Segment(
-				KDL::Joint::RotZ, KDL::Frame(KDL::Vector(0,0,0.1))));
+			KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
+							 KDL::Frame(KDL::Vector(0,0,0.1))));
 	}
 
 	//! Build up a second chain with one additional fixed link
 	boost::shared_ptr<KDL::Chain> chain2 (new KDL::Chain);
 	for (unsigned int i = 0; i < NUM_OF_JOINT_TRIPLES; ++i) {
 		chain2->addSegment(
-			KDL::Segment(
-				KDL::Joint::RotX, KDL::Frame(KDL::Vector(0,0,0.1))));
+			KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
+							 KDL::Frame(KDL::Vector(0,0,0.1))));
 
 		chain2->addSegment(
-			KDL::Segment(
-				KDL::Joint::RotY, KDL::Frame(KDL::Vector(0,0,0.1))));
+			KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
+							 KDL::Frame(KDL::Vector(0,0,0.1))));
 
 		chain2->addSegment(
-			KDL::Segment(
-				KDL::Joint::RotZ, KDL::Frame(KDL::Vector(0,0,0.1))));
+			KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
+							 KDL::Frame(KDL::Vector(0,0,0.1))));
 	}
 	//! On chain2 we add a final link with a fixed joint. This
 	//! allows our difference sensor transform to do its thing
 	chain2->addSegment(
-		KDL::Segment(
-			KDL::Joint::None, KDL::Frame(KDL::Vector(0,0,0.1))));
+		KDL::Segment(KDL::Joint(KDL::Joint::None), 
+						 KDL::Frame(KDL::Vector(0,0,0.1))));
 
 
 	CBF::KDLChainPositionSensorTransformPtr st1

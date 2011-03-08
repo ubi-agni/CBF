@@ -48,18 +48,30 @@ int main(int argc, char *argv[]) {
 	{
 		//! Build up a fairly simple KDL::Chain
 		boost::shared_ptr<KDL::Chain> chain (new KDL::Chain);
-		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotY, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotY, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotY, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotY, KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
+												 KDL::Frame(KDL::Vector(1,0,0))));
 	
 	
 		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,3));
