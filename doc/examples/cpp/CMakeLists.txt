@@ -55,49 +55,49 @@ endif()
 
 
 if(CBF_HAVE_KDL)
-  message(STATUS "  adding executable cbf_test_kdl_transforms")
+ message(STATUS "  adding executable cbf_test_kdl_transforms")
 
-  add_executable(cbf_test_kdl_transforms
-    cbf_test_kdl_transforms.cc
-    )
+ add_executable(cbf_test_kdl_transforms
+   cbf_test_kdl_transforms.cc
+   )
 
-  target_link_libraries(cbf_test_kdl_transforms
-    cbf
-    )
+ target_link_libraries(cbf_test_kdl_transforms
+   cbf
+   )
 
-  SET_TARGET_PROPERTIES(cbf_test_kdl_transforms
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-    )
+ SET_TARGET_PROPERTIES(cbf_test_kdl_transforms
+   PROPERTIES VERSION ${CBF_VERSION_MAJOR}
+   SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+   )
 
 
-  message(STATUS "  adding executable cbf_test_axis_potential")
-  add_executable(cbf_test_axis_potential
-    cbf_test_axis_potential.cc
-    )
+ message(STATUS "  adding executable cbf_test_axis_potential")
+ add_executable(cbf_test_axis_potential
+   cbf_test_axis_potential.cc
+   )
 
-  target_link_libraries(cbf_test_axis_potential
-    cbf
-    )
+ target_link_libraries(cbf_test_axis_potential
+   cbf
+   )
 
-  SET_TARGET_PROPERTIES(cbf_test_axis_potential
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-    )
+ SET_TARGET_PROPERTIES(cbf_test_axis_potential
+   PROPERTIES VERSION ${CBF_VERSION_MAJOR}
+   SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+   )
 
-  message(STATUS "  adding executable cbf_test_axis_potential2")
-  add_executable(cbf_test_axis_potential2
-    cbf_test_axis_potential2.cc
-    )
+ message(STATUS "  adding executable cbf_test_axis_potential2")
+ add_executable(cbf_test_axis_potential2
+   cbf_test_axis_potential2.cc
+   )
 
-  target_link_libraries(cbf_test_axis_potential2
-    cbf
-    )
+ target_link_libraries(cbf_test_axis_potential2
+   cbf
+   )
 
-  SET_TARGET_PROPERTIES(cbf_test_axis_potential2
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-    )
+ SET_TARGET_PROPERTIES(cbf_test_axis_potential2
+   PROPERTIES VERSION ${CBF_VERSION_MAJOR}
+   SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+   )
 
 
 #  if(${CBF_HAVE_KDLCHAINVIEW})
@@ -134,10 +134,10 @@ if(CBF_HAVE_KDL)
 #  endif()
 
 else()
-  message(STATUS "  not adding executables:")
-  message(STATUS "  -cbf_test_kdl_transforms")
-  message(STATUS "  -cbf_test_kdl_transforms_view")
-  message(STATUS "  because Kdl or Eigen2 was not found")
+ message(STATUS "  not adding executables:")
+ message(STATUS "  -cbf_test_kdl_transforms")
+ message(STATUS "  -cbf_test_kdl_transforms_view")
+ message(STATUS "  because Kdl or Eigen2 was not found")
 endif()
 
 

@@ -801,7 +801,7 @@
 	 <xsd:sequence>
 		<xsd:element name="RunControllerName" type="xsd:string"/>
 		<xsd:element name="ControlBasis" type="CBF:ControlBasis" minOccurs="0"/>
-		<xsd:element name="Controller" type="CBF:Controller" minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="Attachments" type="xsd:boolean" minOccurs="0"/>		
 	 </xsd:sequence>
   </xsd:complexType>
 

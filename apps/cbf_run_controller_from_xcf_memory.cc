@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
 
 	CBF_DEBUG("waiting...");
 	while(true){
-		// ähm simply waiting. controller will run everything 
+		// we just go to sleep. controller will run everything 
 		usleep(10000 * 10000);
 	}
 

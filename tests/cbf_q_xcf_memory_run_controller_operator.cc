@@ -31,10 +31,12 @@
 #include <cstdlib>
 #include <vector>
 #include <fstream>
+#include <time.h>
 
 #include <memory>
 
 #include <boost/program_options.hpp>
+
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
@@ -108,7 +110,7 @@ int main(int argc, char *argv[]) {
 	//Initializing the Applictaions main-window.
 	QWidget *window = new QWidget();
 	QPushButton add_cb("add control basis");
-	QPushButton add_c("add controller");
+	QPushButton add_c("add control basis as attachment");
 	QPushButton execute("execute");
 	QPushButton stop("stop");
 	QPushButton sleep_time("sleep time");
@@ -118,7 +120,7 @@ int main(int argc, char *argv[]) {
 
 	// connecting buttons to the corresponding slots.
 	QObject::connect(&add_cb, SIGNAL(clicked()), &op, SLOT(add_control_basis()));
-	QObject::connect(&add_c, SIGNAL(clicked()), &op, SLOT(add_controller()));
+	QObject::connect(&add_c, SIGNAL(clicked()), &op, SLOT(add_attachment()));
 	QObject::connect(&execute, SIGNAL(clicked()), &op, SLOT(execute()));
 	QObject::connect(&stop, SIGNAL(clicked()), &op, SLOT(stop()));
 	QObject::connect(&sleep_time, SIGNAL(clicked()), &op, SLOT(set_time()));
@@ -146,8 +148,11 @@ int main(int argc, char *argv[]) {
 
 void XcfMemoryRunControllerOperator::add_control_basis(){
 	// getting the name of the xml file.
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "../doc/examples/xml/", tr("XML (*.xml)"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), m_DirPath.c_str(), tr("XML (*.xml)"));
 	std::string control_basis = fileName.toStdString();
+	if(control_basis.size() > 0) {m_DirPath = control_basis;}
+
+	if (control_basis.size() == 0) { return; }
 
 	CBF::XSDErrorHandler err_handler;
 
@@ -167,8 +172,12 @@ void XcfMemoryRunControllerOperator::add_control_basis(){
 
 		std::ostringstream s;
 		CBFSchema::XCFMemoryRunControllerAdd_ (s, v);
+	CBF_DEBUG("HHHHHHHH");
 		// sending the document to the active_memory
+	CBF_DEBUG(s.str());
+	CBF_DEBUG("DocLength: " << s.str().size());
 		m_MemoryInterface -> insert(s.str());
+	CBF_DEBUG("INSERTED");
 
 	} catch (const xml_schema::exception& e) {
 		std::cerr << "Error during parsing: " << e << std::endl;
@@ -178,32 +187,46 @@ void XcfMemoryRunControllerOperator::add_control_basis(){
 		std::cerr << "Unknown unexpected exception." << std::endl;
 	}
 }
-void XcfMemoryRunControllerOperator::add_controller(){
-	// getting the name of the xml file.
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "../doc/examples/xml/", tr("XML (*.xml)"));
-	std::string controller = fileName.toStdString();
 
-	CBF::XSDErrorHandler err_handler;
+void XcfMemoryRunControllerOperator::add_attachment(){
+	// getting the name of the xml file.
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), m_DirPath.c_str(), tr("XML (*.xml)"));
+	std::string control_basis = fileName.toStdString();
+	if(control_basis.size() > 0) {m_DirPath = control_basis;}
+	
+	// create Buffer and fill it with data from file.
+	memory::interface::Buffer buffer;
+
+	std::ifstream docFile(control_basis.c_str());
+	if (docFile.is_open()){
+		while (!docFile.eof()) {
+			buffer.push_back(docFile.get());
+		}
+		docFile.close();
+	} else {
+		std::cerr << "Error could not open file.";
+		return;
+	}
+
+	// create Attachment and set the Buffer.
+	memory::interface::Attachments att;
+ 	std::ostringstream t;
+ 	t << time(NULL);
+ 	att[t.str()] = buffer;
+	
 
 	try {
-		// trying to parse the file as a control_basis
-		std::auto_ptr<CBFSchema::Controller> contr
-			(CBFSchema::Controller_
-				(controller, err_handler, xml_schema::flags::dont_validate));
-
-		//CBF_DEBUG("checking if controller is compilable");
-		//CBF::ControllerPtr cb(new CBF::Controller(*cbt));
-
 		// creating the XCFMemoryRunControllerAdd document.
 		CBFSchema::XCFMemoryRunControllerAdd v(m_RunControllerName);
-		// setting the control_basis
+		// setting the Attachment element
 		
-		v.Controller().push_back(contr);
+		v.Attachments(true);
 
 		std::ostringstream s;
 		CBFSchema::XCFMemoryRunControllerAdd_ (s, v);
 		// sending the document to the active_memory
-		m_MemoryInterface -> insert(s.str());
+		
+		m_MemoryInterface -> insert(s.str(), &att);
 
 	} catch (const xml_schema::exception& e) {
 		std::cerr << "Error during parsing: " << e << std::endl;

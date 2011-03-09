@@ -133,51 +133,51 @@ struct XCFMemoryRunController {
 		@brief Returns the string that identifies the XML-document that
 		adds controllers.
 	*/
-	const char* addXPath(){
+	const std::string addXPath(){
 		std::stringstream xPathStream;
 		xPathStream << "/p1:XCFMemoryRunControllerAdd[RunControllerName='";
 		xPathStream << m_RunControllerName << "']";
-		return xPathStream.str().c_str();
+		return xPathStream.str();
 	}
 	/**
 		@brief Returns the string that identifies the XML-document that
 		sets the Controllers sleep-time and steps.
 	*/
-	const char* optionsXPath(){
+	const std::string optionsXPath(){
 		std::stringstream xPathStream;
 		xPathStream << "/p1:XCFMemoryRunControllerOptions [RunControllerName='";
 		xPathStream << m_RunControllerName << "']";
-		return xPathStream.str().c_str();
+		return xPathStream.str();
 	}
 	/**
 		@brief Returns the string that identifies the XML-document that
 		starts the execution of a controller.
 	*/
-	const char* executeXPath(){
+	const std::string executeXPath(){
 		std::stringstream xPathStream;
 		xPathStream << "/p1:XCFMemoryRunControllerExecute[RunControllerName='";
 		xPathStream << m_RunControllerName << "']";
-		return xPathStream.str().c_str();
+		return xPathStream.str();
 	}
 	/**
 		@brief Returns the string that identifies the XML-document that
 		stops execution of a controller.
 	*/
-	const char* stopXPath(){
+	const std::string stopXPath(){
 		std::stringstream xPathStream;
 		xPathStream << "/p1:XCFMemoryRunControllerStop[RunControllerName='";
 		xPathStream << m_RunControllerName << "']";
-		return xPathStream.str().c_str();
+		return xPathStream.str();
 	}
 	/**
 		@brief Returns the string that identifies the XML-document that
 		loads controllers as a control_basis.
 	*/
-	const char* loadControllersXPath(){
+	const std::string loadControllersXPath(){
 		std::stringstream xPathStream;
 		xPathStream << "/p1:XCFMemoryRunControllerLoadControllers[RunControllerName='";
 		xPathStream << m_RunControllerName << "']";
-		return xPathStream.str().c_str();
+		return xPathStream.str();
 	}
 
 	/**

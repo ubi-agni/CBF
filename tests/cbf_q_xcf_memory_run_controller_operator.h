@@ -46,7 +46,12 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		/**
 			@brief A pointer is used to send documents to an active_memory.
 		*/
-		memory::interface::MemoryInterface::pointer m_MemoryInterface;		
+		memory::interface::MemoryInterface::pointer m_MemoryInterface;
+
+		/**
+			@brief The Path we look for documents in.
+		*/
+		std::string m_DirPath;
 
 	public:
 
@@ -62,7 +67,8 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		m_RunControllerName(run_controller_name)
 		{
 			try {
-				m_MemoryInterface = (memory::interface::MemoryInterface::getInstance(active_memory_name));		
+				m_MemoryInterface = (memory::interface::MemoryInterface::getInstance(active_memory_name));	
+				m_DirPath = "";
 			} catch (...) {
 				CBF_THROW_RUNTIME_ERROR("can't connect to memory: " << active_memory_name);
 			}
@@ -76,10 +82,10 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		void add_control_basis();
 
 		/**
-			@brief Opens a FileDialog in which an xml-file with a controller can be chosen.
-			This control_basis is send in an XCFMemoryRunControllerAdd.
+			@brief Opens a FileDialog in which an xml-file with a control basis can be chosen.
+			This control_basis is send as an attachment with an XCFMemoryRunControllerAdd.
 		*/
-		void add_controller();
+		void add_attachment();
 
 		/**
 			@brief Opens a Dialog in which a time can be chosen.
@@ -109,4 +115,5 @@ class XcfMemoryRunControllerOperator : public QWidget {
 			The controller names are send in an XCFMemoryRunControllerLoadControllers.
 		*/
 		void load_controllers();
+
 };

@@ -133,7 +133,7 @@ struct XCFMemoryResource : public Resource {
 			@brief Returns the xPath for the Location of the vector in the
 			XCFMemoryResourceState-document.
 		*/
-		inline std::string documentVectorLocationXPath(){
+		const inline std::string documentVectorLocationXPath(){
 			return "/p1:XCFMemoryResourceState/Vector/String";
 		}
 

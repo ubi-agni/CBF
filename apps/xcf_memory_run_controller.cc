@@ -20,7 +20,7 @@
 
 #include <xcf_memory_run_controller.h>
 #include <boost/bind.hpp>
-//#include <xsd/cxx/tree/types.hxx>
+#include <cbf/xsd_error_handler.h>
 
 #include <memory>
 
@@ -64,7 +64,6 @@ namespace mi = memory::interface;
 		m_MemoryInterface -> subscribe(subscription);
 
 		CBF_DEBUG("Subscribing Options at active_memory");
-		CBF_DEBUG("Options XPath: " << optionsXPath());
 		condition = mi::Condition(event, optionsXPath());
 		triggered_action = mi::TriggeredAction(boost::bind(
 				&XCFMemoryRunController::triggered_action_options, this, _1));
@@ -99,7 +98,7 @@ namespace mi = memory::interface;
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
 
 		CBF_DEBUG("parsing XML for controllers, adding");
-		
+
 		try {
 			//we will count the controllers and save theyr names, so we can notify them.
 			m_Added = 0;
@@ -121,12 +120,35 @@ namespace mi = memory::interface;
 				&names, &overwritten);
 			}
 
-			CBF_DEBUG("parsing XML for list of controllers");
-			// adding every controller from the list of controllers.
-			add_controllers_to_map(&(controllerAdd -> Controller()),
-				&names, &overwritten);
+			CBF::XSDErrorHandler err_handler;
+			CBF_DEBUG("getting attachments and parsing them");
+			if(controllerAdd -> Attachments().present() && controllerAdd -> Attachments().get()) {
+				memory::interface::Attachments att;
+				m_MemoryInterface -> getAttachments((event.getMemoryElement().asString()), att);
+				for (mi::Attachments::const_iterator it = att.begin();
+					it != att.end(); ++it){
+					// getting data from attachment
+					memory::interface::Buffer buff = it -> second;
+					std::stringstream tmp;
+					for (mi::Buffer::const_iterator it = buff.begin();
+						it != buff.end(); ++it) {
+						tmp << *it;
+					}
+					std::cout << tmp.str() << std::endl;
 
-			CBF_DEBUG("Controllers ignored: " << m_Ignored);
+					CBF_DEBUG("creating a control_basis");
+					// trying to parse the attachments as a control_basis
+					try {
+						std::auto_ptr<CBFSchema::ControlBasis> cbt
+							(CBFSchema::ControlBasis_
+								(tmp, err_handler, xml_schema::flags::dont_validate));
+						// adding every controller from the control_basis.
+						add_controllers_to_map(&(cbt -> Controller()), &names, &overwritten);
+					} catch(...) {
+					 	CBF_DEBUG("could not create control_basis");;
+					}
+				}
+			}
 
 			std::string nameStr = names.str();
 			std::string overwrittenStr = overwritten.str();
@@ -147,9 +169,17 @@ namespace mi = memory::interface;
 				<< overwrittenStr << "), Controllers Ignored(" 
 				<< m_Ignored << ")";
 			notify(note.str() , event.getID(), XCFMemoryRunController::INFO);
-		} catch (...){
-			CBF_DEBUG("Error while parsing XCFMemoryRunControllerAdd for controllers");
-			notify("Error while parsing XCFMemoryRunControllerAdd for controllers.", 
+		} catch (const xml_schema::exception& e) {
+			CBF_DEBUG("An error occured during parsing: " << e.what());
+			notify(std::string("An error occured during parsing: ").append(e.what()), 
+				event.getID(), XCFMemoryRunController::ERROR);
+		} catch (const std::exception& e) {
+			CBF_DEBUG("An unexpected exception occured: " << e.what());
+			notify(std::string("An unexpected exception occured: ").append(e.what()), 
+				event.getID(), XCFMemoryRunController::ERROR);
+		} catch (...) {
+			CBF_DEBUG("An unknown unexpected exception occured.");
+			notify("An unknown unexpected exception occured.", 
 				event.getID(), XCFMemoryRunController::ERROR);
 		}
 	}
@@ -224,10 +254,18 @@ namespace mi = memory::interface;
 				notify(note.str() , event.getID(), XCFMemoryRunController::INFO);
 			}
 
-		} catch (...){
-			CBF_DEBUG("Error while parsing XCFMemoryRunControllerOptions for options.");
-			notify("Error while parsing XCFMemoryRunControllerOptions for options.",
-			event.getID(), XCFMemoryRunController::ERROR);
+		} catch (const xml_schema::exception& e) {
+			CBF_DEBUG("An error occured during parsing: " << e.what());
+			notify(std::string("An error occured during parsing: ").append(e.what()), 
+				event.getID(), XCFMemoryRunController::ERROR);
+		} catch (const std::exception& e) {
+			CBF_DEBUG("An unexpected exception occured: " << e.what());
+			notify(std::string("An unexpected exception occured: ").append(e.what()), 
+				event.getID(), XCFMemoryRunController::ERROR);
+		} catch (...) {
+			CBF_DEBUG("An unknown unexpected exception occured.");
+			notify("An unknown unexpected exception occured.", 
+				event.getID(), XCFMemoryRunController::ERROR);
 		}
 	}
 
@@ -267,10 +305,18 @@ namespace mi = memory::interface;
 			CBF_DEBUG("Runtime Error: Controller is already running.");
 			notify("Runtime Error: Controller is already running." ,
 				event.getID(), XCFMemoryRunController::ERROR);
-		} catch (...){
-			CBF_DEBUG("Error while parsing XCFMemoryRunControllerExecute for controller names.");
-			notify("Error while parsing XCFMemoryRunControllerExecute for controller names.",
-					event.getID(), XCFMemoryRunController::ERROR);
+		} catch (const xml_schema::exception& e) {
+			CBF_DEBUG("An error occured during parsing: " << e.what());
+			notify(std::string("An error occured during parsing: ").append(e.what()), 
+				event.getID(), XCFMemoryRunController::ERROR);
+		} catch (const std::exception& e) {
+			CBF_DEBUG("An unexpected exception occured: " << e.what());
+			notify(std::string("An unexpected exception occured: ").append(e.what()), 
+				event.getID(), XCFMemoryRunController::ERROR);
+		} catch (...) {
+			CBF_DEBUG("An unknown unexpected exception occured.");
+			notify("An unknown unexpected exception occured.", 
+				event.getID(), XCFMemoryRunController::ERROR);
 		}
 	}
 
@@ -347,9 +393,17 @@ namespace mi = memory::interface;
 			CBF_DEBUG(e.what());
 			notify("Error: Can not set ControlBasis while controller is running.",
 				 event.getID(), XCFMemoryRunController::ERROR);
-		} catch (...){
-			CBF_DEBUG("Error while parsing XCFMemoryRunControllerLoadControllers");
-			notify("Error while parsing XCFMemoryRunControllerLoadControllers",
+		} catch (const xml_schema::exception& e) {
+			CBF_DEBUG("An error occured during parsing: " << e.what());
+			notify(std::string("An error occured during parsing: ").append(e.what()), 
+				event.getID(), XCFMemoryRunController::ERROR);
+		} catch (const std::exception& e) {
+			CBF_DEBUG("An unexpected exception occured: " << e.what());
+			notify(std::string("An unexpected exception occured: ").append(e.what()), 
+				event.getID(), XCFMemoryRunController::ERROR);
+		} catch (...) {
+			CBF_DEBUG("An unknown unexpected exception occured.");
+			notify("An unknown unexpected exception occured.", 
 				event.getID(), XCFMemoryRunController::ERROR);
 		}
 	}
