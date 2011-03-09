@@ -9,6 +9,7 @@
   <xsd:complexType name="Object" abstract="true">
 	 <xsd:sequence>
 		<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+		<xsd:element name="ReferencedObject" type="xsd:string" minOccurs="0"/>
 	 </xsd:sequence>
   </xsd:complexType>
   <xsd:element name="Object" type="CBF:Object"/>
@@ -34,7 +35,7 @@
   </xsd:complexType>
   <xsd:element name="ControlBasis" type="CBF:ControlBasis"/>
 
-  <xsd:complexType abstract="true" name="Controller">
+  <xsd:complexType name="Controller">
 	 <xsd:complexContent> 
 		<xsd:extension base="CBF:Object">
 		</xsd:extension>
@@ -42,7 +43,7 @@
   </xsd:complexType>
   <xsd:element name="Controller" type="CBF:Controller"/>
 
-  <xsd:complexType name="Reference" abstract="true">
+  <xsd:complexType name="Reference">
 	 <xsd:complexContent> 
 		<xsd:extension base="CBF:Object">
 		</xsd:extension> 
@@ -50,7 +51,7 @@
   </xsd:complexType>
   <xsd:element name="Reference" type="CBF:Reference"/>
 
-  <xsd:complexType name="SensorTransform" abstract="true">
+  <xsd:complexType name="SensorTransform">
 	 <xsd:complexContent> 
 		<xsd:extension base="CBF:Object">
 		  <xsd:sequence>
@@ -61,7 +62,7 @@
   </xsd:complexType>
   <xsd:element name="SensorTransform" type="CBF:SensorTransform"/>
   
-  <xsd:complexType name="EffectorTransform" abstract="true">
+  <xsd:complexType name="EffectorTransform">
 	 <xsd:complexContent> 
 		<xsd:extension base="CBF:Object">
 		</xsd:extension> 
@@ -69,7 +70,7 @@
   </xsd:complexType>
   <xsd:element name="EffectorTransform" type="CBF:EffectorTransform"/>
 
-  <xsd:complexType name="CombinationStrategy" abstract="true">
+  <xsd:complexType name="CombinationStrategy">
 	 <xsd:complexContent> 
 		<xsd:extension base="CBF:Object">
 		</xsd:extension> 
@@ -77,7 +78,7 @@
   </xsd:complexType>
   <xsd:element name="CombinationStrategy" type="CBF:CombinationStrategy"/>
 
-  <xsd:complexType name="Resource" abstract="true">
+  <xsd:complexType name="Resource">
 	 <xsd:complexContent> 
 		<xsd:extension base="CBF:Object">
 		</xsd:extension> 
@@ -138,7 +139,7 @@
 
 
   <xsd:element name="Vector" type="CBF:Vector"/>
-  <xsd:complexType name="Vector" abstract="true">
+  <xsd:complexType name="Vector">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Object">
 		</xsd:extension>
@@ -205,7 +206,7 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="ConvergenceCriterion" abstract="true">
+  <xsd:complexType name="ConvergenceCriterion">
 	 <xsd:complexContent> 
 		<xsd:extension base="CBF:Object">
 		</xsd:extension> 
@@ -233,7 +234,7 @@
   </xsd:complexType>
 
   <xsd:element name="Potential" type="CBF:Potential"/>
-  <xsd:complexType abstract="true" name="Potential">
+  <xsd:complexType name="Potential">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:ConvergenceCriterion">
 		  <xsd:sequence>
@@ -414,7 +415,7 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="TreeBase" abstract="true">
+  <xsd:complexType name="TreeBase">
 	 <xsd:sequence>
 		<xsd:element name="Name" type="xsd:string"/>
 	 </xsd:sequence>
@@ -431,7 +432,7 @@
   </xsd:complexType>
 
 
-  <xsd:complexType name="ChainBase" abstract="true">
+  <xsd:complexType name="ChainBase">
 	 <xsd:sequence>
 		<xsd:element name="Name" type="xsd:string"/>
 	 </xsd:sequence>
@@ -476,7 +477,7 @@
 	 </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="Frame" abstract="true">
+  <xsd:complexType name="Frame">
 	 <xsd:sequence>
 	 </xsd:sequence>
   </xsd:complexType>
@@ -513,7 +514,7 @@
   </xsd:complexType>
 
   <xsd:element name="Matrix" type="CBF:Matrix"/>
-  <xsd:complexType name="Matrix" abstract="true">
+  <xsd:complexType name="Matrix">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Object">
 		</xsd:extension>
