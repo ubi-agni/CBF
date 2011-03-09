@@ -138,7 +138,7 @@ namespace mi = memory::interface;
 					}
 					std::cout << tmp.str() << std::endl;
 
-					CBF_DEBUG("creating a control_basis");
+					CBF_DEBUG("creating a control_basis from attachment[" << it -> first << "]");
 					// trying to parse the attachments as a control_basis
 					try {
 						std::auto_ptr<CBFSchema::ControlBasis> cbt
@@ -146,8 +146,20 @@ namespace mi = memory::interface;
 								(tmp, err_handler, xml_schema::flags::dont_validate));
 						// adding every controller from the control_basis.
 						add_controllers_to_map(&(cbt -> Controller()), &names, &overwritten);
-					} catch(...) {
-					 	CBF_DEBUG("could not create control_basis");;
+					} catch (const xml_schema::exception& e) {
+						CBF_DEBUG("Could not parse Buffer as control_basis: " << e.what());
+						notify(std::string("Could not parse Buffer as control_basis: ").append(
+							e.what()), event.getID(), XCFMemoryRunController::ERROR);
+					} catch (const std::exception& e) {
+						CBF_DEBUG("Could not parse Buffer as control_basis: " << e.what());
+						notify(std::string("Could not parse Buffer as control_basis: ").append(
+							e.what()), event.getID(), XCFMemoryRunController::ERROR);
+					} catch (...) {
+						CBF_DEBUG("An unknown unexpected exception occured while parsing "
+							"Attachment as control_basis.");
+						notify("An unknown unexpected exception occured while parsing "
+							"Attachment as control_basis.", 
+							event.getID(), XCFMemoryRunController::ERROR);
 					}
 				}
 			}
