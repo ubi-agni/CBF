@@ -4,6 +4,7 @@
 #include <cbf/config.h>
 #include <cbf/reference.h>
 #include <cbf/types.h>
+#include <cbf/namespace.h>
 
 #include <vector>
 #include <string>
@@ -39,7 +40,7 @@ struct QtReference : public Reference {
 		init(controls, active, window_title);
 	}
 
-	QtReference(const CBFSchema::QtReference &xml_instance);
+	QtReference(const CBFSchema::QtReference &xml_instance, ObjectNamespacePtr object_namespace);
 
 	void init(std::vector<Control> controls, bool active, std::string window_title = "CBF:QtReference") {
 		QGridLayout *layout = new QGridLayout();

@@ -23,6 +23,7 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/types.h>
+#include <cbf/namespace.h>
 
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -44,7 +45,7 @@ namespace ublas = boost::numeric::ublas;
 */
 	
 struct WeightedSumSensorTransform : public SensorTransform {
-	WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance);
+	WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 	WeightedSumSensorTransform(
 		std::vector<SensorTransformPtr> transforms 

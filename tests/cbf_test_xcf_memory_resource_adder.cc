@@ -64,8 +64,9 @@ int main(int argc, char **argv) {
 		std::cout << "Please enter the resource-dimension" << std::endl;
 		std::cin >> dim;
 	} else {
-		CBF_DEBUG("dimension: " << create_vector(resourceState -> Vector()));
-		dim = (create_vector(resourceState -> Vector())).size();
+		ObjectNamespacePtr object_namespace(new ObjectNamespace);
+		CBF_DEBUG("dimension: " << create_vector(resourceState -> Vector(), object_namespace));
+		dim = (create_vector(resourceState -> Vector(), object_namespace)).size();
 	}
 
 	while(true) {

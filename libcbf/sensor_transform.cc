@@ -29,7 +29,7 @@
 namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
-		SensorTransform::SensorTransform(const CBFSchema::SensorTransform &xml_instance) {
+		SensorTransform::SensorTransform(const CBFSchema::SensorTransform &xml_instance, ObjectNamespacePtr object_namespace) {
 			for (
 				CBFSchema::SensorTransform::ComponentName_sequence::const_iterator it 
 					= xml_instance.ComponentName().begin();
@@ -40,17 +40,18 @@ namespace CBF {
 			}
 		}
 
-		ConstantSensorTransform::ConstantSensorTransform(const CBFSchema::ConstantSensorTransform &xml_instance) {
-			init(*XMLFactory<FloatVector>::instance()->create(xml_instance.Value()));
+		ConstantSensorTransform::ConstantSensorTransform(const CBFSchema::ConstantSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) {
+			init(*XMLFactory<FloatVector>::instance()->create(xml_instance.Value(), object_namespace));
 		}
 
 		BlockWiseMultiplySensorTransform::BlockWiseMultiplySensorTransform(
-			const CBFSchema::BlockWiseMultiplySensorTransform &xml_instance
+			const CBFSchema::BlockWiseMultiplySensorTransform &xml_instance,
+			ObjectNamespacePtr object_namespace
 		) {
 			init(
-				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()),
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand(), object_namespace),
 				xml_instance.Blocksize(),
-				*XMLFactory<FloatVector>::instance()->create(xml_instance.Factors())
+				*XMLFactory<FloatVector>::instance()->create(xml_instance.Factors(), object_namespace)
 				//create_vector(xml_instance.Factors())
 			);
 		}

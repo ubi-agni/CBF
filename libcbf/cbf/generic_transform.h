@@ -30,6 +30,7 @@
 #include <cbf/effector_transform.h>
 #include <cbf/utilities.h>
 #include <cbf/exceptions.h>
+#include <cbf/namespace.h>
 
 #include <algorithm>
 
@@ -49,7 +50,7 @@ namespace CBF {
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
 	*/
 	struct GenericEffectorTransform : public EffectorTransform {
-		GenericEffectorTransform (const CBFSchema::GenericEffectorTransform &xml_instance);
+		GenericEffectorTransform (const CBFSchema::GenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		GenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim) 
 		{ 
@@ -74,7 +75,7 @@ namespace CBF {
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
 	*/
 	struct DampedGenericEffectorTransform : public EffectorTransform {
-		DampedGenericEffectorTransform (const CBFSchema::DampedGenericEffectorTransform &xml_instnace);
+		DampedGenericEffectorTransform (const CBFSchema::DampedGenericEffectorTransform &xml_instnace, ObjectNamespacePtr object_namespace);
 	
 		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
@@ -106,7 +107,7 @@ namespace CBF {
 		TODO: Implement!!!
 	*/
 	struct DampedWeightedGenericEffectorTransform : public EffectorTransform {
-		DampedWeightedGenericEffectorTransform (const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance);
+		DampedWeightedGenericEffectorTransform (const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		protected:	
 	 		FloatMatrix m_Weights;
@@ -148,7 +149,7 @@ namespace CBF {
 		@brief Effector Transform based on padded Jacobian pseudo inverse
 	*/
 	struct PaddedEffectorTransform : public EffectorTransform {
-		PaddedEffectorTransform (const CBFSchema::PaddedEffectorTransform &xml_instance);
+		PaddedEffectorTransform (const CBFSchema::PaddedEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		PaddedEffectorTransform(
 			unsigned int task_dim, 

@@ -28,11 +28,11 @@ namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
 		XCFMemorySensorTransform::XCFMemorySensorTransform(
-					const CBFSchema::XCFMemorySensorTransform &xml_instance) :
-			SensorTransform(xml_instance)
+					const CBFSchema::XCFMemorySensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
+			SensorTransform(xml_instance, object_namespace)
 		{
 			SensorTransformPtr pt = (XMLObjectFactory::instance() 
-						-> create<SensorTransform>(xml_instance.SensorTransform1()));
+						-> create<SensorTransform>(xml_instance.SensorTransform1(), object_namespace));
 			m_SensorTransform = pt;
 			m_MemoryInterface = memory::interface::MemoryInterface::getInstance(xml_instance.URI());
 			m_ResultName = xml_instance.ResultName();

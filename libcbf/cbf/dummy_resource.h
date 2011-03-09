@@ -24,6 +24,7 @@
 #include <cbf/config.h>
 #include <cbf/types.h>
 #include <cbf/resource.h>
+#include <cbf/namespace.h>
 
 namespace CBFSchema { class DummyResource; }
 
@@ -34,7 +35,7 @@ namespace CBF {
 		@brief A resource that does nothing but hold the current value
 	*/
 	struct DummyResource : public Resource {
-		DummyResource(const CBFSchema::DummyResource &xml_instance);
+		DummyResource(const CBFSchema::DummyResource &xml_instance, ObjectNamespacePtr object_namespace);
 
 		FloatVector m_Variables;
 

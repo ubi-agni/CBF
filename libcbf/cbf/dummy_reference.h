@@ -26,6 +26,7 @@
 #include <cbf/reference.h>
 #include <cbf/types.h>
 #include <cbf/exceptions.h>
+#include <cbf/namespace.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 
@@ -36,7 +37,7 @@ namespace CBFSchema { class DummyReference; }
 namespace CBF {
 
 	struct DummyReference : public Reference {
-		DummyReference(const CBFSchema::DummyReference &xml_instance);
+		DummyReference(const CBFSchema::DummyReference &xml_instance, ObjectNamespacePtr object_namespace);
 
 		DummyReference(unsigned int num_references = 1, unsigned int dim = 1)
 		{

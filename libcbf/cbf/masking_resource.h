@@ -2,6 +2,7 @@
 #define CBF_MASKING_RESOURCE
 
 #include <cbf/config.h>
+#include <cbf/namespace.h>
 #include <cbf/resource.h>
 
 #include <vector>
@@ -19,7 +20,7 @@ namespace CBF {
 */
 
 struct MaskingResource : public Resource {
-	MaskingResource(const CBFSchema::MaskingResource &xml_instance);
+	MaskingResource(const CBFSchema::MaskingResource &xml_instance, ObjectNamespacePtr object_namespace);
 
 	MaskingResource(ResourcePtr masked_resource, std::vector<unsigned int> indexes)
 	{

@@ -27,11 +27,11 @@
 namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
-		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance) 
+		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) 
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
 
-			init(create_matrix(xml_instance.Matrix()));
+			init(create_matrix(xml_instance.Matrix(), object_namespace));
 		}
 
 		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform> x;

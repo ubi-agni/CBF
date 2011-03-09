@@ -92,8 +92,8 @@ namespace CBF {
 	}
 	
 	#ifdef CBF_HAVE_XSD
-		CompositeSensorTransform::CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance) :
-			SensorTransform(xml_instance)
+		CompositeSensorTransform::CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
+			SensorTransform(xml_instance, object_namespace)
 		{
 			CBF_DEBUG("yay!!!");
 		
@@ -107,7 +107,7 @@ namespace CBF {
 				++it
 			)
 			{
-				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it));
+				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it, object_namespace));
 				transforms.push_back(tr);
 			}
 		

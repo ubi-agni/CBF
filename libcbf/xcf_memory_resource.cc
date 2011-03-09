@@ -27,11 +27,11 @@ namespace CBF {
 	namespace mi = memory::interface;
 
 	#ifdef CBF_HAVE_XSD
-		XCFMemoryResource::XCFMemoryResource(const CBFSchema::XCFMemoryResource &xml_instance)
+		XCFMemoryResource::XCFMemoryResource(const CBFSchema::XCFMemoryResource &xml_instance, ObjectNamespacePtr object_namespace)
 			:
 			m_ResourceName(xml_instance.ResourceName()),
 			m_MemoryInterface(mi::MemoryInterface::getInstance(xml_instance.URI())),
-			m_Resource(XMLObjectFactory::instance() -> create<Resource>(xml_instance.Resource1()))
+			m_Resource(XMLObjectFactory::instance() -> create<Resource>(xml_instance.Resource1(), object_namespace))
 		{
 			init();
 		}
@@ -126,7 +126,7 @@ namespace CBF {
 				CBFSchema::XCFMemoryResourceAdd_(s, xml_schema::flags::dont_validate);
 
 		CBF_DEBUG("create vector");
-		FloatVector resourceVector = create_vector(resource -> Vector());
+		FloatVector resourceVector = create_vector(resource -> Vector(), ObjectNamespacePtr(new ObjectNamespace));
 		CBF_DEBUG("vector: " << resourceVector);
 
 		CBF_DEBUG("vector created");

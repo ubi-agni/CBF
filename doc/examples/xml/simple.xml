@@ -9,6 +9,7 @@
  <Coefficient> 1 </Coefficient>
 
  <ConvergenceCriterion xsi:type="cbf:ResourceStepNormThreshold">
+  <Name>foobar</Name>
   <Threshold> 0.01 </Threshold>
  </ConvergenceCriterion>
 

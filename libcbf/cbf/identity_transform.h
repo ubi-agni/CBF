@@ -26,6 +26,7 @@
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 #include <cbf/functional.h>
+#include <cbf/namespace.h>
 
 namespace CBFSchema {
 	class IdentityEffectorTransform;
@@ -37,7 +38,7 @@ namespace CBF {
 		@brief Trivial transform that passes the input through unchanged
 	*/
 	struct IdentityEffectorTransform : public EffectorTransform {
-		IdentityEffectorTransform(const CBFSchema::IdentityEffectorTransform &xml_instance);
+		IdentityEffectorTransform(const CBFSchema::IdentityEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		IdentityEffectorTransform(unsigned int dim = 1)
 		{
@@ -69,7 +70,7 @@ namespace CBF {
 		@brief Trivial transform that passes the input through unchanged
 	*/
 	struct IdentitySensorTransform : public SensorTransform {
-		IdentitySensorTransform(const CBFSchema::IdentitySensorTransform &xml_instance);
+		IdentitySensorTransform(const CBFSchema::IdentitySensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 	
 		IdentitySensorTransform(unsigned int dim = 1)
 		{

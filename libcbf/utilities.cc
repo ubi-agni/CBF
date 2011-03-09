@@ -319,7 +319,7 @@ Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
 #endif
 
 #ifdef CBF_HAVE_XSD
-FloatVector create_vector(const CBFSchema::Vector &xml_instance) {
+FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace) {
 	const CBFSchema::SimpleVector *simple_vector = dynamic_cast<const CBFSchema::SimpleVector*>(&xml_instance);
 
 	if (simple_vector) {
@@ -352,7 +352,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance) {
 	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
 }
 
-boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance) {
+boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<FloatVector> v(new FloatVector);
 	std::stringstream stream(xml_instance.String());
 	CBF_DEBUG("string: " << stream.str());
@@ -362,21 +362,21 @@ boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector 
 	return v;
 }
 
-boost::shared_ptr<FloatVector> create_zero_vector(const CBFSchema::ZeroVector &xml_instance) {
+boost::shared_ptr<FloatVector> create_zero_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	return boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension(), 0));
 }
 
-boost::shared_ptr<FloatVector> create_basis_vector(const CBFSchema::ZeroVector &xml_instance) {
+boost::shared_ptr<FloatVector> create_basis_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	return boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension()));
 }
 
 
-boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &xml_instance) {
+boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &xml_instance, ObjectNamespacePtr object_namespace) {
 	return boost::shared_ptr<FloatMatrix>(new FloatMatrix(xml_instance.Rows(), xml_instance.Columns(), 0));
 }
 
 
-FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance)
+FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespacePtr object_namespace)
 {
 	const CBFSchema::Matrix *m = &xml_instance;
 
@@ -407,9 +407,9 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance)
 #ifdef CBF_HAVE_XSD
 #ifdef CBF_HAVE_KDL
 
-boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_instance) {
-	boost::shared_ptr<KDL::Frame> frame = create_frame(xml_instance.Frame());
-	boost::shared_ptr<KDL::Joint> joint = create_joint(xml_instance.Joint());
+boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace) {
+	boost::shared_ptr<KDL::Frame> frame = create_frame(xml_instance.Frame(), object_namespace);
+	boost::shared_ptr<KDL::Joint> joint = create_joint(xml_instance.Joint(), object_namespace);
 
 
 	CBF_DEBUG("Extracting joint...");
@@ -420,7 +420,7 @@ boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_ins
 	return boost::shared_ptr<KDL::Segment>(new KDL::Segment(xml_instance.Name(), *joint, *frame));
 }
 
-boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance) {
+boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<KDL::Frame> frame(new KDL::Frame);
 	const CBFSchema::MatrixFrame *matrix_frame_instance = dynamic_cast<const CBFSchema::MatrixFrame*>(&(xml_instance));
 
@@ -429,7 +429,7 @@ boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance)
 		CBF_DEBUG("Extracting matrix...");
 
 		FloatMatrix m;
-		m = create_matrix((*matrix_frame_instance).Matrix());
+		m = create_matrix((*matrix_frame_instance).Matrix(), object_namespace);
 
 		if (m.size1() != 4 || m.size2() != 4)
 			throw std::runtime_error("Matrix is not 4x4");
@@ -451,7 +451,7 @@ boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance)
 	return frame;
 }
 
-boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance) {
+boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<KDL::Joint> joint;
 
 	if (xml_instance.Type() == "Rotational") {
@@ -479,7 +479,7 @@ boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance)
 	return joint;
 }
 
-boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance) {
+boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<KDL::Chain> chain(new KDL::Chain);
 
 	//! Check what kind of chain we have:
@@ -497,7 +497,7 @@ boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_insta
 	{
 		CBF_DEBUG("Adding Segment...");
 
-		boost::shared_ptr<KDL::Segment> segment = create_segment(*it);
+		boost::shared_ptr<KDL::Segment> segment = create_segment(*it, object_namespace);
 
 		chain->addSegment(*segment);
 		CBF_DEBUG("number of joints: " << chain->getNrOfJoints());
@@ -505,8 +505,8 @@ boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_insta
 	return chain;
 }
 
-void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &current_hook_name, const CBFSchema::TreeSegment &xml_instance) {
-	boost::shared_ptr<KDL::Segment> segment = create_segment(xml_instance);
+void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &current_hook_name, const CBFSchema::TreeSegment &xml_instance, ObjectNamespacePtr object_namespace) {
+	boost::shared_ptr<KDL::Segment> segment = create_segment(xml_instance, object_namespace);
 
 	if (tree->addSegment(*segment, current_hook_name) == false)
 		throw std::runtime_error("Adding segment to tree failed");
@@ -516,11 +516,11 @@ void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &curr
 		it != (xml_instance).Segment1().end();
 		++it
 	) {
-		tree_add_segment(tree, xml_instance.Name(), *it);
+		tree_add_segment(tree, xml_instance.Name(), *it, object_namespace);
 	}
 }
 
-boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance) {
+boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<KDL::Tree> tree(new KDL::Tree);
 
 	//! Check what kind of tree we have:
@@ -538,7 +538,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 	{
 		CBF_DEBUG("Adding Segment...");
 
-		tree_add_segment(tree, "root", *it);
+		tree_add_segment(tree, "root", *it, object_namespace);
 
 		CBF_DEBUG("Number of joints: " << tree->getNrOfJoints());
 	}
@@ -552,13 +552,13 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 	static XMLCreator<
 		FloatVector, 
 		CBFSchema::BoostVector, 
-		boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &)
+		boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &, ObjectNamespacePtr)
 	> x(create_boost_vector);
 
 	static XMLCreator<
 		FloatVector, 
 		CBFSchema::ZeroVector, 
-		boost::shared_ptr<FloatVector>(*)(const CBFSchema::ZeroVector &)
+		boost::shared_ptr<FloatVector>(*)(const CBFSchema::ZeroVector &, ObjectNamespacePtr)
 	> x2(create_zero_vector);
 	
 	template <> XMLFactory<FloatVector> 

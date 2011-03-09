@@ -26,6 +26,7 @@
 #include <cbf/utilities.h>
 #include <cbf/debug_macros.h>
 #include <cbf/object.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -46,7 +47,7 @@ struct Potential : public Object {
 	bool m_ClampGradientStepNorm;
 	Float m_MaxGradientStepNorm;
 
-	Potential(const CBFSchema::Potential &xml_instance);
+	Potential(const CBFSchema::Potential &xml_instance, ObjectNamespacePtr object_namespace);
 
 	Potential(
 		bool clamp_gradient_step_norm = false,

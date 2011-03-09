@@ -163,7 +163,7 @@ if(NOT "${DOXYGEN_BIN}" STREQUAL "DOXYGEN_BIN-NOTFOUND")
     COMMENT "Creating html and tex documentation in doc/"
   )
   install(
-    DIRECTORY ${PROJECT_BINARY_DIR}/doc/html ${PROJECT_BINARY_DIR}/doc/latex
+	 DIRECTORY ${PROJECT_BINARY_DIR}/doc/html
     DESTINATION share/doc/cbf/
   )
 else()

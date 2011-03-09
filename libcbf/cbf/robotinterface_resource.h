@@ -25,6 +25,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/resource.h>
 #include <cbf/exceptions.h>
+#include <cbf/namespace.h>
 
 #include <boost/thread.hpp>
 
@@ -46,7 +47,7 @@ namespace CBFSchema { class RobotInterfaceResource; }
 namespace CBF {
 
 	struct RobotInterfaceResource : public Resource, public robotinterface::EventHandler {
-		RobotInterfaceResource (const CBFSchema::RobotInterfaceResource &xml_instance);
+		RobotInterfaceResource (const CBFSchema::RobotInterfaceResource &xml_instance, ObjectNamespacePtr object_namespace);
 	
 		RobotInterfaceResource(
 			const std::string &send_memory_uri = "", 

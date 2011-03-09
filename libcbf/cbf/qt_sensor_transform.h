@@ -10,6 +10,7 @@
 
 #include <cbf/config.h>
 #include <cbf/sensor_transform.h>
+#include <cbf/namespace.h>
 
 namespace CBFSchema {
 	class QtSensorTransform;
@@ -40,7 +41,7 @@ namespace CBF {
 			m_Widget.show();
 		}
 
-		QtSensorTransform(const CBFSchema::QtSensorTransform &xml_instance);
+		QtSensorTransform(const CBFSchema::QtSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		virtual void update(const FloatVector &resource_value) {
 			m_Operand->update(resource_value);

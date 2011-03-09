@@ -290,18 +290,18 @@ namespace CBF {
 
 	
 	#ifdef CBF_HAVE_XSD
-		BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(const CBFSchema::ChainBase &xml_instance, const CBFSchema::SensorTransform &xml_st_instance) :
-			SensorTransform(xml_st_instance),
+		BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(const CBFSchema::ChainBase &xml_instance, const CBFSchema::SensorTransform &xml_st_instance, ObjectNamespacePtr object_namespace) :
+			SensorTransform(xml_st_instance, object_namespace),
 			m_Frame(new KDL::Frame),
 			m_Jacobian(new KDL::Jacobian)
 		{
 			CBF_DEBUG("[KDLChainSensorTransform(const KDLChainSensorTransformType &xml_instance)]: yay!");
-			m_Chain = create_chain(xml_instance);		
+			m_Chain = create_chain(xml_instance, object_namespace);		
 			init_solvers();
 		}
 		
-		KDLChainPositionSensorTransform::KDLChainPositionSensorTransform(const CBFSchema::KDLChainPositionSensorTransform &xml_instance) :
-			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance)
+		KDLChainPositionSensorTransform::KDLChainPositionSensorTransform(const CBFSchema::KDLChainPositionSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
+			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance, object_namespace)
 		{
 			//! TODO: recheck this function to make sure it works in all cases..
 		
@@ -309,9 +309,9 @@ namespace CBF {
 		}
 		
 		KDLChainAxisAngleSensorTransform::KDLChainAxisAngleSensorTransform(
-			const CBFSchema::KDLChainAxisAngleSensorTransform &xml_instance
+			const CBFSchema::KDLChainAxisAngleSensorTransform &xml_instance, ObjectNamespacePtr object_namespace
 		) :
-			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance)
+			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance, object_namespace)
 		{
 			//! TODO: recheck this function to make sure it works in all cases..
 		
@@ -319,18 +319,18 @@ namespace CBF {
 		}
 
 
-		BaseKDLTreeSensorTransform::BaseKDLTreeSensorTransform(const CBFSchema::TreeBase &xml_instance, const CBFSchema::SensorTransform &xml_st_instance) :
-			SensorTransform(xml_st_instance)
+		BaseKDLTreeSensorTransform::BaseKDLTreeSensorTransform(const CBFSchema::TreeBase &xml_instance, const CBFSchema::SensorTransform &xml_st_instance, ObjectNamespacePtr object_namespace) :
+			SensorTransform(xml_st_instance, object_namespace)
 		{
 			CBF_DEBUG("[KDLTreeSensorTransform(const KDLTreeSensorTransformType &xml_instance)]: yay!");
 
-			m_Tree = create_tree(xml_instance);		
+			m_Tree = create_tree(xml_instance, object_namespace);		
 
 			init_solvers();
 		}
 		
-		KDLTreePositionSensorTransform::KDLTreePositionSensorTransform(const CBFSchema::KDLTreePositionSensorTransform &xml_instance) :
-			BaseKDLTreeSensorTransform(xml_instance.Tree(), xml_instance)
+		KDLTreePositionSensorTransform::KDLTreePositionSensorTransform(const CBFSchema::KDLTreePositionSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
+			BaseKDLTreeSensorTransform(xml_instance.Tree(), xml_instance, object_namespace)
 		{
 
 			for (
@@ -352,9 +352,9 @@ namespace CBF {
 		}
 		
 		KDLTreeAxisAngleSensorTransform::KDLTreeAxisAngleSensorTransform(
-			const CBFSchema::KDLTreeAxisAngleSensorTransform &xml_instance
+			const CBFSchema::KDLTreeAxisAngleSensorTransform &xml_instance, ObjectNamespacePtr object_namespace
 		) :
-			BaseKDLTreeSensorTransform(xml_instance.Tree(), xml_instance)
+			BaseKDLTreeSensorTransform(xml_instance.Tree(), xml_instance, object_namespace)
 		{
 
 		}

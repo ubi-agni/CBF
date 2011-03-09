@@ -41,6 +41,71 @@ set(CBF_SOURCES
   svd.cc
   convergence_criterion.cc
   generic_transform.cc
+  object_reference.cc
+  )
+
+set(CBF_HEADERS
+  cbf/axis_angle_potential.h
+  cbf/axis_potential.h
+  cbf/c_api.h
+  cbf/cbf.h
+  cbf/combination_strategy.h
+  cbf/common.h
+  cbf/composite_potential.h
+  cbf/composite_reference.h
+  cbf/composite_resource.h
+  cbf/composite_transform.h
+  cbf/control_basis.h
+  cbf/controller.h
+  cbf/controller_sequence.h
+  cbf/convergence_criterion.h
+  cbf/cppad_sensor_transform.h
+  cbf/debug_macros.h
+  cbf/difference_sensor_transform.h
+  cbf/dummy_reference.h
+  cbf/dummy_resource.h
+  cbf/effector_transform.h
+  cbf/exceptions.h
+  cbf/functional.h
+  cbf/generic_transform.h
+  cbf/identity_transform.h
+  cbf/kdl_transforms.h
+  cbf/linear_transform.h
+  cbf/mainpage.h
+  cbf/masking_resource.h
+  cbf/memory_resource.h
+  cbf/namespace.h
+  cbf/norm_transform.h
+  cbf/object.h
+  cbf/object_reference.h
+  cbf/pa10_joint_resource.h
+  cbf/potential.h
+  cbf/primitive_controller.h
+  cbf/primitive_controller_resource.h
+  cbf/python_wrap.h
+  cbf/qt_reference.h
+  cbf/qt_sensor_transform.h
+  cbf/quaternion.h
+  cbf/reference.h
+  cbf/resource.h
+  cbf/robotinterface_resource.h
+  cbf/sensor_transform.h
+  cbf/sensor_transform_wrapper.h
+  cbf/spacenavi_reference.h
+  cbf/square_potential.h
+  cbf/svd.h
+  cbf/task_space_plan.h
+  cbf/transpose_transform.h
+  cbf/types.h
+  cbf/utilities.h
+  cbf/weighted_sum_transforms.h
+  cbf/xcf_memory_reference.h
+  cbf/xcf_memory_resource.h
+  cbf/xcf_memory_sensor_transform.h
+  cbf/xcf_resource.h
+  cbf/xcf_vector_reference.h
+  cbf/xml_factory.h
+  cbf/xsd_error_handler.h
   )
 
 #add_definitions("-DCBF=CBF { } struct ERROR {NO_CONFIG_H_INCLUDED}\; namespace CBF")
@@ -217,6 +282,8 @@ include_directories(${CBF_INCLUDES})
 add_library(cbf SHARED
   ${CBF_SOURCES}
   )
+set_target_properties(cbf
+  PROPERTIES PUBLIC_HEADER ${CBF_HEADERS})
 
 target_link_libraries(cbf ${CBF_LIBS})
 
@@ -229,5 +296,8 @@ install(TARGETS cbf
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib/static
+  PUBLIC_HEADER DESTINATION include/cbf
   )
 
+install(FILES ${CBF_HEADERS} DESTINATION include/cbf)
+install(DIRECTORY ${PROJECT_BINARY_DIR}/libcbf/cbf DESTINATION include)

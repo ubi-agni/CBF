@@ -30,6 +30,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/dummy_reference.h>
 #include <cbf/xml_factory.h>
+#include <cbf/namespace.h>
 
 #include <algorithm>
 #include <cstdlib>
@@ -60,9 +61,10 @@ cbf_controller_create_from_file(
 	
 		CBF_DEBUG("[create_controller_from_file]: Creating controller...");
 
+		//! TODO: Check if the creating a new namespace is the right thing to do here
 		//! Finally let's create the controller instance..
 		CBF::ControllerPtr controller = 
-			CBF::XMLObjectFactory::instance()->create<CBF::Controller>(*xml_instance);
+			CBF::XMLObjectFactory::instance()->create<CBF::Controller>(*xml_instance, CBF::ObjectNamespacePtr(new CBF::ObjectNamespace));
 
 		CBF_DEBUG("[create_controller_from_file]: Checking if it's a PrimitiveController");
 		//! Checking whether the created controller is a PrimitiveController.

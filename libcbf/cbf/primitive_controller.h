@@ -37,6 +37,7 @@
 #include <cbf/reference.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/combination_strategy.h>
+#include <cbf/namespace.h>
 
 namespace CBFSchema { class PrimitiveController; }
 
@@ -65,7 +66,7 @@ namespace CBF {
 		friend class TaskSpaceDistanceThreshold;
 		friend class ResourceStepNormThreshold;
 
-		PrimitiveController(const CBFSchema::PrimitiveController &xml_instance);
+		PrimitiveController(const CBFSchema::PrimitiveController &xml_instance, ObjectNamespacePtr object_namespace);
 
 		/**
 			@brief Create a controller with the members 

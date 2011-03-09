@@ -28,6 +28,7 @@
 #include <cbf/utilities.h>
 #include <cbf/potential.h>
 #include <cbf/exceptions.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -49,7 +50,7 @@ namespace CBF {
 		of two rather different spaces (position and orientation for example).
 	*/
 	struct CompositePotential : public Potential {
-		CompositePotential(const CBFSchema::CompositePotential &xml_instance);
+		CompositePotential(const CBFSchema::CompositePotential &xml_instance, ObjectNamespacePtr object_namespace);
 	
 		/**
 			@brief The potentials which are combined into a bigger one..

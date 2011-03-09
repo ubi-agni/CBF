@@ -1,4 +1,4 @@
-/*
+	/*
     This file is part of CBF.
 
     CBF is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
 #include <cbf/object.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 #include <map>
@@ -40,7 +41,7 @@ namespace CBF {
 			@brief The base type for all concrete CBF::Object factories
 		*/
 		struct XMLDerivedFactoryBase {
-			virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) = 0;
+			virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance, ObjectNamespacePtr object_namespace) = 0;
 			virtual ~XMLDerivedFactoryBase() { }
 		};
 	
@@ -78,7 +79,10 @@ namespace CBF {
 					If the creation fails, a std::runtime_error is thrown
 				*/
 				template<class T>
-				boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
+				boost::shared_ptr<T> create(
+					const CBFSchema::Object &xml_instance, 
+					ObjectNamespacePtr object_namespace
+				) {
 					if (m_DerivedFactories.find(std::string(typeid(xml_instance).name())) == m_DerivedFactories.end()) {
 						CBF_THROW_RUNTIME_ERROR(
 							"No factory found for type (possibly mangled): " << 
@@ -88,7 +92,7 @@ namespace CBF {
 
 					boost::shared_ptr<T> p = 
 						boost::dynamic_pointer_cast<T>(
-							m_DerivedFactories[typeid(xml_instance).name()]->create(xml_instance)
+							m_DerivedFactories[typeid(xml_instance).name()]->create(xml_instance, object_namespace)
 						)
 					;
 
@@ -119,12 +123,17 @@ namespace CBF {
 				}
 	
 			public:
-				virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance) {
+				virtual boost::shared_ptr<Object> create(
+					const CBFSchema::Object &xml_instance, 
+					ObjectNamespacePtr object_namespace
+				) {
 					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(this));
 					const TType* r = dynamic_cast<const TType*>(&xml_instance);
 					if (r) {
 						CBF_DEBUG("yes, i am the one");
-						return boost::shared_ptr<Object>(new T(*r));
+						ObjectPtr p(new T(*r, object_namespace));
+						object_namespace->register_object(p->name(), p);
+						return p;
 					}
 					CBF_DEBUG("no i am not the one");
 					return boost::shared_ptr<Object>();
@@ -134,7 +143,7 @@ namespace CBF {
 
 		template <class T>
 		struct XMLCreatorBase {
-			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) = 0;
+			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance, ObjectNamespacePtr object_namespace) = 0;
 			virtual ~XMLCreatorBase() { }
 		};
 	
@@ -156,7 +165,7 @@ namespace CBF {
 				return m_Instance;
 			}
 	
-			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
+			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance, ObjectNamespacePtr object_namespace) {
 				CBF_DEBUG(
 					"creating a " << 
 					CBF_UNMANGLE(T) << 
@@ -173,7 +182,7 @@ namespace CBF {
 					);
 				}
 
-				return m_Creators[typeid(xml_instance).name()]->create(xml_instance);
+				return m_Creators[typeid(xml_instance).name()]->create(xml_instance, object_namespace);
 			}
 
 			virtual ~XMLFactory() { }
@@ -206,7 +215,7 @@ namespace CBF {
 				XMLFactory<T>::instance()->m_Creators[typeid(TSchemaType).name()] = this;
 			}
 
-			boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance) {
+			boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance, ObjectNamespacePtr object_namespace) {
 				CBF_DEBUG(
 					"creating a " << 
 					CBF_UNMANGLE(T) << 
@@ -216,7 +225,7 @@ namespace CBF {
 					CBF_UNMANGLE(TSchemaType)
 				);
 				const TSchemaType &tmp = dynamic_cast<const TSchemaType&>(xml_instance);
-				return m_Creator(tmp);
+				return m_Creator(tmp, object_namespace);
 			}
 		};
 
@@ -229,10 +238,10 @@ namespace CBF {
 		template <class T, class TSchemaType>
 		struct Constructor {
 			Constructor() { CBF_DEBUG("Constructor"); }
-			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance) {
+			boost::shared_ptr<T> operator()(const TSchemaType &xml_instance, ObjectNamespacePtr object_namespace) {
 				CBF_DEBUG("creating a " << CBF_UNMANGLE(T));
 				const TSchemaType &t = dynamic_cast<const TSchemaType&>(xml_instance);
-				return boost::shared_ptr<T>(new T(t));
+				return boost::shared_ptr<T>(new T(t, object_namespace));
 			}
 		};
 

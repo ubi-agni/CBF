@@ -26,6 +26,7 @@
 #include <cbf/resource.h>
 #include <cbf/object.h>
 #include <cbf/debug_macros.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -78,7 +79,7 @@ namespace CBF {
 	
 		}
 
-		SensorTransform(const CBFSchema::SensorTransform &xml_instance);
+		SensorTransform(const CBFSchema::SensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		/**
 			@brief A virtual desctructor to allow the clean destruction 
@@ -182,7 +183,7 @@ namespace CBF {
 			init(value);
 		}
 
-		ConstantSensorTransform(const CBFSchema::ConstantSensorTransform& xml_instance);
+		ConstantSensorTransform(const CBFSchema::ConstantSensorTransform& xml_instance, ObjectNamespacePtr object_namespace);
 
 		void init(const FloatVector &value) {
 			m_Result = value;
@@ -207,7 +208,7 @@ namespace CBF {
 
 		}
 
-		BlockWiseMultiplySensorTransform(const CBFSchema::BlockWiseMultiplySensorTransform &xml_instance);
+		BlockWiseMultiplySensorTransform(const CBFSchema::BlockWiseMultiplySensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 		void init(
 			SensorTransformPtr operand,

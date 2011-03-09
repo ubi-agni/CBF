@@ -4,7 +4,7 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD 
-	QtReference::QtReference(const CBFSchema::QtReference &xml_instance) {
+	QtReference::QtReference(const CBFSchema::QtReference &xml_instance, ObjectNamespacePtr object_namespace) {
 		std::vector<Control> controls;
 		for(
 			CBFSchema::QtReference::Control_const_iterator it = xml_instance.Control().begin();

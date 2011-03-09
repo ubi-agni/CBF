@@ -29,7 +29,10 @@ int main(int argc, char **argv) {
 	std::istringstream vv_stream(dim_string);
 
 	std::auto_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
-	CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
+
+	CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
+
+	CBF::FloatVector dim_vv = CBF::create_vector(*dim_v, object_namespace);
 	CBF_DEBUG("dim_vv: " << dim_vv);
 	
 	unsigned int dim;

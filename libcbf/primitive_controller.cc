@@ -231,7 +231,7 @@ namespace CBF {
 	}
 	
 	#ifdef CBF_HAVE_XSD
-		PrimitiveController::PrimitiveController(const CBFSchema::PrimitiveController &xml_instance)
+		PrimitiveController::PrimitiveController(const CBFSchema::PrimitiveController &xml_instance, ObjectNamespacePtr object_namespace)
 		{
 			CBF_DEBUG("Constructing");
 			if (xml_instance.Name())
@@ -248,7 +248,7 @@ namespace CBF {
 				++it
 			) {
 				CBF_DEBUG("adding criterion");
-				ConvergenceCriterionPtr criterion = XMLObjectFactory::instance()->create<ConvergenceCriterion>(*it);
+				ConvergenceCriterionPtr criterion = XMLObjectFactory::instance()->create<ConvergenceCriterion>(*it, object_namespace);
 				criteria.push_back(criterion);
 #if 0
 				const ::CBFSchema::TaskSpaceDistanceThreshold *d = dynamic_cast<const ::CBFSchema::TaskSpaceDistanceThreshold *>(&(*it));
@@ -274,24 +274,24 @@ namespace CBF {
 
 			CBF_DEBUG("Creating reference...");
 			ReferencePtr ref = 
-				XMLObjectFactory::instance()->create<Reference>(xml_instance.Reference());
+				XMLObjectFactory::instance()->create<Reference>(xml_instance.Reference(), object_namespace);
 
 		
 			//! Instantiate the potential
 			CBF_DEBUG("Creating potential...");
 			// m_Potential = XMLObjectFactory<Potential, CBFSchema::Potential>::instance()->create(xml_instance.Potential());
 			PotentialPtr pot = 
-				XMLObjectFactory::instance()->create<Potential>(xml_instance.Potential());
+				XMLObjectFactory::instance()->create<Potential>(xml_instance.Potential(), object_namespace);
 
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating sensor transform...");
-			SensorTransformPtr sens = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.SensorTransform());
+			SensorTransformPtr sens = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.SensorTransform(), object_namespace);
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating effector transform...");
-			EffectorTransformPtr eff = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform());
+			EffectorTransformPtr eff = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform(), object_namespace);
 		
 			//CBF_DEBUG(m_SensorTransform.get())
 		
@@ -299,13 +299,13 @@ namespace CBF {
 		
 			//! Create a resource if given...
 			CBF_DEBUG("Creating resource...");
-			ResourcePtr res = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource());
+			ResourcePtr res = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource(), object_namespace);
 			//! And bind to it...
 			CBF_DEBUG("Binding to resource...");
 
 			CBF_DEBUG("Creating combination strategy...");
 			CombinationStrategyPtr com = 
-				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy());
+				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy(), object_namespace);
 
 			//! Instantiate the subordinate controllers
 			CBF_DEBUG("Creating subordinate controller(s)...");
@@ -319,7 +319,7 @@ namespace CBF {
 				CBF_DEBUG("Creating subordinate controller...");
 				CBF_DEBUG("------------------------");
 				//! First we see whether we can construct a controller from the xml_document
-				PrimitiveControllerPtr controller = XMLObjectFactory::instance()->create<PrimitiveController>(*it);
+				PrimitiveControllerPtr controller = XMLObjectFactory::instance()->create<PrimitiveController>(*it, object_namespace);
 				controller->m_Resource = m_Resource;
  				subs.push_back(controller);
 

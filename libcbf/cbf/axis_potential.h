@@ -27,6 +27,7 @@
 #include <cbf/potential.h>
 #include <cbf/quaternion.h>
 #include <cbf/exceptions.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -40,7 +41,7 @@ namespace CBF {
 		and does n-dimensional SLERP to calculate an update step..
 	*/
 	struct AxisPotential : public Potential {
-		AxisPotential(const CBFSchema::AxisPotential &xml_instance);
+		AxisPotential(const CBFSchema::AxisPotential &xml_instance, ObjectNamespacePtr object_namespace);
 
 		bool m_Converged;
 		int m_Dimension;

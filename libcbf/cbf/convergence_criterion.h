@@ -4,6 +4,7 @@
 #include <cbf/config.h>
 #include <cbf/object.h>
 #include <cbf/types.h>
+#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -34,7 +35,7 @@ namespace CBF {
 	struct TaskSpaceDistanceThreshold : public ConvergenceCriterion {
 		Float m_Threshold;
 	
-		TaskSpaceDistanceThreshold(const CBFSchema::TaskSpaceDistanceThreshold &xml_instance);
+		TaskSpaceDistanceThreshold(const CBFSchema::TaskSpaceDistanceThreshold &xml_instance, ObjectNamespacePtr object_namespace);
 
 		TaskSpaceDistanceThreshold(Float threshold) :
 			m_Threshold(threshold) { }
@@ -48,7 +49,7 @@ namespace CBF {
 	struct ResourceStepNormThreshold : public ConvergenceCriterion {
 		Float m_Threshold;
 
-		ResourceStepNormThreshold(const CBFSchema::ResourceStepNormThreshold &xml_instance);
+		ResourceStepNormThreshold(const CBFSchema::ResourceStepNormThreshold &xml_instance, ObjectNamespacePtr object_namespace);
 
 		ResourceStepNormThreshold(Float threshold) :
 			m_Threshold(threshold) { }

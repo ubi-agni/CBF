@@ -19,6 +19,7 @@
 */
 
 #include <cbf/config.h>
+#include <cbf/namespace.h>
 #include <cbf/controller.h>
 #include <cbf/control_basis.h>
 #include <cbf/debug_macros.h>
@@ -146,7 +147,8 @@ int main(int argc, char *argv[]) {
 				(control_basis_name, err_handler, xml_schema::flags::dont_validate));
 				//(control_basis_name));//, err_handler, xml_schema::flags::dont_validate));
 
-		CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));
+		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
+		CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt, object_namespace));
 	
 		if (cb->controllers().find(controller_name) == cb->controllers().end())
 			throw std::runtime_error("Controller name not found in control basis");

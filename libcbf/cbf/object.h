@@ -22,6 +22,7 @@ namespace CBF {
 		Object(const std::string name = "Object") : m_Name(name) { }
 
 		virtual ~Object() { }
+		const std::string &name() { return m_Name; }
 	};
 	
 	typedef boost::shared_ptr<Object> ObjectPtr;

@@ -6,6 +6,7 @@
 #include <cbf/types.h>
 #include <cbf/config.h>
 #include <cbf/debug_macros.h>
+#include <cbf/namespace.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -21,7 +22,7 @@ namespace ublas = boost::numeric::ublas;
 	of the output of another given SensorTransform.
 */
 struct NormSensorTransform : public SensorTransform {
-	NormSensorTransform(const CBFSchema::NormSensorTransform &xml_instance);
+	NormSensorTransform(const CBFSchema::NormSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 	/**
 		The wrapped SensorTransform

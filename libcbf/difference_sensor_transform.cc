@@ -23,8 +23,8 @@
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		DifferenceSensorTransform::DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance) :
-			SensorTransform(xml_instance)
+		DifferenceSensorTransform::DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
+			SensorTransform(xml_instance, object_namespace)
 		{
 			CBF_DEBUG("yay!!!");
 		
@@ -38,7 +38,7 @@ namespace CBF {
 				++it
 			)
 			{
-				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it));
+				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it, object_namespace));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}

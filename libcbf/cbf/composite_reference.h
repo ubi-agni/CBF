@@ -25,6 +25,7 @@
 
 #include <cbf/config.h>
 #include <cbf/reference.h>
+#include <cbf/namespace.h>
 
 #include <vector>
 #include <algorithm>
@@ -48,7 +49,7 @@ struct CompositeReference : public Reference
 		std::vector<FloatVector> m_EmptyReferenceValues;
 
 	public:
-		CompositeReference(const CBFSchema::CompositeReference &xml_instance);
+		CompositeReference(const CBFSchema::CompositeReference &xml_instance, ObjectNamespacePtr object_namespace);
 
 		CompositeReference(std::vector<ReferencePtr> references = std::vector<ReferencePtr>()) {
 			set_references(references);

@@ -62,13 +62,13 @@ struct ApplySensorTransform : public SensorTransform {
 			NegateOperationSensorTransform
 		*/
 		template <class XMLType>
-		ApplySensorTransform(const XMLType& xml_instance) :
-			SensorTransform(xml_instance)
+		ApplySensorTransform(const XMLType& xml_instance, ObjectNamespacePtr object_namespace) :
+			SensorTransform(xml_instance, object_namespace)
 		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 			m_Operand = 
-				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand(), object_namespace); 
 
 			init(m_Operand);
 		}
@@ -143,14 +143,14 @@ struct BlockWiseApplySensorTransform : public SensorTransform {
 
 	#ifdef CBF_HAVE_XSD
 		template <class XMLType>
-		BlockWiseApplySensorTransform(const XMLType& xml_instance) :
-			SensorTransform(xml_instance)
+		BlockWiseApplySensorTransform(const XMLType& xml_instance, ObjectNamespacePtr object_namespace) :
+			SensorTransform(xml_instance, object_namespace)
 		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 
 			m_Operand = 
-				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand(), object_namespace); 
 
 			m_Blocksize = xml_instance.Blocksize();
 
@@ -399,19 +399,19 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 
 	#ifdef CBF_HAVE_XSD
 		BlockWiseAccumulateSensorTransform(
-			const CBFSchema::BlockWiseAccumulateSensorTransform& xml_instance
+			const CBFSchema::BlockWiseAccumulateSensorTransform& xml_instance, ObjectNamespacePtr object_namespace
 		) : 
-			SensorTransform(xml_instance) 
+			SensorTransform(xml_instance, object_namespace) 
 		{ 
 			m_VectorOperation = VectorOperation();
 			m_MatrixOperation = MatrixOperation();
 
 			m_Operand = 
-				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand()); 
+				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand(), object_namespace); 
 
 			m_Blocksize = xml_instance.Blocksize();
-			m_InitVector = *XMLFactory<FloatVector>::instance()->create(xml_instance.InitVector());
-			m_InitMatrix = create_matrix(xml_instance.InitMatrix());
+			m_InitVector = *XMLFactory<FloatVector>::instance()->create(xml_instance.InitVector(), object_namespace);
+			m_InitMatrix = create_matrix(xml_instance.InitMatrix(), object_namespace);
 
 			init_results(m_Operand);
 		}

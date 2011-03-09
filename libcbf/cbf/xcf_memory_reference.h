@@ -27,6 +27,7 @@
 #include <cbf/types.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
+#include <cbf/namespace.h>
 
 
 #include <IceUtil/Monitor.h> 
@@ -61,7 +62,7 @@ struct XCFMemoryReference : public Reference {
 
 		@param xml_instance An instance of a CBFSchema::XCFMemoryReference.
 	*/
-	XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance);
+	XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance, ObjectNamespacePtr object_namespace);
 
 	/**
 		@brief Creates an XCFMemoryReference connecting to the Memory named URI

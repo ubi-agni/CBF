@@ -26,7 +26,8 @@ namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
 		IdentityEffectorTransform::IdentityEffectorTransform(
-			const CBFSchema::IdentityEffectorTransform &xml_instance
+			const CBFSchema::IdentityEffectorTransform &xml_instance,
+			ObjectNamespacePtr object_namespace
 		) {
 			init(xml_instance.Dimension());
 			CBF_DEBUG("[IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance)]: yay!!!");
@@ -35,9 +36,9 @@ namespace CBF {
 
 
 		IdentitySensorTransform::IdentitySensorTransform(
-			const CBFSchema::IdentitySensorTransform &xml_instance
+			const CBFSchema::IdentitySensorTransform &xml_instance, ObjectNamespacePtr object_namespace
 		) 
-			: SensorTransform(xml_instance)
+			: SensorTransform(xml_instance, object_namespace)
 		{
 			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!");
 			init(xml_instance.Dimension());

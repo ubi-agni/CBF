@@ -195,7 +195,10 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 
 		std::auto_ptr<CBFSchema::Vector> dim_v = 
 			CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
-		CBF::FloatVector dim_vv = CBF::create_vector(*dim_v);
+
+		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
+
+		CBF::FloatVector dim_vv = CBF::create_vector(*dim_v, object_namespace);
 		CBF_DEBUG("dim_vv: " << dim_vv);
 
 		dim = dim_vv[0];
@@ -520,7 +523,8 @@ CBF::FloatVector* Connection_manager::loadCurrentPositionVector(){
 		std::istringstream s(xml_in);
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector");
-		CBF::FloatVector *currentPositionVector = new CBF::FloatVector(CBF::create_vector(*v));
+		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
+		CBF::FloatVector *currentPositionVector = new CBF::FloatVector(CBF::create_vector(*v, object_namespace));
 
 		CBF_DEBUG("vector created");
 		if (currentPositionVector -> size() != dim) {

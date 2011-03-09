@@ -30,7 +30,7 @@ namespace CBF {
 	namespace mi = memory::interface;
 
 	#ifdef CBF_HAVE_XSD
-		XCFMemoryReference::XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance)
+		XCFMemoryReference::XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance, ObjectNamespacePtr object_namespace)
 			:
 			m_MemoryInterface(mi::MemoryInterface::getInstance(xml_instance.URI())),
 			m_ReferenceName(xml_instance.ReferenceName()),
@@ -114,7 +114,7 @@ namespace CBF {
 				CBFSchema::XCFMemoryReferenceVector_(s, xml_schema::flags::dont_validate);
 
 		CBF_DEBUG("create vector");
-		m_TempReference = create_vector(reference -> Vector());
+		m_TempReference = create_vector(reference -> Vector(), ObjectNamespacePtr(new ObjectNamespace()));
 		CBF_DEBUG("vector: " << m_TempReference);
 
 		CBF_DEBUG("vector created");
