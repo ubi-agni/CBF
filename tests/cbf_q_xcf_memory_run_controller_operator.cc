@@ -210,9 +210,13 @@ void XcfMemoryRunControllerOperator::add_attachment(){
 
 	// create Attachment and set the Buffer.
 	memory::interface::Attachments att;
- 	std::ostringstream t;
- 	t << time(NULL);
- 	att[t.str()] = buffer;
+	// create (hopefully unique) id
+	std::ostringstream id;
+	for (int i = 0; i < 12; ++i){
+		id << (rand()%10);
+	}
+	att[id.str()] = buffer;
+	std::cout << id.str() << std::endl;
 	
 
 	try {
