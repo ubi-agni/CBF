@@ -90,7 +90,6 @@ namespace CBF {
 		//! The transform we are wrapping
 		SensorTransformPtr m_Transform;
 
-		
 	};
 	
 } // Namespace
