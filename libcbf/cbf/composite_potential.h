@@ -98,6 +98,10 @@ namespace CBF {
 				m_ref_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
 			}
 		}
+
+		virtual const std::vector<PotentialPtr> potentials() {
+			return m_Potentials;
+		}
 	
 		virtual void gradient (
 			FloatVector &result, 
