@@ -107,7 +107,7 @@ struct CompositeReference : public Reference
 			m_UpdateSuccessfull = true;
 		}
 
-		virtual const std::vector<ReferencePtr> references() { 
+		virtual const std::vector<ReferencePtr> &references() { 
 			return m_References;
 		}
 			

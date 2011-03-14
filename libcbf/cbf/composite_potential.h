@@ -99,7 +99,7 @@ namespace CBF {
 			}
 		}
 
-		virtual const std::vector<PotentialPtr> potentials() {
+		virtual const std::vector<PotentialPtr> &potentials() {
 			return m_Potentials;
 		}
 	
