@@ -64,6 +64,10 @@ struct CompositeResource : public Resource
 			
 			m_ResourceValues = FloatVector(dim);
 		}
+
+		const std::vector<ResourcePtr> resources() {
+			return m_Resources;
+		}
 	
 		/**
 			@brief Returns the total dimension of the combined resources
