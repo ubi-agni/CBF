@@ -119,6 +119,8 @@ struct CompositeReference : public Reference
 		virtual std::vector<FloatVector> &get();
 };
 
+typedef boost::shared_ptr<CompositeReference> CompositeReferencePtr;
+
 } // namespace
 
 #endif

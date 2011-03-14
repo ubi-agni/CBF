@@ -134,6 +134,8 @@ struct CompositeResource : public Resource
 	
 };
 
+	typedef boost::shared_ptr<CompositeResource> CompositeResourcePtr;
+
 } // namespace
 
 #endif

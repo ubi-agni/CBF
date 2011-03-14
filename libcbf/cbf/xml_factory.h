@@ -182,7 +182,15 @@ namespace CBF {
 					);
 				}
 
-				return m_Creators[typeid(xml_instance).name()]->create(xml_instance, object_namespace);
+				boost::shared_ptr<T> ptr = m_Creators[typeid(xml_instance).name()]->create(xml_instance, object_namespace);
+
+				if (xml_instance.Name().present()) {
+					object_namespace->register_object(
+						*(xml_instance.Name()),
+						boost::shared_ptr<ForeignObjectWrapper<T> >(new ForeignObjectWrapper<T>(ptr))
+					);
+				}
+				return ptr;
 			}
 
 			virtual ~XMLFactory() { }

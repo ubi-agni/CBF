@@ -417,7 +417,7 @@
 
   <xsd:complexType name="TreeBase">
 	 <xsd:sequence>
-		<xsd:element name="Name" type="xsd:string"/>
+
 	 </xsd:sequence>
   </xsd:complexType>
 
