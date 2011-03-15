@@ -417,7 +417,11 @@ boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_ins
 
 	CBF_DEBUG("Adding Segment for real..");
 
-	return boost::shared_ptr<KDL::Segment>(new KDL::Segment(xml_instance.Name(), *joint, *frame));
+	if (xml_instance.Name().present()) {
+		return boost::shared_ptr<KDL::Segment>(new KDL::Segment(*xml_instance.Name(), *joint, *frame));
+	} else {
+		return boost::shared_ptr<KDL::Segment>(new KDL::Segment("KDL::Segment", *joint, *frame));
+	}
 }
 
 boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance, ObjectNamespacePtr object_namespace) {
@@ -480,6 +484,7 @@ boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance,
 }
 
 boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance, ObjectNamespacePtr object_namespace) {
+	CBF_DEBUG("adding chain");
 	boost::shared_ptr<KDL::Chain> chain(new KDL::Chain);
 
 	//! Check what kind of chain we have:
@@ -506,6 +511,7 @@ boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_insta
 }
 
 void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &current_hook_name, const CBFSchema::TreeSegment &xml_instance, ObjectNamespacePtr object_namespace) {
+	CBF_DEBUG("adding segment");
 	boost::shared_ptr<KDL::Segment> segment = create_segment(xml_instance, object_namespace);
 
 	if (tree->addSegment(*segment, current_hook_name) == false)
@@ -516,19 +522,30 @@ void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &curr
 		it != (xml_instance).Segment1().end();
 		++it
 	) {
-		tree_add_segment(tree, xml_instance.Name(), *it, object_namespace);
+		if (xml_instance.Name().present()) {
+			tree_add_segment(tree, *xml_instance.Name(), *it, object_namespace);
+		}
+		else {
+			tree_add_segment(tree, "KDL::Segment", *it, object_namespace);
+		}
 	}
 }
 
 boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance, ObjectNamespacePtr object_namespace) {
+
+	CBF_DEBUG("creating tree from xml");
 	boost::shared_ptr<KDL::Tree> tree(new KDL::Tree);
 
 	//! Check what kind of tree we have:
 
+
 	const CBFSchema::Tree *tree_instance  = dynamic_cast<const CBFSchema::Tree*>(&xml_instance);
 
-	if (tree_instance == 0)
+	if (tree_instance == 0) {
+		CBF_DEBUG("tree type not handled yet");
 		throw std::runtime_error("Tree type not handled yet..");
+	}
+
 
 	for (
 		CBFSchema::Tree::Segment_const_iterator it =(*tree_instance).Segment().begin(); 

@@ -132,9 +132,9 @@ namespace mi = memory::interface;
 					// getting data from attachment
 					memory::interface::Buffer buff = it -> second;
 					std::stringstream tmp;
-					for (mi::Buffer::const_iterator it = buff.begin();
-						it != buff.end(); ++it) {
-						tmp << *it;
+					for (mi::Buffer::const_iterator it2 = buff.begin();
+						it2 != buff.end(); ++it2) {
+						tmp << *it2;
 					}
 					std::cout << tmp.str() << std::endl;
 

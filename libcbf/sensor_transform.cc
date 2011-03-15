@@ -29,7 +29,12 @@
 namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
-		SensorTransform::SensorTransform(const CBFSchema::SensorTransform &xml_instance, ObjectNamespacePtr object_namespace) {
+		SensorTransform::SensorTransform(
+			const CBFSchema::SensorTransform &xml_instance, 
+			ObjectNamespacePtr object_namespace
+		) :
+			Object(xml_instance)
+		{
 			for (
 				CBFSchema::SensorTransform::ComponentName_sequence::const_iterator it 
 					= xml_instance.ComponentName().begin();
@@ -40,14 +45,21 @@ namespace CBF {
 			}
 		}
 
-		ConstantSensorTransform::ConstantSensorTransform(const CBFSchema::ConstantSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) {
+		ConstantSensorTransform::ConstantSensorTransform(
+			const CBFSchema::ConstantSensorTransform &xml_instance, 
+			ObjectNamespacePtr object_namespace
+		) :
+			SensorTransform(xml_instance, object_namespace)	
+		{
 			init(*XMLFactory<FloatVector>::instance()->create(xml_instance.Value(), object_namespace));
 		}
 
 		BlockWiseMultiplySensorTransform::BlockWiseMultiplySensorTransform(
 			const CBFSchema::BlockWiseMultiplySensorTransform &xml_instance,
 			ObjectNamespacePtr object_namespace
-		) {
+		) :
+			SensorTransform(xml_instance, object_namespace)
+		{
 			init(
 				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand(), object_namespace),
 				xml_instance.Blocksize(),

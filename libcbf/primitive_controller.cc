@@ -231,7 +231,8 @@ namespace CBF {
 	}
 	
 	#ifdef CBF_HAVE_XSD
-		PrimitiveController::PrimitiveController(const CBFSchema::PrimitiveController &xml_instance, ObjectNamespacePtr object_namespace)
+		PrimitiveController::PrimitiveController(const CBFSchema::PrimitiveController &xml_instance, ObjectNamespacePtr object_namespace) :
+			Controller(xml_instance, object_namespace)
 		{
 			CBF_DEBUG("Constructing");
 			if (xml_instance.Name())

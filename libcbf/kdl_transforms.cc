@@ -326,6 +326,8 @@ namespace CBF {
 
 			m_Tree = create_tree(xml_instance, object_namespace);		
 
+			CBF_DEBUG("tree created");
+
 			init_solvers();
 		}
 		

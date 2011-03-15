@@ -9,6 +9,7 @@
 #include <boost/shared_ptr.hpp>
 
 namespace CBFSchema {
+	struct ConvergenceCriterion;
 	struct TaskSpaceDistanceThreshold;
 	struct ResourceStepNormThreshold;
 }
@@ -17,6 +18,10 @@ namespace CBF {
 	class PrimitiveController;
 
 	struct ConvergenceCriterion : public Object {
+		ConvergenceCriterion() : Object("ConvergenceCriterion") { }
+
+		ConvergenceCriterion(const CBFSchema::ConvergenceCriterion &xml_instance, ObjectNamespacePtr object_namespace);
+
 		/**
 			@brief An interface for convergence checks in PrimitiveControllers
 		

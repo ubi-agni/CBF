@@ -28,12 +28,29 @@ namespace CBF {
 	
 	
 	#ifdef CBF_HAVE_XSD
-		TaskSpaceDistanceThreshold::TaskSpaceDistanceThreshold(const CBFSchema::TaskSpaceDistanceThreshold &xml_instance, ObjectNamespacePtr object_namespace) {
+
+		ConvergenceCriterion::ConvergenceCriterion(const CBFSchema::ConvergenceCriterion &xml_instance, ObjectNamespacePtr object_namespace) :
+			Object(xml_instance)
+		{
+
+		}
+
+		TaskSpaceDistanceThreshold::TaskSpaceDistanceThreshold(
+			const CBFSchema::TaskSpaceDistanceThreshold &xml_instance, 
+			ObjectNamespacePtr object_namespace
+		) :
+			ConvergenceCriterion(xml_instance, object_namespace)
+		{
 			m_Threshold = xml_instance.Threshold();
 			CBF_DEBUG("task space threshold: " << m_Threshold);
 		}
 
- 		ResourceStepNormThreshold::ResourceStepNormThreshold(const CBFSchema::ResourceStepNormThreshold &xml_instance, ObjectNamespacePtr object_namespace) {
+ 		ResourceStepNormThreshold::ResourceStepNormThreshold(
+			const CBFSchema::ResourceStepNormThreshold &xml_instance, 
+			ObjectNamespacePtr object_namespace
+		) :
+			ConvergenceCriterion(xml_instance, object_namespace)
+		{
 			m_Threshold = xml_instance.Threshold();
 			CBF_DEBUG("resource space threshold: " << m_Threshold);
 

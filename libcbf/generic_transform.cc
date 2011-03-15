@@ -58,14 +58,16 @@ void DampedWeightedGenericEffectorTransform::update(
 #ifdef CBF_HAVE_XSD
 	GenericEffectorTransform::GenericEffectorTransform(
 		const CBFSchema::GenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
-	)
+	) :
+		EffectorTransform(xml_instance, object_namespace)
 	{
 		init(xml_instance.TaskDimension(), xml_instance.ResourceDimension());
 	}
 
 	PaddedEffectorTransform::PaddedEffectorTransform(
 		const CBFSchema::PaddedEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
-	)
+	) :
+		EffectorTransform(xml_instance, object_namespace)
 	{
 		init(
 			xml_instance.TaskDimension(), 
@@ -77,7 +79,8 @@ void DampedWeightedGenericEffectorTransform::update(
 
 	DampedGenericEffectorTransform::DampedGenericEffectorTransform(
 		const CBFSchema::DampedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
-	) 
+	) :
+		EffectorTransform(xml_instance, object_namespace)
 	{
 		init(
 			xml_instance.TaskDimension(), 
@@ -86,7 +89,8 @@ void DampedWeightedGenericEffectorTransform::update(
 		);
 	}
 
-	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace) 
+	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
+		EffectorTransform(xml_instance, object_namespace)
 	{
 		init(
 			xml_instance.TaskDimension(), 

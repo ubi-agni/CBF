@@ -416,9 +416,11 @@
   </xsd:complexType>
 
   <xsd:complexType name="TreeBase">
-	 <xsd:sequence>
+    <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
 
-	 </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="Tree">
@@ -433,9 +435,11 @@
 
 
   <xsd:complexType name="ChainBase">
-	 <xsd:sequence>
-		<xsd:element name="Name" type="xsd:string"/>
-	 </xsd:sequence>
+    <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="ChainReference">
@@ -470,18 +474,23 @@
 
 
   <xsd:complexType name="Segment">
-	 <xsd:sequence>
-		<xsd:element name="Name" type="xsd:string"/>
-		<xsd:element name="Frame" type="CBF:Frame"/>
-		<xsd:element name="Joint" type="CBF:Joint"/>
-	 </xsd:sequence>
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+		  <xsd:sequence>
+			 <xsd:element name="Frame" type="CBF:Frame"/>
+			 <xsd:element name="Joint" type="CBF:Joint"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
-
+  
   <xsd:complexType name="Frame">
-	 <xsd:sequence>
-	 </xsd:sequence>
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
-
+  
   <xsd:complexType name="MatrixFrame">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Frame">

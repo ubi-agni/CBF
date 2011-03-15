@@ -24,6 +24,12 @@
 #include <cbf/xml_factory.h>
 
 namespace CBF {
+#ifdef CBF_HAVE_XSD
+		Reference::Reference(const CBFSchema::Reference &xml_instance, ObjectNamespacePtr object_namespace) :
+			Object(xml_instance) 
+		{
 
+		}
+#endif
 } // namespace
 

@@ -9,6 +9,19 @@
 #include <map>
 
 namespace CBF {
+	template<class T> 
+	struct ForeignObjectWrapper : public Object {
+		boost::shared_ptr<T> m_Object;
+
+		ForeignObjectWrapper(boost::shared_ptr<T> object) :
+			Object("ForeignObjectWrapper"),
+			m_Object(object)
+		{
+
+		}
+	};
+
+
 	struct ObjectNamespace {
 		typedef std::map<std::string, ObjectPtr> map;
 		map m_Map;
@@ -38,23 +51,18 @@ namespace CBF {
 			CBF_DEBUG("namespace contents");
 
 			for (map::iterator it = m_Map.begin(); it != m_Map.end(); ++it) {
-				CBF_DEBUG((*it).first << " -> " << (*it).second);
+				CBF_DEBUG("\"" << (*it).first << "\" -> " << (*it).second);
 			}
+		}
+
+		template <class T>
+		void register_foreign_object(const std::string &key, boost::shared_ptr<T> object) {
+			register_object(key, boost::shared_ptr<ForeignObjectWrapper<T> >(new ForeignObjectWrapper<T>(object)));
 		}
 	};
 
 	typedef boost::shared_ptr<ObjectNamespace> ObjectNamespacePtr;
 
-	template<class T> 
-	struct ForeignObjectWrapper : public Object {
-		boost::shared_ptr<T> m_Object;
-
-		ForeignObjectWrapper(boost::shared_ptr<T> object) :
-			m_Object(object)
-		{
-
-		}
-	};
 	
 } // namespace
 

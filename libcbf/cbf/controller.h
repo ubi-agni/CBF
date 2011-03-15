@@ -22,11 +22,14 @@
 #define CBF_BASE_CONTROLLER_HH
 
 #include <cbf/types.h>
+#include <cbf/namespace.h>
 #include <cbf/object.h>
 
 #include <cstdlib>
 
 #include <boost/shared_ptr.hpp>
+
+namespace CBFSchema { class Controller; }
 
 /**
 	@brief The CBF namespace holds the user visible classes provided by the ControlBasisFramework lib.
@@ -44,7 +47,10 @@ namespace CBF {
 	*/
 	struct Controller : public Object {
 
+		Controller(const CBFSchema::Controller &xml_instance, ObjectNamespacePtr object_namespace);
+
 		Controller() :
+			Object("Controller"),
 			m_UpdateCycle(-2),
 			m_ActionCycle(-2)
 		{

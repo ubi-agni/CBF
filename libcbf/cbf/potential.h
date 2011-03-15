@@ -53,6 +53,7 @@ struct Potential : public Object {
 		bool clamp_gradient_step_norm = false,
 		Float max_gradient_step_norm = 0.1
 	) :
+		Object("Potential"),
 		m_ClampGradientStepNorm(clamp_gradient_step_norm),
 		m_MaxGradientStepNorm(max_gradient_step_norm)
 	{

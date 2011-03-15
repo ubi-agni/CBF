@@ -233,7 +233,13 @@ namespace CBF {
 					CBF_UNMANGLE(TSchemaType)
 				);
 				const TSchemaType &tmp = dynamic_cast<const TSchemaType&>(xml_instance);
-				return m_Creator(tmp, object_namespace);
+				boost::shared_ptr<T> ptr = m_Creator(tmp, object_namespace);
+
+				if(xml_instance.Name().present()) {
+					object_namespace->register_foreign_object<T>(*xml_instance.Name(), ptr);
+				}
+
+				return ptr;
 			}
 		};
 
