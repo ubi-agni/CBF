@@ -107,6 +107,9 @@ struct CompositeReference : public Reference
 			m_UpdateSuccessfull = true;
 		}
 
+		virtual const std::vector<ReferencePtr> &references() { 
+			return m_References;
+		}
 			
 		/**
 			@brief Returns the cached result.
@@ -115,6 +118,8 @@ struct CompositeReference : public Reference
 		*/
 		virtual std::vector<FloatVector> &get();
 };
+
+typedef boost::shared_ptr<CompositeReference> CompositeReferencePtr;
 
 } // namespace
 

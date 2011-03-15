@@ -74,7 +74,7 @@ namespace CBF {
 		
 			virtual void update(const FloatVector &resource_value);
 	
-			virtual const std::vector<SensorTransformPtr> &transforms() const {
+			virtual const std::vector<SensorTransformPtr> &sensor_transforms() const {
 				return m_SensorTransforms;
 			}
 	};
@@ -90,7 +90,6 @@ namespace CBF {
 		//! The transform we are wrapping
 		SensorTransformPtr m_Transform;
 
-		
 	};
 	
 } // Namespace

@@ -32,6 +32,7 @@ namespace CBF {
 		}
 
 		void register_object(const std::string &key, ObjectPtr object) {
+			CBF_DEBUG("registering object with name: " << key);
 			m_Map[key] = object;
 
 			CBF_DEBUG("namespace contents");
@@ -43,6 +44,17 @@ namespace CBF {
 	};
 
 	typedef boost::shared_ptr<ObjectNamespace> ObjectNamespacePtr;
+
+	template<class T> 
+	struct ForeignObjectWrapper : public Object {
+		boost::shared_ptr<T> m_Object;
+
+		ForeignObjectWrapper(boost::shared_ptr<T> object) :
+			m_Object(object)
+		{
+
+		}
+	};
 	
 } // namespace
 
