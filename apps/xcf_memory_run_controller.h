@@ -59,6 +59,7 @@ struct XCFMemoryRunController {
 	public:
 
 	enum NotificationLevel { NOTHING = 0x0 , ERROR = 0x1, INFO = 0x2, ALL = 0x3};
+	enum StopReason { REQUESTED, CONVERGED};
 
 	/**
 		@brief This struct connects to an active_memory and subscribes for
@@ -113,21 +114,16 @@ struct XCFMemoryRunController {
 		@brief Holds the CBFRunController which is used for the execution..
 	*/
 	CBFRunControllerPtr m_RunController;
+	
+	/**
+		@brief Tells why the last controller was stopped.
+	*/
+	NotificationLevel m_ControllerStoppedReason;
 
 	/**
 		@brief A map that holds controllers identified by their names.
 	*/
 	std::map<std::string, boost::shared_ptr<CBFSchema::Controller> > m_ControllerMap;
-
-	/**
-		@brief A counter that is used for Notifications.
-	*/
-	unsigned int m_Added;
-
-	/**
-		@brief A counter that is used for Notifications.
-	*/
-	unsigned int m_Ignored;
 
 	/**
 		@brief Returns the string that identifies the XML-document that
@@ -192,7 +188,9 @@ struct XCFMemoryRunController {
 	*/
 	void add_controllers_to_map(
 		CBFSchema::ControlBasis::Controller_sequence* controllers,
-		std::ostringstream* names, std::ostringstream* overwritten);
+			std::set<std::string>* added_controllers, 
+			std::map<std::string, int>* overwritten_controllers,
+			int* ignored_controllers_count);
 
 	/**
 		@brief The function that will be called by the active_memory when 
@@ -223,15 +221,68 @@ struct XCFMemoryRunController {
 	void triggered_action_load_controllers(const memory::interface::Event &event);
 
 	/**
-		@brief Sends (not inserts) an XCFMemoryRunControllerNotification document.
+		@brief Sends (not inserts) an error XCFMemoryRunControllerNotification document.
 		Whether a notification will be send defines the m_NotificationLevel.
 
 		@param note Will be filled into the 'Note' element.
 		@param documentD The dbxml:id of the xml document that triggered this note.
-		@param notification_level The NL of this notification
 	*/
-	void notify(std::string note, int documentID, NotificationLevel notification_level);
+	void notifyError(std::string note, int documentID);
+	
+	/**
+		@brief A notify function for the add-action.
+		Whether a notification will be send defines the m_NotificationLevel.
 
+		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param added_controler_names The set of controller_names that were added.
+		@param overwritten_controllers The map of overwritten controllers and with the count of
+		overwritings.
+		@param ignored_controllers_count The count of controllers that were ignored.
+	*/
+	void notifyAdd(int documentID, std::set<std::string> added_controller_names,
+					std::map<std::string, int> overwritten_controllers,
+					int ignored_controllers_count);
+
+	/**
+		@brief A notify function for the load-action.
+		Whether a notification will be send defines the m_NotificationLevel.
+
+		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param Ok Has a control_basis been set?
+		@param not_found_controllers A set of controller_names that were not found.
+	*/
+	void notifyLoad(int documentID, std::set<std::string> loaded_controllers,
+			std::set<std::string> not_found_controllers);
+
+	/**
+		@brief A notify function for the start-action.
+		Whether a notification will be send defines the m_NotificationLevel.
+
+		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param controller_name The name of the controller that has been started.
+	*/
+	void notifyStart(int documentID, std::string controller_name);
+	
+	/**
+		@brief A notify function for the stop-action.
+		Whether a notification will be send defines the m_NotificationLevel.
+
+		@param documentD The dbxml:id of the xml document that triggered this note.
+	*/
+	void notifyStop(int documentID);
+	
+	/**
+		@brief A notify function for the sleep-time/steps-change.
+		Whether a notification will be send defines the m_NotificationLevel.
+
+		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param sleep_time The new sleep-time.
+		@param steps The new amount of steps.
+		@param time_set Whether the time was changed.
+		@param steps_set Whether the steps were changed.
+	*/
+	void notifyOptions(int documentID, unsigned int sleep_time, unsigned int steps, bool time_set, bool steps_set);
+	
 };
 
 /**

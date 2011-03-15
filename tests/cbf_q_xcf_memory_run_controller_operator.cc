@@ -40,6 +40,7 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
+#include <QMessageBox>
 
 
 namespace po = boost::program_options;
@@ -172,12 +173,18 @@ void XcfMemoryRunControllerOperator::add_control_basis(){
 
 		std::ostringstream s;
 		CBFSchema::XCFMemoryRunControllerAdd_ (s, v);
-	CBF_DEBUG("HHHHHHHH");
 		// sending the document to the active_memory
 	CBF_DEBUG(s.str());
-	CBF_DEBUG("DocLength: " << s.str().size());
+	CBF_DEBUG("Document length: " << s.str().size());
+	if(s.str().size() > 80000) {
+		QMessageBox msgBox;
+		msgBox.setText("The size of the document is above 80.000 characters. "
+				"Please use the 'add control basis as attachment' function "
+				"for big documents.");
+		msgBox.exec();
+	} else {
 		m_MemoryInterface -> insert(s.str());
-	CBF_DEBUG("INSERTED");
+	}
 
 	} catch (const xml_schema::exception& e) {
 		std::cerr << "Error during parsing: " << e << std::endl;
@@ -208,16 +215,15 @@ void XcfMemoryRunControllerOperator::add_attachment(){
 		return;
 	}
 
+	//TODO: Problems with memory server. Seem to need unique ID's. UUID when avaliable.
 	// create Attachment and set the Buffer.
 	memory::interface::Attachments att;
 	// create (hopefully unique) id
 	std::ostringstream id;
-	for (int i = 0; i < 12; ++i){
+	for (int i = 0; i < 20; ++i){
 		id << (rand()%10);
 	}
 	att[id.str()] = buffer;
-	std::cout << id.str() << std::endl;
-	
 
 	try {
 		// creating the XCFMemoryRunControllerAdd document.
