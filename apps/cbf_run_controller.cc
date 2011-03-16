@@ -35,7 +35,8 @@ namespace CBF {
 		m_Steps(steps),
 		m_VerbosityLevel(verbosity_level),
 		m_ControllerRunning(false),
-		m_ControlBasisSet(false)
+		m_ControlBasisSet(false),
+		m_Converged(false)
 		#ifdef CBF_HAVE_QT
 			,m_QtSupport(qt_support)
 		#endif
@@ -58,7 +59,8 @@ namespace CBF {
 
 		// if the stepcount is 0 we are stepp()ing till convergence
 		// setting stepCount != 0 in execution will make us leave the while-clause
-		while ((stepCount() == 0) && (m_ControlBasis->controllers()[controller_name]->step() == false)) {
+		while ((stepCount() == 0) 
+			&& (setConverged(m_ControlBasis->controllers()[controller_name]->step()) == false)) {
 
 			if (!checkControllerRuns()) //stops execution
 				{return; }
@@ -144,6 +146,17 @@ namespace CBF {
 	bool CBFRunController::checkControlBasisSet(){
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
 		return m_ControlBasisSet;
+	}
+	
+	bool CBFRunController::setConverged(bool converged){
+		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ConvergedMonitor);
+		m_Converged = converged;
+		return m_Converged;
+	}
+	
+	bool CBFRunController::checkConverged(){
+		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ConvergedMonitor);
+		return m_Converged;
 	}
 	
 	bool CBFRunController::checkControllerExists(std::string controller_name) throw(ControlBasisNotSetException){

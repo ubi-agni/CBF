@@ -217,6 +217,14 @@ struct CBFRunController {
 		@return Whether the controller exists.
 	*/
 	bool checkControllerExists(std::string controller_name) throw(ControlBasisNotSetException);
+	
+	/**
+		@brief a thread safe way to check whether the controller
+		converged.
+
+		@return Whether the controller converged in the last step().
+	*/
+	bool checkConverged();
 
 
 	private:
@@ -257,6 +265,11 @@ struct CBFRunController {
 		@brief Tells whether the ControlBasis is set.
 	*/
 	bool m_ControlBasisSet;
+	
+	/**
+		@brief Tells whether the controller converged.
+	*/
+	bool m_Converged;
 
 	/**
 		@brief The mutex-lock that is used for the thread 
@@ -281,6 +294,12 @@ struct CBFRunController {
 		syncronization of the controllerRunning resource.
 	*/
 	IceUtil::Monitor<IceUtil::RecMutex> m_ControllerRunningMonitor;
+	
+	/**
+		@brief The mutex-lock that is used for the thread 
+		syncronization of the converged resource.
+	*/
+	IceUtil::Monitor<IceUtil::RecMutex> m_ConvergedMonitor;
 
 	#ifdef CBF_HAVE_QT
 		/**
@@ -298,6 +317,15 @@ struct CBFRunController {
 		@return Whether the controller was running before.
 	*/
 	bool checkControllerRuns(bool running);
+	
+	/**
+		@brief a thread safe way to set whether the controller
+		converged.
+
+		@param converged A boolean whether the controller converged.
+		@return Returns the same boolean that is passed.
+	*/
+	bool setConverged(bool converged);
 
 };
 

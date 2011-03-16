@@ -478,6 +478,7 @@ namespace mi = memory::interface;
 			CBFSchema::XCFMemoryRunControllerNotification v(m_RunControllerName, documentID);
 
 			v.StoppedControllerName(controller_name);
+			v.StoppedControllerConverged(m_RunController -> checkConverged());
 
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
