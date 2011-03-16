@@ -6,10 +6,10 @@
 	xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <xsd:complexType name="Object" abstract="true">
+  <xsd:complexType name="Object">
 	 <xsd:sequence>
 		<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
-		<xsd:element name="ReferencedObject" type="xsd:string" minOccurs="0"/>
+		<xsd:element name="ReferencedObjectName" type="xsd:string" minOccurs="0"/>
 	 </xsd:sequence>
   </xsd:complexType>
   <xsd:element name="Object" type="CBF:Object"/>
@@ -415,7 +415,7 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="TreeBase">
+  <xsd:complexType name="TreeBase" abstract="true">
     <xsd:complexContent>
 		<xsd:extension base="CBF:Object">
 

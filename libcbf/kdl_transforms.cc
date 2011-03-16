@@ -324,7 +324,7 @@ namespace CBF {
 		{
 			CBF_DEBUG("[KDLTreeSensorTransform(const KDLTreeSensorTransformType &xml_instance)]: yay!");
 
-			m_Tree = create_tree(xml_instance, object_namespace);		
+			m_Tree = XMLFactory<KDL::Tree>::instance()->create(xml_instance, object_namespace);		
 
 			CBF_DEBUG("tree created");
 

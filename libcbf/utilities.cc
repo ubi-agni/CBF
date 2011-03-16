@@ -531,12 +531,18 @@ void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &curr
 	}
 }
 
+#if 0
 boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance, ObjectNamespacePtr object_namespace) {
 
 	CBF_DEBUG("creating tree from xml");
 	boost::shared_ptr<KDL::Tree> tree(new KDL::Tree);
 
 	//! Check what kind of tree we have:
+
+	if (xml_instance.Name().present())
+		CBF_DEBUG("tree name: " << *xml_instance.Name());
+	else
+		CBF_DEBUG("tree has no name");
 
 
 	const CBFSchema::Tree *tree_instance  = dynamic_cast<const CBFSchema::Tree*>(&xml_instance);
@@ -546,6 +552,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 		throw std::runtime_error("Tree type not handled yet..");
 	}
 
+	CBF_DEBUG("iterating over segments");
 
 	for (
 		CBFSchema::Tree::Segment_const_iterator it =(*tree_instance).Segment().begin(); 
@@ -561,6 +568,30 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 	}
 	return tree;
 }
+#endif
+
+boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, ObjectNamespacePtr object_namespace) {
+
+	CBF_DEBUG("creating tree from xml");
+	boost::shared_ptr<KDL::Tree> tree(new KDL::Tree);
+
+	CBF_DEBUG("iterating over segments");
+
+	for (
+		CBFSchema::Tree::Segment_const_iterator it =(xml_instance).Segment().begin(); 
+		it != (xml_instance).Segment().end();
+		++it
+	)
+	{
+		CBF_DEBUG("Adding Segment...");
+
+		tree_add_segment(tree, "root", *it, object_namespace);
+
+		CBF_DEBUG("Number of joints: " << tree->getNrOfJoints());
+	}
+	return tree;
+}
+
 
 #endif
 #endif
@@ -570,16 +601,26 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance
 		FloatVector, 
 		CBFSchema::BoostVector, 
 		boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &, ObjectNamespacePtr)
-	> x(create_boost_vector);
+	> x (create_boost_vector);
 
 	static XMLCreator<
 		FloatVector, 
 		CBFSchema::ZeroVector, 
 		boost::shared_ptr<FloatVector>(*)(const CBFSchema::ZeroVector &, ObjectNamespacePtr)
-	> x2(create_zero_vector);
+	> x2 (create_zero_vector);
 	
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;
+
+	static XMLCreator<
+		KDL::Tree, 
+		CBFSchema::Tree, 
+		boost::shared_ptr<KDL::Tree>(*)(const CBFSchema::Tree &, ObjectNamespacePtr)
+	> x3 (create_tree);
+
+	template <> XMLFactory<KDL::Tree> 
+		*XMLFactory<KDL::Tree>::m_Instance = 0;
+
 #endif
 
 
