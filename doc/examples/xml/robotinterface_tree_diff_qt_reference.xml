@@ -1242,7 +1242,7 @@
 
 		<Reference xsi:type="cbf:DummyReference">
 		  <Vector xsi:type="cbf:BoostVector">
-			 <String>[6](10,10,10,-10,10,10)</String>
+			 <String>[6](60,20,30,60,20,30)</String>
 		  </Vector>
 		</Reference>
 
@@ -1282,12 +1282,14 @@
 	 <CombinationStrategy
 		 xsi:type="cbf:AddingStrategy"/>
 
+	 <!--
 	 <Resource xsi:type="cbf:DummyResource">
 		<Vector xsi:type="cbf:BoostVector">
 		  <String>[62](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
 		</Vector>
 	 </Resource>
-	 <!--
+	 -->
+
 		 <Resource
 			 xsi:type="cbf:CompositeResource">
 			<Resource
@@ -1319,6 +1321,6 @@
 			  <NumberOfJoints> 24 </NumberOfJoints>
 			</Resource>
 		 </Resource>
-		 -->
+
   </Controller>
 </cbf:ControlBasis>
