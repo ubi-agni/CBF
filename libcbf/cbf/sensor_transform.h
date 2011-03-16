@@ -74,6 +74,7 @@ namespace CBF {
 	*/
 	struct SensorTransform : public Object {
 		SensorTransform()	:
+			Object("SensorTransform"),
 			m_DefaultComponentName("A task space variable")
 		{
 	

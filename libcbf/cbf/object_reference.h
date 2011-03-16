@@ -16,7 +16,8 @@ namespace CBF {
 struct ObjectReference : public Object {
 	std::string m_ReferredObjectName;
 
-	ObjectReference(const std::string &referred_object_name) {
+	ObjectReference(const std::string &referred_object_name) :
+		Object(std::string("ObjectReference ") + referred_object_name) {
 		init(referred_object_name);
 	}
 

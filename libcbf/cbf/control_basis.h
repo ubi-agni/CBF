@@ -16,7 +16,7 @@ namespace CBFSchema { class ControlBasis; }
 namespace CBF {
 
 struct ControlBasis : public Object {
-	ControlBasis () { }
+	ControlBasis () : Object("ControlBasis") { }
 
 	ControlBasis(const CBFSchema::ControlBasis &xml_instance, ObjectNamespacePtr object_namespace);
 	

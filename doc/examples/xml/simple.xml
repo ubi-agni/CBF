@@ -22,12 +22,14 @@
  </Reference>
 
  <Potential xsi:type="cbf:SquarePotential">
+<!--  <Name>Be there or be square</Name> -->
   <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
   <Dimension> 3 </Dimension>
   <Coefficient> 0.1 </Coefficient>
  </Potential>
 
  <SensorTransform xsi:type="cbf:IdentitySensorTransform">
+<!--  <Name>IdentitySensor </Name> -->
   <Dimension> 3 </Dimension>
  </SensorTransform>
 

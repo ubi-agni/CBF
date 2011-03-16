@@ -7,7 +7,9 @@ namespace CBF {
 	ObjectReference::ObjectReference(
 		const CBFSchema::ObjectReference &xml_instance, 
 		ObjectNamespacePtr object_namespace
-	) {
+	) :
+		Object(xml_instance)
+	{
 		init(xml_instance.ReferenceName());
 	}
 

@@ -25,4 +25,12 @@
 
 namespace CBF {
 
+#ifdef CBF_HAVE_XSD
+		Resource::Resource(const CBFSchema::Resource &xml_instance, ObjectNamespacePtr object_namespace) :
+			Object(xml_instance) {
+
+		}
+
+#endif
+
 } // namespace

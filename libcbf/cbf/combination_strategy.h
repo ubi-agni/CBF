@@ -49,9 +49,12 @@ namespace ublas = boost::numeric::ublas;
 	before they get projected into the nullspace of a controller..
 */
 struct CombinationStrategy : public Object {
+	CombinationStrategy() : Object("CombinationStrategy") { }
 	virtual ~CombinationStrategy() {
 
 	}
+
+	CombinationStrategy(const CBFSchema::CombinationStrategy &xml_instance, ObjectNamespacePtr object_namespace);
 
 	virtual void exec(
 		FloatVector &result, 

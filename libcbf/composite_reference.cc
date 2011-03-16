@@ -37,7 +37,9 @@ namespace CBF {
 
 
 #ifdef CBF_HAVE_XSD
-	CompositeReference::CompositeReference(const CBFSchema::CompositeReference &xml_instance, ObjectNamespacePtr object_namespace) {
+	CompositeReference::CompositeReference(const CBFSchema::CompositeReference &xml_instance, ObjectNamespacePtr object_namespace) :
+		Reference(xml_instance, object_namespace)
+	{
 			std::vector<ReferencePtr> references;
 		
 			//! Instantiate the subordinate references

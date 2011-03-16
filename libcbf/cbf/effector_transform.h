@@ -30,6 +30,10 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 
+namespace CBFSchema {
+	class EffectorTransform;
+}
+
 namespace CBF {
 	namespace ublas = boost::numeric::ublas;
 	
@@ -42,11 +46,7 @@ namespace CBF {
 		and maps it to the resource's configuration space.
 	*/
 	struct EffectorTransform : public Object {
-
-		EffectorTransform()
-		{
-	
-		}
+		EffectorTransform() : Object("EffectorTransform") { }
 
 		/**
 			A virtual destructor to make destruction of objects of derived types possible
@@ -55,7 +55,9 @@ namespace CBF {
 		virtual ~EffectorTransform() {
 	
 		}
-	
+
+		EffectorTransform(const CBFSchema::EffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
+
 		/**
 			@brief This function is called by a controller in each control cycle
 	

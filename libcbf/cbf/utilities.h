@@ -53,7 +53,7 @@ namespace CBFSchema {
 	class Frame;
 	class Joint;
 	class ChainBase;
-	class TreeBase;
+	class Tree;
 }
 
 namespace CBF {
@@ -141,7 +141,8 @@ boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance,
 boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance, ObjectNamespacePtr object_namespace);
 
 boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance, ObjectNamespacePtr object_namespace);
-boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance, ObjectNamespacePtr object_namespace);
+
+boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, ObjectNamespacePtr object_namespace);
 
 
 } // namespace

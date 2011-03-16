@@ -6,7 +6,9 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	ControlBasis::ControlBasis(const CBFSchema::ControlBasis &xml_instance, ObjectNamespacePtr object_namespace) {
+	ControlBasis::ControlBasis(const CBFSchema::ControlBasis &xml_instance, ObjectNamespacePtr object_namespace) :
+		Object(xml_instance)
+	{
 		CBF_DEBUG("Building Control Basis");
 		for (
 			CBFSchema::ControlBasis::Controller_const_iterator it = 

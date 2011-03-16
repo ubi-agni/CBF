@@ -6,10 +6,10 @@
 	xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <xsd:complexType name="Object" abstract="true">
+  <xsd:complexType name="Object">
 	 <xsd:sequence>
 		<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
-		<xsd:element name="ReferencedObject" type="xsd:string" minOccurs="0"/>
+		<xsd:element name="ReferencedObjectName" type="xsd:string" minOccurs="0"/>
 	 </xsd:sequence>
   </xsd:complexType>
   <xsd:element name="Object" type="CBF:Object"/>
@@ -415,10 +415,12 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:complexType name="TreeBase">
-	 <xsd:sequence>
-		<xsd:element name="Name" type="xsd:string"/>
-	 </xsd:sequence>
+  <xsd:complexType name="TreeBase" abstract="true">
+    <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="Tree">
@@ -433,9 +435,11 @@
 
 
   <xsd:complexType name="ChainBase">
-	 <xsd:sequence>
-		<xsd:element name="Name" type="xsd:string"/>
-	 </xsd:sequence>
+    <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
 
   <xsd:complexType name="ChainReference">
@@ -470,18 +474,23 @@
 
 
   <xsd:complexType name="Segment">
-	 <xsd:sequence>
-		<xsd:element name="Name" type="xsd:string"/>
-		<xsd:element name="Frame" type="CBF:Frame"/>
-		<xsd:element name="Joint" type="CBF:Joint"/>
-	 </xsd:sequence>
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+		  <xsd:sequence>
+			 <xsd:element name="Frame" type="CBF:Frame"/>
+			 <xsd:element name="Joint" type="CBF:Joint"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
-
+  
   <xsd:complexType name="Frame">
-	 <xsd:sequence>
-	 </xsd:sequence>
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Object">
+		</xsd:extension>
+	 </xsd:complexContent>
   </xsd:complexType>
-
+  
   <xsd:complexType name="MatrixFrame">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Frame">

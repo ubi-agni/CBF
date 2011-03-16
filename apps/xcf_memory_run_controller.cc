@@ -135,9 +135,9 @@ namespace mi = memory::interface;
 					// getting data from attachment
 					memory::interface::Buffer buff = it -> second;
 					std::stringstream tmp;
-					for (mi::Buffer::const_iterator itbuf = buff.begin();
-						itbuf != buff.end(); ++itbuf) {
-						tmp << *itbuf;
+					for (mi::Buffer::const_iterator it2 = buff.begin();
+						it2 != buff.end(); ++it2) {
+						tmp << *it2;
 					}
 
 					CBF_DEBUG("creating a control_basis from attachment[" << it -> first << "]");

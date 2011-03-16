@@ -27,7 +27,8 @@
 namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
-		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) 
+		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) : 
+			SensorTransform(xml_instance, object_namespace)
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
 
