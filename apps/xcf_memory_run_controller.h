@@ -59,7 +59,6 @@ struct XCFMemoryRunController {
 	public:
 
 	enum NotificationLevel { NOTHING = 0x0 , ERROR = 0x1, INFO = 0x2, ALL = 0x3};
-	enum StopReason { REQUESTED, CONVERGED};
 
 	/**
 		@brief This struct connects to an active_memory and subscribes for
@@ -114,11 +113,6 @@ struct XCFMemoryRunController {
 		@brief Holds the CBFRunController which is used for the execution..
 	*/
 	CBFRunControllerPtr m_RunController;
-	
-	/**
-		@brief Tells why the last controller was stopped.
-	*/
-	NotificationLevel m_ControllerStoppedReason;
 
 	/**
 		@brief A map that holds controllers identified by their names.
@@ -255,21 +249,13 @@ struct XCFMemoryRunController {
 			std::set<std::string> not_found_controllers);
 
 	/**
-		@brief A notify function for the start-action.
-		Whether a notification will be send defines the m_NotificationLevel.
-
-		@param documentD The dbxml:id of the xml document that triggered this note.
-		@param controller_name The name of the controller that has been started.
-	*/
-	void notifyStart(int documentID, std::string controller_name);
-	
-	/**
 		@brief A notify function for the stop-action.
 		Whether a notification will be send defines the m_NotificationLevel.
 
 		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param controller_name The name of the controller that was stopped.
 	*/
-	void notifyStop(int documentID);
+	void notifyStop(int documentID, std::string controller_name);
 	
 	/**
 		@brief A notify function for the sleep-time/steps-change.

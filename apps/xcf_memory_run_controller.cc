@@ -263,10 +263,12 @@ namespace mi = memory::interface;
 			}
 
 		} catch (const xml_schema::exception& e) {
-			std::string note("An error occured during parsing: ").append(e.what());
+			std::string note("An error occured during parsing: ");
+			note.append(e.what());
 			notifyError(note, event.getID());
 		} catch (const std::exception& e) {
-			std::string note("An unexpected exception occured: ").append(e.what());
+			std::string note("An unexpected exception occured: ");
+			note.append(e.what());
 			notifyError(note, event.getID());
 		} catch (...) {
 			notifyError("An unknown unexpected exception occured.", event.getID());
@@ -280,6 +282,7 @@ namespace mi = memory::interface;
 		CBF_DEBUG("doc: " << event.getDocument());
 	
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
+		std::string controller_name;
 
 		CBF_DEBUG("parsing XML for controller name");
 		try {
@@ -290,21 +293,22 @@ namespace mi = memory::interface;
 
 			CBF_DEBUG("parsing controller name");
 			// get the name of the controller to run.
-			std::string controller_name = controllerEx -> ControllerName();
+			controller_name = controllerEx -> ControllerName();
 
 			CBF_DEBUG("starting controller called: " << controller_name);
 
-			notifyStart(event.getID(), controller_name);
 			// run the specified controller.
-			m_ControllerStopReason = CONVERGED;
 			m_RunController -> start_controller(controller_name);
-			notifyStop(event.getID());
+			notifyStop(event.getID(), controller_name);
 			
 		} catch (const ControlBasisNotSetException& e){
 			notifyError("Runtime Error: Cant execute controller when ControlBasis is not set." ,
 				    event.getID());
 		} catch (const ControllerNotFoundExcepption& e){
-			notifyError("Runtime Error: Cant find controller in ControlBasis." , event.getID());
+		  	std::ostringstream err;
+			err << "Runtime Error: Cant find controller '";
+			err << controller_name << "' in ControlBasis.";
+			notifyError(err.str() , event.getID());
 		} catch (const ControllerRunningException& e){
 			notifyError("Runtime Error: Controller is already running." , event.getID());
 		} catch (const xml_schema::exception& e) {
@@ -320,7 +324,6 @@ namespace mi = memory::interface;
 		CBF_DEBUG("doc: " << event.getDocument());
 		CBF_DEBUG("stopping controller");
 		// just stop the controller
-		m_ControllerStopReason = REQUESTED;
 		m_RunController -> stop_controller();
 	}
 
@@ -468,32 +471,13 @@ namespace mi = memory::interface;
 			m_MemoryInterface -> send(s.str());
 		}
 	}
-	 
-	void XCFMemoryRunController::notifyStart(int documentID, std::string controller_name){
-		if (m_NotificationLevel & XCFMemoryRunController::INFO){
-			// creating the XCFMemoryRunControllerNotification document.
-			CBFSchema::XCFMemoryRunControllerNotification v(m_RunControllerName, documentID);
 
-			v.Note("Starting controller.");
-			v.StartedControllerName(controller_name);
-
-			std::ostringstream s;
-			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
-			// sending the document to the active_memory
-			m_MemoryInterface -> send(s.str());
-		}
-	}
-	
 	void XCFMemoryRunController::notifyStop(int documentID, std::string controller_name){
 		if (m_NotificationLevel & XCFMemoryRunController::INFO){
 			// creating the XCFMemoryRunControllerNotification document.
 			CBFSchema::XCFMemoryRunControllerNotification v(m_RunControllerName, documentID);
 
-			if(m_ControllerStopReason == REQUESTED){
-				v.StoppedControllerReason("Requested");
-			} else if(m_ControllerStopReason == CONVERGED){
-				v.StoppedControllerReason("Converged");
-			}
+			v.StoppedControllerName(controller_name);
 
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);

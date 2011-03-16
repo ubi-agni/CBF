@@ -417,7 +417,7 @@
 
   <xsd:complexType name="TreeBase">
 	 <xsd:sequence>
-
+		<xsd:element name="Name" type="xsd:string"/>
 	 </xsd:sequence>
   </xsd:complexType>
 
@@ -854,8 +854,7 @@
 		<xsd:element name="ControllersIgnored" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
 		<xsd:element name="LoadControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 		<xsd:element name="NotFoundControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-		<xsd:element name="StartedControllerName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
-		<xsd:element name="StoppedControllerReason" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+		<xsd:element name="StoppedControllerName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
 		<xsd:element name="SleepTimeSetTo" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
 		<xsd:element name="StepCountSetTo" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
 	 </xsd:sequence>

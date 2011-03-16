@@ -196,6 +196,27 @@ struct CBFRunController {
 		@brief Stops the controller from execution before the next step is performed.
 	*/
 	void stop_controller();
+	
+	/**
+		@brief a thread safe way to check whether the controller is running.
+
+		@return Whether the controller is running.
+	*/
+	bool checkControllerRuns();
+
+	/**
+		@brief a thread safe way to check whether the ControlBasis is already set.
+
+		@return Whether the ControlBasis is set.
+	*/
+	bool checkControlBasisSet();
+	
+	/**
+		@brief a thread safe way to check whether a controller is in the control_basis.
+
+		@return Whether the controller exists.
+	*/
+	bool checkControllerExists(std::string controller_name) throw(ControlBasisNotSetException);
 
 
 	private:
@@ -277,20 +298,6 @@ struct CBFRunController {
 		@return Whether the controller was running before.
 	*/
 	bool checkControllerRuns(bool running);
-
-	/**
-		@brief a thread safe way to check whether the controller is running.
-
-		@return Whether the controller is running.
-	*/
-	bool checkControllerRuns();
-
-	/**
-		@brief a thread safe way to check whether the ControlBasis is already set.
-
-		@return Whether the ControlBasis is set.
-	*/
-	bool checkControlBasisSet();
 
 };
 

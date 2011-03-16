@@ -46,19 +46,12 @@ namespace CBF {
 	void CBFRunController::start_controller(std::string controller_name)
 		throw(ControlBasisNotSetException, ControllerNotFoundExcepption, ControllerRunningException)
 	{
-
-		//does not start if the controll_basis is not set.
-		if(!checkControlBasisSet()){
-			throw ControlBasisNotSetException();
-		}
-
-		//does nothing when the controller is not in the control_basis
-		if (m_ControlBasis -> controllers().find(controller_name) 
-			== m_ControlBasis -> controllers().end()){
+		// is the controller in the control_basis? throws an exception when control_basis not set.
+		if(!checkControllerExists(controller_name)){
 			throw ControllerNotFoundExcepption();
 		}
 
-		//does nothing if the controller is already running.
+		// does nothing if the controller is already running.
 		if(checkControllerRuns(true)){
 			throw ControllerRunningException();
 		}
@@ -151,6 +144,17 @@ namespace CBF {
 	bool CBFRunController::checkControlBasisSet(){
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
 		return m_ControlBasisSet;
+	}
+	
+	bool CBFRunController::checkControllerExists(std::string controller_name) throw(ControlBasisNotSetException){
+		// Throws an exception when no control_basis is set.
+		if(!checkControlBasisSet()){
+			throw ControlBasisNotSetException();
+		}
+		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
+		//returns whether the controller is in the control_basis.
+		return !(m_ControlBasis -> controllers().find(controller_name) 
+			== m_ControlBasis -> controllers().end());
 	}
 
 	void CBFRunController::setControlBasis(CBF::ControlBasisPtr control_basis) 
