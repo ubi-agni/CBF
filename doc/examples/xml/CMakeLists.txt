@@ -1,6 +1,4 @@
-#foo
 if(NOT "${XMLSTARLET_BIN}" STREQUAL "XMLSTARLET_BIN-NOTFOUND")
-
 
   set(XML_SOURCES
 	 composite_potential.xml
@@ -56,8 +54,10 @@ if(NOT "${XMLSTARLET_BIN}" STREQUAL "XMLSTARLET_BIN-NOTFOUND")
 	 )
 
   foreach(SOURCE ${XML_SOURCES})
-	 MESSAGE("adding test " ${SOURCE} "${XMLSTARLET_BIN}" validate --err --xsd "${PROJECT_SOURCE_DIR}/schemas/schemas.xsd" "${SOURCE}")
-	 ADD_TEST(${SOURCE} "${XMLSTARLET_BIN}" validate --err --xsd "${PROJECT_SOURCE_DIR}/schemas/schemas.xsd" "${SOURCE}")
+
+	 MESSAGE("adding test " ${SOURCE} " ${XMLSTARLET_BIN} validate --err --xsd ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd" "${SOURCE}")
+
+	 ADD_TEST("${SOURCE} " "${XMLSTARLET_BIN}" "validate --err --xsd ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd ${PROJECT_SOURCE_DIR}/doc/examples/xml/${SOURCE}")
   endforeach()
 
 endif()
