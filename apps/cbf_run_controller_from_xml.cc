@@ -24,6 +24,8 @@
 #include <cbf/control_basis.h>
 #include <cbf/debug_macros.h>
 #include <cbf/xsd_error_handler.h>
+#include <cbf/object_list.h>
+#include <cbf/xml_factory.h>
 
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>
@@ -62,7 +64,7 @@ int main(int argc, char *argv[]) {
 		)
 		(
 			"control-basis", 
-			po::value<std::string>(), 
+			po::value<std::vector<std::string> >(), 
 			"XML file containing controller specification(s)"
 		)
 		(
@@ -120,8 +122,8 @@ int main(int argc, char *argv[]) {
 		return(EXIT_FAILURE);
 	}
 
-	std::string control_basis_name = 
-		variables_map["control-basis"].as<std::string>();
+	std::vector<std::string> control_basis_names = 
+		variables_map["control-basis"].as<std::vector<std::string> >();
 
 	std::string controller_name = 
 		variables_map["controller"].as<std::string>();
@@ -142,17 +144,20 @@ int main(int argc, char *argv[]) {
 
 	CBF_DEBUG("parsing XML");
 	try {
-		std::auto_ptr<CBFSchema::ControlBasis> cbt
-			(CBFSchema::ControlBasis_
-				(control_basis_name, err_handler, xml_schema::flags::dont_validate));
-				//(control_basis_name));//, err_handler, xml_schema::flags::dont_validate));
-
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
-		CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt, object_namespace));
-	
-		if (cb->controllers().find(controller_name) == cb->controllers().end())
-			throw std::runtime_error("Controller name not found in control basis");
-	
+
+		for (unsigned int i = 0; i < control_basis_names.size(); ++i) {
+			CBF_DEBUG("loading control basis: " << control_basis_names[i]);
+			std::auto_ptr<CBFSchema::Object> cbt
+				(CBFSchema::Object_
+					(control_basis_names[i], err_handler, xml_schema::flags::dont_validate));
+
+			// CBF::ObjectPtr cb(new CBF::Object(*cbt, object_namespace));
+			CBF::ObjectPtr cb = CBF::XMLObjectFactory::instance()->create<CBF::Object>(*cbt, object_namespace);
+		}
+
+		CBF::ControllerPtr controller = object_namespace->get<CBF::Controller>(controller_name);
+
 		if (variables_map.count("steps")) {
 			for (
 				unsigned int step = 0, steps = variables_map["steps"].as<unsigned int>(); 
@@ -160,16 +165,16 @@ int main(int argc, char *argv[]) {
 				++step
 			) { 
 				if (variables_map.count("verbose"))
-					{ std::cout << "step" << std::endl; }
+					{ std::cout << "steps" << std::endl; }
 
-				cb->controllers()[controller_name]->step(); 
+				controller->step(); 
 				usleep((long long int)sleep_time * 1000); 
 				#ifdef CBF_HAVE_QT
 					if (qt_support) QApplication::processEvents();
 				#endif
 			}
 		} else {
-			while (cb->controllers()[controller_name]->step() == false) {
+			while (controller->step() == false) {
 				if (variables_map.count("verbose"))
 					{ std::cout << "step" << std::endl; }
 

@@ -13,16 +13,26 @@
 	 </xsd:sequence>
   </xsd:complexType>
   <xsd:element name="Object" type="CBF:Object"/>
-
-  <xsd:complexType name="ObjectReference">
+  
+  <xsd:complexType name="ForeignObject">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Object">
 		  <xsd:sequence>
-			 <xsd:element name="ReferenceName" type="xsd:string"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType> 
+
+  <xsd:complexType name="ObjectList">
+	 <xsd:complexContent> 
+		<xsd:extension base="CBF:Object">
+		  <xsd:sequence>
+			 <xsd:element name="Object" type="CBF:Object" minOccurs="0" maxOccurs="unbounded"/>
 		  </xsd:sequence>
 		</xsd:extension>
 	 </xsd:complexContent>
   </xsd:complexType>
+  <xsd:element name="ObjectList" type="CBF:ObjectList"/>
 
   <xsd:complexType name="ControlBasis">
 	 <xsd:complexContent> 
@@ -86,7 +96,6 @@
   </xsd:complexType>
   <xsd:element name="Resource" type="CBF:Resource"/>
 
-
   <xsd:complexType name="ControllerSequence">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Controller">
@@ -98,7 +107,7 @@
   </xsd:complexType>
   <xsd:element name="ControllerSequence" type="CBF:ControllerSequence"/>
 
-  <xsd:complexType name="PrimitiveController">
+  <xsd:complexType name="SubordinateController">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Controller">
 		  <xsd:sequence>
@@ -108,8 +117,17 @@
 			 <xsd:element name="Potential" type="CBF:Potential"/>
 			 <xsd:element name="SensorTransform" type="CBF:SensorTransform"/>
 			 <xsd:element name="EffectorTransform" type="CBF:EffectorTransform"/>
-			 <xsd:element name="PrimitiveController" type="CBF:PrimitiveController" minOccurs="0" maxOccurs="unbounded"/>
+			 <xsd:element name="SubordinateController" type="CBF:SubordinateController" minOccurs="0" maxOccurs="unbounded"/>
 			 <xsd:element name="CombinationStrategy" type="CBF:CombinationStrategy"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="PrimitiveController">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:SubordinateController">
+		  <xsd:sequence>
 			 <xsd:element name="Resource" type="CBF:Resource"/>
 		  </xsd:sequence>
 		</xsd:extension>
@@ -141,7 +159,7 @@
   <xsd:element name="Vector" type="CBF:Vector"/>
   <xsd:complexType name="Vector">
 	 <xsd:complexContent>
-		<xsd:extension base="CBF:Object">
+		<xsd:extension base="CBF:ForeignObject">
 		</xsd:extension>
 	 </xsd:complexContent>
   </xsd:complexType>
@@ -417,7 +435,7 @@
 
   <xsd:complexType name="TreeBase" abstract="true">
     <xsd:complexContent>
-		<xsd:extension base="CBF:Object">
+		<xsd:extension base="CBF:ForeignObject">
 
 		</xsd:extension>
 	 </xsd:complexContent>
@@ -427,7 +445,7 @@
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:TreeBase">
 		  <xsd:sequence>
-			 <xsd:element name="Segment" type="CBF:TreeSegment" minOccurs="1" maxOccurs="unbounded"/>
+			 <xsd:element name="Segment" type="CBF:TreeSegment" minOccurs="0" maxOccurs="unbounded"/>
 		  </xsd:sequence>
 		</xsd:extension>
 	 </xsd:complexContent>
@@ -436,7 +454,7 @@
 
   <xsd:complexType name="ChainBase">
     <xsd:complexContent>
-		<xsd:extension base="CBF:Object">
+		<xsd:extension base="CBF:ForeignObject">
 
 		</xsd:extension>
 	 </xsd:complexContent>
@@ -475,7 +493,7 @@
 
   <xsd:complexType name="Segment">
 	 <xsd:complexContent>
-		<xsd:extension base="CBF:Object">
+		<xsd:extension base="CBF:ForeignObject">
 		  <xsd:sequence>
 			 <xsd:element name="Frame" type="CBF:Frame"/>
 			 <xsd:element name="Joint" type="CBF:Joint"/>
@@ -486,7 +504,7 @@
   
   <xsd:complexType name="Frame">
 	 <xsd:complexContent>
-		<xsd:extension base="CBF:Object">
+		<xsd:extension base="CBF:ForeignObject">
 		</xsd:extension>
 	 </xsd:complexContent>
   </xsd:complexType>
@@ -525,7 +543,7 @@
   <xsd:element name="Matrix" type="CBF:Matrix"/>
   <xsd:complexType name="Matrix">
 	 <xsd:complexContent>
-		<xsd:extension base="CBF:Object">
+		<xsd:extension base="CBF:ForeignObject">
 		</xsd:extension>
 	 </xsd:complexContent>
   </xsd:complexType>

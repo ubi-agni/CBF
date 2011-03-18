@@ -31,6 +31,7 @@ namespace CBF {
 				#endif
 				)
 		:
+		m_ObjectNamespace(new ObjectNamespace),
 		m_SleepTime(sleep_time),
 		m_Steps(steps),
 		m_VerbosityLevel(verbosity_level),
@@ -52,11 +53,22 @@ namespace CBF {
 			throw ControlBasisNotSetException();
 		}
 
+		
+		ControllerPtr controller;
+		try {
+			controller = m_ObjectNamespace->get<Controller>(controller_name);
+		} catch(...) {
+			throw ControllerNotFoundExcepption();
+		}
+
+
+#if 0
 		//does nothing when the controller is not in the control_basis
 		if (m_ControlBasis -> controllers().find(controller_name) 
 			== m_ControlBasis -> controllers().end()){
 			throw ControllerNotFoundExcepption();
 		}
+#endif
 
 		//does nothing if the controller is already running.
 		if(checkControllerRuns(true)){
@@ -65,7 +77,7 @@ namespace CBF {
 
 		// if the stepcount is 0 we are stepp()ing till convergence
 		// setting stepCount != 0 in execution will make us leave the while-clause
-		while ((stepCount() == 0) && (m_ControlBasis->controllers()[controller_name]->step() == false)) {
+		while ((stepCount() == 0) && (controller->step() == false)) {
 
 			if (!checkControllerRuns()) //stops execution
 				{return; }
@@ -86,7 +98,7 @@ namespace CBF {
 			if (!checkControllerRuns()) //stops execution
 				{return; }
 
-			m_ControlBasis -> controllers()[controller_name]->step();
+			controller->step();
 			usleep(sleepTime() * 1000);
 			#ifdef CBF_HAVE_QT
 				if (qtSupport()) QApplication::processEvents();

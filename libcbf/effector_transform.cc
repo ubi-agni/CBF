@@ -23,7 +23,7 @@
 
 namespace CBF {
 #ifdef CBF_HAVE_XSD
-		EffectorTransform::EffectorTransform(const CBFSchema::EffectorTransform &xml_instance, ObjectNamespacePtr object_namespace) : Object(xml_instance) { }
+		EffectorTransform::EffectorTransform(const CBFSchema::EffectorTransform &xml_instance, ObjectNamespacePtr object_namespace) : Object(xml_instance, object_namespace) { }
 #endif
 } // namespace
 

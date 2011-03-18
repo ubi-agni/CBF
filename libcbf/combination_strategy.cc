@@ -28,7 +28,7 @@ namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
 		CombinationStrategy::CombinationStrategy(const CBFSchema::CombinationStrategy &xml_instance, ObjectNamespacePtr object_namespace) :
-			Object(xml_instance) {
+			Object(xml_instance, object_namespace) {
 		}
 
 	

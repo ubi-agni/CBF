@@ -1,3 +1,4 @@
+#if 0 
 #include <cbf/object_reference.h>
 #include <cbf/xml_factory.h>
 
@@ -19,3 +20,5 @@ namespace CBF {
 #endif
 
 } // namespace
+
+#endif

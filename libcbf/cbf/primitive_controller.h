@@ -42,6 +42,7 @@
 namespace CBFSchema { class PrimitiveController; }
 
 namespace CBF {
+
 	/** Forward declaration for subordinate controllers */
 	class PrimitiveController;
 	typedef boost::shared_ptr<PrimitiveController> PrimitiveControllerPtr;

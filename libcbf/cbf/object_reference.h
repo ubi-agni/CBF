@@ -1,3 +1,5 @@
+#if 0
+
 #ifndef CBF_OBJECT_REFERENCE_HH
 #define CBF_OBJECT_REFERENCE_HH
 
@@ -29,5 +31,7 @@ struct ObjectReference : public Object {
 };
 
 } // namespace
+
+#endif
 
 #endif

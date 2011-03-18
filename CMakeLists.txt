@@ -123,6 +123,8 @@ else()
   message(STATUS "  Xerces-C not found")
 endif()
 
+message(STATUS "Looking for xmlstarlet")
+find_program(XMLSTARLET_BIN NAMES xmlstarlet)
 
 message(STATUS "Looking for XSD CXX")
 find_program(XSD_BIN NAMES xsd xsdcxx)

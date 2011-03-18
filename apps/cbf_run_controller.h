@@ -25,6 +25,7 @@
 #include <cbf/controller.h>
 #include <cbf/control_basis.h>
 #include <cbf/debug_macros.h>
+#include <cbf/namespace.h>
 
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>
@@ -203,7 +204,9 @@ struct CBFRunController {
 	/**
 		@brief Holds the ControlBasisPtr.
 	*/
-	CBF::ControlBasisPtr m_ControlBasis;
+	ControlBasisPtr m_ControlBasis;
+
+	ObjectNamespacePtr m_ObjectNamespace;
 
 	/**
 		@brief Holds the sleep-time in milliseconds.

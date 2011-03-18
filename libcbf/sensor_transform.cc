@@ -33,7 +33,7 @@ namespace CBF {
 			const CBFSchema::SensorTransform &xml_instance, 
 			ObjectNamespacePtr object_namespace
 		) :
-			Object(xml_instance)
+			Object(xml_instance, object_namespace)
 		{
 			for (
 				CBFSchema::SensorTransform::ComponentName_sequence::const_iterator it 

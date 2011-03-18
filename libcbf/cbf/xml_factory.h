@@ -44,7 +44,7 @@ namespace CBF {
 			virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance, ObjectNamespacePtr object_namespace) = 0;
 			virtual ~XMLDerivedFactoryBase() { }
 		};
-	
+
 		/**
 			@brief The central registry, where all types derived of CBF::Object that have
 			a constructor taking a CBFSchema::Object argument in their constructor register.

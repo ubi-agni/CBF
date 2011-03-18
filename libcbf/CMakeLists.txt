@@ -41,7 +41,7 @@ set(CBF_SOURCES
   svd.cc
   convergence_criterion.cc
   generic_transform.cc
-  object_reference.cc
+  object_list.cc
   )
 
 set(CBF_HEADERS

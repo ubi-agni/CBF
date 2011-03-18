@@ -30,7 +30,7 @@ namespace CBF {
 	#ifdef CBF_HAVE_XSD
 
 		ConvergenceCriterion::ConvergenceCriterion(const CBFSchema::ConvergenceCriterion &xml_instance, ObjectNamespacePtr object_namespace) :
-			Object(xml_instance)
+			Object(xml_instance, object_namespace)
 		{
 
 		}
