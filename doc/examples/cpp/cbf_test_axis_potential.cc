@@ -112,7 +112,7 @@ int main() {
 			p,
 			st,
 			et,
-			std::vector<CBF::PrimitiveControllerPtr>(),
+			std::vector<CBF::SubordinateControllerPtr>(),
 			CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
 			dres
 		)

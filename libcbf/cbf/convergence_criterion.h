@@ -15,7 +15,7 @@ namespace CBFSchema {
 }
 
 namespace CBF {
-	class PrimitiveController;
+	class SubordinateController;
 
 	struct ConvergenceCriterion : public Object {
 		ConvergenceCriterion() : Object("ConvergenceCriterion") { }
@@ -23,13 +23,13 @@ namespace CBF {
 		ConvergenceCriterion(const CBFSchema::ConvergenceCriterion &xml_instance, ObjectNamespacePtr object_namespace);
 
 		/**
-			@brief An interface for convergence checks in PrimitiveControllers
+			@brief An interface for convergence checks in SubordinateControllers
 		
 			The primitive controller calls this function each cycle
 			and implementations have to use the public interface of the controller
 			to find out whether it meets their criterion for convergence..
 		*/
-		virtual bool check_convergence(const PrimitiveController &p) = 0;
+		virtual bool check_convergence(const SubordinateController &p) = 0;
 	};
 	
 	typedef boost::shared_ptr<ConvergenceCriterion> ConvergenceCriterionPtr;
@@ -45,7 +45,7 @@ namespace CBF {
 		TaskSpaceDistanceThreshold(Float threshold) :
 			m_Threshold(threshold) { }
 
-		virtual bool check_convergence(const PrimitiveController &p);
+		virtual bool check_convergence(const SubordinateController &p);
 	};
 
 
@@ -59,7 +59,7 @@ namespace CBF {
 		ResourceStepNormThreshold(Float threshold) :
 			m_Threshold(threshold) { }
 
-		virtual bool check_convergence(const PrimitiveController &p);
+		virtual bool check_convergence(const SubordinateController &p);
 	};
 } // namespace
 

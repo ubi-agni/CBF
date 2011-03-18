@@ -113,7 +113,7 @@ int main() {
 			1.0, 
 			std::vector<CBF::ConvergenceCriterionPtr>(),
 			dref,	p,	st, et, 
-			std::vector<CBF::PrimitiveControllerPtr>(),
+			std::vector<CBF::SubordinateControllerPtr>(),
 			CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
 			dres
 		)

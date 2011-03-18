@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 				CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)),
 				CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
 				CBF::EffectorTransformPtr(new CBF::PaddedEffectorTransform(3, 12, 1.5)),
-				std::vector<CBF::PrimitiveControllerPtr>(),
+				std::vector<CBF::SubordinateControllerPtr>(),
 				CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
 				CBF::ResourcePtr(new CBF::DummyResource(12))
 			)

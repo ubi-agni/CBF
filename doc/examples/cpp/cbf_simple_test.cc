@@ -43,7 +43,7 @@ int main() {
 			PotentialPtr(new SquarePotential(3, 0.1)),
 			SensorTransformPtr(new IdentitySensorTransform(3)),
 			EffectorTransformPtr(new GenericEffectorTransform(3,3)),
-			std::vector<PrimitiveControllerPtr>(),
+			std::vector<SubordinateControllerPtr>(),
 			CombinationStrategyPtr(new AddingStrategy),
 			ResourcePtr(new DummyResource(3))
 		)

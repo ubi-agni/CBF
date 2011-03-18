@@ -39,7 +39,7 @@ int main() {
 		CBF::PotentialPtr(new CBF::SquarePotential(1,1)),
 		s,
 		CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(1,2)),
-		std::vector<CBF::PrimitiveControllerPtr>(),
+		std::vector<CBF::SubordinateControllerPtr>(),
 		CBF::CombinationStrategyPtr(new CBF::AddingStrategy()),
 		CBF::ResourcePtr(new CBF::DummyResource(res))
 	));

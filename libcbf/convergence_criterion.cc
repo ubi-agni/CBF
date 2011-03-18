@@ -4,7 +4,7 @@
 
 namespace CBF {
 
-	bool TaskSpaceDistanceThreshold::check_convergence(const PrimitiveController &p) {
+	bool TaskSpaceDistanceThreshold::check_convergence(const SubordinateController &p) {
 		CBF_DEBUG("check convergence");
 		const std::vector<FloatVector> &refs = p.m_Reference->get();
 
@@ -17,7 +17,7 @@ namespace CBF {
 		return false;
 	}
 	
-	bool ResourceStepNormThreshold::check_convergence(const PrimitiveController &p) {
+	bool ResourceStepNormThreshold::check_convergence(const SubordinateController &p) {
 		CBF_DEBUG("check convergence");
 
 		if (ublas::norm_2(p.m_ResourceStep) < m_Threshold)

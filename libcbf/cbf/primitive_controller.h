@@ -39,54 +39,46 @@
 #include <cbf/combination_strategy.h>
 #include <cbf/namespace.h>
 
-namespace CBFSchema { class PrimitiveController; }
+namespace CBFSchema { 
+	class PrimitiveController; 
+	class SubordinateController;
+}
 
 namespace CBF {
+	class SubordinateController;
+	typedef boost::shared_ptr<SubordinateController> SubordinateControllerPtr;
 
 	/** Forward declaration for subordinate controllers */
 	class PrimitiveController;
 	typedef boost::shared_ptr<PrimitiveController> PrimitiveControllerPtr;
+	
 
-	/**
-		@brief The "primitive" controller is the 
-		main tool to use in the control basis framework.
-	
-		A primitive controller can be "synthesized" 
-		by combining an artificial potential function,
-		a sensor transform, an effector transform 
-		and a resource to act on.
-	
-		Additionally several subordinate controllers 
-		can be specified which will try to reach 
-		secondary goals. The result of the gradient 
-		steps of the subordinate controller is 
-		projected into the null space of this controller.
-	*/
-	struct PrimitiveController : public Controller {
+	struct SubordinateController : public Controller {
 
 		friend class TaskSpaceDistanceThreshold;
 		friend class ResourceStepNormThreshold;
 
-		PrimitiveController(const CBFSchema::PrimitiveController &xml_instance, ObjectNamespacePtr object_namespace);
+		SubordinateController(const CBFSchema::SubordinateController &xml_instance, ObjectNamespacePtr object_namespace);
 
 		/**
 			@brief Create a controller with the members 
 			set from the specified arguments
 		*/
-		PrimitiveController(
+		SubordinateController(
+			SubordinateController *master,
 			Float coefficient,
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
 			PotentialPtr potential,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
-			std::vector<PrimitiveControllerPtr> subordinate_controllers,
-			CombinationStrategyPtr combination_strategy,
-			ResourcePtr resource
+			std::vector<SubordinateControllerPtr> subordinate_controllers,
+			CombinationStrategyPtr combination_strategy
 		);
 	
 	
 		protected:
+			SubordinateController* m_Master;
 			bool m_Converged;
 
 			/**
@@ -100,15 +92,15 @@ namespace CBF {
 	
 			/*** @brief Function for stuff common to all constructors */
 			void init(
+				SubordinateController* master,
 				Float coefficient,
 				std::vector<ConvergenceCriterionPtr> convergence_criteria,
 				ReferencePtr reference,
 				PotentialPtr potential,
 				SensorTransformPtr sensor_transform,
 				EffectorTransformPtr effector_transform,
-				std::vector<PrimitiveControllerPtr> subordinate_controllers,
-				CombinationStrategyPtr combination_strategy,
-				ResourcePtr resource
+				std::vector<SubordinateControllerPtr> subordinate_controllers,
+				CombinationStrategyPtr combination_strategy
 			);
 
 			/**
@@ -126,7 +118,7 @@ namespace CBF {
 				A controller can have subordinate controllers whose control signal
 				get projected into the nullspace of the task jacobian
 			*/
-			std::vector<PrimitiveControllerPtr> m_SubordinateControllers;
+			std::vector<SubordinateControllerPtr> m_SubordinateControllers;
 	
 			/**
 				The sensor transform is responsible for providing the feedback
@@ -154,11 +146,6 @@ namespace CBF {
 			CombinationStrategyPtr m_CombinationStrategy;
 
 			/**
-				The resource this controller acts upon
-			*/
-			ResourcePtr m_Resource;
-
-			/**
 				The factor for the primary gradient step
 			*/
 			Float m_Coefficient;
@@ -171,12 +158,10 @@ namespace CBF {
 			const FloatVector &current_task_position() 
 				{ return m_CurrentTaskPosition; }
 
-			ResourcePtr resource() { return m_Resource; }
-
 			ReferencePtr reference() 
 				{ return m_Reference; }
 	
-			std::vector<PrimitiveControllerPtr> &subordinate_controllers() 
+			std::vector<SubordinateControllerPtr> &subordinate_controllers() 
 				{ return m_SubordinateControllers; }
 	
 			SensorTransformPtr sensor_transform() 
@@ -200,8 +185,6 @@ namespace CBF {
 			*/
 			virtual void do_update(int cycle);
 
-			virtual void do_action(int cycle);
-
 			/**
 				@brief Returns the result of the calculationss done on update().
 
@@ -210,6 +193,8 @@ namespace CBF {
 				space gradient step) of these	calculations to the resource.
 			*/
 			virtual FloatVector &result() { return m_Result; }
+
+			virtual ResourcePtr resource();
 
 			/**
 
@@ -249,6 +234,71 @@ namespace CBF {
 	
 			/**	Member variable for efficiency reasons.. */
 			std::vector<FloatVector> m_References;
+	};
+
+
+
+	/**
+		@brief The "primitive" controller is the 
+		main tool to use in the control basis framework.
+	
+		A primitive controller can be "synthesized" 
+		by combining an artificial potential function,
+		a sensor transform, an effector transform 
+		and a resource to act on.
+	
+		Additionally several subordinate controllers 
+		can be specified which will try to reach 
+		secondary goals. The result of the gradient 
+		steps of the subordinate controller is 
+		projected into the null space of this controller.
+	*/
+	struct PrimitiveController : public SubordinateController {
+
+		PrimitiveController(const CBFSchema::PrimitiveController &xml_instance, ObjectNamespacePtr object_namespace);
+
+		/**
+			@brief Create a controller with the members 
+			set from the specified arguments
+		*/
+		PrimitiveController(
+			Float coefficient,
+			std::vector<ConvergenceCriterionPtr> convergence_criteria,
+			ReferencePtr reference,
+			PotentialPtr potential,
+			SensorTransformPtr sensor_transform,
+			EffectorTransformPtr effector_transform,
+			std::vector<SubordinateControllerPtr> subordinate_controllers,
+			CombinationStrategyPtr combination_strategy,
+			ResourcePtr resource
+		);
+	
+	
+		protected:
+			bool m_Converged;
+
+			/*** @brief Function for stuff common to all constructors */
+			void init(ResourcePtr resource);
+
+			/**
+				A controller can have subordinate controllers whose control signal
+				get projected into the nullspace of the task jacobian
+			*/
+			std::vector<PrimitiveControllerPtr> m_SubordinateControllers;
+	
+
+			/**
+				The resource this controller acts upon
+			*/
+			ResourcePtr m_Resource;
+
+		public:
+
+			virtual ResourcePtr resource() { return m_Resource; }
+
+			virtual void do_update(int cycle);
+
+			virtual void do_action(int cycle);
 	};
 
 } // namespace
