@@ -36,7 +36,8 @@ namespace CBF {
 		m_Steps(steps),
 		m_VerbosityLevel(verbosity_level),
 		m_ControllerRunning(false),
-		m_ControlBasisSet(false)
+		m_ControlBasisSet(false),
+		m_Converged(false)
 		#ifdef CBF_HAVE_QT
 			,m_QtSupport(qt_support)
 		#endif
@@ -47,37 +48,20 @@ namespace CBF {
 	void CBFRunController::start_controller(std::string controller_name)
 		throw(ControlBasisNotSetException, ControllerNotFoundExcepption, ControllerRunningException)
 	{
-
-		//does not start if the controll_basis is not set.
-		if(!checkControlBasisSet()){
-			throw ControlBasisNotSetException();
-		}
-
-		
-		ControllerPtr controller;
-		try {
-			controller = m_ObjectNamespace->get<Controller>(controller_name);
-		} catch(...) {
+		// is the controller in the control_basis? throws an exception when control_basis not set.
+		if(!checkControllerExists(controller_name)){
 			throw ControllerNotFoundExcepption();
 		}
 
-
-#if 0
-		//does nothing when the controller is not in the control_basis
-		if (m_ControlBasis -> controllers().find(controller_name) 
-			== m_ControlBasis -> controllers().end()){
-			throw ControllerNotFoundExcepption();
-		}
-#endif
-
-		//does nothing if the controller is already running.
+		// does nothing if the controller is already running.
 		if(checkControllerRuns(true)){
 			throw ControllerRunningException();
 		}
 
 		// if the stepcount is 0 we are stepp()ing till convergence
 		// setting stepCount != 0 in execution will make us leave the while-clause
-		while ((stepCount() == 0) && (controller->step() == false)) {
+		while ((stepCount() == 0) 
+			&& (setConverged(m_ControlBasis->controllers()[controller_name]->step()) == false)) {
 
 			if (!checkControllerRuns()) //stops execution
 				{return; }
@@ -98,7 +82,7 @@ namespace CBF {
 			if (!checkControllerRuns()) //stops execution
 				{return; }
 
-			controller->step();
+			m_ControlBasis -> controllers()[controller_name]->step();
 			usleep(sleepTime() * 1000);
 			#ifdef CBF_HAVE_QT
 				if (qtSupport()) QApplication::processEvents();
@@ -163,6 +147,28 @@ namespace CBF {
 	bool CBFRunController::checkControlBasisSet(){
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
 		return m_ControlBasisSet;
+	}
+	
+	bool CBFRunController::setConverged(bool converged){
+		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ConvergedMonitor);
+		m_Converged = converged;
+		return m_Converged;
+	}
+	
+	bool CBFRunController::checkConverged(){
+		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ConvergedMonitor);
+		return m_Converged;
+	}
+	
+	bool CBFRunController::checkControllerExists(std::string controller_name) throw(ControlBasisNotSetException){
+		// Throws an exception when no control_basis is set.
+		if(!checkControlBasisSet()){
+			throw ControlBasisNotSetException();
+		}
+		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
+		//returns whether the controller is in the control_basis.
+		return !(m_ControlBasis -> controllers().find(controller_name) 
+			== m_ControlBasis -> controllers().end());
 	}
 
 	void CBFRunController::setControlBasis(CBF::ControlBasisPtr control_basis) 

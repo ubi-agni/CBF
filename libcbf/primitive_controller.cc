@@ -312,8 +312,8 @@ namespace CBF {
 			CBF_DEBUG("Creating subordinate controller(s)...");
 			std::vector<PrimitiveControllerPtr> subs;
 			for (
-				::CBFSchema::PrimitiveController::PrimitiveController1_const_iterator it = xml_instance.PrimitiveController1().begin(); 
-				it != xml_instance.PrimitiveController1().end();
+				::CBFSchema::PrimitiveController::SubordinateController1_const_iterator it = xml_instance.SubordinateController1().begin(); 
+				it != xml_instance.SubordinateController1().end();
 				++it
 			)
 			{

@@ -53,12 +53,12 @@ int main(int argc, char *argv[]) {
 			"produce help message"
 		)
 		(
-			"runcontrollername", 
+			"cname", 
 			po::value<std::string>(), 
 			"Name of the XCFMemoryRunController to listen to."
 		)
 		(
-			"active-memory", 
+			"memory", 
 			po::value<std::string>(), 
 			"Name of the active_memory to connect to"
 		)
@@ -100,21 +100,21 @@ int main(int argc, char *argv[]) {
 	}
 
 	std::string run_controller_name;
-	if (!variables_map.count("runcontrollername")) {
+	if (!variables_map.count("cname")) {
 		std::cout << "No XCFMemoryRunController name specified" << std::endl;
 		std::cout << options_description << std::endl;
 		return(EXIT_FAILURE);
 	} else {
-		run_controller_name = variables_map["runcontrollername"].as<std::string>();
+		run_controller_name = variables_map["cname"].as<std::string>();
 	}
 
 	std::string active_memory_name;
-	if (!variables_map.count("active-memory")) {
+	if (!variables_map.count("memory")) {
 		std::cout << "No active-memory name specified" << std::endl;
 		std::cout << options_description << std::endl;
 		return(EXIT_FAILURE);
 	} else {
-		active_memory_name = variables_map["active-memory"].as<std::string>();
+		active_memory_name = variables_map["memory"].as<std::string>();
 	}
 
 	unsigned int notification_level = 0;

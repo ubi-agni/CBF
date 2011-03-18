@@ -874,8 +874,17 @@
   <xsd:complexType name="XCFMemoryRunControllerNotification">
 	 <xsd:sequence>
 		<xsd:element name="RunControllerName" type="xsd:string"/>
-		<xsd:element name="Note" type="xsd:string"/>
 		<xsd:element name="DocumentID" type="xsd:nonNegativeInteger"/>
+		<xsd:element name="Note" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+		<xsd:element name="AddedControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="OverwrittenControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="ControllersIgnored" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
+		<xsd:element name="LoadControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="NotFoundControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="StoppedControllerName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+		<xsd:element name="StoppedControllerConverged" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+		<xsd:element name="SleepTimeSetTo" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
+		<xsd:element name="StepCountSetTo" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
 	 </xsd:sequence>
   </xsd:complexType>
 
