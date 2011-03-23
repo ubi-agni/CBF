@@ -91,14 +91,7 @@ namespace CBF {
 	) {
 		m_Resource = resource;
 
-		#if 0
-		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) { 
-			m_SubordinateControllers[i]->m_Resource = m_Resource; 
-			m_SubordinateControllers[i]->check_dimensions();
-		}
-		#endif
 		check_dimensions();
-
 	}
 
 	PrimitiveController::PrimitiveController(
