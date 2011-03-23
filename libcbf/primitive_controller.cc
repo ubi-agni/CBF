@@ -134,16 +134,16 @@ namespace CBF {
 		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim());
 
 		if (m_Reference->dim() != m_Potential->dim())
-			throw std::runtime_error("Reference and Potential dimensions mismatch");
+			throw std::runtime_error(m_Name + ": Reference and Potential dimensions mismatch");
 
 		if (m_SensorTransform->task_dim() != m_Potential->dim())
-			throw std::runtime_error("Sensor Transform and Potential dimension mismatch");
+			throw std::runtime_error(m_Name + ": Sensor Transform and Potential dimension mismatch");
 
 		if (m_SensorTransform->resource_dim() != m_EffectorTransform->resource_dim())
-			throw std::runtime_error("Sensor Transform and Effector transform resource dimension mismatch");
+			throw std::runtime_error(m_Name + ": Sensor Transform and Effector transform resource dimension mismatch");
 
 		if (m_SensorTransform->task_dim() != m_EffectorTransform->task_dim())
-			throw std::runtime_error("Sensor Transform and Effector transform task dimension mismatch");
+			throw std::runtime_error(m_Name + ": Sensor Transform and Effector transform task dimension mismatch");
 	}	
 
 	ResourcePtr SubordinateController::resource() { 
@@ -287,10 +287,10 @@ namespace CBF {
 		SubordinateController::check_dimensions();
 
 		if (m_SensorTransform->resource_dim() != m_Resource->dim())
-			throw std::runtime_error("Sensor Transform and Resource task dimension mismatch");
+			throw std::runtime_error(m_Name + ": Sensor Transform and Resource dimension mismatch");
 
 		if (m_EffectorTransform->resource_dim() != m_Resource->dim())
-			throw std::runtime_error("Effector Transform and Resource task dimension mismatch");
+			throw std::runtime_error(m_Name + ": Effector Transform and Resource dimension mismatch");
 	}	
 
 	
