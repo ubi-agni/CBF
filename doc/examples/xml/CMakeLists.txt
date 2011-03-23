@@ -61,7 +61,5 @@ if(NOT "${XMLSTARLET_BIN}" STREQUAL "XMLSTARLET_BIN-NOTFOUND")
 	 
 	 add_test("${PROJECT_SOURCE_DIR}/doc/examples/xml/${SOURCE}" "${XMLSTARLET_BIN}" "validate" "--err" "--xsd"  "${PROJECT_SOURCE_DIR}/schemas/schemas.xsd" "${PROJECT_SOURCE_DIR}/doc/examples/xml/${SOURCE}")
   endforeach()
-  
-  add_test("yes" "echo"  "foo")
 
 endif()
