@@ -131,19 +131,17 @@ namespace CBF {
 	
 
 	void SubordinateController::check_dimensions() {
-		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim());
-
 		if (m_Reference->dim() != m_Potential->dim())
-			throw std::runtime_error(m_Name + ": Reference and Potential dimensions mismatch");
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Reference and Potential dimensions mismatch: " << m_Reference->dim() << " is not equal to " << m_Potential->dim());
 
 		if (m_SensorTransform->task_dim() != m_Potential->dim())
-			throw std::runtime_error(m_Name + ": Sensor Transform and Potential dimension mismatch");
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Potential dimension mismatch: " << m_SensorTransform->task_dim() << " is not equal to " << m_Potential->dim());
 
 		if (m_SensorTransform->resource_dim() != m_EffectorTransform->resource_dim())
-			throw std::runtime_error(m_Name + ": Sensor Transform and Effector transform resource dimension mismatch");
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Effector transform resource dimension mismatch: " << m_SensorTransform->resource_dim() << " is not equal to " << m_EffectorTransform->resource_dim());
 
 		if (m_SensorTransform->task_dim() != m_EffectorTransform->task_dim())
-			throw std::runtime_error(m_Name + ": Sensor Transform and Effector transform task dimension mismatch");
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Effector transform task dimension mismatch: " << m_SensorTransform->task_dim() << " is not equal to " << m_EffectorTransform->task_dim());
 	}	
 
 	ResourcePtr SubordinateController::resource() { 
@@ -282,15 +280,13 @@ namespace CBF {
 	}
 
 	void PrimitiveController::check_dimensions() {
-		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim());
-
 		SubordinateController::check_dimensions();
 
 		if (m_SensorTransform->resource_dim() != m_Resource->dim())
-			throw std::runtime_error(m_Name + ": Sensor Transform and Resource dimension mismatch");
+			CBF_THROW_RUNTIME_ERROR(m_Name + ": Sensor Transform and Resource dimension mismatch: " << m_SensorTransform->resource_dim() << " is not equal to " << m_Resource->dim());
 
 		if (m_EffectorTransform->resource_dim() != m_Resource->dim())
-			throw std::runtime_error(m_Name + ": Effector Transform and Resource dimension mismatch");
+			CBF_THROW_RUNTIME_ERROR(m_Name + ": Effector Transform and Resource dimension mismatch: " << m_EffectorTransform->resource_dim() << " is not equal to " << m_Resource->dim());
 	}	
 
 	
