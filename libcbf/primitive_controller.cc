@@ -246,30 +246,6 @@ namespace CBF {
 				return true;
 			}
 		}
-#if 0
-		Float stepnorm = ublas::norm_2(m_Result);
-
-		if (m_Reference->get().size() == 0)
-			return false;
-
-		Float min_dist = m_Potential->distance(m_CurrentTaskPosition, m_Reference->get()[0]);
-		for (unsigned int i = 1, len = m_Reference->get().size(); i < len; ++i) {
-			Float cur_dist = 	m_Potential->distance(m_CurrentTaskPosition, m_Reference->get()[i]);
-			if (cur_dist < min_dist) min_dist = cur_dist;
-		}
-
-		Float dist = min_dist;
-
-		CBF_DEBUG("distance_thresh " << m_TaskSpaceDistanceThreshold << " " << (dist < m_TaskSpaceDistanceThreshold) << " " << dist)
-		CBF_DEBUG("stepnorm_thresh " << m_ResourceStepNormThreshold << " " << (stepnorm < m_ResourceStepNormThreshold) << " " << stepnorm)
-
-		bool converged = 
-			((m_ConvergenceCriterion & TASK_SPACE_DISTANCE_THRESHOLD) && (dist < m_TaskSpaceDistanceThreshold)) 
-			||
-			((m_ConvergenceCriterion & RESOURCE_STEP_THRESHOLD) && (stepnorm < m_ResourceStepNormThreshold));
-
-		return converged;
-#endif
 		return false;
 	}
 	
