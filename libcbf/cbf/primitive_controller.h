@@ -292,6 +292,8 @@ namespace CBF {
 			*/
 			ResourcePtr m_Resource;
 
+			virtual void check_dimensions();
+
 		public:
 
 			virtual ResourcePtr resource() { return m_Resource; }

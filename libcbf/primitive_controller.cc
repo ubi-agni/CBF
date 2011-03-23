@@ -135,6 +135,15 @@ namespace CBF {
 
 		if (m_Reference->dim() != m_Potential->dim())
 			throw std::runtime_error("Reference and Potential dimensions mismatch");
+
+		if (m_SensorTransform->task_dim() != m_Potential->dim())
+			throw std::runtime_error("Sensor Transform and Potential dimension mismatch");
+
+		if (m_SensorTransform->resource_dim() != m_EffectorTransform->resource_dim())
+			throw std::runtime_error("Sensor Transform and Effector transform resource dimension mismatch");
+
+		if (m_SensorTransform->task_dim() != m_EffectorTransform->task_dim())
+			throw std::runtime_error("Sensor Transform and Effector transform task dimension mismatch");
 	}	
 
 	ResourcePtr SubordinateController::resource() { 
@@ -271,6 +280,19 @@ namespace CBF {
 		return m_Converged;
 		// return m_Potential->converged();
 	}
+
+	void PrimitiveController::check_dimensions() {
+		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim());
+
+		SubordinateController::check_dimensions();
+
+		if (m_SensorTransform->resource_dim() != m_Resource->dim())
+			throw std::runtime_error("Sensor Transform and Resource task dimension mismatch");
+
+		if (m_EffectorTransform->resource_dim() != m_Resource->dim())
+			throw std::runtime_error("Effector Transform and Resource task dimension mismatch");
+	}	
+
 	
 	#ifdef CBF_HAVE_XSD
 		SubordinateController::SubordinateController(const CBFSchema::SubordinateController &xml_instance, ObjectNamespacePtr object_namespace) :

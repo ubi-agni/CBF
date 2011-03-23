@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
-<cbf:ControlBasis
-	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF">
-  <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
+<cbf:Object
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:type="cbf:PrimitiveController">
+  
 	 <Name>foo</Name>
 
 	 <Coefficient> 1 </Coefficient>
@@ -22,7 +24,6 @@
 		<Coefficient> 0.1 </Coefficient>
 	 </Potential>
 	 
-	 
 	 <SensorTransform xsi:type="cbf:BlockWiseSumSensorTransform"> 
 		<Operand xsi:type="cbf:IdentitySensorTransform">
 		  <Dimension> 9 </Dimension>
@@ -38,10 +39,9 @@
 		</InitMatrix>
 	 </SensorTransform>
 	 
-	 
 	 <EffectorTransform xsi:type="cbf:DampedGenericEffectorTransform">
 		<DampingConstant> 0.1 </DampingConstant>
-		<TaskDimension> 1 </TaskDimension>
+		<TaskDimension> 3 </TaskDimension>
 		<ResourceDimension> 9 </ResourceDimension>
 	 </EffectorTransform>
 
@@ -53,7 +53,4 @@
 		</Vector>
 	 </Resource>
 
-
-  </Controller>
-
-</cbf:ControlBasis>
+</cbf:Object>
