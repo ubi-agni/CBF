@@ -245,7 +245,6 @@ namespace CBF {
 	bool SubordinateController::finished() {
 		// check whether we have approached one of the references to within a small error
 		return m_Converged;
-		// return m_Potential->converged();
 	}
 
 	void PrimitiveController::check_dimensions() {
@@ -304,11 +303,6 @@ namespace CBF {
 			CBF_DEBUG("Creating effector transform...");
 			EffectorTransformPtr effector_transform = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform(), object_namespace);
 		
-			//CBF_DEBUG(m_SensorTransform.get())
-		
-			//CBF_DEBUG(m_SensorTransform.get())
-		
-
 			CBF_DEBUG("Creating combination strategy...");
 			CombinationStrategyPtr combination_strategy  = 
 				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy(), object_namespace);

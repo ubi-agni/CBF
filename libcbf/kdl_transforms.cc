@@ -168,6 +168,7 @@ namespace CBF {
 	void BaseKDLTreeSensorTransform::init_solvers() {
 	
 		m_Twists = FloatMatrix(6, m_Tree->getNrOfJoints());
+		CBF_DEBUG("nr of joints: " << m_Tree->getNrOfJoints());
 	
 		m_JacSolver = boost::shared_ptr<KDL::TreeJntToJacSolver>(
 			new KDL::TreeJntToJacSolver(*m_Tree)
@@ -216,6 +217,11 @@ namespace CBF {
 		m_ResourceDim = tree->getNrOfJoints();
 		m_Result = FloatVector(3 * segment_names.size());
 		m_TaskJacobian = FloatMatrix(3 * segment_names.size(), tree->getNrOfJoints());
+
+		CBF_DEBUG("# of segments: " << segment_names.size());
+		for (unsigned int i = 0; i < segment_names.size(); ++i) {
+			CBF_DEBUG("name: " << segment_names[i]);
+		}
 	}
 
 

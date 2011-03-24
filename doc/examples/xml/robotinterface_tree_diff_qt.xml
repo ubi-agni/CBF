@@ -1263,6 +1263,7 @@
 	 
 	 <CombinationStrategy
 		 xsi:type="cbf:AddingStrategy"/>
+	 <!--
 	 <Resource
 		 xsi:type="cbf:CompositeResource">
 		<Resource
@@ -1293,6 +1294,14 @@
 		  <RobotName>RightHand</RobotName>
 		  <NumberOfJoints> 24 </NumberOfJoints>
 		</Resource>
+	 </Resource>
+	 -->
+	 <Resource 
+		 xsi:type="cbf:DummyResource">
+		<Vector
+			xsi:type="cbf:BoostVector">
+		  <String>[62](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
+		</Vector>
 	 </Resource>
   </Controller>
 </cbf:ControlBasis>
