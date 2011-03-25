@@ -179,6 +179,9 @@ namespace CBF {
 		);
 
 		for (unsigned int i = 0; i < m_SegmentNames.size(); ++i) {
+			if (m_Tree->getSegments().find(m_SegmentNames[i]) == m_Tree->getSegments().end())
+				CBF_THROW_RUNTIME_ERROR("The tree has no segment with name: " << m_SegmentNames[i]);
+
 			m_Jacobians.push_back(boost::shared_ptr<KDL::Jacobian>(new KDL::Jacobian(m_Tree->getNrOfJoints())));
 			m_Frames.push_back(boost::shared_ptr<KDL::Frame>(new KDL::Frame));
 		}
