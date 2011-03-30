@@ -31,7 +31,8 @@ namespace CBF {
 	#ifdef CBF_HAVE_XSD
 		ControllerSequence::ControllerSequence(const CBFSchema::ControllerSequence &xml_instance, ObjectNamespacePtr object_namespace) {
 			std::cout << "[ControllerSequence(const ControllerSequenceType &xml_instance)]: " << std::endl;
-		
+
+			std::vector<ControllerPtr> controllers;
 			//! Instantiate the subordinate controllers
 			CBFSchema::ControllerSequence::Controller1_const_iterator it;
 			for (
@@ -41,10 +42,10 @@ namespace CBF {
 			)
 			{
 					ControllerPtr controller(XMLObjectFactory::instance()->create<Controller>(*it, object_namespace));
-					m_Controllers.push_back(controller);
+					controllers.push_back(controller);
 			}
-		
-			m_Iterator = m_Controllers.begin();
+
+			init(controllers);
 		}
 
 		static XMLDerivedFactory<

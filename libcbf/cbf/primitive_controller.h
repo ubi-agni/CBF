@@ -48,7 +48,6 @@ namespace CBF {
 	class SubordinateController;
 	typedef boost::shared_ptr<SubordinateController> SubordinateControllerPtr;
 
-	/** Forward declaration for subordinate controllers */
 	class PrimitiveController;
 	typedef boost::shared_ptr<PrimitiveController> PrimitiveControllerPtr;
 	
@@ -183,7 +182,9 @@ namespace CBF {
 				This reimplementation of the base class' method assumes that we are not a subordinate
 				controller, because subordinate controllers are always called via the do_step() method
 			*/
-			virtual void do_update(int cycle);
+			virtual void update();
+
+			virtual void action() { }
 
 			/**
 				@brief Returns the result of the calculationss done on update().
@@ -298,9 +299,9 @@ namespace CBF {
 
 			virtual ResourcePtr resource() { return m_Resource; }
 
-			virtual void do_update(int cycle);
+			virtual void update();
 
-			virtual void do_action(int cycle);
+			virtual void action();
 	};
 
 } // namespace

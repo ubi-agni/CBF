@@ -180,7 +180,7 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
 		boost::numeric::ublas::vector<CBF::Float> result;
 
 		//! Update the controller state
-		(*p)->update(rand());
+		(*p)->update();
 
 		result = (*p)->result();
 

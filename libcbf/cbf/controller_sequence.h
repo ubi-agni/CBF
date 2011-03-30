@@ -45,10 +45,19 @@ namespace CBF {
 		std::vector<ControllerPtr> m_Controllers;
 		std::vector<ControllerPtr>::iterator m_Iterator;
 	
-		ControllerSequence() {
-	
+		ControllerSequence(
+			std::vector<ControllerPtr> controllers = std::vector<ControllerPtr>()
+		) {
+			init(controllers);
 		}
-	
+
+		virtual void init(
+			std::vector<ControllerPtr> controllers
+		) {
+			m_Controllers = controllers;
+			reset();
+		}
+
 		virtual bool step();
 	
 		virtual bool finished();

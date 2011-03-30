@@ -141,12 +141,12 @@ namespace CBF {
 		return m_Master->resource(); 
 	}	
 
-	void PrimitiveController::do_update(int cycle) {
+	void PrimitiveController::update() {
 		m_Resource->update();
-		SubordinateController::do_update(cycle);
+		SubordinateController::update();
 	}	
 	
-	void SubordinateController::do_update(int cycle) 
+	void SubordinateController::update() 
 	{
 		assert(m_Reference.get() != 0);
 		assert(m_SensorTransform.get() != 0);
@@ -194,7 +194,7 @@ namespace CBF {
 		m_SubordinateGradientSteps.resize(m_SubordinateControllers.size());
 	
 		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) {
-			m_SubordinateControllers[i]->update(cycle);
+			m_SubordinateControllers[i]->update();
 			m_SubordinateGradientSteps[i] = m_SubordinateControllers[i]->result();
 			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i]);
 		}
@@ -222,8 +222,8 @@ namespace CBF {
 		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
 	}
 	
-	void PrimitiveController::do_action(int cycle) {
-		update(cycle);
+	void PrimitiveController::action() {
+		update();
 		m_Resource->add(m_Result);
 		m_Converged = check_convergence();
 	}
