@@ -84,7 +84,6 @@ namespace CBF {
 
 	typedef boost::shared_ptr<ObjectNamespace> ObjectNamespacePtr;
 
-	
 } // namespace
 
 #endif
