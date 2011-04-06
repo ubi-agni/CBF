@@ -27,15 +27,12 @@
 #include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
 
 namespace CBFSchema {
 	class EffectorTransform;
 }
 
 namespace CBF {
-	namespace ublas = boost::numeric::ublas;
 	
 	class EffectorTransform;
 	typedef boost::shared_ptr<EffectorTransform> EffectorTransformPtr;
@@ -104,11 +101,13 @@ namespace CBF {
 		}
 	
 		virtual unsigned int task_dim() const { 
-			return m_InverseTaskJacobian.size2();
+			//FIXME: return m_InverseTaskJacobian.size2();
+			return m_InverseTaskJacobian.cols();
 		}
 
 		virtual unsigned int resource_dim() const {
-			return m_InverseTaskJacobian.size1();
+			//FIXME: return m_InverseTaskJacobian.size1();
+			return m_InverseTaskJacobian.rows();
 		}
 
 		protected:

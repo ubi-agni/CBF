@@ -58,7 +58,6 @@ namespace CBFSchema {
 
 namespace CBF {
 
-namespace ublas = boost::numeric::ublas;
 
 inline Float normalize_angle(Float angle) {
 	Float tmp = fmod(angle + M_PI, 2.0 * M_PI) - M_PI;
@@ -78,7 +77,8 @@ FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step,
 inline FloatVector unpack_axis_angle3(FloatVector &v) {
 	FloatVector ret(4);
 
-	ret[0] = ublas::norm_2(v);
+	//FIXME: ret[0] = ublas::norm_2(v);
+	ret[0] = v.norm();
 
 	ret[1] = v[0]/ret[0];
 	ret[2] = v[1]/ret[0];
@@ -95,6 +95,7 @@ Float damped_pseudo_inverse(const FloatMatrix &m, FloatMatrix &result, Float dam
 
 Float pseudo_inverse(const FloatMatrix &m, FloatMatrix &result);
 
+/*FIXME: still needed?
 template<class matrix_T>
 Float determinant(ublas::matrix_expression<matrix_T> const& mat_r)
 {
@@ -119,7 +120,8 @@ Float determinant(ublas::matrix_expression<matrix_T> const& mat_r)
     det = 0.0;
 
   return det;
-} 
+}
+*/
 
 /** 
 	A function to create a ublas::matrix from a KDL::Jacobian. The argument m is 

@@ -27,14 +27,12 @@
 #include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/numeric/ublas/vector.hpp>
 
 #include <vector>
 
 namespace CBFSchema { class Resource; }
 
 namespace CBF {
-	namespace ublas = boost::numeric::ublas;
 	
 	/**
 		@brief A Resource represents a controller resource for a specific

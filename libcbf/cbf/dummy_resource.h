@@ -29,7 +29,6 @@
 namespace CBFSchema { class DummyResource; }
 
 namespace CBF {
-	namespace ublas = boost::numeric::ublas;
 
 	/**
 		@brief A resource that does nothing but hold the current value

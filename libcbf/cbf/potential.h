@@ -34,7 +34,6 @@ namespace CBFSchema { class Potential; }
 
 namespace CBF {
 
-namespace ublas = boost::numeric::ublas;
 
 /**
 	@brief This class represents an artificial potential function.

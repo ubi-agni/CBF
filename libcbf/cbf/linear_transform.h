@@ -39,7 +39,7 @@ struct LinearSensorTransform : public SensorTransform {
 	LinearSensorTransform (const CBFSchema::LinearSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
 	void update(const FloatVector &resource_value) {
-		m_Result = ublas::prod(m_CoefficientMatrix, resource_value);
+		m_Result = m_CoefficientMatrix * resource_value;
 	}
 
 	LinearSensorTransform(const FloatMatrix &coefficient_matrix) 
@@ -49,9 +49,9 @@ struct LinearSensorTransform : public SensorTransform {
 
 	void init (const FloatMatrix &coefficient_matrix) {
 		m_CoefficientMatrix = coefficient_matrix;
-		m_TaskJacobian = ublas::identity_matrix<Float>(
-			coefficient_matrix.size1(), 
-			coefficient_matrix.size2()
+		m_TaskJacobian = FloatMatrix::Identity(
+			coefficient_matrix.rows(),
+			coefficient_matrix.cols()
 		);
 	}
 

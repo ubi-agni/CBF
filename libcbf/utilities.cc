@@ -56,7 +56,8 @@ namespace CBF {
 FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
 	CBF_DEBUG("start: " << start);
 	CBF_DEBUG("end: " << end);
-	Float inner = ublas::inner_prod(start/ublas::norm_2(start), end/ublas::norm_2(start));
+	//FIXME: Float inner = ublas::inner_prod(start/ublas::norm_2(start), end/ublas::norm_2(start));
+	Float inner = start.normalized().dot(end/start.norm());
 	CBF_DEBUG("inner: " << 1.0 - inner);
 	if (inner > 1.0) inner = 1.0;
 	if (inner < -1.0) inner = -1.0;
@@ -81,8 +82,8 @@ FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step,
 
 #ifdef CBF_HAVE_KDL
 FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j) {
-	if (m.size1() != j.rows() || m.size2() != j.columns())
-		m = ublas::zero_matrix<Float>(j.rows(), j.columns());
+	if (m.rows() != j.rows() || m.cols() != j.columns())
+		m = FloatMatrix::Zero(j.rows(), j.columns());
 
 	unsigned int rows, columns;
 	rows = j.rows();
@@ -97,8 +98,8 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j) {
 }
 
 FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
-	if (m.size1() != 4 || m.size2() != 4)
-		m = ublas::zero_matrix<Float>(4,4);
+	if (m.rows() != 4 || m.cols() != 4)
+		m = FloatMatrix::Zero(4,4);
 
 	for (unsigned int row = 0; row < 4; ++row) {
 		for (unsigned int column = 0; column < 4; ++column) {
@@ -118,14 +119,14 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
 		bool transpose = false;
 	
-		if (M.size2() > M.size1()) transpose = true;
+		if (M.cols() > M.rows()) transpose = true;
 	
 		//! Placeholders for the singular value decomposition
-		Eigen::MatrixXd m((int)M.size1(), (int)M.size2());
+		Eigen::MatrixXd m((int)M.rows(), (int)M.cols());
 	
 		//! rows and cols hold dimensions of input matrix
-		int rows = (int)M.size1();
-		int cols = (int)M.size2();
+		int rows = (int)M.rows();
+		int cols = (int)M.cols();
 	
 		for (int row = 0; row < rows; ++row)
 			for (int col = 0; col < cols; ++col)
@@ -165,21 +166,21 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 			for (int col = 0; col < res.cols(); ++col)
 				result(row,col) = res(row,col);
 	
-		if (transpose) result = ublas::trans(result);
+		if (transpose) result.transposeInPlace();
 		return det;
 	}
 
 	Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, Float damping_constant) {
 		bool transpose = false;
 	
-		if (M.size2() > M.size1()) transpose = true;
+		if (M.cols() > M.rows()) transpose = true;
 	
 		//! Placeholders for the singular value decomposition
-		Eigen::MatrixXd m((int)M.size1(), (int)M.size2());
+		Eigen::MatrixXd m((int)M.rows(), (int)M.cols());
 	
 		//! rows and cols hold dimensions of input matrix
-		int rows = (int)M.size1();
-		int cols = (int)M.size2();
+		int rows = (int)M.rows();
+		int cols = (int)M.cols();
 	
 		for (int row = 0; row < rows; ++row)
 			for (int col = 0; col < cols; ++col)
@@ -216,7 +217,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 			for (int col = 0; col < res.cols(); ++col)
 				result(row,col) = res(row,col);
 
-		if (transpose) result = ublas::trans(result);
+		if (transpose) result.transposeInPlace();
 		return det;
 	}
 #endif
@@ -228,7 +229,7 @@ static const double pseudo_inv_precision_threshold = 0.001;
 Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
   bool transpose = false;
 
-  if (M.size2() > M.size1()) transpose = true;
+  if (M.cols() > M.rows()) transpose = true;
 
   FloatMatrix m = M;
   if (transpose){
@@ -236,14 +237,14 @@ Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
   }
 
   //! Placeholders for the singular value decomposition
-  FloatMatrix u(m.size1(), m.size1());
-  FloatMatrix v(m.size2(), m.size2());
-  FloatMatrix q(m.size2(), m.size1());
+  FloatMatrix u(m.rows(), m.rows());
+  FloatMatrix v(m.cols(), m.cols());
+  FloatMatrix q(m.cols(), m.rows());
   svd(1, 1, 10e-18, 10e-18, m, q, u, v);
 
   //! Working through the singularValues Matrix calculating the determinant
   Float det = 1.0;
-  for (int i = 0; i < m.size2(); ++i) {
+  for (int i = 0; i < m.cols(); ++i) {
     det *= q(i,i); ////??????
     if (fabs(q(i,i)) > pseudo_inv_precision_threshold){
       q(i,i) = 1.0 / (q(i,i));
@@ -258,10 +259,10 @@ Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
   CBF_DEBUG("svd: "<< std::endl << q);
 
   //! Calculating the Moore-Penrose-Pseudoinverse
-  FloatMatrix res(v.size1(), q.size2());
+  FloatMatrix res(v.rows(), q.cols());
   axpy_prod(v, q, res, true);
   std::cout << std::endl;
-  FloatMatrix res2(m.size2(), m.size1());
+  FloatMatrix res2(m.cols(), m.rows());
   axpy_prod(res, ublas::trans(u), res2, true);
   
   if (transpose){
@@ -277,7 +278,7 @@ Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
                             Float damping_constant) {
   bool transpose = false;
 
-  if (M.size2() > M.size1()) transpose = true;
+  if (M.cols() > M.rows()) transpose = true;
 
   FloatMatrix m = M;
   if (transpose){
@@ -285,15 +286,15 @@ Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
   }
 
   //! Placeholders for Singular Value Decomposition
-  FloatMatrix u(m.size1(), m.size1());
-  FloatMatrix v(m.size2(), m.size2());
-  FloatMatrix q(m.size2(), m.size1());
+  FloatMatrix u(m.rows(), m.rows());
+  FloatMatrix v(m.cols(), m.cols());
+  FloatMatrix q(m.cols(), m.rows());
 
   svd(1, 1, 10e-18, 10e-18, m, q, u, v);
 
   Float det = 1.0;
   //! We use the ordinary reciprocal for testing purposes here
-  for (int i = 0; i < m.size2(); ++i) {
+  for (int i = 0; i < m.cols(); ++i) {
     det *= q(i,i);
     q(i,i) = q(i,i) / (damping_constant + (q(i,i) * q(i,i)));
   }
@@ -303,9 +304,9 @@ Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
   CBF_DEBUG("svd: "<< std::endl << q);
 
   //! Calculating the Moore-Penrose-Pseudoinverse
-  FloatMatrix res(v.size1(), q.size2());
+  FloatMatrix res(v.rows(), q.cols());
   axpy_prod(v, q, res, true);
-  FloatMatrix res2(m.size2(), m.size1());
+  FloatMatrix res2(m.cols(), m.rows());
   axpy_prod(res, ublas::trans(u), res2, true);
 
   if (transpose){
@@ -323,6 +324,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 	const CBFSchema::SimpleVector *simple_vector = dynamic_cast<const CBFSchema::SimpleVector*>(&xml_instance);
 
 	if (simple_vector) {
+		/*FIXME:
 		std::vector<Float> tmp;
 		for (
 			CBFSchema::SimpleVector::Coefficient_const_iterator it = (*simple_vector).Coefficient().begin();
@@ -332,8 +334,14 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 		{
 			tmp.push_back((*it));
 		}
-		ublas::vector<Float> ret(tmp.size());
+		FloatVector ret(tmp.size());
 		std::copy(tmp.begin(), tmp.end(), ret.begin());
+		return ret;
+		*/
+		FloatVector ret((*simple_vector).Coefficient().size());
+		for (int i = 0; i < (*simple_vector).Coefficient().size(); ++i) {
+			ret(i) = (*simple_vector).Coefficient().at(i);
+		}
 		return ret;
 	}
 
@@ -342,7 +350,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 	if (boost_vector) {
 		std::stringstream stream(boost_vector->String());
 		CBF_DEBUG("string: " << stream.str());
-		ublas::vector<Float> v;
+		FloatVector v;
 		stream >> v;
 		if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
 
@@ -387,7 +395,7 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespace
 		CBF_DEBUG("string: " << stream.str());
 		stream >> matrix;
 		CBF_DEBUG(matrix);
-		if ((matrix.size1() == 0) && (matrix.size2() == 0)) {
+		if ((matrix.rows() == 0) && (matrix.cols() == 0)) {
 			CBF_THROW_RUNTIME_ERROR("Matrix is empty")
 		}
 
@@ -435,7 +443,7 @@ boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance,
 		FloatMatrix m;
 		m = create_matrix((*matrix_frame_instance).Matrix(), object_namespace);
 
-		if (m.size1() != 4 || m.size2() != 4)
+		if (m.rows() != 4 || m.cols() != 4)
 			throw std::runtime_error("Matrix is not 4x4");
 
 		for (int row = 0; row < 3; ++row)

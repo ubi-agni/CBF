@@ -9,8 +9,8 @@ namespace CBF {
 		const std::vector<FloatVector> &refs = p.m_Reference->get();
 
 		for (unsigned int i = 0, size = refs.size(); i < size; ++i) {
-			CBF_DEBUG("norm of task space distance: " << ublas::norm_2(p.m_CurrentTaskPosition - p.m_Reference->get()[i]));
-			if (ublas::norm_2(p.m_CurrentTaskPosition - p.m_Reference->get()[i]) < m_Threshold)
+			CBF_DEBUG("norm of task space distance: " << (p.m_CurrentTaskPosition - p.m_Reference->get()[i]).norm());
+			if ((p.m_CurrentTaskPosition - p.m_Reference->get()[i]).norm() < m_Threshold)
 				return true;
 		}
 
@@ -20,7 +20,7 @@ namespace CBF {
 	bool ResourceStepNormThreshold::check_convergence(const SubordinateController &p) {
 		CBF_DEBUG("check convergence");
 
-		if (ublas::norm_2(p.m_ResourceStep) < m_Threshold)
+		if ((p.m_ResourceStep).norm() < m_Threshold)
 			return true;
 
 		return false;

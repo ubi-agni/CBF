@@ -7,7 +7,8 @@ namespace CBF {
 	TransposeEffectorTransform::TransposeEffectorTransform(const CBFSchema::TransposeEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace) 
 	{
 		m_InverseTaskJacobian = FloatMatrix(
-				xml_instance.ResourceDimension(), xml_instance.TaskDimension()
+				(int) xml_instance.ResourceDimension(),
+				(int) xml_instance.TaskDimension()
 		);
 	}
 

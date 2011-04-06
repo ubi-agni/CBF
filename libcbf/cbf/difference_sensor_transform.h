@@ -50,7 +50,7 @@ namespace CBF {
 		}
 
 		void update(const FloatVector &resource_value) {
-			assert(m_Transform1->task_jacobian().size1() == m_Transform2->task_jacobian().size1());
+			assert(m_Transform1->task_jacobian().rows() == m_Transform2->task_jacobian().rows());
 
 			m_Transform1->update(resource_value);
 			m_Transform2->update(resource_value);

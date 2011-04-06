@@ -25,9 +25,10 @@
 
 #include <cbf/config.h>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
+//#include <boost/numeric/ublas/vector.hpp>
+//#include <boost/numeric/ublas/matrix.hpp>
+//#include <boost/numeric/ublas/io.hpp>
+#include <Eigen/Core>
 
 namespace CBF {
 
@@ -39,8 +40,11 @@ namespace CBF {
 	/**
 		A typedef to make some other stuff shorter...
 	*/
-	typedef boost::numeric::ublas::vector<Float> FloatVector;
-	typedef boost::numeric::ublas::matrix<Float> FloatMatrix;
+
+	//FIXME: typedef boost::numeric::ublas::vector<Float> FloatVector;
+	//FIXME: typedef boost::numeric::ublas::matrix<Float> FloatMatrix;
+	typedef Eigen::VectorXd FloatVector;
+	typedef Eigen::MatrixXd FloatMatrix;
 	
 } // namespace
 

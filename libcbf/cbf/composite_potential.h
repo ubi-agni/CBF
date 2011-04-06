@@ -39,7 +39,6 @@ namespace CBFSchema { class CompositePotential; }
 
 namespace CBF {
 
-	namespace ublas = boost::numeric::ublas;
 	
 	
 	/**
@@ -93,9 +92,12 @@ namespace CBF {
 	
 			for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
 				m_Dim += m_Potentials[i]->dim();
-				m_in_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
-				m_out_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
-				m_ref_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+				//FIXME: m_in_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+				//m_out_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+				//m_ref_buffers[i] = ublas::zero_vector<Float>(m_Potentials[i]->dim());
+				m_in_buffers[i] = FloatVector::Zero(m_Potentials[i]->dim());
+				m_out_buffers[i] = FloatVector::Zero(m_Potentials[i]->dim());
+				m_ref_buffers[i] = FloatVector::Zero(m_Potentials[i]->dim());
 			}
 		}
 

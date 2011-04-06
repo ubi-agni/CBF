@@ -31,8 +31,8 @@ int svd(
 	int i,j,k,l(0),l1,iter,retval;
 	Float c,f,g,h,s,x,y,z;
 
-	int m = a.size1();
-	int n = a.size2();
+	int m = a.rows();
+	int n = a.cols();
 
 	FloatVector e(n);
 
@@ -40,8 +40,8 @@ int svd(
 	u *= 0.0;
 	v *= 0.0;
 	//q.clear();
-	u.clear();
-	v.clear();
+	u.setZero();
+	v.setZero();
 
 	//e = (Float *)calloc(n,sizeof(Float));
 	retval = 0;

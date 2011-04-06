@@ -32,7 +32,6 @@
 namespace CBFSchema { class AxisAnglePotential; }
 
 namespace CBF {
-	namespace ublas = boost::numeric::ublas;
 	
 	/**
 		@brief A potential function operating on the space of rotations...
@@ -69,7 +68,7 @@ namespace CBF {
 		virtual Float distance(const FloatVector &v1, const FloatVector &v2);
 
 		virtual Float norm(const FloatVector &v) {
-			return normalize_angle(ublas::norm_2(v));
+			return normalize_angle(v.norm());
 		}
 	};
 

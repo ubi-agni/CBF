@@ -37,7 +37,6 @@ namespace CBFSchema { class WeightedSumSensorTransform; }
 
 namespace CBF {
 
-namespace ublas = boost::numeric::ublas;
 
 /** 
 	@brief A sensor transform that allows combining several sensor 
@@ -50,8 +49,7 @@ struct WeightedSumSensorTransform : public SensorTransform {
 	WeightedSumSensorTransform(
 		std::vector<SensorTransformPtr> transforms 
 			= std::vector<SensorTransformPtr>(), 
-		FloatVector weights 
-			= ublas::zero_vector<Float>()
+		FloatVector weights = FloatVector::Zero()
 	) 
 	{
 		set_transforms(transforms);
@@ -65,8 +63,8 @@ struct WeightedSumSensorTransform : public SensorTransform {
 	void set_transforms(std::vector<SensorTransformPtr> &transforms) {
 		m_Transforms = transforms;
 		//! Set the result and task jacobian matrixes to the right sizes...
-		m_TaskJacobian = ublas::zero_matrix<Float>(transforms[0]->task_dim(), transforms[0]->resource_dim());
-		m_Result = ublas::zero_vector<Float>(transforms[0]->task_dim());
+		m_TaskJacobian = FloatMatrix::Zero(transforms[0]->task_dim(), transforms[0]->resource_dim());
+		m_Result = FloatVector::Zero(transforms[0]->task_dim());
 	}
 
 	void update(const FloatVector &resource_value) {
@@ -77,8 +75,8 @@ struct WeightedSumSensorTransform : public SensorTransform {
 			m_Transforms[i]->update(resource_value);
 		}
 
-		m_TaskJacobian = ublas::zero_matrix<Float>(m_Transforms[0]->task_dim(), m_Transforms[0]->resource_dim());
-		m_Result = ublas::zero_vector<Float>(m_Transforms[0]->task_dim());
+		m_TaskJacobian = FloatMatrix::Zero(m_Transforms[0]->task_dim(), m_Transforms[0]->resource_dim());
+		m_Result = FloatVector::Zero(m_Transforms[0]->task_dim());
 
 		for (unsigned int i = 0; i < m_Transforms.size(); ++i) {
 			m_TaskJacobian += m_Weights[i] * m_Transforms[i]->task_jacobian();

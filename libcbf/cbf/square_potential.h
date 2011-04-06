@@ -35,7 +35,6 @@ namespace CBFSchema { class SquarePotential; }
 
 namespace CBF {
 
-namespace ublas = boost::numeric::ublas;
 
 /**
 	@brief A squared potential functions
@@ -62,7 +61,7 @@ struct SquarePotential : public Potential {
 	}
 
 	virtual Float norm(const FloatVector &v) {
-		return ublas::norm_2(v);
+		return v.norm();
 	}
 
 	virtual Float distance(const FloatVector &v1, const FloatVector &v2) {

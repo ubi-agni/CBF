@@ -46,7 +46,7 @@ namespace CBF {
 		}
 
 		void init(unsigned int dim) {
-			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim);
+			m_InverseTaskJacobian = FloatMatrix::Identity(dim, dim);
 		}
 
 		/**
@@ -84,7 +84,7 @@ namespace CBF {
 		}
 	
 		virtual void init(unsigned int dim) {
-			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim, dim);
+			m_TaskJacobian = FloatMatrix::Identity(dim, dim);
 		}
 	};
 

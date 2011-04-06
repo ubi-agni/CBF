@@ -49,7 +49,8 @@ struct MaskingResource : public Resource {
 	}
 
 	virtual void add(const FloatVector &arg) { 
-		FloatVector tmp = ublas::zero_vector<Float>(m_Resource->get().size());
+		//FIXME: FloatVector tmp = ublas::zero_vector<Float>(m_Resource->get().size());
+		FloatVector tmp = FloatVector::Zero(m_Resource->get().size());
 
 		for (unsigned int i = 0, len = m_Indexes.size(); i < len; ++i)
 			tmp[m_Indexes[i]] = arg[i];

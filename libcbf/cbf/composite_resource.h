@@ -90,10 +90,14 @@ struct CompositeResource : public Resource
 			{
 				m_Resources[i]->update();
 	
+				/*FIXME:
 				std::copy(
 					m_Resources[i]->get().begin(), 
 					m_Resources[i]->get().end(),
 					m_ResourceValues.begin() + current_start_index);
+				*/
+				m_ResourceValues.segment(current_start_index, m_Resources[i]->get().rows())
+						= m_Resources[i]->get();
 	
 				current_start_index += m_Resources[i]->dim();			
 			}
@@ -111,13 +115,15 @@ struct CompositeResource : public Resource
 				i < len;
 				++i) 
 			{
+				/*FIXME:
 				FloatVector tmp(m_Resources[i]->dim());
 				std::copy(
 					arg.begin() + current_start_index,
 					arg.begin() + current_start_index + m_Resources[i]->dim(),
 					tmp.begin());
+				*/
 	
-				m_Resources[i]->add(tmp);
+				m_Resources[i]->add(arg.segment(current_start_index, m_Resources[i]->dim()));
 				current_start_index += m_Resources[i]->dim();			
 			}
 		}

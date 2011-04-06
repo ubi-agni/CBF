@@ -28,15 +28,12 @@
 #include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/numeric/ublas/vector.hpp>
 
 #include <vector>
 
 namespace CBFSchema { class Reference; }
 
 namespace CBF {
-	
-	namespace ublas = boost::numeric::ublas;
 	
 	/** @brief: Base class for all types of references */
 	struct Reference : public Object {

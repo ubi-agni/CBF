@@ -88,7 +88,7 @@ namespace CBF {
 		m_TaskDim = 3;
 		m_ResourceDim = chain->getNrOfJoints();
 
-		m_Result = ublas::vector<Float>(3);
+		m_Result = FloatVector(3);
 	}
 	
 	void KDLChainPositionSensorTransform::update(const FloatVector &resource_value) {
@@ -114,7 +114,7 @@ namespace CBF {
 	{
 		m_TaskDim = 3;
 		m_ResourceDim = chain->getNrOfJoints();
-		m_Result = ublas::vector<Float>(3);
+		m_Result = FloatVector(3);
 	}
 	
 	void KDLChainAxisAngleSensorTransform::update(const FloatVector &resource_value) {
@@ -122,7 +122,7 @@ namespace CBF {
 	
 		CBF_DEBUG("Updating Jacobian");
 		//! Update the jacobian so we can hand it out...
-		m_TaskJacobian = ublas::zero_matrix<Float>(3, resource_dim());
+		m_TaskJacobian = FloatMatrix::Zero(3, resource_dim());
 	
 		//CBF_DEBUG(m_ConcreteJacobian)
 		//CBF_DEBUG(get_resource_dim())
@@ -215,7 +215,7 @@ namespace CBF {
 		m_TaskDim = 3;
 		m_ResourceDim = tree->getNrOfJoints();
 		m_Result = FloatVector(3 * segment_names.size());
-		m_TaskJacobian = FloatMatrix(3 * segment_names.size(), tree->getNrOfJoints());
+		m_TaskJacobian = FloatMatrix((int) 3 * segment_names.size(),(int)  tree->getNrOfJoints());
 	}
 
 
@@ -251,7 +251,7 @@ namespace CBF {
 		m_ResourceDim = tree->getNrOfJoints();
 
 		m_Result = FloatVector(3 * segment_names.size());
-		m_TaskJacobian = FloatMatrix(3 * segment_names.size(), tree->getNrOfJoints());
+		m_TaskJacobian = FloatMatrix((int) 3 * segment_names.size(),(int)  tree->getNrOfJoints());
 	}
 
 
@@ -347,8 +347,9 @@ namespace CBF {
 			m_Result = FloatVector(3 *  m_SegmentNames.size());
 
 			m_TaskJacobian = FloatMatrix(
-				3 * m_SegmentNames.size(), 
-				m_Tree->getNrOfJoints());
+					(int) 3 * m_SegmentNames.size(),
+					(int)  m_Tree->getNrOfJoints()
+					);
 
 			init_solvers();
 		}

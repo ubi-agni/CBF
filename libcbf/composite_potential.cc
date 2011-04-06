@@ -29,14 +29,16 @@ namespace CBF {
 		const std::vector<FloatVector > &references, 
 		const FloatVector &input
 	) {
-		result = ublas::zero_vector<Float>(input.size());
+		result = FloatVector::Zero(input.size());
 
 		unsigned int current_index = 0;
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
 			CBF_DEBUG("[CompositePotential]: ----");
-			std::copy(references[0].begin() + current_index, references[0].begin() + current_index + m_Potentials[i]->dim(), m_ref_buffers[i].begin());
+			m_ref_buffers[i].start(m_Potentials[i]->dim())
+					= references[0].segment(current_index, m_Potentials[i]->dim());
 
-			std::copy(input.begin() + current_index, input.begin() + current_index + m_Potentials[i]->dim(), m_in_buffers[i].begin());
+			m_in_buffers[i].start(m_Potentials[i]->dim())
+					= input.segment(current_index, m_Potentials[i]->dim());
 			CBF_DEBUG("[CompositePotential]: in: " <<  m_in_buffers[i]);
 
 			std::vector<FloatVector > tmp_refs;
@@ -46,7 +48,8 @@ namespace CBF {
 
 			m_Potentials[i]->gradient(m_out_buffers[i], tmp_refs, m_in_buffers[i]);
 			CBF_DEBUG("[CompositePotential]: out: " <<  m_out_buffers[i]);
-			std::copy(m_out_buffers[i].begin(), m_out_buffers[i].end(), result.begin() + current_index);
+			result.segment(current_index, m_out_buffers[i].size())
+					= m_out_buffers[i];
 
 			current_index += m_Potentials[i]->dim();
 		}

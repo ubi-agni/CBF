@@ -34,7 +34,6 @@
 namespace CBFSchema { class AxisPotential; }
 
 namespace CBF {
-	namespace ublas = boost::numeric::ublas;
 
 	/**
 		@brief A potential that only cares about the direction of an axis
@@ -76,12 +75,20 @@ namespace CBF {
 
 			//! Now that we have the reference closest to our input, calculate 
 			//! SLERP step into that direction
+			/*FIXME:
 			FloatVector ref = 
 				(1.0/ublas::norm_2(references[min_index]))
 				* references[min_index];
 
 			FloatVector in = 
 				(1.0/ublas::norm_2(input))
+				* input;
+			*/
+
+			FloatVector ref = (1.0/(references[min_index]).norm())
+				* references[min_index];
+
+			FloatVector in = (1.0/input.norm())
 				* input;
 
 			FloatVector s(m_Dimension);
@@ -100,14 +107,18 @@ namespace CBF {
 			@brief This "distance" is the remaining angle between v1 and v2 
 		 */
 		virtual Float distance(const FloatVector &v1, const FloatVector &v2) {
+			/*FIXME:
 			FloatVector normed_v1 = v1 * (1.0/ublas::norm_2(v1));
 			FloatVector normed_v2 = v2 * (1.0/ublas::norm_2(v2));
 			return acos(ublas::inner_prod(normed_v1, normed_v2));
+			*/
+			return acos(v1.normalized().dot(v2.normalized()));
 		}
 
 		virtual Float norm(const FloatVector &v) {
 			CBF_THROW_RUNTIME_ERROR("No sensible definition of norm possible on this space");
-			return ublas::norm_2(v);
+			//FIXME: return ublas::norm_2(v);
+			return v.norm();
 		}
 	};
 

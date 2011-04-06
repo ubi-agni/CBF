@@ -85,24 +85,27 @@ struct CompositeReference : public Reference
 			they are contained in the m_References vector
 		*/
 		virtual void update() {
-			unsigned int current_start_index = 0;
-	
+			//FIXME: unsigned int current_start_index = 0;
+			FloatVector reference_values_tmp;
+
 			for (
 				unsigned int i = 0, len = m_References.size();
 				i < len;
-				++i) 
+				++i)
 			{
 				m_References[i]->update();
 
 				if (m_References[i]->get().size() == 0)
 					return;
-	
+				/*FIXME:
 				std::copy(
-					m_References[i]->get()[0].begin(), 
+					m_References[i]->get()[0].begin(),
 					m_References[i]->get()[0].end(),
 					m_ReferenceValues[0].begin() + current_start_index);
-	
-				current_start_index += m_References[i]->dim();			
+
+				current_start_index += m_References[i]->dim();
+				*/
+				reference_values_tmp << m_ReferenceValues[0];
 			}
 			m_UpdateSuccessfull = true;
 		}

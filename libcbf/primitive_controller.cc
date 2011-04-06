@@ -184,7 +184,7 @@ namespace CBF {
 			CBF_DEBUG("calling m_EffectorTransform->exec(): Type is: " << CBF_UNMANGLE(*m_EffectorTransform.get()));
 			m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
 		} else {
-			m_ResourceStep = ublas::zero_vector<Float>(resource()->dim());
+			m_ResourceStep = FloatVector::Zero(resource()->dim());
 		}
 	
 		CBF_DEBUG("resourceStep: " << m_ResourceStep);
@@ -199,24 +199,20 @@ namespace CBF {
 			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i]);
 		}
 	
-		m_CombinedResults = ublas::zero_vector<Float>(resource()->dim());
+		m_CombinedResults = FloatVector::Zero(resource()->dim());
 	
 		m_CombinationStrategy->exec(m_CombinedResults, m_SubordinateGradientSteps);
 	
 		//! finally the results of all subordinate controllers are projected
 		//! into our nullspace.For this we need the task jacobian and its inverse. 
 		//! We get these from the effector transforms.
-		m_InvJacobianTimesJacobian = ublas::prod(
-			m_EffectorTransform->inverse_task_jacobian(), 
-			m_SensorTransform->task_jacobian()
-		);
+		m_InvJacobianTimesJacobian = m_EffectorTransform->inverse_task_jacobian()
+				* m_SensorTransform->task_jacobian();
 	
 		//! The projector is (1 - J# J), so this is result = result - (J# J result)
 		//! which can be expressed as result -= ...
-		m_CombinedResults -= ublas::prod(
-			m_InvJacobianTimesJacobian,
-			m_CombinedResults
-		);
+		m_CombinedResults -= m_InvJacobianTimesJacobian
+			* m_CombinedResults;
 		CBF_DEBUG("combined_results * beta: " << m_CombinedResults);
 	
 		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;

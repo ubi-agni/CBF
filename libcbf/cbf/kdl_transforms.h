@@ -64,7 +64,6 @@ namespace CBFSchema {
 }
 
 namespace CBF {
-	namespace ublas = boost::numeric::ublas;
 	
 	/**
 		@brief Abstract base class for KDL based transform classes.

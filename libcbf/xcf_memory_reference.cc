@@ -57,8 +57,7 @@ namespace CBF {
 		// This way the Dimension will be published.
 		CBF_DEBUG("creating vector string");
 
-		FloatVector floatVector(m_Dim);
-		floatVector.clear();
+		FloatVector floatVector = FloatVector::Zero(m_Dim);
 		std::stringstream vector_string;
 		vector_string << floatVector;
 

@@ -15,7 +15,6 @@ namespace CBFSchema { class NormSensorTransform; }
 
 namespace CBF {
 
-namespace ublas = boost::numeric::ublas;
 
 /**
 	This class implements a SensorTransform that calculates the norm
@@ -42,14 +41,11 @@ struct NormSensorTransform : public SensorTransform {
 
 	virtual void update(const FloatVector &resource_value) {
 		m_Transform->update(resource_value);
-		m_Result[0] = ublas::norm_2(m_Transform->result());
+		m_Result[0] = m_Transform->result().norm();
 
-		FloatVector res2 = 
-			(1.0/m_Result[0]) 
-			* ublas::prod(
-				ublas::trans(m_Transform->result()), 
-				m_Transform->task_jacobian()
-			);
+		FloatVector res2 = (1.0/m_Result[0])
+								* (m_Transform->result()).transpose()
+								* m_Transform->task_jacobian();
 
 		for (unsigned int i = 0; i < res2.size(); ++i) {
 			m_TaskJacobian(0,i) = res2(i);

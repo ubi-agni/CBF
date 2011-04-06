@@ -17,7 +17,6 @@
 
 namespace CBF {
 
-namespace ublas = boost::numeric::ublas;
 
 
 /**
@@ -51,7 +50,7 @@ struct ApplySensorTransform : public SensorTransform {
 	virtual void init(SensorTransformPtr operand) {
 		CBF_DEBUG("task space dim: " << operand->task_dim() << "  resource dim: " << operand->resource_dim());
 		m_Result = FloatVector(operand->task_dim()); 
-		m_TaskJacobian = FloatMatrix(operand->task_dim(), operand->resource_dim());
+		m_TaskJacobian = FloatMatrix((int) operand->task_dim(), (int) operand->resource_dim());
 	}
 
 	#ifdef CBF_HAVE_XSD
@@ -164,6 +163,7 @@ struct BlockWiseApplySensorTransform : public SensorTransform {
 		FloatMatrix tmp_jacobian = m_Operand->task_jacobian();
 		
 		for (unsigned int i = 0, n = m_Operand->task_dim(); i < n; i += m_Blocksize) {
+			/*FIXME:
 			CBF_DEBUG("i " << i);
 			CBF_DEBUG("vector");
 			ublas::vector_range<FloatVector> vr(
@@ -188,6 +188,16 @@ struct BlockWiseApplySensorTransform : public SensorTransform {
 				ublas::range(0, tmp_jacobian.size2())
 			);
 			mr.assign(m_MatrixOperation(mir));
+			*/
+
+			CBF_DEBUG("i " << i);
+			CBF_DEBUG("vector");
+			m_Result.segment(i, m_Blocksize)
+					= m_VectorOperation(tmp_result.segment(i, m_Blocksize));
+
+			CBF_DEBUG("matrix");
+			m_TaskJacobian.block(i, 0, m_Blocksize, tmp_jacobian.cols())
+					= m_MatrixOperation(tmp_jacobian.block(i, 0, m_Blocksize, tmp_jacobian.cols()));
 		}
 	}
 
@@ -289,39 +299,56 @@ struct BlockWiseInnerProductSensorTransform : public SensorTransform {
 		FloatMatrix tmp_jacobian2 = m_Operand2->task_jacobian();
 		
 		for (unsigned int i = 0, n = m_Operand1->task_dim(); i < n; i += m_Blocksize) {
+			/*FIXME:
 			CBF_DEBUG("i " << i);
 			CBF_DEBUG("vector");
 			ublas::vector_range<FloatVector> vr(
-				m_Result, 
+				m_Result,
 				ublas::range(i, i+m_Blocksize)
 			);
 			ublas::vector_range<FloatVector> vir1(
-				tmp_result1, 
+				tmp_result1,
 				ublas::range(i, i+m_Blocksize)
 			);
 			ublas::vector_range<FloatVector> vir2(
-				tmp_result2, 
+				tmp_result2,
 				ublas::range(i, i+m_Blocksize)
 			);
 			vr.assign(m_VectorOperation(vir1, vir2));
 
 			CBF_DEBUG("matrix");
 			ublas::matrix_range<FloatMatrix> mr(
-				m_TaskJacobian, 
-				ublas::range(i, i+m_Blocksize), 
+				m_TaskJacobian,
+				ublas::range(i, i+m_Blocksize),
 				ublas::range(0, tmp_jacobian1.size2())
 			);
 			ublas::matrix_range<FloatMatrix> mir1(
-				tmp_jacobian1, 
+				tmp_jacobian1,
 				ublas::range(i, i+m_Blocksize),
 				ublas::range(0, tmp_jacobian1.size2())
 			);
 			ublas::matrix_range<FloatMatrix> mir2(
-				tmp_jacobian2, 
+				tmp_jacobian2,
 				ublas::range(i, i+m_Blocksize),
 				ublas::range(0, tmp_jacobian2.size2())
 			);
 			mr.assign(m_MatrixOperation(mir1, mir2));
+			*/
+
+			CBF_DEBUG("i " << i);
+			CBF_DEBUG("vector");
+			m_Result.segment(i, m_Blocksize)
+					= m_VectorOperation(
+							tmp_result1.segment(i, m_Blocksize),
+							tmp_result2.segment(i, m_Blocksize)
+							);
+
+			CBF_DEBUG("matrix");
+			m_TaskJacobian.block(i, 0, m_Blocksize, tmp_jacobian1.cols())
+					= m_MatrixOperation(
+							tmp_jacobian1.block(i, 0, m_Blocksize, tmp_jacobian1.cols()),
+							tmp_jacobian2.block(i, 0, m_Blocksize, tmp_jacobian2.cols())
+							);
 		}
 	}
 
@@ -392,7 +419,7 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 		m_Result = FloatVector(m_Blocksize); 
 
 		m_TaskJacobian = FloatMatrix(
-			m_Blocksize, 
+			(int) m_Blocksize,
 			operand->resource_dim()
 		);
 	}
@@ -427,11 +454,12 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 		m_TaskJacobian = m_InitMatrix;
 		
 		for (unsigned int i = 0, n = m_Operand->task_dim(); i < n; i += m_Blocksize) {
+			/*FIXME:
 			CBF_DEBUG("i " << i);
 			CBF_DEBUG("vector");
 
 			ublas::vector_range<FloatVector> vir(
-				tmp_result, 
+				tmp_result,
 				ublas::range(i, i+m_Blocksize)
 			);
 			m_Result.assign(m_VectorOperation(m_Result, vir));
@@ -439,11 +467,23 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 			CBF_DEBUG("matrix");
 
 			ublas::matrix_range<FloatMatrix> mir(
-				tmp_jacobian, 
+				tmp_jacobian,
 				ublas::range(i, i+m_Blocksize),
 				ublas::range(0, tmp_jacobian.size2())
 			);
 			m_TaskJacobian.assign(m_MatrixOperation(m_TaskJacobian, mir));
+			*/
+
+			CBF_DEBUG("i " << i);
+			CBF_DEBUG("vector");
+			m_Result = m_VectorOperation(
+							m_Result, tmp_result.segment(i, m_Blocksize));
+
+			CBF_DEBUG("matrix");
+			m_TaskJacobian = m_MatrixOperation(
+								m_TaskJacobian,
+								tmp_jacobian.block(i, 0, m_Blocksize, tmp_jacobian.cols())
+								);
 		}
 	}
 

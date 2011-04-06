@@ -37,7 +37,6 @@
 namespace CBFSchema { class SpaceNaviReference; }
 
 namespace CBF {
-	namespace ublas = boost::numeric::ublas;
 	
 	/** @brief: A reference that takes its information from a SpaceMouse */
 	struct SpaceNaviReference : public Reference {

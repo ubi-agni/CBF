@@ -33,7 +33,6 @@ namespace CBFSchema { class CompositeSensorTransform; }
 
 namespace CBF {
 	
-	namespace ublas = boost::numeric::ublas;
 	
 	/**
 		@brief This sensor transform allows to compose different sensor transforms into a single

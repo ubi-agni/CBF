@@ -40,7 +40,6 @@ namespace CBFSchema {
 
 namespace CBF {
 
-namespace ublas = boost::numeric::ublas;
 
 
 

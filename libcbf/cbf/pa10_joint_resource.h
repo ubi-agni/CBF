@@ -36,7 +36,6 @@ namespace CBFSchema { class PA10JointResource; }
 
 namespace CBF {
 	
-	namespace ublas = boost::numeric::ublas;
 	
 	struct PA10JointResource : public Resource {
 		PA10JointResource(const CBFSchema::PA10JointResource &xml_instance);

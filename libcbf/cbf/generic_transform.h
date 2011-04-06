@@ -34,8 +34,6 @@
 
 #include <algorithm>
 
-#include <boost/numeric/ublas/io.hpp>
-
 namespace CBFSchema {
 	class GenericEffectorTransform;
 	class PaddedEffectorTransform;
@@ -44,7 +42,6 @@ namespace CBFSchema {
 }
 
 namespace CBF {
-	namespace ublas = boost::numeric::ublas;
 
 	/**
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
@@ -60,11 +57,11 @@ namespace CBF {
 		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
-			result = ublas::prod(m_InverseTaskJacobian, input);
+			result = m_InverseTaskJacobian * input;
 		}
 
 		void init(unsigned int task_dim, unsigned int resource_dim) {
-			m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
+			m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
 		}	
 	};
 	
@@ -85,12 +82,12 @@ namespace CBF {
 		}
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
-			result = ublas::prod(m_InverseTaskJacobian, input);
+			result = m_InverseTaskJacobian * input;
 		}
 
 
 		void init(unsigned int task_dim, unsigned int resource_dim, Float damping_constant) {
-			m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
+			m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
 			m_DampingConstant = damping_constant;
 		}	
 	
@@ -133,11 +130,11 @@ namespace CBF {
 			}		
 		
 			virtual void exec(const FloatVector &input, FloatVector &result) {
-				result = ublas::prod(m_InverseTaskJacobian, input);
+				result = m_InverseTaskJacobian * input;
 			}
 
 			void init(unsigned int task_dim, unsigned int resource_dim, Float damping_constant) {
-				m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
+				m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
 				m_DampingConstant = damping_constant;
 			}		
 	};
@@ -164,8 +161,7 @@ namespace CBF {
 			unsigned int resource_dim, 
 			float diagonal
 		) { 
-			FloatVector diagonal_elements(task_dim);
-			std::fill(diagonal_elements.begin(), diagonal_elements.end(), diagonal);
+			FloatVector diagonal_elements = FloatVector::Constant(task_dim, task_dim, diagonal);
 			init(task_dim, resource_dim, diagonal_elements);
 		}
 	
@@ -173,35 +169,39 @@ namespace CBF {
 			CBF_DEBUG("update padded");
 			pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
 
+			/*FIXME:
 			ublas::matrix_range<FloatMatrix> mr(
 				m_PaddedTaskJacobian, 
 				ublas::range(0, task_jacobian.size1()), 
 				ublas::range(0, task_jacobian.size2())
 			);
 			mr.assign(task_jacobian);
+			*/
+			m_PaddedTaskJacobian.block(0, 0, task_jacobian.rows(), task_jacobian.cols())
+					= task_jacobian;
 			CBF_DEBUG("padded jacobian: " << m_PaddedTaskJacobian);
 
 			pseudo_inverse(m_PaddedTaskJacobian, m_PaddedInverseTaskJacobian);
 		}
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
-			FloatVector res = ublas::prod(m_PaddedInverseTaskJacobian, input);
+			FloatVector res = m_PaddedInverseTaskJacobian * input;
 			CBF_DEBUG("padded result: " << res);
-			result = ublas::vector_range<FloatVector>(res, ublas::range(0, m_InverseTaskJacobian.size1()));
+			result = res.segment(0, m_InverseTaskJacobian.rows());
 		}
 
 		void init(unsigned int task_dim, unsigned int resource_dim, FloatVector diagonal) {
 			CBF_DEBUG("Padded transform init");
 			if (task_dim != diagonal.size()) CBF_THROW_RUNTIME_ERROR("dimension mismatch");
 
-			m_PaddedTaskJacobian = ublas::zero_matrix<Float>(task_dim, resource_dim + task_dim);
+			m_PaddedTaskJacobian = FloatMatrix::Zero(task_dim, resource_dim + task_dim);
 
 			for (unsigned int i = 0; i < task_dim; ++i) {
 				m_PaddedTaskJacobian(i, resource_dim+i) = diagonal[i];
 			}
 
-			m_PaddedInverseTaskJacobian = FloatMatrix(resource_dim + task_dim, task_dim);
-			m_InverseTaskJacobian = FloatMatrix(resource_dim, task_dim);
+			m_PaddedInverseTaskJacobian = FloatMatrix((int) resource_dim + task_dim, (int) task_dim);
+			m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
 		}	
 
 

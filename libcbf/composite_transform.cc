@@ -39,7 +39,8 @@ namespace CBF {
 			total_task_dim += m_SensorTransforms[i]->task_dim();
 
 
-		m_TaskJacobian = ublas::zero_matrix<Float>(total_task_dim, total_resource_dim);
+		//FIXME: m_TaskJacobian = ublas::zero_matrix<Float>(total_task_dim, total_resource_dim);
+		m_TaskJacobian = FloatMatrix::Zero(total_task_dim, total_resource_dim);
 		CBF_DEBUG("task_dim " << task_dim());
 		m_Result = FloatVector(task_dim());
 		CBF_DEBUG("m_Result " << m_Result);
@@ -61,32 +62,44 @@ namespace CBF {
 			m_SensorTransforms[i]->update(resource_value);
 	
 			//! Assemble total jacobian..
-			CBF_DEBUG("range: " << current_task_pos << " " << current_task_pos + m_SensorTransforms[i]->task_jacobian().size1());
+			/*FIXME:
+			CBF_DEBUG("range: " << current_task_pos << " "
+					<< current_task_pos + m_SensorTransforms[i]->task_jacobian().size1());
 			ublas::matrix_range<FloatMatrix > mr(
 				m_TaskJacobian,
-				ublas::range(current_task_pos, current_task_pos + m_SensorTransforms[i]->task_jacobian().size1()),
+				ublas::range(current_task_pos,
+						current_task_pos + m_SensorTransforms[i]->task_jacobian().size1()),
+						ublas::range(0, resource_dim())
+			);
+			*/
+			CBF_DEBUG("range: " << current_task_pos << " "
+					<< current_task_pos + m_SensorTransforms[i]->task_jacobian().rows());
+
+			/*FIXME:
+			ublas::matrix_range<FloatMatrix > mr(
+				m_TaskJacobian,
+				ublas::range(current_task_pos,
+						current_task_pos + m_SensorTransforms[i]->task_jacobian().rows()),
 				ublas::range(0, resource_dim())
 			);
+			*/
+			m_TaskJacobian.block(current_task_pos, 0,
+						task_jacobian().rows(), resource_dim()) = m_SensorTransforms[i]->task_jacobian();
 
-	
-			FloatMatrix tmp;
-			tmp = m_SensorTransforms[i]->task_jacobian();
-	
-			CBF_DEBUG("tmp " << tmp);
-
-			mr.assign(tmp);
 			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian);
 	
-			ublas::vector<Float> tmp_result (m_SensorTransforms[i]->task_jacobian().size1());
-			tmp_result = m_SensorTransforms[i]->result();
-			CBF_DEBUG("tmp_result " << tmp_result);
-	
-			CBF_DEBUG("current_task_pos " << current_task_pos << " task_dim " << m_SensorTransforms[i]->task_jacobian().size1());
-			for (unsigned int j = 0; j < m_SensorTransforms[i]->task_jacobian().size1(); ++j) {
+			CBF_DEBUG("current_task_pos " << current_task_pos
+					<< " task_dim " << m_SensorTransforms[i]->task_jacobian().rows());
+
+			/*FIXME:
+			for (unsigned int j = 0; j < m_SensorTransforms[i]->task_jacobian().rows(); ++j) {
 				m_Result(current_task_pos + j) = tmp_result(j);
 			}
+			*/
+			m_Result.segment(current_task_pos,
+					m_SensorTransforms[i]->task_jacobian().rows()) = m_SensorTransforms[i]->result();
 	
-			current_task_pos += m_SensorTransforms[i]->task_jacobian().size1();
+			current_task_pos += m_SensorTransforms[i]->task_jacobian().rows();
 		}
 	
 	}

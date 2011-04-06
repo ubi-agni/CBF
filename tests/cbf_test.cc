@@ -42,8 +42,6 @@
 
 #define NUM_OF_STEPS 10
 
-namespace ublas = boost::numeric::ublas;
-
 int main(int argc, char *argv[]) {
 	//! Initialize pseudo random number gen with 0, so we get reproducable results..
 	srand(0);
