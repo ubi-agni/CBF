@@ -121,28 +121,24 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	
 		if (M.cols() > M.rows()) transpose = true;
 	
-		//! Placeholders for the singular value decomposition
-		Eigen::MatrixXd m((int)M.rows(), (int)M.cols());
-	
 		//! rows and cols hold dimensions of input matrix
 		int rows = (int)M.rows();
 		int cols = (int)M.cols();
-	
-		for (int row = 0; row < rows; ++row)
-			for (int col = 0; col < cols; ++col)
-				m(row,col) = M(row,col);	
+
+		//! Placeholders for the singular value decomposition
+		FloatMatrix m = M;
 	
 		if (transpose) m.transposeInPlace();
 	
-		Eigen::SVD<Eigen::MatrixXd> svd = m.svd();
+		Eigen::SVD<FloatMatrix> svd = m.svd();
 	
-		const Eigen::MatrixXd& Sv = svd.singularValues();
+		const FloatMatrix& Sv = svd.singularValues();
 		CBF_DEBUG("singularValues: " << Sv);
 	
 		//! Prepare a diagonal matrix from the singularValues vector
-		Eigen::MatrixXd SvMatrix(Sv.rows(), Sv.rows());
+		FloatMatrix SvMatrix(Sv.rows(), Sv.rows());
 		SvMatrix.setZero();
-	
+		//TODO: what about SvMatrix.determinant()
 		Float det = 1.0;
 		for (int i = 0; i < Sv.rows(); ++i) {
 			det *= SvMatrix(i,i);
@@ -158,13 +154,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	
 		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
-		Eigen::MatrixXd res = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-	
-		result = FloatMatrix(res.rows(), res.cols());
-	
-		for (int row = 0; row < res.rows(); ++row)
-			for (int col = 0; col < res.cols(); ++col)
-				result(row,col) = res(row,col);
+		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
 	
 		if (transpose) result.transposeInPlace();
 		return det;
@@ -174,27 +164,23 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		bool transpose = false;
 	
 		if (M.cols() > M.rows()) transpose = true;
-	
-		//! Placeholders for the singular value decomposition
-		Eigen::MatrixXd m((int)M.rows(), (int)M.cols());
-	
+
 		//! rows and cols hold dimensions of input matrix
 		int rows = (int)M.rows();
 		int cols = (int)M.cols();
 	
-		for (int row = 0; row < rows; ++row)
-			for (int col = 0; col < cols; ++col)
-				m(row,col) = M(row,col);	
+		//! Placeholders for the singular value decomposition
+		FloatMatrix m = M;
 	
 		if (transpose) m.transposeInPlace();
 	
-		Eigen::SVD<Eigen::MatrixXd> svd = m.svd();
+		Eigen::SVD<FloatMatrix> svd = m.svd();
 	
-		const Eigen::MatrixXd& Sv = svd.singularValues();
+		const FloatMatrix& Sv = svd.singularValues();
 		CBF_DEBUG("singularValues: " << Sv);
 	
 		//! Prepare a diagonal matrix from the singularValues vector
-		Eigen::MatrixXd SvMatrix(Sv.rows(), Sv.rows());
+		FloatMatrix SvMatrix(Sv.rows(), Sv.rows());
 		SvMatrix.setZero();
 	
 		Float det = 1.0;
@@ -209,13 +195,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	
 		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
-		Eigen::MatrixXd res = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-	
-		result = FloatMatrix(res.rows(), res.cols());
-	
-		for (int row = 0; row < res.rows(); ++row)
-			for (int col = 0; col < res.cols(); ++col)
-				result(row,col) = res(row,col);
+		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
 
 		if (transpose) result.transposeInPlace();
 		return det;
@@ -350,11 +330,40 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 	if (boost_vector) {
 		std::stringstream stream(boost_vector->String());
 		CBF_DEBUG("string: " << stream.str());
-		FloatVector v;
+		boost::numeric::ublas::vector<Float> v;
 		stream >> v;
 		if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
 
-		return v;
+		//parse boost::vector to CBF::FloatVector
+		FloatVector ret(v.size());
+		for (int i = 0; i < v.size(); ++i) {
+			ret(i) = v(i);
+		}
+		return ret;
+	}
+
+	const CBFSchema::EigenVector *eigen_vector = dynamic_cast<const CBFSchema::EigenVector*>(&xml_instance);
+
+	if (eigen_vector) {
+		std::stringstream stream(eigen_vector->String());
+		CBF_DEBUG("string: " << stream.str());
+		Float tmpFloat;
+		std::vector<Float> tmp;
+		while (stream >> tmpFloat) {
+			tmp.push_back(tmpFloat);
+		}
+		FloatVector v(tmp.size());
+		for (int i = 0; i < tmp.size(); ++i) {
+			v(i) = tmp.at(i);
+		}
+		if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
+
+		//parse boost::vector to CBF::FloatVector
+		FloatVector ret(v.size());
+		for (int i = 0; i < v.size(); ++i) {
+			ret(i) = v(i);
+		}
+		return ret;
 	}
 
 	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
