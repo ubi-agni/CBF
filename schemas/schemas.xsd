@@ -195,8 +195,17 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
-
   <xsd:complexType name="BoostVector">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Vector"> 
+		  <xsd:sequence>
+			 <xsd:element name="String" type="xsd:string"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="EigenVector">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Vector"> 
 		  <xsd:sequence>
@@ -575,6 +584,16 @@
 		<xsd:extension base="CBF:Matrix">
 		  <xsd:sequence>
 			 <xsd:element name="TranslationVector" type="CBF:BoostVector"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+  
+    <xsd:complexType name="EigenMatrix">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:Matrix">
+		  <xsd:sequence>
+			 <xsd:element name="String" type="xsd:string"/>
 		  </xsd:sequence>
 		</xsd:extension>
 	 </xsd:complexContent>

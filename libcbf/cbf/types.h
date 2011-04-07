@@ -45,7 +45,7 @@ namespace CBF {
 	//FIXME: typedef boost::numeric::ublas::matrix<Float> FloatMatrix;
 	typedef Eigen::VectorXd FloatVector;
 	typedef Eigen::MatrixXd FloatMatrix;
-	
+
 } // namespace
 
 #endif

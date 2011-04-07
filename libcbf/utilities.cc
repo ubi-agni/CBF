@@ -38,10 +38,6 @@
 	#include <Eigen/LU>
 #endif
 
-#ifndef CBF_HAVE_EIGEN2
-	#include <cbf/svd.h>
-#endif
-
 #ifdef CBF_HAVE_XSD
 	#include <cbf/xml_factory.h>
 	#include <sstream>
@@ -52,6 +48,40 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
 namespace CBF {
+
+void vector_from_string(const std::string str, FloatVector* vec){
+	CBF_DEBUG("start parsing string to vector");
+	Float value;
+	std::vector<Float> values;
+	std::istringstream in(str);
+	while (in >> value) {
+		values.push_back(value);
+	}
+	vec -> resize(values.size());
+	std::copy(values.begin(), values.end(), vec -> data());
+	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << vec);
+}
+
+void matrix_from_string(const std::string str, FloatMatrix* matr){
+		CBF_DEBUG("start parsing string to matrix");
+		float value;
+		std::vector<float> values;
+		int rows = count(str.begin(), str.end(), '\n') + 1;
+		std::istringstream in(str);
+		while (in >> value) {
+			values.push_back(value);
+		}
+		matr -> resize(rows, values.size()/rows);
+		int pos = 0;
+		//No std::copy because eigen::matrix seems to be written column by column.
+		for (int i = 0; i < rows; ++i){
+			for (int j = 0; j < values.size()/rows; ++j){
+				(*matr)(i,j) = values.at(pos);
+				++pos;
+			}
+		}
+		CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << matr);
+}
 
 FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
 	CBF_DEBUG("start: " << start);
@@ -202,103 +232,6 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	}
 #endif
 
-
-#ifndef CBF_HAVE_EIGEN2
-static const double pseudo_inv_precision_threshold = 0.001;
-
-Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
-  bool transpose = false;
-
-  if (M.cols() > M.rows()) transpose = true;
-
-  FloatMatrix m = M;
-  if (transpose){
-    m = ublas::trans(M);
-  }
-
-  //! Placeholders for the singular value decomposition
-  FloatMatrix u(m.rows(), m.rows());
-  FloatMatrix v(m.cols(), m.cols());
-  FloatMatrix q(m.cols(), m.rows());
-  svd(1, 1, 10e-18, 10e-18, m, q, u, v);
-
-  //! Working through the singularValues Matrix calculating the determinant
-  Float det = 1.0;
-  for (int i = 0; i < m.cols(); ++i) {
-    det *= q(i,i); ////??????
-    if (fabs(q(i,i)) > pseudo_inv_precision_threshold){
-      q(i,i) = 1.0 / (q(i,i));
-    } else {
-      CBF_DEBUG("SINGULAR");
-      q(i,i) = 0.0;
-    }
-  }
-
-  CBF_DEBUG("det: " << det);
-
-  CBF_DEBUG("svd: "<< std::endl << q);
-
-  //! Calculating the Moore-Penrose-Pseudoinverse
-  FloatMatrix res(v.rows(), q.cols());
-  axpy_prod(v, q, res, true);
-  std::cout << std::endl;
-  FloatMatrix res2(m.cols(), m.rows());
-  axpy_prod(res, ublas::trans(u), res2, true);
-  
-  if (transpose){
-    result = ublas::trans(res2);
-  } else {
-    result = res2;
-  }
-
-  return det;
-}
-
-Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, 
-                            Float damping_constant) {
-  bool transpose = false;
-
-  if (M.cols() > M.rows()) transpose = true;
-
-  FloatMatrix m = M;
-  if (transpose){
-    m = ublas::trans(M);
-  }
-
-  //! Placeholders for Singular Value Decomposition
-  FloatMatrix u(m.rows(), m.rows());
-  FloatMatrix v(m.cols(), m.cols());
-  FloatMatrix q(m.cols(), m.rows());
-
-  svd(1, 1, 10e-18, 10e-18, m, q, u, v);
-
-  Float det = 1.0;
-  //! We use the ordinary reciprocal for testing purposes here
-  for (int i = 0; i < m.cols(); ++i) {
-    det *= q(i,i);
-    q(i,i) = q(i,i) / (damping_constant + (q(i,i) * q(i,i)));
-  }
-
-  CBF_DEBUG("det: " << det);
-
-  CBF_DEBUG("svd: "<< std::endl << q);
-
-  //! Calculating the Moore-Penrose-Pseudoinverse
-  FloatMatrix res(v.rows(), q.cols());
-  axpy_prod(v, q, res, true);
-  FloatMatrix res2(m.cols(), m.rows());
-  axpy_prod(res, ublas::trans(u), res2, true);
-
-  if (transpose){
-    result = ublas::trans(res2);
-  } else {
-    result = res2;
-  }
-
-  return det;
-}
-#endif
-
 #ifdef CBF_HAVE_XSD
 FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace) {
 	const CBFSchema::SimpleVector *simple_vector = dynamic_cast<const CBFSchema::SimpleVector*>(&xml_instance);
@@ -319,9 +252,8 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 		return ret;
 		*/
 		FloatVector ret((*simple_vector).Coefficient().size());
-		for (int i = 0; i < (*simple_vector).Coefficient().size(); ++i) {
-			ret(i) = (*simple_vector).Coefficient().at(i);
-		}
+		std::copy((*simple_vector).Coefficient().begin(),
+				(*simple_vector).Coefficient().end(), ret.data());
 		return ret;
 	}
 
@@ -336,39 +268,24 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 
 		//parse boost::vector to CBF::FloatVector
 		FloatVector ret(v.size());
-		for (int i = 0; i < v.size(); ++i) {
-			ret(i) = v(i);
-		}
+		std::copy(v.begin(), v.end(), ret.data());
 		return ret;
 	}
 
 	const CBFSchema::EigenVector *eigen_vector = dynamic_cast<const CBFSchema::EigenVector*>(&xml_instance);
 
 	if (eigen_vector) {
-		std::stringstream stream(eigen_vector->String());
-		CBF_DEBUG("string: " << stream.str());
-		Float tmpFloat;
-		std::vector<Float> tmp;
-		while (stream >> tmpFloat) {
-			tmp.push_back(tmpFloat);
-		}
-		FloatVector v(tmp.size());
-		for (int i = 0; i < tmp.size(); ++i) {
-			v(i) = tmp.at(i);
-		}
-		if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
-
-		//parse boost::vector to CBF::FloatVector
-		FloatVector ret(v.size());
-		for (int i = 0; i < v.size(); ++i) {
-			ret(i) = v(i);
-		}
+		CBF_DEBUG("string: " << eigen_vector->String());
+		FloatVector ret;
+		vector_from_string(eigen_vector->String(), &ret);
+		if (ret.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
 		return ret;
 	}
 
 	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
 }
 
+/*FIXME: is this create from boost vector? do we need it?
 boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<FloatVector> v(new FloatVector);
 	std::stringstream stream(xml_instance.String());
@@ -378,18 +295,26 @@ boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector 
 
 	return v;
 }
+*/
 
 boost::shared_ptr<FloatVector> create_zero_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	return boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension(), 0));
+	boost::shared_ptr<FloatVector> ret = boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension()));
+	ret -> setZero();
+	return ret;
 }
 
+/*FIXME: verstehe ich nicht. basis wovon?
 boost::shared_ptr<FloatVector> create_basis_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	return boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension()));
 }
+*/
 
 
 boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &xml_instance, ObjectNamespacePtr object_namespace) {
-	return boost::shared_ptr<FloatMatrix>(new FloatMatrix(xml_instance.Rows(), xml_instance.Columns(), 0));
+	boost::shared_ptr<FloatMatrix> ret
+		= boost::shared_ptr<FloatMatrix>(new FloatMatrix((int) xml_instance.Rows(), (int) xml_instance.Columns()));
+	ret -> setZero();
+	return ret;
 }
 
 
