@@ -49,7 +49,7 @@
 
 namespace CBF {
 
-void vector_from_string(const std::string str, FloatVector* vec){
+void vector_from_eigen_string(const std::string str, FloatVector* vec){
 	CBF_DEBUG("start parsing string to vector");
 	Float value;
 	std::vector<Float> values;
@@ -62,25 +62,104 @@ void vector_from_string(const std::string str, FloatVector* vec){
 	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << vec);
 }
 
-void matrix_from_string(const std::string str, FloatMatrix* matr){
-		CBF_DEBUG("start parsing string to matrix");
-		float value;
-		std::vector<float> values;
-		int rows = count(str.begin(), str.end(), '\n') + 1;
-		std::istringstream in(str);
-		while (in >> value) {
-			values.push_back(value);
+void vector_from_boost_string(const std::string str, FloatVector* vec){
+	CBF_DEBUG("start parsing string to vector");
+	Float value; // will be written from stream
+	int size; // size of the vector, from stream too
+	char c_tmp; // used for removing chars from stream.
+	std::istringstream in(str);
+
+	// remove '[' - read size - remove ']' and '('
+	in.get(c_tmp);
+	if (c_tmp != '[') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: vector_from_boost_string(" << str << "): expected '['");
+	in >> size;
+	in.get(c_tmp);
+	if (c_tmp != ']') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: vector_from_boost_string(" << str << "): expected ']'");
+	in.get(c_tmp);
+	if (c_tmp != '(') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: vector_from_boost_string(" << str << "): expected '('");
+
+	// resize passed vector.
+	vec -> resize(size);
+	// write values from stream to vector
+	for (int i = 0; i < size; ++i) {
+		in >> value;
+		(*vec)(i) = value;
+		// remove ',' or ')'
+		in.get(c_tmp);
+	}
+	// check whether the boost-string-representation is at its end
+	if (c_tmp != ')') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: vector_from_boost_string(" << str << "): expected ')'");
+	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << *vec);
+}
+
+void matrix_from_eigen_string(const std::string str, FloatMatrix* matr){
+	CBF_DEBUG("start parsing string to matrix");
+	float value;
+	std::vector<float> values;
+	int rows = count(str.begin(), str.end(), '\n') + 1;
+	std::istringstream in(str);
+	while (in >> value) {
+		values.push_back(value);
+	}
+	matr -> resize(rows, values.size()/rows);
+	int pos = 0;
+	//No std::copy because eigen::matrix seems to be written column by column.
+	//I tryed std::copy + transposeInPlace() but it is slower
+	for (int i = 0; i < rows; ++i){
+		for (int j = 0; j < values.size()/rows; ++j){
+			(*matr)(i,j) = values.at(pos);
+			++pos;
 		}
-		matr -> resize(rows, values.size()/rows);
-		int pos = 0;
-		//No std::copy because eigen::matrix seems to be written column by column.
-		for (int i = 0; i < rows; ++i){
-			for (int j = 0; j < values.size()/rows; ++j){
-				(*matr)(i,j) = values.at(pos);
-				++pos;
-			}
+	}
+	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << matr);
+}
+
+void matrix_from_boost_string(const std::string str, FloatMatrix* matr){
+	CBF_DEBUG("start parsing string to matrix");
+	float value; // will be written from stream
+	int rows, cols, row, col;
+	char c_tmp; // used for removing chars from stream.
+	std::istringstream in(str);
+
+	// remove '[' - read rows - remove ',' - read cols - remove ']' and '('
+	in.get(c_tmp);
+	if (c_tmp != '[') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
+	in >> rows;
+	in.get(c_tmp);
+	if (c_tmp != ',') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
+	in >> cols;
+	in.get(c_tmp);
+	if (c_tmp != ']') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
+	in.get(c_tmp);
+	if (c_tmp != '(') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
+
+	//resize passed matrix
+	matr -> resize(rows, cols);
+	//write values from stream to matrix
+	for (row = 0; row < rows; ++row) {
+		in.get(c_tmp); //remove leading '(' of row
+		if (c_tmp != '(') CBF_THROW_RUNTIME_ERROR(
+				"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
+		for (int col = 0; col < cols; ++col) {
+			in >> value;
+			(*matr)(row,col) = value;
+			in.get(c_tmp); //remove ',' or ')'
 		}
-		CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << matr);
+		// remove ',' between rows or last ')'
+		in.get(c_tmp);
+	}
+	// check whether the boost-string-representation is at its end
+	if (c_tmp != ')') CBF_THROW_RUNTIME_ERROR(
+			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
+	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << *matr);
 }
 
 FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
@@ -113,7 +192,7 @@ FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step,
 #ifdef CBF_HAVE_KDL
 FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j) {
 	if (m.rows() != j.rows() || m.cols() != j.columns())
-		m = FloatMatrix::Zero(j.rows(), j.columns());
+		m.resize(j.rows(), j.columns());
 
 	unsigned int rows, columns;
 	rows = j.rows();
@@ -129,7 +208,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j) {
 
 FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	if (m.rows() != 4 || m.cols() != 4)
-		m = FloatMatrix::Zero(4,4);
+		m.resize(4,4);
 
 	for (unsigned int row = 0; row < 4; ++row) {
 		for (unsigned int column = 0; column < 4; ++column) {
@@ -168,7 +247,6 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		//! Prepare a diagonal matrix from the singularValues vector
 		FloatMatrix SvMatrix(Sv.rows(), Sv.rows());
 		SvMatrix.setZero();
-		//TODO: what about SvMatrix.determinant()
 		Float det = 1.0;
 		for (int i = 0; i < Sv.rows(); ++i) {
 			det *= SvMatrix(i,i);
@@ -185,7 +263,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
 		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-	
+
 		if (transpose) result.transposeInPlace();
 		return det;
 	}
@@ -260,15 +338,16 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 	const CBFSchema::BoostVector *boost_vector = dynamic_cast<const CBFSchema::BoostVector*>(&xml_instance);
 
 	if (boost_vector) {
-		std::stringstream stream(boost_vector->String());
-		CBF_DEBUG("string: " << stream.str());
-		boost::numeric::ublas::vector<Float> v;
-		stream >> v;
-		if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
-
-		//parse boost::vector to CBF::FloatVector
-		FloatVector ret(v.size());
-		std::copy(v.begin(), v.end(), ret.data());
+		CBF_DEBUG("string: " << boost_vector->String());
+		//TODO: use boost if it exists
+		// std::stringstream stream(boost_vector->String());
+		// boost::numeric::ublas::vector<Float> v;
+		// stream >> v;
+		// if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
+		// FloatVector ret(v.size());
+		// std::copy(v.begin(), v.end(), ret.data());
+		FloatVector ret;
+		vector_from_boost_string(boost_vector->String(), &ret);
 		return ret;
 	}
 
@@ -277,7 +356,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 	if (eigen_vector) {
 		CBF_DEBUG("string: " << eigen_vector->String());
 		FloatVector ret;
-		vector_from_string(eigen_vector->String(), &ret);
+		vector_from_eigen_string(eigen_vector->String(), &ret);
 		if (ret.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
 		return ret;
 	}
@@ -285,7 +364,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
 }
 
-/*FIXME: is this create from boost vector? do we need it?
+/*FIXME: i assume this is create from boost vector
 boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<FloatVector> v(new FloatVector);
 	std::stringstream stream(xml_instance.String());
@@ -296,6 +375,15 @@ boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector 
 	return v;
 }
 */
+boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
+	boost::shared_ptr<FloatVector> v(new FloatVector);
+	CBF_DEBUG("string: " << xml_instance.String());
+	//yes it looks funny but a shared pointer is not a pointer
+	vector_from_boost_string(xml_instance.String(), &(*v));
+	if ((*v).size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
+
+	return v;
+}
 
 boost::shared_ptr<FloatVector> create_zero_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<FloatVector> ret = boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension()));
@@ -325,20 +413,35 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespace
 	const CBFSchema::BoostMatrix *m2 = dynamic_cast<const CBFSchema::BoostMatrix*>(m);
 	if (m2) {
 		FloatMatrix matrix;
+		/*FIXME
 		std::stringstream stream(std::string(m2->String()));
 		CBF_DEBUG("string: " << stream.str());
 		stream >> matrix;
+		*/
+		matrix_from_boost_string(m2->String(), &matrix);
 		CBF_DEBUG(matrix);
 		if ((matrix.rows() == 0) && (matrix.cols() == 0)) {
 			CBF_THROW_RUNTIME_ERROR("Matrix is empty")
 		}
-
 		return matrix;
 	}
 
-	const CBFSchema::ZeroMatrix *m3 = dynamic_cast<const CBFSchema::ZeroMatrix*>(m);
+	const CBFSchema::EigenMatrix *m3 = dynamic_cast<const CBFSchema::EigenMatrix*>(m);
 	if (m3) {
-		return FloatMatrix(m3->Rows(), m3->Columns(), 0);
+		FloatMatrix matrix;
+		matrix_from_eigen_string(m3->String(), &matrix);
+		CBF_DEBUG(matrix);
+		if ((matrix.rows() == 0) && (matrix.cols() == 0)) {
+			CBF_THROW_RUNTIME_ERROR("Matrix is empty")
+		}
+		return matrix;
+	}
+
+	const CBFSchema::ZeroMatrix *m4 = dynamic_cast<const CBFSchema::ZeroMatrix*>(m);
+	if (m4) {
+		FloatMatrix ret((int) m4->Rows(), (int) m4->Columns());
+		ret.setZero();
+		return ret;
 	}
 
 	throw std::runtime_error("[create_matrix()]: Matrix type not supported yet");
