@@ -102,7 +102,7 @@ int main() {
 	CBF::DummyReferencePtr dref(new CBF::DummyReference(1,3));
 	double ref[] = {1, 0, 0};
 	CBF::FloatVector vref(3);
-	std::copy(ref, ref+3, vref.begin());
+	std::copy(ref, ref+3, vref.data());
 	dref->set_reference(vref);
 
 	CBF::DummyResourcePtr dres(new CBF::DummyResource(NUM_OF_JOINT_TRIPLES * 3, 1));

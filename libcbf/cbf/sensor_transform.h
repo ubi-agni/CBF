@@ -92,7 +92,6 @@ namespace CBF {
 			rows in the task jacobian
 		*/
 		virtual unsigned int task_dim() const {
-			//FIXME: return m_TaskJacobian.size1();
 			return m_TaskJacobian.rows();
 		}
 
@@ -103,7 +102,6 @@ namespace CBF {
 			columns in the task jacobian
 		*/
 		virtual unsigned int resource_dim() const {
-			//FIXME: return m_TaskJacobian.size2();
 			return m_TaskJacobian.cols();
 		}
 	
@@ -187,8 +185,7 @@ namespace CBF {
 
 		void init(const FloatVector &value) {
 			m_Result = value;
-			//FIXME: m_TaskJacobian = ublas::zero_matrix<Float>(m_Result.size(), m_Result.size());
-			m_TaskJacobian = FloatMatrix::Zero(value.rows(), value.rows());
+			m_TaskJacobian = FloatMatrix::Zero(value.size(), value.size());
 		}
 
 		virtual void update(const FloatVector &resource_value) {
@@ -221,10 +218,7 @@ namespace CBF {
 			m_Factors = factors;
 
 			m_Result = FloatVector(m_Operand->task_dim());
-			//FIXME: m_TaskJacobian = FloatMatrix(m_Operand->task_dim(), m_Operand->resource_dim());
-			int i = m_Operand->task_dim();
-			int j = m_Operand->resource_dim();
-			m_TaskJacobian = FloatMatrix(i, j);
+			m_TaskJacobian = FloatMatrix((int) m_Operand->task_dim(), (int) m_Operand->resource_dim());
 		}
 
 		virtual void update(const FloatVector &resource_value) {

@@ -85,8 +85,7 @@ int main() {
 	std::cout << "jacobian " << s4->task_jacobian() << std::endl;
 
 
-	CBF::FloatVector init_vector = 
-		boost::numeric::ublas::unit_vector<CBF::Float>(3, 0);
+	CBF::FloatVector init_vector = CBF::FloatVector::Unit(3, 0);
 
 	CBF::SensorTransformPtr s5(
 		CBF::make_BlockWiseAccumulateSensorTransform
@@ -94,8 +93,8 @@ int main() {
 			id,
 			std::plus<CBF::FloatVector>(),
 			std::plus<CBF::FloatMatrix>(),
-			boost::numeric::ublas::zero_vector<CBF::Float>(3),
-			boost::numeric::ublas::zero_matrix<CBF::Float>(3,9),
+			CBF::FloatVector::Zero(3),
+			CBF::FloatMatrix(3,9),
 			3
 		)
 	);
@@ -112,7 +111,7 @@ int main() {
 			CBF::constant<CBF::FloatVector, CBF::FloatMatrix>
 		> (
 			CBF::constant<CBF::FloatVector, CBF::FloatVector>(CBF::FloatVector(3,1)),
-			CBF::constant<CBF::FloatVector, CBF::FloatMatrix>(CBF::FloatMatrix(3,3,0)),
+			CBF::constant<CBF::FloatVector, CBF::FloatMatrix>(CBF::FloatMatrix::Zero(3,3)),
 			3, 3
 		)
 	);

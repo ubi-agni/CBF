@@ -63,6 +63,7 @@ void vector_from_eigen_string(const std::string str, FloatVector* vec){
 }
 
 void vector_from_boost_string(const std::string str, FloatVector* vec){
+	//TODO: use boost if exists
 	CBF_DEBUG("start parsing string to vector");
 	Float value; // will be written from stream
 	int size; // size of the vector, from stream too
@@ -119,6 +120,7 @@ void matrix_from_eigen_string(const std::string str, FloatMatrix* matr){
 }
 
 void matrix_from_boost_string(const std::string str, FloatMatrix* matr){
+	//TODO: use boost if exists
 	CBF_DEBUG("start parsing string to matrix");
 	float value; // will be written from stream
 	int rows, cols, row, col;
@@ -165,7 +167,6 @@ void matrix_from_boost_string(const std::string str, FloatMatrix* matr){
 FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
 	CBF_DEBUG("start: " << start);
 	CBF_DEBUG("end: " << end);
-	//FIXME: Float inner = ublas::inner_prod(start/ublas::norm_2(start), end/ublas::norm_2(start));
 	Float inner = start.normalized().dot(end/start.norm());
 	CBF_DEBUG("inner: " << 1.0 - inner);
 	if (inner > 1.0) inner = 1.0;
@@ -315,20 +316,6 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 	const CBFSchema::SimpleVector *simple_vector = dynamic_cast<const CBFSchema::SimpleVector*>(&xml_instance);
 
 	if (simple_vector) {
-		/*FIXME:
-		std::vector<Float> tmp;
-		for (
-			CBFSchema::SimpleVector::Coefficient_const_iterator it = (*simple_vector).Coefficient().begin();
-			it != (*simple_vector).Coefficient().end();
-			++it
-		)
-		{
-			tmp.push_back((*it));
-		}
-		FloatVector ret(tmp.size());
-		std::copy(tmp.begin(), tmp.end(), ret.begin());
-		return ret;
-		*/
 		FloatVector ret((*simple_vector).Coefficient().size());
 		std::copy((*simple_vector).Coefficient().begin(),
 				(*simple_vector).Coefficient().end(), ret.data());
@@ -339,13 +326,6 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 
 	if (boost_vector) {
 		CBF_DEBUG("string: " << boost_vector->String());
-		//TODO: use boost if it exists
-		// std::stringstream stream(boost_vector->String());
-		// boost::numeric::ublas::vector<Float> v;
-		// stream >> v;
-		// if (v.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
-		// FloatVector ret(v.size());
-		// std::copy(v.begin(), v.end(), ret.data());
 		FloatVector ret;
 		vector_from_boost_string(boost_vector->String(), &ret);
 		return ret;
@@ -364,23 +344,12 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
 }
 
-/*FIXME: i assume this is create from boost vector
-boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	boost::shared_ptr<FloatVector> v(new FloatVector);
-	std::stringstream stream(xml_instance.String());
-	CBF_DEBUG("string: " << stream.str());
-	stream >> *v;
-	if ((*v).size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
-
-	return v;
-}
-*/
 boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<FloatVector> v(new FloatVector);
 	CBF_DEBUG("string: " << xml_instance.String());
 	//yes it looks funny but a shared pointer is not a pointer
 	vector_from_boost_string(xml_instance.String(), &(*v));
-	if ((*v).size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
+	if (v -> size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
 
 	return v;
 }
@@ -391,11 +360,11 @@ boost::shared_ptr<FloatVector> create_zero_vector(const CBFSchema::ZeroVector &x
 	return ret;
 }
 
-/*FIXME: verstehe ich nicht. basis wovon?
+
 boost::shared_ptr<FloatVector> create_basis_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	return boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension()));
 }
-*/
+
 
 
 boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &xml_instance, ObjectNamespacePtr object_namespace) {
@@ -413,11 +382,6 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespace
 	const CBFSchema::BoostMatrix *m2 = dynamic_cast<const CBFSchema::BoostMatrix*>(m);
 	if (m2) {
 		FloatMatrix matrix;
-		/*FIXME
-		std::stringstream stream(std::string(m2->String()));
-		CBF_DEBUG("string: " << stream.str());
-		stream >> matrix;
-		*/
 		matrix_from_boost_string(m2->String(), &matrix);
 		CBF_DEBUG(matrix);
 		if ((matrix.rows() == 0) && (matrix.cols() == 0)) {

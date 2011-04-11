@@ -89,18 +89,12 @@ namespace CBF {
 				robot_name, robotinterface::RobotState::QUERY_POSTURE
 			);
 
-			/*FIXME:
 			std::copy(
 				state.getPosture().begin(), 
 				state.getPosture().end(),
-				m_Result.()
+				m_Result.data()
 			);
-			*/
 
-			for (int i = 0; i < state.getPosture().size(); ++i){
-				m_Result(i) = state.getPosture().at(i);
-			}
-	
 			m_LastPose = m_Result;
 	
 			m_RobotInterface.subscribe(
@@ -131,11 +125,7 @@ namespace CBF {
 			if (tmp.size() != m_LastPose.size())
 				throw std::runtime_error("Dimension mismatch");
 	
-			//FIXME: std::copy(tmp.begin(), tmp.end(), m_LastPose.begin());
-
-			for (int i = 0; i < tmp.size(); ++i){
-				m_LastPose(i) = tmp.at(i);
-			}
+			std::copy(tmp.begin(), tmp.end(), m_LastPose.data());
 	
 			//CBF_DEBUG("LAST POSE: " << m_LastPose << std::endl)
 		}
@@ -149,16 +139,11 @@ namespace CBF {
 		}
 	
 		virtual void add(const FloatVector &arg) {
-			FloatVector eigentmp = m_Result + arg;
-			std::vector<Float> tmp;
-			for (int i = 0; i < m_Result.size(); ++i){
-				tmp.push_back(eigentmp(i));
-			}
-
+			FloatVector tmp = m_Result + arg;
 			CBF_DEBUG("add tmp: " << tmp);
 			m_RobotCommandSet
 							<< robotinterface::cmd::clear()
-							<< robotinterface::cmd::posture(tmp.begin(), tmp.end(), "rad");
+							<< robotinterface::cmd::posture(tmp.data(), tmp.data() + tmp.size(), "rad");
 	
 			m_RobotInterface.send(m_RobotCommandSet);
 		}

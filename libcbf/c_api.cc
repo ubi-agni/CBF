@@ -138,11 +138,7 @@ cbf_controller_set_reference(struct cbf_primitive_controller* c, double *referen
 		return -1;
 	}
 
-	//FIXME: std::copy(reference, reference + d->references()[0].size(), d->references()[0].begin());
-	for (int i = 0; i < d->references()[0].size(); ++i) {
-		d->references()[0](i) = reference[i];
-	}
-
+	std::copy(reference, reference + d->references()[0].size(), d->references()[0].data());
 	return 1;
 }
 
@@ -157,11 +153,7 @@ cbf_controller_get_reference(struct cbf_primitive_controller* c, double *referen
 		return -1;
 	}
 
-	//FIXME: std::copy(d->references()[0].begin(), d->references()[0].end(), reference);
-	for (int i = 0; i < d->references()[0].size(); ++i) {
-		reference[i] = d->references()[0](i);
-	}
-
+	std::copy(d->references()[0].data(), d->references()[0].data() + d->references()[0].size(), reference);
 	return 1;
 }
 
@@ -179,10 +171,7 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
 		}
 
 		//! Copy data over into the resource (assuming it's a dummy resource)..
-		//FIXME: std::copy(in, in+res->dim(), res->m_Variables.begin());
-		for (int i = 0; i < res -> dim(); ++i) {
-				res -> m_Variables(i) = in[i];
-		}
+		std::copy(in, in+res->dim(), res -> m_Variables.data());
 
 		CBF_DEBUG(res->m_Variables);
 
@@ -195,10 +184,7 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
 		result = (*p)->result();
 
 		//! Copy result over into out array...
-		//FIXME: std::copy(result.begin(), result.end(), out);
-		for (int i = 0; i < result.size(); ++i){
-			out[i] = result(i);
-		}
+		std::copy(result.data(), result.data() + result.size(), out);
 	}
 	catch (...)
 	{
@@ -225,10 +211,8 @@ cbf_controller_get_current_task_position(struct cbf_primitive_controller *c, dou
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
-	//FIXME: std::copy((*p)->current_task_position().begin(),(*p)->current_task_position().end(), out);
-	for (int i = 0; i < (*p)->current_task_position().size(); ++i) {
-		out[i] = (*p)->current_task_position()(i);
-	}
+	std::copy((*p)->current_task_position().data(),
+			(*p)->current_task_position().data() + (*p)->current_task_position().size(), out);
 
 	return 1;	
 }
@@ -254,10 +238,7 @@ cbf_controller_set_resource(struct cbf_primitive_controller *c, double *resource
 
 	CBF::FloatVector vec(resource_dim);
 
-	//FIXME: std::copy(resource_in, resource_in + resource_dim, vec.begin());
-	for (int i = 0; i < resource_dim; ++i) {
-		vec(i) = resource_in[i];
-	}
+	std::copy(resource_in, resource_in + resource_dim, vec.data());
 
 	CBF::DummyResourcePtr dr = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
 
@@ -272,11 +253,8 @@ cbf_controller_get_resource(struct cbf_primitive_controller *c, double *resource
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
-
-	//FIXME: std::copy((*p)->resource()->get().begin(), (*p)->resource()->get().end(), resource_out);
-	for (int i = 0; i < (*p)->resource()->get().size(); ++i) {
-		resource_out[i] = (*p)->resource()->get()(i);
-	}
+	std::copy((*p)->resource()->get().data(),
+			(*p)->resource()->get().data() + (*p)->resource()->get().size(), resource_out);
 
 	return 1;
 }

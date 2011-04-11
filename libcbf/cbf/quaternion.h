@@ -182,7 +182,6 @@ struct Quaternion {
 
 	#define CBF_QUAT_AXIS_THRESH 0.00001
 	Quaternion &from_axis_angle3(const FloatVector &v) {
-		//FIXME: Float norm = ublas::norm_2(v);
 		Float norm = v.norm();
 		w = cos(0.5 * norm);
 		Float sin_a = sin(0.5 * norm);
@@ -207,7 +206,6 @@ struct Quaternion {
 		ret[0] = x;
 		ret[1] = y;
 		ret[2] = z;
-		//FIXME: Float norm = ublas::norm_2(ret);
 		Float norm = ret.norm();
 		// CBF_DEBUG("norm " << norm)
 		if (norm > CBF_QUAT_AXIS_THRESH) {
@@ -367,7 +365,6 @@ struct Quaternion {
 		A conversion operator to create a 3x3 rotation matrix from this quaternion..
 	*/
 	operator FloatMatrix () {
-		//FIXME: FloatMatrix m = ublas::zero_matrix<Float>(3,3);
 		FloatMatrix m = FloatMatrix::Zero(3,3);
 
 		m(0,0) = 1.0 - 2.0 * (y*y + z*z);

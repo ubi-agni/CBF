@@ -101,12 +101,10 @@ namespace CBF {
 		}
 	
 		virtual unsigned int task_dim() const { 
-			//FIXME: return m_InverseTaskJacobian.size2();
 			return m_InverseTaskJacobian.cols();
 		}
 
 		virtual unsigned int resource_dim() const {
-			//FIXME: return m_InverseTaskJacobian.size1();
 			return m_InverseTaskJacobian.rows();
 		}
 

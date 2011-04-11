@@ -215,7 +215,7 @@ void XcfMemoryRunControllerOperator::add_attachment(){
 		return;
 	}
 
-	//TODO: Problems with memory server. Seem to need unique ID's. UUID when avaliable.
+	//TODO: Memory server needs unique ID's. UUID when avaliable.
 	// create Attachment and set the Buffer.
 	memory::interface::Attachments att;
 	// create (hopefully unique) id

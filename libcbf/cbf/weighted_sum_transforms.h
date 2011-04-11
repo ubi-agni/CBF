@@ -49,7 +49,7 @@ struct WeightedSumSensorTransform : public SensorTransform {
 	WeightedSumSensorTransform(
 		std::vector<SensorTransformPtr> transforms 
 			= std::vector<SensorTransformPtr>(), 
-		FloatVector weights = FloatVector::Zero()
+		FloatVector weights = FloatVector::Zero(0)
 	) 
 	{
 		set_transforms(transforms);

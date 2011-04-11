@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 	
 	
 		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,3));
-		ref->references()[0] = CBF::ublas::unit_vector<CBF::Float>(3,1);
+		ref->references()[0] = CBF::FloatVector::Unit(3,1);
 
 		//! Use a simple primitive controller for this test
 		controller = CBF::PrimitiveControllerPtr(

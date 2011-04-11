@@ -169,14 +169,6 @@ namespace CBF {
 			CBF_DEBUG("update padded");
 			pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
 
-			/*FIXME:
-			ublas::matrix_range<FloatMatrix> mr(
-				m_PaddedTaskJacobian, 
-				ublas::range(0, task_jacobian.size1()), 
-				ublas::range(0, task_jacobian.size2())
-			);
-			mr.assign(task_jacobian);
-			*/
 			m_PaddedTaskJacobian.block(0, 0, task_jacobian.rows(), task_jacobian.cols())
 					= task_jacobian;
 			CBF_DEBUG("padded jacobian: " << m_PaddedTaskJacobian);

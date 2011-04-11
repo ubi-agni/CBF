@@ -77,7 +77,6 @@ FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step,
 inline FloatVector unpack_axis_angle3(FloatVector &v) {
 	FloatVector ret(4);
 
-	//FIXME: ret[0] = ublas::norm_2(v);
 	ret[0] = v.norm();
 
 	ret[1] = v[0]/ret[0];
@@ -124,13 +123,13 @@ Float determinant(ublas::matrix_expression<matrix_T> const& mat_r)
 */
 
 /** 
-	A function to create a ublas::matrix from a KDL::Jacobian. The argument m is 
+	A function to create a CBF::FloatMatrix from a KDL::Jacobian. The argument m is
 	filled with a new matrix and a reference to m is returned, too
 */
 FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j);
 
 /** 
-	A function to create a ublas::matrix from a KDL::Frame. The argument m is 
+	A function to create a CBF::FloatMatrix from a KDL::Frame. The argument m is
 	filled with a new matrix and a reference to m is returned, too
 */
 FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &j);

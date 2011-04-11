@@ -41,8 +41,6 @@ namespace CBF {
 		A typedef to make some other stuff shorter...
 	*/
 
-	//FIXME: typedef boost::numeric::ublas::vector<Float> FloatVector;
-	//FIXME: typedef boost::numeric::ublas::matrix<Float> FloatMatrix;
 	typedef Eigen::VectorXd FloatVector;
 	typedef Eigen::MatrixXd FloatMatrix;
 
