@@ -97,7 +97,7 @@ struct CompositeReference : public Reference
 				if (m_References[i]->get().size() == 0)
 					return;
 				m_ReferenceValues[0].segment(current_start_index, m_References[i] -> get().size())
-						= m_References[i] -> get();
+						= m_References[i] -> get()[0];
 				current_start_index += m_References[i]->dim();
 			}
 			m_UpdateSuccessfull = true;
