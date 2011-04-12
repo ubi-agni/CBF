@@ -94,7 +94,7 @@ int main() {
 			std::plus<CBF::FloatVector>(),
 			std::plus<CBF::FloatMatrix>(),
 			CBF::FloatVector::Zero(3),
-			CBF::FloatMatrix(3,9),
+			CBF::FloatMatrix::Zero(3,9),
 			3
 		)
 	);

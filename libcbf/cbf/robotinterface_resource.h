@@ -142,8 +142,8 @@ namespace CBF {
 			FloatVector tmp = m_Result + arg;
 			CBF_DEBUG("add tmp: " << tmp);
 			m_RobotCommandSet
-							<< robotinterface::cmd::clear()
-							<< robotinterface::cmd::posture(tmp.data(), tmp.data() + tmp.size(), "rad");
+				<< robotinterface::cmd::clear()
+				<< robotinterface::cmd::posture(tmp.data(), tmp.data() + tmp.size(), "rad");
 	
 			m_RobotInterface.send(m_RobotCommandSet);
 		}

@@ -15,7 +15,7 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Florian Paul Schmidt
+    Copyright 2009, 2010 Florian Paul Schmidt, Viktor Richter
 */
 
 #include <cbf/utilities.h>
@@ -227,9 +227,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	static const double pseudo_inv_precision_threshold = 0.001;
 
 	Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
-		bool transpose = false;
-	
-		if (M.cols() > M.rows()) transpose = true;
+		bool transpose = M.cols() > M.rows();
 	
 		//! rows and cols hold dimensions of input matrix
 		int rows = (int)M.rows();
@@ -263,16 +261,18 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	
 		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
-		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+		//Definition: result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+		if (transpose) {
+			result = (svd.matrixV() * SvMatrix) * svd.matrixU();
+		} else {
+			result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+		}
 
-		if (transpose) result.transposeInPlace();
 		return det;
 	}
 
 	Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, Float damping_constant) {
-		bool transpose = false;
-	
-		if (M.cols() > M.rows()) transpose = true;
+		bool transpose = M.cols() > M.rows();
 
 		//! rows and cols hold dimensions of input matrix
 		int rows = (int)M.rows();
@@ -304,9 +304,12 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	
 		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
-		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-
-		if (transpose) result.transposeInPlace();
+		//Definition: result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+		if (transpose) {
+			result = (svd.matrixV() * SvMatrix) * svd.matrixU();
+		} else {
+			result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+		}
 		return det;
 	}
 #endif
@@ -403,9 +406,7 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespace
 
 	const CBFSchema::ZeroMatrix *m4 = dynamic_cast<const CBFSchema::ZeroMatrix*>(m);
 	if (m4) {
-		FloatMatrix ret((int) m4->Rows(), (int) m4->Columns());
-		ret.setZero();
-		return ret;
+		return FloatMatrix::Zero((int) m4->Rows(), (int) m4->Columns());
 	}
 
 	throw std::runtime_error("[create_matrix()]: Matrix type not supported yet");

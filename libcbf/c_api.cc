@@ -138,7 +138,12 @@ cbf_controller_set_reference(struct cbf_primitive_controller* c, double *referen
 		return -1;
 	}
 
-	std::copy(reference, reference + d->references()[0].size(), d->references()[0].data());
+	std::copy(
+		reference,
+		reference + d->references()[0].size(),
+		d->references()[0].data()
+	);
+
 	return 1;
 }
 
@@ -153,7 +158,12 @@ cbf_controller_get_reference(struct cbf_primitive_controller* c, double *referen
 		return -1;
 	}
 
-	std::copy(d->references()[0].data(), d->references()[0].data() + d->references()[0].size(), reference);
+	std::copy(
+		d->references()[0].data(),
+		d->references()[0].data() + d->references()[0].size(),
+		reference
+		);
+
 	return 1;
 }
 
@@ -211,8 +221,11 @@ cbf_controller_get_current_task_position(struct cbf_primitive_controller *c, dou
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
-	std::copy((*p)->current_task_position().data(),
-			(*p)->current_task_position().data() + (*p)->current_task_position().size(), out);
+	std::copy(
+		(*p)->current_task_position().data(),
+		(*p)->current_task_position().data() + (*p)->current_task_position().size(),
+		out
+	);
 
 	return 1;	
 }
@@ -253,8 +266,11 @@ cbf_controller_get_resource(struct cbf_primitive_controller *c, double *resource
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
-	std::copy((*p)->resource()->get().data(),
-			(*p)->resource()->get().data() + (*p)->resource()->get().size(), resource_out);
+	std::copy(
+		(*p)->resource()->get().data(),
+		(*p)->resource()->get().data() + (*p)->resource()->get().size(),
+		resource_out
+	);
 
 	return 1;
 }

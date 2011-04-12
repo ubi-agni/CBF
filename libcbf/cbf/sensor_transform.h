@@ -185,7 +185,7 @@ namespace CBF {
 
 		void init(const FloatVector &value) {
 			m_Result = value;
-			m_TaskJacobian = FloatMatrix::Zero(value.size(), value.size());
+			m_TaskJacobian = FloatMatrix::Zero(m_Result.size(), m_Result.size());
 		}
 
 		virtual void update(const FloatVector &resource_value) {
