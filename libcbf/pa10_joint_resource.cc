@@ -24,15 +24,15 @@ namespace CBF {
 	
 	PA10JointResource::Helper PA10JointResource::m_Helper;
 	
-	const boost::numeric::ublas::vector<Float> &PA10JointResource::get() {
+	const FloatVector &PA10JointResource::get() {
 		return m_CurrentPosture;
 	}
 	
-	void PA10JointResource::set(const boost::numeric::ublas::vector<Float> &in) {
+	void PA10JointResource::set(const FloatVector &in) {
 		m_CurrentPosture = in;
 	}
 	
-	void PA10JointResource::add(const boost::numeric::ublas::vector<Float> &in) {
+	void PA10JointResource::add(const FloatVector &in) {
 		m_CurrentPosture += in;
 	}
 	

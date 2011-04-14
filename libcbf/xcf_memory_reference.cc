@@ -62,7 +62,7 @@ namespace CBF {
 		vector_string << floatVector;
 
 		CBF_DEBUG("creating vector doc");
-		CBFSchema::BoostVector vectorDoc(vector_string.str());
+		CBFSchema::EigenVector vectorDoc(vector_string.str());
 
 		CBFSchema::XCFMemoryReferenceVector v(m_ReferenceName, vectorDoc);
 
@@ -85,8 +85,6 @@ namespace CBF {
 
 
 		mi::TriggeredAction triggeredAction(f);
-
-		//m_MemoryInterface -> addNamespacePrefix("p1", "http://www.cit-ec.uni-bielefeld.de/CBF");
 
 		m_MemoryInterface -> add(condition, triggeredAction);
 	}

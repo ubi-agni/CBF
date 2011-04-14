@@ -261,12 +261,9 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	
 		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
-		//Definition: result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-		if (transpose) {
-			result = (svd.matrixV() * SvMatrix) * svd.matrixU();
-		} else {
-			result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-		}
+		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+
+		if (transpose) result.transposeInPlace();
 
 		return det;
 	}
@@ -304,12 +301,10 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	
 		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
-		//Definition: result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-		if (transpose) {
-			result = (svd.matrixV() * SvMatrix) * svd.matrixU();
-		} else {
-			result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-		}
+		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+
+		if (transpose) result.transposeInPlace();
+
 		return det;
 	}
 #endif

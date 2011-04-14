@@ -73,10 +73,10 @@ namespace CBF {
 			//First insert the XML-document
 
 			CBF_DEBUG("creating vector doc");
-			CBFSchema::BoostVector vectorDoc(vector_string.str());
+			CBFSchema::EigenVector vectorDoc(vector_string.str());
 
 			CBF_DEBUG("creating matrix doc");
-			CBFSchema::BoostMatrix matrixDoc(matrix_string.str());
+			CBFSchema::EigenMatrix matrixDoc(matrix_string.str());
 
 			CBF_DEBUG("creating XCFMemorySensorTransformResult doc");
 			CBFSchema::XCFMemorySensorTransformResult transformResult(m_ResultName, vectorDoc, matrixDoc);

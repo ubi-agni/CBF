@@ -53,12 +53,12 @@ int main(int argc, char *argv[]) {
 			"produce help message"
 		)
 		(
-			"runcontrollername", 
+			"rcname",
 			po::value<std::string>(), 
 			"The name of the XCFMemoryRunContoller to operate"
 		)
 		(
-			"active-memory", 
+			"am",
 			po::value<std::string>(), 
 			"Name of the active-memory on which to publish"
 		)
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 		return(EXIT_SUCCESS);
 	}
 
-	if (!variables_map.count("active-memory")) {
+	if (!variables_map.count("am")) {
 		std::cout << "No active-memory specified" << std::endl;
 		std::cout << options_description << std::endl;
 		return(EXIT_FAILURE);
@@ -90,9 +90,9 @@ int main(int argc, char *argv[]) {
 
 	// getting the name of the actice_memory
 	std::string active_memory_name = 
-		variables_map["active-memory"].as<std::string>();
+		variables_map["am"].as<std::string>();
 
-	if (!variables_map.count("runcontrollername")) {
+	if (!variables_map.count("rcname")) {
 		std::cout << "No run-controller-name specified" << std::endl;
 		std::cout << options_description << std::endl;
 		return(EXIT_FAILURE);
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 
 	// getting the name of the run_controller
 	std::string run_controller_name = 
-		variables_map["runcontrollername"].as<std::string>();
+		variables_map["rcname"].as<std::string>();
 
 	//Initializing the QApplication.
 	QApplication *app = new QApplication(argc, argv);

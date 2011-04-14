@@ -74,7 +74,7 @@ namespace CBF {
 
 		if(m_StateLocationPtr == NULL){
 			CBF_DEBUG("creating vector doc");
-			CBFSchema::BoostVector vectorDoc(stateVector_string.str());
+			CBFSchema::EigenVector vectorDoc(stateVector_string.str());
 
 			CBF_DEBUG("creating XCFMemoryResourceState doc");
 			CBFSchema::XCFMemoryResourceState resourceState(m_ResourceName, vectorDoc);

@@ -8,7 +8,7 @@
 #include <functional>
 
 int main() {
-	CBF::SensorTransformPtr id(new CBF::IdentitySensorTransform(9));	
+	CBF::SensorTransformPtr id(new CBF::IdentitySensorTransform(9));
 
 	CBF::DummyResourcePtr r(new CBF::DummyResource(9));
 
