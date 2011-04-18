@@ -1,8 +1,9 @@
 #include <cbf/types.h>
-#include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/exceptions.h>
+
+#include <cbf/schemas.hxx>
 
 #include <boost/numeric/ublas/io.hpp>
 

@@ -25,14 +25,9 @@
 #include <cbf/controller.h>
 #include <cbf/control_basis.h>
 #include <cbf/debug_macros.h>
-
 #include <cbf/schemas.hxx>
 
 #include <cbf_run_controller.h>
-
-#ifdef CBF_HAVE_XSD
-	#include <cbf/schemas.hxx>
-#endif
 
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>

@@ -161,7 +161,7 @@ namespace CBF {
 			unsigned int resource_dim, 
 			float diagonal
 		) { 
-			FloatVector diagonal_elements = FloatVector::Constant(task_dim, task_dim, diagonal);
+			FloatVector diagonal_elements = FloatVector::Constant(task_dim, diagonal);
 			init(task_dim, resource_dim, diagonal_elements);
 		}
 	

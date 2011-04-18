@@ -210,7 +210,7 @@ namespace CBF {
 
 		void init(
 			SensorTransformPtr operand,
-			unsigned int blocksize, 
+			unsigned int blocksize,
 			const FloatVector &factors
 		) {
 			m_Operand = operand;

@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
 												 KDL::Frame(KDL::Vector(1,0,0))));
 	
-	
+
 		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,3));
 		ref->references()[0] = CBF::FloatVector::Unit(3,1);
 
