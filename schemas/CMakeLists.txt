@@ -20,6 +20,7 @@ if(CBF_HAVE_XSD)
 	 RUNTIME DESTINATION bin
 	 LIBRARY DESTINATION lib
 	 ARCHIVE DESTINATION lib/static
+	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
 	 )
 else()
   message(STATUS "  schemas.hxx and schemas.cxx will not be created, because XSD was not found")

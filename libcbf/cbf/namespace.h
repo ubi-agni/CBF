@@ -37,6 +37,10 @@ namespace CBF {
 		*/
 		template<class T> boost::shared_ptr<T> get(const std::string &key, bool throw_if_fails = true) {
 			CBF_DEBUG("trying to get object with name \"" << key << "\" and of type \"" << CBF_UNMANGLE(T) << "\"");
+			if(m_Map.find(key) == m_Map.end()) {
+				CBF_THROW_RUNTIME_ERROR("no object in map with key: " << key);
+			}
+
 			try {
 				ObjectPtr p = m_Map[key];
 				if (p.get() == 0) CBF_THROW_RUNTIME_ERROR("object in map is 0 pointer");
@@ -80,7 +84,6 @@ namespace CBF {
 
 	typedef boost::shared_ptr<ObjectNamespace> ObjectNamespacePtr;
 
-	
 } // namespace
 
 #endif

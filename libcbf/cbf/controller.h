@@ -75,21 +75,10 @@ namespace CBF {
 			Always run step() at least once before 
 			calling finished() for the first time.
 		*/
-		virtual bool step(int cycle = -1) { 
-			int real_cycle;
-
-			if (cycle == -1) 
-				real_cycle = rand();
-			else
-				real_cycle = cycle;
-
-			//! Update internal state
-			update(real_cycle);
-
-			//! Put results of update() into effect..
-			action(real_cycle);
-
-			return finished(); 
+		virtual bool step() {
+			update();
+			action();
+			return finished();
 		}
 	
 		/**
@@ -109,23 +98,7 @@ namespace CBF {
 			depending on whether it's a new cycle or not
 			(by calling do_update() if appropriate).
 		*/
-		virtual void update(int cycle) {
-			if (m_UpdateCycle != cycle) 
-				do_update(cycle);
-
-			m_UpdateCycle = cycle;
-		}
-
-		/**
-			@brief This function should do the
-			calculation. 
-
-			It is only called by update() when nessecary 
-			(i.e. the cycle ID changed)..
-
-			The default implementation does nothing
-		*/
-		virtual void do_update(int cycle)  { }
+		virtual void update() { }
 
 		/**
 			@brief This member checks whether it's 
@@ -133,22 +106,8 @@ namespace CBF {
 
 			If it is time, then it calls the do_action() method
 		*/
-		virtual void action(int cycle) {
-			if (m_ActionCycle != cycle) 
-				do_action(cycle);
+		virtual void action() { }
 
-			m_ActionCycle = cycle;
-		}
-	
-
-
-		/**
-			@brief This function should put the result of the update()
-			step into action
-
-			The default implementation does nothing.
-		*/
-		virtual void do_action(int cycle) { }
 
 		/**
 			@brief Returns a reference to the user given name of this controller..

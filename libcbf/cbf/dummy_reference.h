@@ -63,6 +63,8 @@ namespace CBF {
 				CBF_THROW_RUNTIME_ERROR("dim < 1");
 
 			m_References = refs;
+			for (unsigned int i = 0; i < refs.size(); ++i)
+				CBF_DEBUG("new reference[" << i << "]: " << refs[i]);
 		}
 
 		/**
@@ -73,6 +75,7 @@ namespace CBF {
 				CBF_THROW_RUNTIME_ERROR("ref dim mismatch");
 
 			m_References[0] = ref;
+			CBF_DEBUG("new reference[0]: " << ref);
 		}
 
 		virtual std::vector<FloatVector> &references() {

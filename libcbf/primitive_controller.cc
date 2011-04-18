@@ -91,14 +91,7 @@ namespace CBF {
 	) {
 		m_Resource = resource;
 
-		#if 0
-		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) { 
-			m_SubordinateControllers[i]->m_Resource = m_Resource; 
-			m_SubordinateControllers[i]->check_dimensions();
-		}
-		#endif
 		check_dimensions();
-
 	}
 
 	PrimitiveController::PrimitiveController(
@@ -131,22 +124,29 @@ namespace CBF {
 	
 
 	void SubordinateController::check_dimensions() {
-		CBF_DEBUG("Reference and Potential dimensions " << m_Reference->dim() << " " << m_Potential->dim());
-
 		if (m_Reference->dim() != m_Potential->dim())
-			throw std::runtime_error("Reference and Potential dimensions mismatch");
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Reference and Potential dimensions mismatch: " << m_Reference->dim() << " is not equal to " << m_Potential->dim());
+
+		if (m_SensorTransform->task_dim() != m_Potential->dim())
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Potential dimension mismatch: " << m_SensorTransform->task_dim() << " is not equal to " << m_Potential->dim());
+
+		if (m_SensorTransform->resource_dim() != m_EffectorTransform->resource_dim())
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Effector transform resource dimension mismatch: " << m_SensorTransform->resource_dim() << " is not equal to " << m_EffectorTransform->resource_dim());
+
+		if (m_SensorTransform->task_dim() != m_EffectorTransform->task_dim())
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Effector transform task dimension mismatch: " << m_SensorTransform->task_dim() << " is not equal to " << m_EffectorTransform->task_dim());
 	}	
 
 	ResourcePtr SubordinateController::resource() { 
 		return m_Master->resource(); 
 	}	
 
-	void PrimitiveController::do_update(int cycle) {
+	void PrimitiveController::update() {
 		m_Resource->update();
-		SubordinateController::do_update(cycle);
+		SubordinateController::update();
 	}	
 	
-	void SubordinateController::do_update(int cycle) 
+	void SubordinateController::update() 
 	{
 		assert(m_Reference.get() != 0);
 		assert(m_SensorTransform.get() != 0);
@@ -194,7 +194,7 @@ namespace CBF {
 		m_SubordinateGradientSteps.resize(m_SubordinateControllers.size());
 	
 		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) {
-			m_SubordinateControllers[i]->update(cycle);
+			m_SubordinateControllers[i]->update();
 			m_SubordinateGradientSteps[i] = m_SubordinateControllers[i]->result();
 			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i]);
 		}
@@ -218,8 +218,8 @@ namespace CBF {
 		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
 	}
 	
-	void PrimitiveController::do_action(int cycle) {
-		update(cycle);
+	void PrimitiveController::action() {
+		update();
 		m_Resource->add(m_Result);
 		m_Converged = check_convergence();
 	}
@@ -235,38 +235,24 @@ namespace CBF {
 				return true;
 			}
 		}
-#if 0
-		Float stepnorm = ublas::norm_2(m_Result);
-
-		if (m_Reference->get().size() == 0)
-			return false;
-
-		Float min_dist = m_Potential->distance(m_CurrentTaskPosition, m_Reference->get()[0]);
-		for (unsigned int i = 1, len = m_Reference->get().size(); i < len; ++i) {
-			Float cur_dist = 	m_Potential->distance(m_CurrentTaskPosition, m_Reference->get()[i]);
-			if (cur_dist < min_dist) min_dist = cur_dist;
-		}
-
-		Float dist = min_dist;
-
-		CBF_DEBUG("distance_thresh " << m_TaskSpaceDistanceThreshold << " " << (dist < m_TaskSpaceDistanceThreshold) << " " << dist)
-		CBF_DEBUG("stepnorm_thresh " << m_ResourceStepNormThreshold << " " << (stepnorm < m_ResourceStepNormThreshold) << " " << stepnorm)
-
-		bool converged = 
-			((m_ConvergenceCriterion & TASK_SPACE_DISTANCE_THRESHOLD) && (dist < m_TaskSpaceDistanceThreshold)) 
-			||
-			((m_ConvergenceCriterion & RESOURCE_STEP_THRESHOLD) && (stepnorm < m_ResourceStepNormThreshold));
-
-		return converged;
-#endif
 		return false;
 	}
 	
 	bool SubordinateController::finished() {
 		// check whether we have approached one of the references to within a small error
 		return m_Converged;
-		// return m_Potential->converged();
 	}
+
+	void PrimitiveController::check_dimensions() {
+		SubordinateController::check_dimensions();
+
+		if (m_SensorTransform->resource_dim() != m_Resource->dim())
+			CBF_THROW_RUNTIME_ERROR(m_Name + ": Sensor Transform and Resource dimension mismatch: " << m_SensorTransform->resource_dim() << " is not equal to " << m_Resource->dim());
+
+		if (m_EffectorTransform->resource_dim() != m_Resource->dim())
+			CBF_THROW_RUNTIME_ERROR(m_Name + ": Effector Transform and Resource dimension mismatch: " << m_EffectorTransform->resource_dim() << " is not equal to " << m_Resource->dim());
+	}	
+
 	
 	#ifdef CBF_HAVE_XSD
 		SubordinateController::SubordinateController(const CBFSchema::SubordinateController &xml_instance, ObjectNamespacePtr object_namespace) :
@@ -313,11 +299,6 @@ namespace CBF {
 			CBF_DEBUG("Creating effector transform...");
 			EffectorTransformPtr effector_transform = XMLObjectFactory::instance()->create<EffectorTransform>(xml_instance.EffectorTransform(), object_namespace);
 		
-			//CBF_DEBUG(m_SensorTransform.get())
-		
-			//CBF_DEBUG(m_SensorTransform.get())
-		
-
 			CBF_DEBUG("Creating combination strategy...");
 			CombinationStrategyPtr combination_strategy  = 
 				XMLObjectFactory::instance()->create<CombinationStrategy>(xml_instance.CombinationStrategy(), object_namespace);

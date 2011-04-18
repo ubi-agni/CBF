@@ -31,6 +31,14 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
     PROPERTIES VERSION ${CBF_VERSION_MAJOR}
     SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
 
+  install(TARGETS cbf_run_controller
+	 RUNTIME DESTINATION bin
+	 LIBRARY DESTINATION lib
+	 ARCHIVE DESTINATION lib/static
+	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
+	 )
+
+
 else()
   message(STATUS "  not adding executable cbf_run_controller because xsd or boost-program-options was not found")
 endif()
@@ -51,7 +59,14 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY)
     )
   set_target_properties(cbf_xcf_memory_run_controller
     PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+	 )
+  install(TARGETS cbf_xcf_memory_run_controller
+	 RUNTIME DESTINATION bin
+	 LIBRARY DESTINATION lib
+	 ARCHIVE DESTINATION lib/static
+	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
+	 )
 
 else()
   message(STATUS "  not adding executable ")

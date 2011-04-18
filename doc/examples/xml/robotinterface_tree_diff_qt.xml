@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
-<cbf:ControlBasis
+<cbf:Object
 	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Controller
-	  xsi:type="cbf:PrimitiveController">
-	 <Name>foo</Name>
-
-	 <Coefficient>1</Coefficient>
-
-	 <ConvergenceCriterion 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:type="cbf:PrimitiveController">
+  <Name>foo</Name>
+  
+  <Coefficient>1</Coefficient>
+  
+  <ConvergenceCriterion 
 		 xsi:type="cbf:TaskSpaceDistanceThreshold">
 		<Threshold> 0.001 </Threshold>
 	 </ConvergenceCriterion>
@@ -1232,7 +1231,7 @@
 		<Diagonal xsi:type="cbf:BoostVector"><String>[3](10.5,10.5,10.5)</String></Diagonal>
 	 </EffectorTransform>
 
-	 <PrimitiveController>
+	 <SubordinateController>
 		<Coefficient>0.1</Coefficient>
 		<ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
 		  <Threshold>0.001</Threshold>
@@ -1254,15 +1253,11 @@
 		  <Dimension>62</Dimension>
 		</EffectorTransform>
 		<CombinationStrategy xsi:type="cbf:AddingStrategy"/>
-		<Resource xsi:type="cbf:DummyResource">
-		  <Vector xsi:type="cbf:BoostVector">
-			 <String>[62](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
-		  </Vector>
-		</Resource>
-	 </PrimitiveController>
+	 </SubordinateController>
 	 
 	 <CombinationStrategy
 		 xsi:type="cbf:AddingStrategy"/>
+
 	 <Resource
 		 xsi:type="cbf:CompositeResource">
 		<Resource
@@ -1294,5 +1289,14 @@
 		  <NumberOfJoints> 24 </NumberOfJoints>
 		</Resource>
 	 </Resource>
-  </Controller>
-</cbf:ControlBasis>
+
+	 <!--
+	 <Resource 
+		 xsi:type="cbf:DummyResource">
+		<Vector
+			xsi:type="cbf:BoostVector">
+		  <String>[62](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
+		</Vector>
+	 </Resource>
+	 -->
+</cbf:Object>

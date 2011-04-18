@@ -166,9 +166,11 @@ if(NOT "${DOXYGEN_BIN}" STREQUAL "DOXYGEN_BIN-NOTFOUND")
     COMMENT "Creating html and tex documentation in doc/"
   )
   install(
-	 DIRECTORY ${PROJECT_BINARY_DIR}/doc/html
-    DESTINATION share/doc/cbf/
-  )
+	 DIRECTORY ${PROJECT_BINARY_DIR}/doc/html 
+	 DESTINATION share/doc/cbf/
+	 DIRECTORY_PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE OWNER_EXECUTE GROUP_EXECUTE
+	 FILE_PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE 
+	 )
 else()
   message(STATUS "  doxygen not found, documentation will not be available")
 endif()

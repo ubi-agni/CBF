@@ -168,6 +168,7 @@ namespace CBF {
 	void BaseKDLTreeSensorTransform::init_solvers() {
 	
 		m_Twists = FloatMatrix(6, m_Tree->getNrOfJoints());
+		CBF_DEBUG("nr of joints: " << m_Tree->getNrOfJoints());
 	
 		m_JacSolver = boost::shared_ptr<KDL::TreeJntToJacSolver>(
 			new KDL::TreeJntToJacSolver(*m_Tree)
@@ -178,6 +179,9 @@ namespace CBF {
 		);
 
 		for (unsigned int i = 0; i < m_SegmentNames.size(); ++i) {
+			if (m_Tree->getSegments().find(m_SegmentNames[i]) == m_Tree->getSegments().end())
+				CBF_THROW_RUNTIME_ERROR("The tree has no segment with name: " << m_SegmentNames[i]);
+
 			m_Jacobians.push_back(boost::shared_ptr<KDL::Jacobian>(new KDL::Jacobian(m_Tree->getNrOfJoints())));
 			m_Frames.push_back(boost::shared_ptr<KDL::Frame>(new KDL::Frame));
 		}
@@ -215,7 +219,12 @@ namespace CBF {
 		m_TaskDim = 3;
 		m_ResourceDim = tree->getNrOfJoints();
 		m_Result = FloatVector(3 * segment_names.size());
-		m_TaskJacobian = FloatMatrix((int) 3 * segment_names.size(),(int)  tree->getNrOfJoints());
+		m_TaskJacobian = FloatMatrix((int) 3 * segment_names.size(), (int) tree->getNrOfJoints());
+
+		CBF_DEBUG("# of segments: " << segment_names.size());
+		for (unsigned int i = 0; i < segment_names.size(); ++i) {
+			CBF_DEBUG("name: " << segment_names[i]);
+		}
 	}
 
 
