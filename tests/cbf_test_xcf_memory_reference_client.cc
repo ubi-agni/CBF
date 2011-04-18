@@ -36,13 +36,11 @@ int main(int argc, char **argv) {
 	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(argv[1]));
 
 	std::stringstream xPath;
-//	xPath << "/*[local-name()='p1' and namespace-uri()='http://www.cit-ec.uni-bielefeld.de/CBF']";
-//	xPath << "/p1:XCFMemoryReferenceVector/ReferenceName['" << argv[2] << "']";
-	xPath << "/";
+	xPath << "//*[local-name() = 'XCFMemoryReferenceVector' and ";
+	xPath << "namespace-uri() = 'http://www.cit-ec.uni-bielefeld.de/CBF']";
+	xPath << "/ReferenceName['" << argv[2] << "']";
 
-	memoryPtr -> addNamespacePrefix("xmlns:p1", "http://www.cit-ec.uni-bielefeld.de/CBF");
-
-	mi::ResultsPtr results = memoryPtr -> query(xPath.str(), 0x04);
+	mi::ResultsPtr results = memoryPtr -> query(xPath.str());
 
 	std::string document;
 	bool noDocumentFound = true;
