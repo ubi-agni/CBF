@@ -584,7 +584,7 @@
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:SensorTransform">
 		  <xsd:sequence>
-			 <xsd:element name="Operand" type="CBF:SensorTransform"/>
+			 <xsd:element name="Operand" type="CBF:KDLTreePositionSensorTransform"/>
 		  </xsd:sequence>
 		</xsd:extension>
 	 </xsd:complexContent>
@@ -594,7 +594,7 @@
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:SensorTransform">
 		  <xsd:sequence>
-			 <xsd:element name="Operand" type="CBF:SensorTransform"/>
+			 <xsd:element name="Operand" type="CBF:KDLChainPositionSensorTransform"/>
 		  </xsd:sequence>
 		</xsd:extension>
 	 </xsd:complexContent>

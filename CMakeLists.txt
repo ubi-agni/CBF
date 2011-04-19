@@ -104,25 +104,32 @@ endif()
 #  set(CBF_HAVE_EIGEN2 1)
 #endif()
 
-message(STATUS "Looking for kdlchainview")
-find_library(KDLCHAINVIEW kdlchainview)
-find_path(KDLCHAINVIEW_INCLUDES kdlchainview.h)
-if(NOT "${KDLCHAINVIEW_LIBS}" STREQUAL "KDLCHAINVIEW_LIBS-NOTFOUND" AND NOT "${KDLCHAINVIEW_INCLUDES}" STREQUAL "KDLCHAINVIEW_INCLUDES-NOTFOUND")
-  message(STATUS "  found kdlchainview ${KDLCHAINVIEW_LIBS} ${KDLCHAINVIEW_INCLUDES}")
-  set(CBF_HAVE_KDLCHAINVIEW 1)
+message(STATUS "Looking for qkdlchainview")
+find_library(QKDLCHAINVIEW_LIB qkdlchainview)
+find_path(QKDLCHAINVIEW_INCLUDES qkdlchainview.h)
+if(
+	 NOT "${QKDLCHAINVIEW_LIB}" STREQUAL "QKDLCHAINVIEW_LIB-NOTFOUND" 
+	 AND 
+	 NOT "${QKDLCHAINVIEW_INCLUDES}" STREQUAL "QKDLCHAINVIEW_INCLUDES-NOTFOUND")
+  message(STATUS "  found qkdlchainview ${QKDLCHAINVIEW_LIB} ${QKDLCHAINVIEW_INCLUDES}")
+  set(CBF_HAVE_QKDLCHAINVIEW 1)
 else()
-  message(STATUS "  kdlchainview not found")
+  message(STATUS "  qkdlchainview not found")
 endif()
 
-message(STATUS "Looking for kdltreeview")
-find_library(KDLTREEVIEW kdltreeview)
-find_path(KDLTREEVIEW_INCLUDES kdltreeview.h)
-if(NOT "${KDLTREEVIEW_LIBS}" STREQUAL "KDLTREEVIEW_LIBS-NOTFOUND" AND NOT "${KDLTREEVIEW_INCLUDES}" STREQUAL "KDLTREEVIEW_INCLUDES-NOTFOUND")
-  message(STATUS "  found kdltreeview ${KDLTREEVIEW_LIBS} ${KDLTREEVIEW_INCLUDES}")
-  set(CBF_HAVE_KDLTREEVIEW 1)
+message(STATUS "Looking for qkdltreeview")
+find_library(QKDLTREEVIEW_LIB qkdltreeview)
+find_path(QKDLTREEVIEW_INCLUDES qkdltreeview.h)
+if(
+	 NOT "${QKDLTREEVIEW_LIB}" STREQUAL "QKDLTREEVIEW_LIB-NOTFOUND" 
+	 AND 
+	 NOT "${QKDLTREEVIEW_INCLUDES}" STREQUAL "QKDLTREEVIEW_INCLUDES-NOTFOUND")
+  message(STATUS "  found qkdltreeview ${QKDLTREEVIEW_LIB} ${QKDLTREEVIEW_INCLUDES}")
+  set(CBF_HAVE_QKDLTREEVIEW 1)
 else()
-  message(STATUS "  kdltreeview not found")
+  message(STATUS "  qkdltreeview not found")
 endif()
+
 
 
 message(STATUS "Looking for Xerces-C")

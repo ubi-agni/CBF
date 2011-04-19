@@ -125,12 +125,13 @@ if (CBF_HAVE_EIGEN2)
   set(CBF_INCLUDES ${CBF_INCLUDES} ${EIGEN2_INC})
 endif()
 
-if (CBF_HAVE_KDLCHAINVIEW)
-  set(CBF_INCLUDES ${CBF_INCLUDES} ${KDLCHAINVIEW_INCLUDES})
-  set(CBF_LIBS ${CBF_LIBS} ${KDLCHAINVIEW_LIBS})
-
+if (CBF_HAVE_QKDLCHAINVIEW)
+  message(STATUS "adding qkdl_chain_view_transforms.cc " ${QKDLCHAINVIEW_LIB})
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${QKDLCHAINVIEW_INCLUDES} ${QKDLTREEVIEW_INCLUDES})
+  set(CBF_LIBS ${CBF_LIBS} ${QKDLCHAINVIEW_LIB} ${QKDLTREEVIEW_LIB})
+  
   set(CBF_SOURCES ${CBF_SOURCES} kdl_chain_view_transforms.cc)
-#  set(CBF_HEADERS ${CBF_HEADERS} kdl_chain_view_transforms.h)
+  # set(CBF_HEADERS ${CBF_HEADERS} qkdl_chain_view_transforms.h)
 endif()
 
 
