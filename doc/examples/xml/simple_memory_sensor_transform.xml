@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<cbf:ControlBasis
-	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF">
+<cbf:Object
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
+	xsi:type="cbf:ControlBasis">
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
  <Name>foo</Name>
 
@@ -50,4 +52,4 @@
 
 </Controller>
 
-</cbf:ControlBasis>
+</cbf:Object>

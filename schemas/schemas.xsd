@@ -847,8 +847,7 @@
   <xsd:complexType name="XCFMemoryRunControllerAdd">
 	 <xsd:sequence>
 		<xsd:element name="RunControllerName" type="xsd:string"/>
-		<xsd:element name="ControlBasis" type="CBF:ControlBasis" minOccurs="0"/>
-		<xsd:element name="Attachments" type="xsd:boolean" minOccurs="0"/>		
+		<xsd:element name="AttachmentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 	 </xsd:sequence>
   </xsd:complexType>
 
@@ -880,11 +879,11 @@
   </xsd:complexType>
 
 
-  <xsd:element name="XCFMemoryRunControllerLoadControllers" type="CBF:XCFMemoryRunControllerLoadControllers"/>
-  <xsd:complexType name="XCFMemoryRunControllerLoadControllers">
+  <xsd:element name="XCFMemoryRunControllerLoadNamespace" type="CBF:XCFMemoryRunControllerLoadNamespace"/>
+  <xsd:complexType name="XCFMemoryRunControllerLoadNamespace">
 	 <xsd:sequence>
 		<xsd:element name="RunControllerName" type="xsd:string"/>
-		<xsd:element name="ControllerName" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+		<xsd:element name="AttachmentName" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
 	 </xsd:sequence>
   </xsd:complexType>
 
@@ -898,8 +897,8 @@
 		<xsd:element name="AddedControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 		<xsd:element name="OverwrittenControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 		<xsd:element name="ControllersIgnored" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
-		<xsd:element name="LoadControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
-		<xsd:element name="NotFoundControllerName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="LoadDocumentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="NotFoundDocumentName" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 		<xsd:element name="StoppedControllerName" type="xsd:string" minOccurs="0" maxOccurs="1"/>
 		<xsd:element name="StoppedControllerConverged" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
 		<xsd:element name="SleepTimeSetTo" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>

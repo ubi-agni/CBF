@@ -169,7 +169,7 @@ int main(int argc, char *argv[]) {
 
 				controller->step(); 
 				usleep((long long int)sleep_time * 1000); 
-				#ifdef CBF_HAVE_QT
+				#ifdef CBF_HAVE_QTobject_namespace
 					if (qt_support) QApplication::processEvents();
 				#endif
 			}

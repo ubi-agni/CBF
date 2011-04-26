@@ -22,6 +22,8 @@
 #include <cbf/utilities.h>
 #include <xmltio/XPath.hpp>
 
+int updatenumber = 0;
+
 namespace CBF {
 
 	namespace mi = memory::interface;
@@ -60,6 +62,9 @@ namespace CBF {
 	}
 
 	void XCFMemoryResource::update(){
+		updatenumber++;
+		CBF_DEBUG("Update called: " << updatenumber);
+
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ResourceMonitor);
 		//First call update on the wrapped resource.
 		m_Resource -> update();

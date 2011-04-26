@@ -36,19 +36,19 @@ namespace CBF {
 		m_Steps(steps),
 		m_VerbosityLevel(verbosity_level),
 		m_ControllerRunning(false),
-		m_ControlBasisSet(false),
+		m_ObjectNamespaceSet(false),
 		m_Converged(false)
 		#ifdef CBF_HAVE_QT
 			,m_QtSupport(qt_support)
 		#endif
 	{
-	//everything already initialized
+	// nothing to do
 	}
 
 	void CBFRunController::start_controller(std::string controller_name)
-		throw(ControlBasisNotSetException, ControllerNotFoundExcepption, ControllerRunningException)
+		throw(ObjectNamespaceNotSetException, ControllerNotFoundExcepption, ControllerRunningException)
 	{
-		// is the controller in the control_basis? throws an exception when control_basis not set.
+		// is the controller in the control_basis? throws an exception when m_ObjectNamespace not set.
 		if(!checkControllerExists(controller_name)){
 			throw ControllerNotFoundExcepption();
 		}
@@ -58,10 +58,11 @@ namespace CBF {
 			throw ControllerRunningException();
 		}
 
-		// if the stepcount is 0 we are stepp()ing till convergence
-		// setting stepCount != 0 in execution will make us leave the while-clause
+		// if the stepcount is 0 we are stepping till convergence
+		// setting stepCount != 0 in execution will make us leave this while-clause
+		// and go on with the next while clause till stepCount is less or equal 0.
 		while ((stepCount() == 0) 
-			&& (setConverged(m_ControlBasis->controllers()[controller_name]->step()) == false)) {
+			&& (setConverged(m_ObjectNamespace -> get<CBF::Controller>(controller_name) -> step()) == false)) {
 
 			if (!checkControllerRuns()) //stops execution
 				{return; }
@@ -82,7 +83,7 @@ namespace CBF {
 			if (!checkControllerRuns()) //stops execution
 				{return; }
 
-			m_ControlBasis -> controllers()[controller_name]->step();
+			m_ObjectNamespace -> get<CBF::Controller>(controller_name) -> step();
 			usleep(sleepTime() * 1000);
 			#ifdef CBF_HAVE_QT
 				if (qtSupport()) QApplication::processEvents();
@@ -144,9 +145,9 @@ namespace CBF {
 		return m_ControllerRunning;
 	}
 
-	bool CBFRunController::checkControlBasisSet(){
+	bool CBFRunController::checkObjectNamespaceSet(){
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
-		return m_ControlBasisSet;
+		return m_ObjectNamespaceSet;
 	}
 	
 	bool CBFRunController::setConverged(bool converged){
@@ -160,39 +161,38 @@ namespace CBF {
 		return m_Converged;
 	}
 	
-	bool CBFRunController::checkControllerExists(std::string controller_name) throw(ControlBasisNotSetException){
-		// Throws an exception when no control_basis is set.
-		if(!checkControlBasisSet()){
-			throw ControlBasisNotSetException();
+	bool CBFRunController::checkControllerExists(std::string controller_name) throw(ObjectNamespaceNotSetException){
+		// Throws an exception when no ObjectNamespace is set.
+		if(!checkObjectNamespaceSet()){
+			throw ObjectNamespaceNotSetException();
 		}
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
-		//returns whether the controller is in the control_basis.
-		return !(m_ControlBasis -> controllers().find(controller_name) 
-			== m_ControlBasis -> controllers().end());
+		//returns whether the controller is in the ObjectNamespace.
+		return !(m_ObjectNamespace -> get<CBF::Controller>(controller_name) == 0);
 	}
 
-	void CBFRunController::setControlBasis(CBF::ControlBasisPtr control_basis) 
+	void CBFRunController::setObjectNamespace(CBF::ObjectNamespacePtr object_namespace)
 		throw(ControllerRunningException)
 	{
-		//controller should not be working when we change the control_basis
+		//controller should be stopped when we change the ObjectNamespace
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
 		if(!m_ControllerRunning){
-			m_ControlBasis = control_basis;
-			m_ControlBasisSet = true;
+			m_ObjectNamespace = object_namespace;
+			m_ObjectNamespaceSet = true;
 		} else {
 			throw ControllerRunningException();
 		}
 	}
 
-	const CBF::ControlBasisPtr CBFRunController::getControlBasis() 
-		 throw(ControlBasisNotSetException)
+	const CBF::ObjectNamespacePtr CBFRunController::getObjectNamespace()
+		 throw(ObjectNamespaceNotSetException)
 	{
-		//controller should not be working while we copy the control_basis
+		//controller should be stopped while we copy the object_namespace
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
-		if (m_ControlBasisSet) {
-			return CBF::ControlBasisPtr(new CBF::ControlBasis(*m_ControlBasis));
+		if (m_ObjectNamespaceSet) {
+			return CBF::ObjectNamespacePtr(new CBF::ObjectNamespace(*m_ObjectNamespace));
 		} else {
-			throw ControlBasisNotSetException();
+			throw ObjectNamespaceNotSetException();
 		}
 	}
 

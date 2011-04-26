@@ -21,6 +21,7 @@
 #include <xcf_memory_run_controller.h>
 #include <boost/bind.hpp>
 #include <cbf/xsd_error_handler.h>
+#include <cbf/xml_factory.h>
 
 #include <cbf/namespace.h>
 
@@ -53,7 +54,7 @@ namespace mi = memory::interface;
 				,qt_support
 			#endif
 			)),
-		m_ControllerMap()
+		m_DocumentMap()
 	{
 		// we only, listen to insert and replace events.
 		unsigned int event = memory::interface::Event::INSERT | memory::interface::Event::REPLACE;
@@ -86,10 +87,10 @@ namespace mi = memory::interface;
 		subscription = mi::Subscription(condition, triggered_action);
 		m_MemoryInterface -> subscribe(subscription);
 
-		CBF_DEBUG("Subscribing LoadControllers at active_memory");
-		condition = mi::Condition(event, loadControllersXPath());
+		CBF_DEBUG("Subscribing LoadNamespace at active_memory");
+		condition = mi::Condition(event, loadNamespaceXPath());
 		triggered_action = mi::TriggeredAction(boost::bind(
-				&XCFMemoryRunController::triggered_action_load_controllers, this, _1));
+				&XCFMemoryRunController::triggered_action_load_namespace, this, _1));
 		subscription = mi::Subscription(condition, triggered_action);
 		m_MemoryInterface -> subscribe(subscription);
 	}
@@ -99,78 +100,68 @@ namespace mi = memory::interface;
 	
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
 
-		CBF_DEBUG("parsing XML for controllers, adding");
+		CBF_DEBUG("parsing XML for attachments, adding");
 
 		try {
-			//we will count the controllers and save theyr names, so we can notify them.
-			int ignored_controllers = 0;
-			std::set<std::string> added_controller_names;
-			std::map<std::string, int> overwritten_controller_names;
+			//we will count the attachments and save their ids, so we can notify them.
+			int ignored_documents = 0;
+			std::map<std::string, int> added_documents;
 
 			// parsing the XCFMemoryRunControllerAdd document.
 			std::istringstream s(documentText);
 			std::auto_ptr<CBFSchema::XCFMemoryRunControllerAdd> controllerAdd = 
 				CBFSchema::XCFMemoryRunControllerAdd_(s, xml_schema::flags::dont_validate);
 
-			CBF_DEBUG("parsing XML for optional ControlBasis");
-			if(controllerAdd -> ControlBasis().present()){
-			// if a ControlBasis exists.
-				CBFSchema::ControlBasis cb = controllerAdd -> ControlBasis().get();
-				std::string name;
-				// adding every controller from the control_basis.
-				add_controllers_to_map(&(controllerAdd -> ControlBasis().get().Controller()), 
-				&added_controller_names, &overwritten_controller_names, &ignored_controllers);
-			}
-
 			CBF::XSDErrorHandler err_handler;
-			CBF_DEBUG("getting attachments and parsing them");
-			if(controllerAdd -> Attachments().present() && controllerAdd -> Attachments().get()) {
-				memory::interface::Attachments att;
-				// TODO: event.hasAttachments() always returns 0. This way works with UUIS's
-				// on the publishers side. Somehow redundant namings return the attachments
-				// of old documents.
-				m_MemoryInterface -> getAttachments((event.getMemoryElement().asString()), att);
-				for (mi::Attachments::const_iterator it = att.begin();
-					it != att.end(); ++it){
-					// getting data from attachment
-					memory::interface::Buffer buff = it -> second;
-					std::stringstream tmp;
-					for (mi::Buffer::const_iterator it2 = buff.begin();
-						it2 != buff.end(); ++it2) {
-						tmp << *it2;
-					}
+			CBF_DEBUG("getting attachments and saving them");
 
-					CBF_DEBUG("creating a control_basis from attachment[" << it -> first << "]");
-					CBF_DEBUG("control_basis: " << tmp.str());
-
-					// trying to parse the attachments as a control_basis
-					try {
-						std::auto_ptr<CBFSchema::ControlBasis> cbt
-							(CBFSchema::ControlBasis_
-								(tmp, err_handler, xml_schema::flags::dont_validate));
-
-						// adding every controller from the control_basis.
-						add_controllers_to_map(&(cbt -> Controller()), &added_controller_names,
-									&overwritten_controller_names, 
-									&ignored_controllers);
-
-					} catch (const xml_schema::exception& e) {
-						std::string note("Could not parse Buffer as control_basis: ");
-						note.append(e.what());
-						notifyError(note, event.getID());
-					} catch (const std::exception& e) {
-					  	std::string note("Could not parse Buffer as control_basis: ");
-						note.append(e.what());
-						notifyError(note, event.getID());
-					} catch (...) {
-						notifyError("An unknown unexpected exception occured while parsing "
-							"Attachment as control_basis.", event.getID());
-					}
+			memory::interface::Attachments att;
+			// TODO: event.hasAttachments() does not work.
+			m_MemoryInterface -> getAttachments((event.getMemoryElement().asString()), att);
+			for (mi::Attachments::const_iterator it = att.begin();
+				it != att.end(); ++it){
+				// getting data from attachment
+				memory::interface::Buffer buff = it -> second;
+				std::stringstream tmp;
+				for (mi::Buffer::const_iterator it2 = buff.begin();
+					it2 != buff.end(); ++it2) {
+					tmp << *it2;
 				}
+
+				CBF_DEBUG("saving attachment[" << it -> first << "]");
+				CBF_DEBUG("document: " << tmp.str());
+				//TODO: maybe test files before saving -> ignorelist
+				m_DocumentMap[it -> first] = tmp.str();
+				//increasing added
+				added_documents[it -> first]++;
+
+				// trying to parse the attachments as an object and
+				// initialize them in the object_namespace
+//				try {
+//					// Create a cbfschema::object
+//					std::auto_ptr<CBFSchema::Object> obj
+//						(CBFSchema::Object_
+//							(tmp, err_handler, xml_schema::flags::dont_validate));
+//
+//					// Add objects to namespace
+//					CBF::ObjectPtr cb = CBF::XMLObjectFactory::instance()
+//											-> create<CBF::Object>(*obj, m_AddedControllersNamespace);
+//
+//				} catch (const xml_schema::exception& e) {
+//					std::string note("Could not parse Buffer as control_basis: ");
+//					note.append(e.what());
+//					notifyError(note, event.getID());
+//				} catch (const std::exception& e) {
+//				  	std::string note("Could not parse Buffer as control_basis: ");
+//					note.append(e.what());
+//					notifyError(note, event.getID());
+//				} catch (...) {
+//					notifyError("An unknown unexpected exception occured while parsing "
+//						"Attachment as control_basis.", event.getID());
+//				}
 			}
 
-			notifyAdd(event.getID(), added_controller_names, 
-					overwritten_controller_names, ignored_controllers);
+			notifyAdd(event.getID(), added_documents, ignored_documents);
 		} catch (const xml_schema::exception& e) {
 			std::string note("An error occured during parsing: ");
 			note.append(e.what());
@@ -181,48 +172,6 @@ namespace mi = memory::interface;
 			notifyError(note, event.getID());
 		} catch (...) {
 			notifyError("An unknown unexpected exception occured.", event.getID());
-		}
-	}
-
-	void XCFMemoryRunController::add_controllers_to_map(
-			CBFSchema::ControlBasis::Controller_sequence* controllers,
-			std::set<std::string>* added_controllers, 
-			std::map<std::string, int>* overwritten_controllers,
-			int* ignored_controllers_count
-			)
-	{
-		for (CBFSchema::ControlBasis::Controller_sequence::const_iterator it = controllers -> begin();
-			it != controllers -> end();
-			++it)
-		{
-			// ignoring controllers without a name.
-			if(it -> Name().present()){
-				std::string name = it -> Name().get();
-				//does a controller with that name already exist?
-				// a second controller with the same name will overwrite the first.
-				if (m_ControllerMap.find(name) != m_ControllerMap.end()){
-					if(overwritten_controllers -> find(name) != overwritten_controllers -> end()) {
-					//controller has been overwritten multiple times
-						(*overwritten_controllers)[name]++;
-					} else {
-					//controller is overwritten first time
-						(*overwritten_controllers)[name] = 1;
-					}
-				}
-				
-				// saving a copy of the controller in a map.
-				// the copy must be polymorphic.
-				// the controller is mapped to its name.
-				m_ControllerMap[name] = 
-					boost::shared_ptr<CBFSchema::Controller>(it -> _clone());
-				CBF_DEBUG("added controller named: " << name);
-			
-				added_controllers -> insert(name);
-				
-			} else {
-				CBF_DEBUG("controller has no name. ignoring");
-				(*ignored_controllers_count)++;
-			}
 		}
 	}
 
@@ -301,13 +250,13 @@ namespace mi = memory::interface;
 			m_RunController -> start_controller(controller_name);
 			notifyStop(event.getID(), controller_name);
 			
-		} catch (const ControlBasisNotSetException& e){
-			notifyError("Runtime Error: Cant execute controller when ControlBasis is not set." ,
+		} catch (const ObjectNamespaceNotSetException& e){
+			notifyError("Runtime Error: Cant execute controller when Namespace is not set." ,
 				    event.getID());
 		} catch (const ControllerNotFoundExcepption& e){
 		  	std::ostringstream err;
 			err << "Runtime Error: Cant find controller '";
-			err << controller_name << "' in ControlBasis.";
+			err << controller_name << "' in Namespace.";
 			notifyError(err.str() , event.getID());
 		} catch (const ControllerRunningException& e){
 			notifyError("Runtime Error: Controller is already running." , event.getID());
@@ -327,60 +276,78 @@ namespace mi = memory::interface;
 		m_RunController -> stop_controller();
 	}
 
-	void XCFMemoryRunController::triggered_action_load_controllers(const memory::interface::Event &event){
+	void XCFMemoryRunController::triggered_action_load_namespace(const memory::interface::Event &event){
 		CBF_DEBUG("doc: " << event.getDocument());
-	
+		CBF::XSDErrorHandler err_handler;
+		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
+		int documents_added = 0;
+		int documents_not_found = 0;
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
 
 		CBF_DEBUG("parsing XML for controller names");
 		try {
-			// parsing the XCFMemoryRunControllerLoadControllers document.
+			// parsing the XCFMemoryRunControllerLoadNamespace document.
 			std::istringstream s(documentText);
-			std::auto_ptr<CBFSchema::XCFMemoryRunControllerLoadControllers> controllerLC = 
-				CBFSchema::XCFMemoryRunControllerLoadControllers_(s, xml_schema::flags::dont_validate);
+			std::auto_ptr<CBFSchema::XCFMemoryRunControllerLoadNamespace> loadNamespace =
+				CBFSchema::XCFMemoryRunControllerLoadNamespace_(s, xml_schema::flags::dont_validate);
 
-			// we fill this controll_basis with controllers and then we will 
-			// create a CBFControlBasis from it.
-			CBFSchema::ControlBasis controlBasis;
+			CBF_DEBUG("parsing namespaces");
+			// a set of documents that were not found.
+			std::set<std::string> not_found_documents;
+			// a set of documents that were loaded.
+			std::set<std::string> loaded_documents;
 
-			CBF_DEBUG("parsing controller names");
-			// a set of controller_names that were not found.
-			std::set<std::string> not_found_controllers;
-			// a set of controller_names that were loaded.
-			std::set<std::string> loaded_controllers;
-			// for every controller_name in the document
-			for (CBFSchema::XCFMemoryRunControllerLoadControllers::
-					ControllerName_sequence::const_iterator it 
-					= controllerLC -> ControllerName().begin();
-				it != controllerLC -> ControllerName().end();
-				++it)
+			// for every attachment-name in this document
+			CBF::ControlBasisPtr cb(new CBF::ControlBasis());
+			CBFSchema::XCFMemoryRunControllerLoadNamespace::AttachmentName_sequence::const_iterator it;
+			for (
+				it = loadNamespace -> AttachmentName().begin();
+				it != loadNamespace -> AttachmentName().end();
+				++it
+				)
 			{
-				// find the corrresponding controller in our map.
-				if (m_ControllerMap.find(*it) != m_ControllerMap.end()) {
-					// add controller to control_basis
-					controlBasis.Controller().push_back(*(m_ControllerMap[*it]));
-					loaded_controllers.insert(*it);
-				} else {
-					CBF_DEBUG("Could not find controller named: " << *it << ". Ignoring.");
-					not_found_controllers.insert(*it);
+				// find the corresponding document in the map.
+				// try to parse the document as an object and
+				// initialize it in the object_namespace
+				try {
+
+					if(m_DocumentMap.find(*it) == m_DocumentMap.end()){
+						documents_not_found++;
+					} else{
+						//getting the document that was mapped to the AttachmentName
+						std::istringstream tmp(m_DocumentMap.find(*it) -> second);
+						// Create a cbfschema::object
+						std::auto_ptr<CBFSchema::Object> obj
+							(CBFSchema::Object_
+								(tmp, err_handler, xml_schema::flags::dont_validate));
+
+						// Add objects to namespace
+						CBF::ObjectPtr cb = CBF::XMLObjectFactory::instance()
+											-> create<CBF::Object>(*obj, object_namespace);
+						documents_added++;
+					}
+				} catch (const xml_schema::exception& e) {
+					std::string note("Could not parse document as object: ");
+					note.append(e.what());
+					notifyError(note, event.getID());
+				} catch (const std::exception& e) {
+				  	std::string note("Could not parse document as object: ");
+					note.append(e.what());
+					notifyError(note, event.getID());
+				} catch (...) {
+					notifyError("An unknown unexpected exception occured while parsing "
+						"Attachment as object.", event.getID());
 				}
 			}
 
-			std::ostringstream t;
-			CBFSchema::ControlBasis_ (t, controlBasis);
-			
-			CBF_DEBUG("creating control_basis" << t.str());
-			//init the CBF::ControlBasis
-			ObjectNamespacePtr object_namespace(new ObjectNamespace);
-			CBF::ControlBasisPtr control_basis(new CBF::ControlBasis(controlBasis, object_namespace));
-			CBF_DEBUG("control_basis created");
+			CBF_DEBUG("namespace created");
 
-			if(control_basis -> controllers().size() > 0){
-				CBF_DEBUG("setting the control_basis");
-				// set the control_basis
-				m_RunController -> setControlBasis(control_basis);
+			if(documents_added > 0){
+				CBF_DEBUG("setting the ObjectNamespace");
+				// set the namespace
+				m_RunController -> setObjectNamespace(object_namespace);
 			}
-			notifyLoad(event.getID(), loaded_controllers, not_found_controllers);
+			notifyLoad(event.getID(), loaded_documents, not_found_documents);
 			
 		} catch (const ControllerRunningException& e){
 			notifyError("Error: Can not set ControlBasis while controller is running.", event.getID());
@@ -394,6 +361,7 @@ namespace mi = memory::interface;
 	}
 	
 	void XCFMemoryRunController::notifyError(std::string note, int documentID){
+		CBF_DEBUG(note);
 		if (m_NotificationLevel & XCFMemoryRunController::ERROR){
 			// creating the XCFMemoryRunControllerNotification document.
 			CBFSchema::XCFMemoryRunControllerNotification v(m_RunControllerName, documentID);
@@ -407,32 +375,24 @@ namespace mi = memory::interface;
 		}		 
 	}
 	
-	void XCFMemoryRunController::notifyAdd(
-					int documentID, std::set<std::string> added_controller_names,
-					std::map<std::string, int> overwritten_controllers,
-					int ignored_controllers_count)
+	void XCFMemoryRunController::notifyAdd(int documentID, std::map<std::string, int> added_documents,
+			int ignored_documents)
 	{
 		if (m_NotificationLevel & XCFMemoryRunController::INFO){
 			// creating the XCFMemoryRunControllerNotification document.
 			CBFSchema::XCFMemoryRunControllerNotification v(m_RunControllerName, documentID);
 
 			//Adding information about added controllers
-			for (std::set<std::string>::const_iterator it = added_controller_names.begin();
-				it != added_controller_names.end(); ++it)
+			std::map<std::string, int>::const_iterator it;
+			for (it = added_documents.begin(); it != added_documents.end(); ++it)
 			{
-				 v.AddedControllerName().push_back(*it);
+				 v.AddedControllerName().push_back(it -> first);
+				 if (it -> second) { // when documents were overwritten
+					v.OverwrittenControllerName().push_back(it -> first);
+				 }
 			}
-			//Adding information about overwritten controllers
-			for (std::map<std::string, int>::const_iterator it = overwritten_controllers.begin();
-				it != overwritten_controllers.end(); ++it)
-			{
-				std::ostringstream tmp;
-				if (it -> second > 1) { tmp << it -> second << "*";}
-				tmp << it -> first;
-				v.OverwrittenControllerName().push_back(tmp.str());
-			}
-			//Adding information about iignored controllers
-			v.ControllersIgnored(ignored_controllers_count);
+			//Adding information about ignored douments
+			v.ControllersIgnored(ignored_documents);
 
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
@@ -442,27 +402,28 @@ namespace mi = memory::interface;
 		  
 	}
 	
-	void XCFMemoryRunController::notifyLoad(int documentID, std::set<std::string> loaded_controllers,
-					std::set<std::string> not_found_controllers)
+	void XCFMemoryRunController::notifyLoad(int documentID, std::set<std::string> loaded_documents,
+					std::set<std::string> not_found_documents)
 	{
 		if (m_NotificationLevel & XCFMemoryRunController::INFO){
 			// creating the XCFMemoryRunControllerNotification document.
 			CBFSchema::XCFMemoryRunControllerNotification v(m_RunControllerName, documentID);
 
-			//Adding information about loaded controllers
-			for (std::set<std::string>::const_iterator it = loaded_controllers.begin();
-				it != loaded_controllers.end(); ++it)
+			//Adding information about loaded documents
+			for (std::set<std::string>::const_iterator it = loaded_documents.begin();
+				it != loaded_documents.end(); ++it)
 			{
-				 v.LoadControllerName().push_back(*it);
+				 v.LoadDocumentName().push_back(*it);
 			}
-			//Adding information about not found controllers
-			for (std::set<std::string>::const_iterator it = not_found_controllers.begin();
-				it != not_found_controllers.end(); ++it)
+			//Adding information about not found documents
+			std::set<std::string>::const_iterator it;
+			for (it = not_found_documents.begin(); it != not_found_documents.end(); ++it)
 			{
-				 v.NotFoundControllerName().push_back(*it);
+				 v.NotFoundDocumentName().push_back(*it);
 			}
-			if(loaded_controllers.size() == 0){
-				v.Note("No control_basis set because the resulting control_basis was empty.");
+			if(loaded_documents.size() == 0){
+				v.Note("No namespace set because no document could be parsed.");
+				CBF_DEBUG("No namespace set because no document could be parsed.");
 			}
 
 			std::ostringstream s;

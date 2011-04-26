@@ -27,6 +27,9 @@
 #include <QtGui/QWidget>
 #include <QtGui/QPushButton>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QGridLayout>
+#include <QtGui/QErrorMessage>
+#include <QtGui/QCheckBox>
 
 /**
 	@brief A struct that can be used to create XCFMemoryRunController[...] documents
@@ -53,6 +56,11 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		*/
 		std::string m_DirPath;
 
+		/**
+			@brief We will save the filenames and attachment-id's of the send documents.
+		*/
+		std::map<std::string, std::string> m_AttachmentNames;
+
 	public:
 
 		/**
@@ -69,23 +77,23 @@ class XcfMemoryRunControllerOperator : public QWidget {
 			try {
 				m_MemoryInterface = (memory::interface::MemoryInterface::getInstance(active_memory_name));	
 				m_DirPath = "";
+				m_AttachmentNames;
 			} catch (...) {
 				CBF_THROW_RUNTIME_ERROR("can't connect to memory: " << active_memory_name);
 			}
 		}
 
 	public slots:
-		/**
-			@brief Opens a FileDialog in which an xml-file with a control_basis can be chosen.
-			This control_basis is send in an XCFMemoryRunControllerAdd.
-		*/
-		void add_control_basis();
 
 		/**
-			@brief Opens a FileDialog in which an xml-file with a control basis can be chosen.
-			This control_basis is send as an attachment with an XCFMemoryRunControllerAdd.
+			@brief Opens a file-dialog and sends all chosen files as attachments.
 		*/
-		void add_attachment();
+		void send_descriptions();
+
+		/**
+			@brief Triggers the run_controller to load a list of files into an ObjectNamespace.
+		*/
+		void create_namespace();
 
 		/**
 			@brief Opens a Dialog in which a time can be chosen.
@@ -106,14 +114,54 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		void execute();
 
 		/**
-			Sends an XCFMemoryRunControllerStop.
+			@brief Sends an XCFMemoryRunControllerStop.
 		*/
 		void stop();
 
-		/**
-			@brief Opens a Dialog in which a list of controller names can be defined.
-			The controller names are send in an XCFMemoryRunControllerLoadControllers.
-		*/
-		void load_controllers();
+};
+
+
+/**
+	@brief A struct used by the XcfMemoryRunControllerOperator. It shows a
+	list of files to choose from and returns the corresponding attachment-id's.
+*/
+class XcfMemoryRunControllerDocumentDialog : public QDialog {
+	Q_OBJECT
+
+	private:
+
+	/**
+		@brief The checkboxes are listed here.
+	*/
+	std::vector<QCheckBox*> m_QCheckBoxes;
+
+	/**
+		@brief A helper function that initializes the widget.
+		@param attachment_map The attachment-id's mapped to the corresponding filenames.
+	*/
+	void init(std::map<std::string, std::string> attachment_map);
+
+
+
+	public:
+	/**
+		@brief Initializes this QDialog end fills it with widets.
+		@param attachment_map The attachment-id's mapped to the corresponding filenames.
+		@param parent The parent-widget of this.
+	*/
+	XcfMemoryRunControllerDocumentDialog(std::map<std::string, std::string> attachment_map, QWidget* parent = 0)
+	:
+	QDialog(parent),
+	m_QCheckBoxes()
+	{
+		init(attachment_map);
+	}
+
+	public slots:
+
+	/**
+		@brief executes this dialog (modal)
+	*/
+	std::vector<std::string> exec();
 
 };

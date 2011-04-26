@@ -55,27 +55,27 @@ struct ControllerRunningException : std::runtime_error {
 
 /**
 	@brief An exception that will be thrown, when an action is called,
-	which needs th control basis to be set first.
+	which needs the namespace to be set first.
 */
-struct ControlBasisNotSetException : std::runtime_error {
+struct ObjectNamespaceNotSetException : std::runtime_error {
 
 	public:
-		ControlBasisNotSetException() 
+		ObjectNamespaceNotSetException()
 			: 
-			std::runtime_error ("action impossible while control basis is not sets")
+			std::runtime_error ("action impossible while the object namespace is not sets")
 		{ }	
 };
 
 /**
 	@brief An exception that will be thrown, when start_controller() is called with a
-	conntroller_name, that does not exist in the control basis
+	conntroller_name, that does not exist in the namespace
 */
 struct ControllerNotFoundExcepption : std::runtime_error {
 
 	public:
 		ControllerNotFoundExcepption()
 			: 
-			std::runtime_error ("could not find the controller in control basis")
+			std::runtime_error ("could not find the controller in the object namespace")
 		{ }
 };
 
@@ -86,7 +86,7 @@ struct ControllerNotFoundExcepption : std::runtime_error {
 
 /**
 	@brief A struct that runs a controller from a controller 
-	name and a control basis pointer. The execution of the controller
+	name and a ObjectNamespacePtr. The execution of the controller
 	and all functions are (meant to be) threadsafe.
 */
 struct CBFRunController {
@@ -94,7 +94,7 @@ struct CBFRunController {
 
 	/**
 		@brief Creates a CBFRunController struct, does not start to run the controller.
-		Execution can be started with start_controller() after a control_basis was set.
+		Execution can be started with start_controller() after an ObjectNamespace was set.
 
 		@param sleep-time The sleep time after each step of execution in milliseconds.
 		@param steps The count of steps to execute. Setting steps to 0 lets the controller run
@@ -120,14 +120,14 @@ struct CBFRunController {
 	virtual ~CBFRunController() {}
 
 	/**
-		@brief Sets the ControlBasis when the controller is not running (thread safe).
+		@brief Sets the ObjectNamespace when the controller is not running (thread safe).
 	*/
-	void setControlBasis(CBF::ControlBasisPtr control_basis) throw(ControllerRunningException);
+	void setObjectNamespace(CBF::ObjectNamespacePtr object_namespace) throw(ControllerRunningException);
 
 	/**
-		@brief Returns a ControlBasisPtr with a copy of the control basis.
+		@brief Returns an ObjectNamespacePtr with a copy of the object namespace.
 	*/
-	const CBF::ControlBasisPtr getControlBasis() throw(ControlBasisNotSetException);
+	const CBF::ObjectNamespacePtr getObjectNamespace() throw(ObjectNamespaceNotSetException);
 
 	/**
 		@brief Changes the sleep-time (thread-save).
@@ -183,15 +183,15 @@ struct CBFRunController {
 	#endif	
 
 	/**
-		@brief Starts to run the controller 'controller_name' from the m_ControlBasis. 
-		m_ControlBasis must be set before. Waits for m_SleepTime milliseconds after each 
+		@brief Starts to run the controller 'controller_name' from the m_ObjectNamespace.
+		m_ObjectNamespace must be set before. Waits for m_SleepTime milliseconds after each
 		step of execution. Execution can be stopped through stop_controller().
 
 		If m_Steps == 0 the controller runs until convergence.
 		If m_Steps > 0 this amount of steps will be performed.
 	*/
 	void start_controller(std::string controller_name) 
-		throw(ControlBasisNotSetException, ControllerNotFoundExcepption, ControllerRunningException);
+		throw(ObjectNamespaceNotSetException, ControllerNotFoundExcepption, ControllerRunningException);
 
 	/**
 		@brief Stops the controller from execution before the next step is performed.
@@ -206,18 +206,18 @@ struct CBFRunController {
 	bool checkControllerRuns();
 
 	/**
-		@brief a thread safe way to check whether the ControlBasis is already set.
+		@brief a thread safe way to check whether the ObjectNamespace is already set.
 
-		@return Whether the ControlBasis is set.
+		@return Whether the ObjectNamespace is set.
 	*/
-	bool checkControlBasisSet();
+	bool checkObjectNamespaceSet();
 	
 	/**
-		@brief a thread safe way to check whether a controller is in the control_basis.
+		@brief a thread safe way to check whether a controller is in the ObjectNamespace.
 
 		@return Whether the controller exists.
 	*/
-	bool checkControllerExists(std::string controller_name) throw(ControlBasisNotSetException);
+	bool checkControllerExists(std::string controller_name) throw(ObjectNamespaceNotSetException);
 	
 	/**
 		@brief a thread safe way to check whether the controller
@@ -231,10 +231,8 @@ struct CBFRunController {
 	private:
 
 	/**
-		@brief Holds the ControlBasisPtr.
+		@brief Holds the ObjectnamespacePtr.
 	*/
-	ControlBasisPtr m_ControlBasis;
-
 	ObjectNamespacePtr m_ObjectNamespace;
 
 	/**
@@ -265,9 +263,9 @@ struct CBFRunController {
 	bool m_ControllerRunning;
 
 	/**
-		@brief Tells whether the ControlBasis is set.
+		@brief Tells whether the ObjectNamespace is set.
 	*/
-	bool m_ControlBasisSet;
+	bool m_ObjectNamespaceSet;
 	
 	/**
 		@brief Tells whether the controller converged.

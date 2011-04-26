@@ -58,7 +58,7 @@ struct XCFMemoryRunController {
 	/**
 		@brief This struct connects to an active_memory and subscribes for
 		XCFMemoryRunController-documents with the specified RunController-name.
-		When a document ist inserted, the XCFMemoryRunController performs the
+		When a document is inserted, the XCFMemoryRunController performs the
 		corresponding actions.
 
 		@param run_controller_name The name of the RunController to listen for.
@@ -110,9 +110,10 @@ struct XCFMemoryRunController {
 	CBFRunControllerPtr m_RunController;
 
 	/**
-		@brief A map that holds controllers identified by their names.
+		@brief A map that holds received CBFObject-socuments as std::string
+		identified by their attachment-id.
 	*/
-	std::map<std::string, boost::shared_ptr<CBFSchema::Controller> > m_ControllerMap;
+	std::map<std::string, std::string> m_DocumentMap;
 
 	/**
 		@brief Returns the string that identifies the XML-document that
@@ -158,9 +159,9 @@ struct XCFMemoryRunController {
 		@brief Returns the string that identifies the XML-document that
 		loads controllers as a control_basis.
 	*/
-	const std::string loadControllersXPath(){
+	const std::string loadNamespaceXPath(){
 		std::stringstream xPathStream;
-		xPathStream << "/p1:XCFMemoryRunControllerLoadControllers[RunControllerName='";
+		xPathStream << "/p1:XCFMemoryRunControllerLoadNamespace[RunControllerName='";
 		xPathStream << m_RunControllerName << "']";
 		return xPathStream.str();
 	}
@@ -168,18 +169,9 @@ struct XCFMemoryRunController {
 	/**
 		@brief The function that will be called by the active_memory when 
 		a XCFMemoryRunControllerAdd document is available. It Adds
-		controllers to the m_ControllerMap.
+		documents to the m_DocumentMap.
 	*/
 	void triggered_action_add(const memory::interface::Event &event);
-
-	/**
-		@brief A helper-function for triggered_action_add().
-	*/
-	void add_controllers_to_map(
-		CBFSchema::ControlBasis::Controller_sequence* controllers,
-			std::set<std::string>* added_controllers, 
-			std::map<std::string, int>* overwritten_controllers,
-			int* ignored_controllers_count);
 
 	/**
 		@brief The function that will be called by the active_memory when 
@@ -204,10 +196,10 @@ struct XCFMemoryRunController {
 
 	/**
 		@brief The function that will be called by the active_memory when 
-		a XCFMemoryRunControllerLoadControllers document is available. It 
-		creates a control_basis and sets it in m_RunController.
+		a XCFMemoryRunControllerLoadNamespace document is available. It
+		creates an ObjectNamespace and sets it in m_RunController.
 	*/
-	void triggered_action_load_controllers(const memory::interface::Event &event);
+	void triggered_action_load_namespace(const memory::interface::Event &event);
 
 	/**
 		@brief Sends (not inserts) an error XCFMemoryRunControllerNotification document.
@@ -223,25 +215,22 @@ struct XCFMemoryRunController {
 		Whether a notification will be send defines the m_NotificationLevel.
 
 		@param documentD The dbxml:id of the xml document that triggered this note.
-		@param added_controler_names The set of controller_names that were added.
-		@param overwritten_controllers The map of overwritten controllers and with the count of
-		overwritings.
-		@param ignored_controllers_count The count of controllers that were ignored.
+		@param added_documents The a map that shows which controllers were added and how often.
+		@param ignored_documents The count of controllers that were ignored.
 	*/
-	void notifyAdd(int documentID, std::set<std::string> added_controller_names,
-					std::map<std::string, int> overwritten_controllers,
-					int ignored_controllers_count);
+	void notifyAdd(int documentID, std::map<std::string, int> added_documents,
+					int ignored_documents);
 
 	/**
 		@brief A notify function for the load-action.
 		Whether a notification will be send defines the m_NotificationLevel.
 
 		@param documentD The dbxml:id of the xml document that triggered this note.
-		@param Ok Has a control_basis been set?
-		@param not_found_controllers A set of controller_names that were not found.
+		@param loaded_documents The documents that could be loaded into the namespace
+		@param not_found_documents A set of documents that were not found.
 	*/
-	void notifyLoad(int documentID, std::set<std::string> loaded_controllers,
-			std::set<std::string> not_found_controllers);
+	void notifyLoad(int documentID, std::set<std::string> loaded_documents,
+			std::set<std::string> not_found_documents);
 
 	/**
 		@brief A notify function for the stop-action.

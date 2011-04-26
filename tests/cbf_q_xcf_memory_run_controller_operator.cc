@@ -40,6 +40,7 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
+#include <QtGui/QLabel>
 #include <QMessageBox>
 
 
@@ -110,30 +111,27 @@ int main(int argc, char *argv[]) {
 
 	//Initializing the Applictaions main-window.
 	QWidget *window = new QWidget();
-	QPushButton add_cb("add control basis");
-	QPushButton add_c("add control basis as attachment");
-	QPushButton execute("execute");
-	QPushButton stop("stop");
+	QPushButton send("send descriptions");
+	QPushButton create("create namespace");
+	QPushButton execute("execute controller");
+	QPushButton stop("stop controller");
 	QPushButton sleep_time("sleep time");
 	QPushButton steps("steps");
-	QPushButton load("load");
 	QPushButton quit("quit");
 
 	// connecting buttons to the corresponding slots.
-	QObject::connect(&add_cb, SIGNAL(clicked()), &op, SLOT(add_control_basis()));
-	QObject::connect(&add_c, SIGNAL(clicked()), &op, SLOT(add_attachment()));
+	QObject::connect(&send, SIGNAL(clicked()), &op, SLOT(send_descriptions()));
+	QObject::connect(&create, SIGNAL(clicked()), &op, SLOT(create_namespace()));
 	QObject::connect(&execute, SIGNAL(clicked()), &op, SLOT(execute()));
 	QObject::connect(&stop, SIGNAL(clicked()), &op, SLOT(stop()));
 	QObject::connect(&sleep_time, SIGNAL(clicked()), &op, SLOT(set_time()));
 	QObject::connect(&steps, SIGNAL(clicked()), &op, SLOT(set_steps()));
-	QObject::connect(&load, SIGNAL(clicked()), &op, SLOT(load_controllers()));
 	QObject::connect(&quit, SIGNAL(clicked()), app, SLOT(quit()));
 
 	// layouting the main window
 	QVBoxLayout *windowLayout = new QVBoxLayout(window);
-	windowLayout -> addWidget(&add_cb);
-	windowLayout -> addWidget(&add_c);
-	windowLayout -> addWidget(&load);
+	windowLayout -> addWidget(&send);
+	windowLayout -> addWidget(&create);
 	windowLayout -> addWidget(&execute);
 	windowLayout -> addWidget(&stop);
 	windowLayout -> addWidget(&sleep_time);
@@ -147,44 +145,59 @@ int main(int argc, char *argv[]) {
 	app -> exec();
 }
 
-void XcfMemoryRunControllerOperator::add_control_basis(){
+void XcfMemoryRunControllerOperator::send_descriptions(){
 	// getting the name of the xml file.
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), m_DirPath.c_str(), tr("XML (*.xml)"));
-	std::string control_basis = fileName.toStdString();
-	if(control_basis.size() > 0) {m_DirPath = control_basis;}
+	QStringList files =
+			QFileDialog::getOpenFileNames(this, tr("Open File"), m_DirPath.c_str(), tr("XML (*.xml);;ALL (*)"));
+	QStringList files2 = files;
 
-	if (control_basis.size() == 0) { return; }
+	if(files2.size() > 0) {m_DirPath = files2.at(0).toStdString();}
 
-	CBF::XSDErrorHandler err_handler;
+	memory::interface::Attachments att;
+
+	// creating the XCFMemoryRunControllerAdd document
+	CBFSchema::XCFMemoryRunControllerAdd v(m_RunControllerName);
+
+	//creating buffers and setting attachment-names
+	for(QStringList::const_iterator it = files2.begin();
+			it != files2.end(); ++it)
+	{
+		std::string filename = it -> toStdString();
+
+		// create Buffer and fill it with data from file.
+		memory::interface::Buffer buffer;
+
+		std::ifstream docFile(filename.c_str());
+		if (docFile.is_open()){
+			while (!docFile.eof()) {
+				buffer.push_back(docFile.get());
+			}
+			docFile.close();
+		} else {
+			CBF_DEBUG("could not open file: " << filename);
+			break;
+		}
+
+		//TODO: Memory server needs unique ID's. UUID when avaliable.
+		// set the Buffer with (hopefully unique) id
+		std::ostringstream id;
+		id << rand() << rand() << rand();
+
+		att[id.str()] = buffer;
+
+		v.AttachmentName().push_back(id.str());
+
+		//map the filename to the id.
+		m_AttachmentNames[filename] = id.str();
+	}
 
 	try {
-		// trying to parse the file as a control_basis
-		std::auto_ptr<CBFSchema::ControlBasis> cbt
-			(CBFSchema::ControlBasis_
-				(control_basis, err_handler, xml_schema::flags::dont_validate));
-
-		//CBF_DEBUG("checking if control_basis is compilable");
-		//CBF::ControlBasisPtr cb(new CBF::ControlBasis(*cbt));
-
-		// creating the XCFMemoryRunControllerAdd document.
-		CBFSchema::XCFMemoryRunControllerAdd v(m_RunControllerName);
-		// setting the control_basis
-		v.ControlBasis(cbt);
 
 		std::ostringstream s;
 		CBFSchema::XCFMemoryRunControllerAdd_ (s, v);
 		// sending the document to the active_memory
-	CBF_DEBUG(s.str());
-	CBF_DEBUG("Document length: " << s.str().size());
-	if(s.str().size() > 80000) {
-		QMessageBox msgBox;
-		msgBox.setText("The size of the document is above 80.000 characters. "
-				"Please use the 'add control basis as attachment' function "
-				"for big documents.");
-		msgBox.exec();
-	} else {
-		m_MemoryInterface -> insert(s.str());
-	}
+
+		m_MemoryInterface -> insert(s.str(), &att);
 
 	} catch (const xml_schema::exception& e) {
 		std::cerr << "Error during parsing: " << e << std::endl;
@@ -195,55 +208,26 @@ void XcfMemoryRunControllerOperator::add_control_basis(){
 	}
 }
 
-void XcfMemoryRunControllerOperator::add_attachment(){
-	// getting the name of the xml file.
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), m_DirPath.c_str(), tr("XML (*.xml)"));
-	std::string control_basis = fileName.toStdString();
-	if(control_basis.size() > 0) {m_DirPath = control_basis;}
-	
-	// create Buffer and fill it with data from file.
-	memory::interface::Buffer buffer;
+void XcfMemoryRunControllerOperator::create_namespace(){
+	// getting the names of the controllers to load.
+	bool ok;
+	XcfMemoryRunControllerDocumentDialog tmp(m_AttachmentNames, this);
+	std::vector<std::string> ids = tmp.exec();
+	if (!ids.empty()){
+		// creating the XCFMemoryRunControllerLoadControllers document.
+		CBFSchema::XCFMemoryRunControllerLoadNamespace v(m_RunControllerName);
 
-	std::ifstream docFile(control_basis.c_str());
-	if (docFile.is_open()){
-		while (!docFile.eof()) {
-			buffer.push_back(docFile.get());
+		// adding all attachment id's to the document
+		std::vector<std::string>::const_iterator it;
+		for(it = ids.begin(); it != ids.end(); it++)
+		{
+			v.AttachmentName().push_back(*it);
 		}
-		docFile.close();
-	} else {
-		std::cerr << "Error could not open file.";
-		return;
-	}
-
-	//TODO: Memory server needs unique ID's. UUID when avaliable.
-	// create Attachment and set the Buffer.
-	memory::interface::Attachments att;
-	// create (hopefully unique) id
-	std::ostringstream id;
-	for (int i = 0; i < 20; ++i){
-		id << (rand()%10);
-	}
-	att[id.str()] = buffer;
-
-	try {
-		// creating the XCFMemoryRunControllerAdd document.
-		CBFSchema::XCFMemoryRunControllerAdd v(m_RunControllerName);
-		// setting the Attachment element
-		
-		v.Attachments(true);
 
 		std::ostringstream s;
-		CBFSchema::XCFMemoryRunControllerAdd_ (s, v);
+		CBFSchema::XCFMemoryRunControllerLoadNamespace_ (s, v);
 		// sending the document to the active_memory
-		
-		m_MemoryInterface -> insert(s.str(), &att);
-
-	} catch (const xml_schema::exception& e) {
-		std::cerr << "Error during parsing: " << e << std::endl;
-	} catch (const std::exception& e) {
-		std::cerr << "Unexpected exception: " << e.what() << std::endl;
-	} catch (...) {
-		std::cerr << "Unknown unexpected exception." << std::endl;
+		m_MemoryInterface -> insert(s.str());
 	}
 }
 
@@ -310,29 +294,44 @@ void XcfMemoryRunControllerOperator::stop(){
 	m_MemoryInterface -> insert(s.str());
 }
 
-void XcfMemoryRunControllerOperator::load_controllers(){
-	// getting the names of the controllers to load.
-	bool ok;
-	QString text = QInputDialog::getText(this, tr("enter controller names divided by space"),
-				tr("controller names:"), QLineEdit::Normal, "", &ok);
-	if (ok && !text.isEmpty()){
-		// splitting the string to a list of controller names.
-		QStringList controllers = text.split(" ", QString::SkipEmptyParts);
-		
-		// creating the XCFMemoryRunControllerLoadControllers document.
-		CBFSchema::XCFMemoryRunControllerLoadControllers v(m_RunControllerName);
+void XcfMemoryRunControllerDocumentDialog::init(std::map<std::string, std::string> attachment_map){
+	QGridLayout* windowLayout = new QGridLayout(this);
 
-		// adding all controller names to the document
-		for(QStringList::const_iterator it = controllers.begin();
-			it != controllers.end(); it++)
-		{
-			v.ControllerName().push_back((*it).toStdString());
-		}
+	QLabel* title = new QLabel("Choose the source files for the namespace", this);
+	windowLayout -> addWidget(title, 0, 0, 1, 2);
 
-		std::ostringstream s;
-		CBFSchema::XCFMemoryRunControllerLoadControllers_ (s, v);
-		// sending the document to the active_memory
-		m_MemoryInterface -> insert(s.str());
+	std::map<std::string, std::string>::const_iterator it;
+	int i = 1;
+	for(it = attachment_map.begin(); it != attachment_map.end(); ++it, ++i){
+		QCheckBox* cb = new QCheckBox((it -> first).c_str(), this);
+		//setting the attachment-id as tooltip.
+		cb -> setToolTip((it -> second).c_str());
+ 		m_QCheckBoxes.push_back(cb);
+		windowLayout ->  addWidget(cb, i, 0, 1, 2);
 	}
+
+	QPushButton* accept = new QPushButton("okay", this);
+	QPushButton* reject = new QPushButton("cancel", this);
+
+	QObject::connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
+	QObject::connect(reject, SIGNAL(clicked()), this, SLOT(reject()));
+
+	windowLayout ->  addWidget(reject, i + 1, 0, 1, 1);
+	windowLayout ->  addWidget(accept, i + 2, 1 , 1, 1);
 }
 
+std::vector<std::string> XcfMemoryRunControllerDocumentDialog::exec(){
+	//run the dialog.
+	int i = QDialog::exec();
+	if (i == QDialog::Accepted) {
+		std::vector<std::string> ret;
+		std::vector<QCheckBox*>::const_iterator it;
+		for (it = m_QCheckBoxes.begin(); it != m_QCheckBoxes.end(); ++it){
+			if((*it) -> isChecked()){
+				ret.push_back(((*it) -> toolTip()).toStdString());
+			}
+		}
+	} else {
+		return std::vector<std::string>();
+	}
+}
