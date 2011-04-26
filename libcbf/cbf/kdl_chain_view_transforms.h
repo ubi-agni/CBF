@@ -29,6 +29,8 @@ struct KDLChainViewSensorTransform : public SensorTransform {
 	}
 
 	virtual void update(const FloatVector &res) {
+		CBF_DEBUG("pose size: " << m_ChainView->pose().size());
+		CBF_DEBUG("res size: " << res.size());
 		m_Operand->update(res);
 		std::copy(res.begin(), res.end(), m_ChainView->pose().begin());
 		m_ChainView->update();
@@ -64,6 +66,8 @@ struct KDLTreeViewSensorTransform : public SensorTransform {
 	}
 
 	virtual void update(const FloatVector &res) {
+		CBF_DEBUG("pose size: " << m_TreeView->pose().size());
+		CBF_DEBUG("res size: " << res.size());
 		m_Operand->update(res);
 		std::copy(res.begin(), res.end(), m_TreeView->pose().begin());
 		m_TreeView->update();
