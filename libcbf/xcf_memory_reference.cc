@@ -68,9 +68,7 @@ namespace CBF {
 
 		std::ostringstream s;
 		CBFSchema::XCFMemoryReferenceVector_ (s, v);
-
 		std::string document = m_MemoryInterface -> insert(s.str());
-
 		CBF_DEBUG("Document" << document);
 
 		mi::Condition::Condition condition((mi::Event::REPLACE | mi::Event::INSERT), XPathString());

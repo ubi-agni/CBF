@@ -215,11 +215,11 @@ struct XCFMemoryRunController {
 		Whether a notification will be send defines the m_NotificationLevel.
 
 		@param documentD The dbxml:id of the xml document that triggered this note.
-		@param added_documents The a map that shows which controllers were added and how often.
-		@param ignored_documents The count of controllers that were ignored.
+		@param added_documents The a vector of added document names.
+		@param ignored_documents A vector of document names that were ignored.
 	*/
-	void notifyAdd(int documentID, std::map<std::string, int> added_documents,
-					int ignored_documents);
+	void notifyAdd(int documentID, std::vector<std::string> added_documents,
+					std::vector<std::string> ignored_documents);
 
 	/**
 		@brief A notify function for the load-action.
@@ -253,6 +253,14 @@ struct XCFMemoryRunController {
 	*/
 	void notifyOptions(int documentID, unsigned int sleep_time, unsigned int steps, bool time_set, bool steps_set);
 	
+	/**
+		@brief A helper function that tries to initialize document as an CBF::Object and add it to a namespace.
+		@param document An xml-document that describes a CBF::Object
+		@param eventID the ID of the event that triggered this call. used for notifications.
+		@return boolean whether initialization was successful.
+	*/
+	bool test_initializable(std::string document, int eventID);
+
 };
 
 /**

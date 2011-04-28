@@ -103,16 +103,16 @@ namespace mi = memory::interface;
 		CBF_DEBUG("parsing XML for attachments, adding");
 
 		try {
-			//we will count the attachments and save their ids, so we can notify them.
-			int ignored_documents = 0;
-			std::map<std::string, int> added_documents;
+			// a list of added documents
+			std::vector<std::string> added_documents = std::vector<std::string>();
+			// a list of pairs <ignored document name, reason>
+			std::vector<std::string> ignored_documents = std::vector<std::string>();
 
 			// parsing the XCFMemoryRunControllerAdd document.
 			std::istringstream s(documentText);
 			std::auto_ptr<CBFSchema::XCFMemoryRunControllerAdd> controllerAdd = 
 				CBFSchema::XCFMemoryRunControllerAdd_(s, xml_schema::flags::dont_validate);
 
-			CBF::XSDErrorHandler err_handler;
 			CBF_DEBUG("getting attachments and saving them");
 
 			memory::interface::Attachments att;
@@ -130,38 +130,20 @@ namespace mi = memory::interface;
 
 				CBF_DEBUG("saving attachment[" << it -> first << "]");
 				CBF_DEBUG("document: " << tmp.str());
-				//TODO: maybe test files before saving -> ignorelist
-				m_DocumentMap[it -> first] = tmp.str();
-				//increasing added
-				added_documents[it -> first]++;
-
-				// trying to parse the attachments as an object and
-				// initialize them in the object_namespace
-//				try {
-//					// Create a cbfschema::object
-//					std::auto_ptr<CBFSchema::Object> obj
-//						(CBFSchema::Object_
-//							(tmp, err_handler, xml_schema::flags::dont_validate));
-//
-//					// Add objects to namespace
-//					CBF::ObjectPtr cb = CBF::XMLObjectFactory::instance()
-//											-> create<CBF::Object>(*obj, m_AddedControllersNamespace);
-//
-//				} catch (const xml_schema::exception& e) {
-//					std::string note("Could not parse Buffer as control_basis: ");
-//					note.append(e.what());
-//					notifyError(note, event.getID());
-//				} catch (const std::exception& e) {
-//				  	std::string note("Could not parse Buffer as control_basis: ");
-//					note.append(e.what());
-//					notifyError(note, event.getID());
-//				} catch (...) {
-//					notifyError("An unknown unexpected exception occured while parsing "
-//						"Attachment as control_basis.", event.getID());
-//				}
+				//test whether it is parsable.
+				if(test_initializable(tmp.str(), event.getID())){
+					//document is parsable. adding
+					m_DocumentMap[it -> first] = tmp.str();
+					added_documents.push_back(it -> first);
+				} else {
+					//document not parsable -> ignorelist.
+					ignored_documents.push_back(it -> first);
+				}
 			}
 
+			CBF_DEBUG("notifying");
 			notifyAdd(event.getID(), added_documents, ignored_documents);
+			CBF_DEBUG("notifyed. returning.");
 		} catch (const xml_schema::exception& e) {
 			std::string note("An error occured during parsing: ");
 			note.append(e.what());
@@ -375,24 +357,24 @@ namespace mi = memory::interface;
 		}		 
 	}
 	
-	void XCFMemoryRunController::notifyAdd(int documentID, std::map<std::string, int> added_documents,
-			int ignored_documents)
+	void XCFMemoryRunController::notifyAdd(int documentID, std::vector<std::string> added_documents,
+			std::vector<std::string> ignored_documents)
 	{
 		if (m_NotificationLevel & XCFMemoryRunController::INFO){
 			// creating the XCFMemoryRunControllerNotification document.
 			CBFSchema::XCFMemoryRunControllerNotification v(m_RunControllerName, documentID);
 
-			//Adding information about added controllers
-			std::map<std::string, int>::const_iterator it;
+			//Adding information about added documents
+			std::vector<std::string>::const_iterator it;
 			for (it = added_documents.begin(); it != added_documents.end(); ++it)
 			{
-				 v.AddedControllerName().push_back(it -> first);
-				 if (it -> second) { // when documents were overwritten
-					v.OverwrittenControllerName().push_back(it -> first);
-				 }
+				 v.AddedDocumentName().push_back(*it);
 			}
 			//Adding information about ignored douments
-			v.ControllersIgnored(ignored_documents);
+			for (it = ignored_documents.begin(); it != ignored_documents.end(); ++it)
+			{
+				v.DocumentIgnoredName().push_back(*it);
+			}
 
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
@@ -467,6 +449,41 @@ namespace mi = memory::interface;
 			// sending the document to the active_memory
 			m_MemoryInterface -> send(s.str());
 		}
+	}
+
+	bool XCFMemoryRunController::test_initializable(std::string document, int eventID){
+		// trying to parse the attachments as an object and
+		// initialize them in the object_namespace
+		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
+		CBF::XSDErrorHandler err_handler;
+		try {
+			// Create a cbfschema::object
+			std::stringstream doc(document);
+			CBF_DEBUG("parse document for CBF::Object: " << document);
+			std::auto_ptr<CBFSchema::Object> obj
+				(CBFSchema::Object_
+					(doc, err_handler, xml_schema::flags::dont_validate));
+
+
+			// Add objects to namespace
+			CBF_DEBUG("add object to namespace");
+			CBF::ObjectPtr cb = CBF::XMLObjectFactory::instance()
+									-> create<CBF::Object>(*obj, object_namespace);
+
+			return true; //everything okay
+		} catch (const xml_schema::exception& e) {
+			std::string note("Could not parse Buffer as CBF::Object ");
+			note.append(e.what());
+			notifyError(note, eventID);
+		} catch (const std::exception& e) {
+			std::string note("Could not parse Buffer as CBF::Object: ");
+			note.append(e.what());
+			notifyError(note, eventID);
+		} catch (...) {
+			notifyError("An unknown unexpected exception occurred while parsing "
+					"Attachment as CBF::Object.", eventID);
+		}
+		return false;
 	}
 
 } //namespace
