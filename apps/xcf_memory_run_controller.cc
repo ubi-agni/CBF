@@ -354,7 +354,7 @@ namespace mi = memory::interface;
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
 			// sending the document to the active_memory
-			m_MemoryInterface -> send(s.str());
+			m_MemoryInterface -> insert(s.str());
 		}		 
 	}
 	
@@ -380,7 +380,7 @@ namespace mi = memory::interface;
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
 			// sending the document to the active_memory
-			m_MemoryInterface -> send(s.str());
+			m_MemoryInterface -> insert(s.str());
 		}
 		  
 	}
@@ -412,7 +412,7 @@ namespace mi = memory::interface;
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
 			// sending the document to the active_memory
-			m_MemoryInterface -> send(s.str());
+			m_MemoryInterface -> insert(s.str());
 		}
 	}
 
@@ -427,7 +427,7 @@ namespace mi = memory::interface;
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
 			// sending the document to the active_memory
-			m_MemoryInterface -> send(s.str());
+			m_MemoryInterface -> insert(s.str());
 		}
 	}
 	
@@ -448,7 +448,7 @@ namespace mi = memory::interface;
 			std::ostringstream s;
 			CBFSchema::XCFMemoryRunControllerNotification_ (s, v);
 			// sending the document to the active_memory
-			m_MemoryInterface -> send(s.str());
+			m_MemoryInterface -> insert(s.str());
 		}
 	}
 

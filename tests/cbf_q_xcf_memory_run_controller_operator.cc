@@ -303,9 +303,15 @@ void XcfMemoryRunControllerDocumentDialog::init(std::map<std::string, std::strin
 	std::map<std::string, std::string>::const_iterator it;
 	int i = 1;
 	for(it = attachment_map.begin(); it != attachment_map.end(); ++it, ++i){
+		std::stringstream filenameAndID;
+		filenameAndID << (it -> first) << "(" << (it -> second) << ")";
+		std::string shortFilename = (it -> first);
+		size_t slashPos = shortFilename.find_last_of('\\');
+		if (slashPos == shortFilename.npos) slashPos = 0;
+		shortFilename = shortFilename.substr(slashPos, shortFilename.npos);
 		QCheckBox* cb = new QCheckBox((it -> first).c_str(), this);
 		//setting the attachment-id as tooltip.
-		cb -> setToolTip((it -> second).c_str());
+		cb -> setToolTip(filenameAndID.str().c_str());
  		m_QCheckBoxes.push_back(cb);
 		windowLayout ->  addWidget(cb, i, 0, 1, 2);
 	}
