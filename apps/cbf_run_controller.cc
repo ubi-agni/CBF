@@ -161,14 +161,21 @@ namespace CBF {
 		return m_Converged;
 	}
 	
-	bool CBFRunController::checkControllerExists(std::string controller_name) throw(ObjectNamespaceNotSetException){
+	bool CBFRunController::checkControllerExists(std::string controller_name)
+		throw(ObjectNamespaceNotSetException, ControllerNotFoundExcepption){
 		// Throws an exception when no ObjectNamespace is set.
 		if(!checkObjectNamespaceSet()){
 			throw ObjectNamespaceNotSetException();
 		}
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ControllerRunningMonitor);
 		//returns whether the controller is in the ObjectNamespace.
-		return !(m_ObjectNamespace -> get<CBF::Controller>(controller_name) == 0);
+		CBF_DEBUG("checking for controller");
+		try{
+			m_ObjectNamespace -> get<CBF::Controller>(controller_name, true);
+			return true;
+		} catch (std::runtime_error e) {
+			throw ControllerNotFoundExcepption();
+		}
 	}
 
 	void CBFRunController::setObjectNamespace(CBF::ObjectNamespacePtr object_namespace)

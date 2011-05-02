@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(argv[1]));
 
 	std::stringstream xPath;
-	xPath << "//*[local-name() = 'XCFMemoryReferenceVector' and ";
+	xPath << "//*[local-name() = 'XCFMemoryReferenceInfo' and ";
 	xPath << "namespace-uri() = 'http://www.cit-ec.uni-bielefeld.de/CBF']";
 	xPath << "/ReferenceName[text() = '" << argv[2] << "']";
 
@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
 
 
 		CBF_DEBUG("Sending document");
-		memoryPtr -> send(s.str());
+		memoryPtr -> insert(s.str());
 	}
 }
 

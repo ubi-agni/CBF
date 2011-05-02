@@ -5,7 +5,7 @@
 	xsi:type="cbf:ControlBasis"
 	xsi:schemaLocation="http://www.cit-ec.uni-bielefeld.de/CBF /home/tapas/src/uni/CBF/schemas/schemas.xsd">
 <Controller xsi:type="cbf:PrimitiveController">
- <Name>foo</Name>
+ <Name>MemoryResourceController</Name>
 
  <Coefficient> 1 </Coefficient>
 

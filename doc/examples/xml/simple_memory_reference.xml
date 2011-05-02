@@ -4,7 +4,7 @@
 	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
 	xsi:type="cbf:ControlBasis">
 <Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="cbf:PrimitiveController">
- <Name>foo</Name>
+ <Name>MemoryReferenceController</Name>
 
  <Coefficient> 1 </Coefficient>
 

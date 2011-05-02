@@ -59,7 +59,7 @@ void vector_from_eigen_string(const std::string str, FloatVector* vec){
 	}
 	vec -> resize(values.size());
 	std::copy(values.begin(), values.end(), vec -> data());
-	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << vec);
+	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << *vec);
 }
 
 void vector_from_boost_string(const std::string str, FloatVector* vec){
@@ -116,7 +116,7 @@ void matrix_from_eigen_string(const std::string str, FloatMatrix* matr){
 			++pos;
 		}
 	}
-	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << matr);
+	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << *matr);
 }
 
 void matrix_from_boost_string(const std::string str, FloatMatrix* matr){

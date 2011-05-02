@@ -217,7 +217,8 @@ struct CBFRunController {
 
 		@return Whether the controller exists.
 	*/
-	bool checkControllerExists(std::string controller_name) throw(ObjectNamespaceNotSetException);
+	bool checkControllerExists(std::string controller_name)
+		throw(ObjectNamespaceNotSetException, ControllerNotFoundExcepption);
 	
 	/**
 		@brief a thread safe way to check whether the controller
