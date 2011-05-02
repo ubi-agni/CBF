@@ -53,22 +53,16 @@ namespace CBF {
 	}
 
 	void XCFMemoryReference::init() {
-		//Creating an XCFMemoryReferenceVector xml and inserting at XCFMemory. 
+		// Creating an XCFMemoryReferenceInfo xml and inserting at XCFMemory.
 		// This way the Dimension will be published.
-		CBF_DEBUG("creating vector string");
+		CBF_DEBUG("creating info document");
 
-		FloatVector floatVector = FloatVector::Zero(m_Dim);
-		std::stringstream vector_string;
-		vector_string << floatVector;
-
-		CBF_DEBUG("creating vector doc");
-		CBFSchema::EigenVector vectorDoc(vector_string.str());
-
-		CBFSchema::XCFMemoryReferenceVector v(m_ReferenceName, vectorDoc);
+		CBFSchema::XCFMemoryReferenceInfo v(m_ReferenceName, m_Dim);
 
 		std::ostringstream s;
-		CBFSchema::XCFMemoryReferenceVector_ (s, v);
+		CBFSchema::XCFMemoryReferenceInfo_ (s, v);
 		std::string document = m_MemoryInterface -> insert(s.str());
+
 		CBF_DEBUG("Document" << document);
 
 		mi::Condition::Condition condition((mi::Event::REPLACE | mi::Event::INSERT), XPathString());
@@ -85,6 +79,7 @@ namespace CBF {
 		mi::TriggeredAction triggeredAction(f);
 
 		m_MemoryInterface -> add(condition, triggeredAction);
+		CBF_DEBUG("XCFMemoryReference initialized");
 	}
 
 	void XCFMemoryReference::update()  {

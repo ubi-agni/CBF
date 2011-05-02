@@ -38,61 +38,88 @@ int main(int argc, char **argv) {
 	std::stringstream xPath;
 	xPath << "//*[local-name() = 'XCFMemoryReferenceVector' and ";
 	xPath << "namespace-uri() = 'http://www.cit-ec.uni-bielefeld.de/CBF']";
-	xPath << "/ReferenceName['" << argv[2] << "']";
+	xPath << "/ReferenceName[text() = '" << argv[2] << "']";
 
 	mi::ResultsPtr results = memoryPtr -> query(xPath.str());
 
 	std::string document;
-	bool noDocumentFound = true;
-	std::auto_ptr<CBFSchema::XCFMemoryReferenceVector> reference;
-	while(noDocumentFound && (results -> hasNext())){ 
+	std::vector<int> dimensions;
+	std::auto_ptr<CBFSchema::XCFMemoryReferenceInfo> reference;
+	while(results -> hasNext()){
 		results -> next(document);
 		try{
-			CBF_DEBUG("Parsing as XCFmemoryReferenceVector: " << document);
+			document = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><p1:XCFMemoryReferenceInfo xmlns:p1=\"http://www.cit-ec.uni-bielefeld.de/CBF\" xmlns:dbxml=\"http://www.sleepycat.com/2002/dbxml\" dbxml:id=\"58\">"
+//			  "<xcf:metadata xmlns:xcf=\"http://xcf.sf.net\">"
+//			    "<timing>"
+//			       "<ts dateTime=\"xs:dateTime\" key=\"xcf:cre\" ms=\"1304342142425\" ns=\"902099\" src=\"CBE43EFA-4B95-48BF-9C52-C3306585E12A\"/>"
+//			       "<ts dateTime=\"xs:dateTime\" key=\"xcf:pub\" ms=\"1304342142425\" ns=\"902099\" src=\"CBE43EFA-4B95-48BF-9C52-C3306585E12A\"/>"
+//			    "</timing>"
+//			  "</xcf:metadata>"
+
+			  "<ReferenceName>CBFMemoryReference</ReferenceName>"
+
+			  "<Dimension>3</Dimension>"
+
+			"</p1:XCFMemoryReferenceInfo>";
+
+			CBF_DEBUG("Parsing as XCFmemoryReferenceInfo: " << document);
 			std::istringstream s(document);
-			reference = CBFSchema::XCFMemoryReferenceVector_(s, xml_schema::flags::dont_validate);
-			noDocumentFound = false;
+			reference = CBFSchema::XCFMemoryReferenceInfo_(s, xml_schema::flags::dont_validate);
+			dimensions.push_back(reference -> Dimension());
+		} catch (xml_schema::exception& e){
+			CBF_DEBUG("Could not parse document: " << e.what());
 		} catch (...){
 			CBF_DEBUG("Could not parse document. Trying next.");
 		}
 	}
 
-	if (noDocumentFound){
+	if (dimensions.size() == 0){
 		CBF_DEBUG("XPath: " << xPath.str());
-		CBF_THROW_RUNTIME_ERROR("Could not find an XCFMemoryReferenceVector with the specified name "
-					"on the memory_server or XML was not parsable");
+		CBF_THROW_RUNTIME_ERROR("Could not find an XCFMemoryReferenceInfo with the specified name on the memory.");
 	}
 
-	xmltio::XPath referenceVectorPath("/p1:XCFMemoryReferenceVector/Vector/String");
-	xmltio::Location referenceVectorLoc(document, referenceVectorPath);
-
+	if (dimensions.size() > 1){
+		int firstDimension = dimensions.at(0);
+		std::vector<int>::const_iterator it;
+		for (it = dimensions.begin(); it != dimensions.end(); ++it){
+			if (*it != firstDimension){
+				CBF_DEBUG("XPath: " << xPath.str());
+				CBF_THROW_RUNTIME_ERROR("Found multiple XCFMemoryReferences with the specified name "
+									"and different dimensions on this memory");
+			}
+		}
+	}
 	ObjectNamespacePtr object_namespace(new ObjectNamespace);
 
-	CBF_DEBUG("dimension: " << create_vector(reference -> Vector(), object_namespace));
+	CBF_DEBUG("dimension: " << dimensions.at(0));
 	
-	unsigned int dim = (create_vector(reference -> Vector(), object_namespace)).size();
+	unsigned int dim = dimensions.at(0);
 
 	while(true) {
 		std::cout << "Enter " << dim << " values" << std::endl;
 
 		std::stringstream vector_string;
 
-		vector_string << "[" << dim << "](";
+		CBF::FloatVector tmp(dim);
+		CBF::Float value;
 		for (unsigned int i = 0; i < dim; ++i) {
-			float tmp;
-			std::cin >> tmp;
-			vector_string << tmp;
-			if (i != dim - 1) vector_string << ",";
+			std::cin >> value;
+			tmp(i) = value;
 		}
-		vector_string << ")";
 
-		referenceVectorLoc = vector_string.str();
+		// creating the XCFMemoryReferenceVector document
+		std::stringstream vecstr;
+		vecstr << tmp;
+		CBFSchema::XCFMemoryReferenceVector v(argv[2], CBFSchema::EigenVector(vecstr.str()));
 
-		CBF_DEBUG("document: " << referenceVectorLoc.getDocument());
+		std::ostringstream s;
+		CBFSchema::XCFMemoryReferenceVector_ (s, v);
+
+		CBF_DEBUG("document: " << s.str());
 
 
-		CBF_DEBUG("Replacing document");
-		memoryPtr -> replace(referenceVectorLoc.getDocumentText());
+		CBF_DEBUG("Sending document");
+		memoryPtr -> send(s.str());
 	}
 }
 

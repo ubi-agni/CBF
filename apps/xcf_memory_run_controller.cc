@@ -131,7 +131,7 @@ namespace mi = memory::interface;
 				CBF_DEBUG("saving attachment[" << it -> first << "]");
 				CBF_DEBUG("document: " << tmp.str());
 				//test whether it is parsable.
-				if(test_initializable(tmp.str(), event.getID())){
+				if(true){//test_initializable(tmp.str(), event.getID())){
 					//document is parsable. adding
 					m_DocumentMap[it -> first] = tmp.str();
 					added_documents.push_back(it -> first);
@@ -306,6 +306,7 @@ namespace mi = memory::interface;
 						// Add objects to namespace
 						CBF::ObjectPtr cb = CBF::XMLObjectFactory::instance()
 											-> create<CBF::Object>(*obj, object_namespace);
+						loaded_documents.insert(m_DocumentMap.find(*it) -> first);
 						documents_added++;
 					}
 				} catch (const xml_schema::exception& e) {

@@ -265,7 +265,7 @@ void XcfMemoryRunControllerOperator::set_steps(){
 		std::ostringstream s;
 		CBFSchema::XCFMemoryRunControllerOptions_ (s, v);
 		// sending the document to the active_memory
-		m_MemoryInterface -> insert(s.str());		
+		m_MemoryInterface -> insert(s.str());
 	}
 }
 
@@ -317,21 +317,20 @@ void XcfMemoryRunControllerDocumentDialog::init(std::map<std::string, std::strin
 	QObject::connect(reject, SIGNAL(clicked()), this, SLOT(reject()));
 
 	windowLayout ->  addWidget(reject, i + 1, 0, 1, 1);
-	windowLayout ->  addWidget(accept, i + 2, 1 , 1, 1);
+	windowLayout ->  addWidget(accept, i + 1, 1 , 1, 1);
 }
 
 std::vector<std::string> XcfMemoryRunControllerDocumentDialog::exec(){
-	//run the dialog.
+	CBF_DEBUG("running the dialog");
 	int i = QDialog::exec();
+	std::vector<std::string> ret;
 	if (i == QDialog::Accepted) {
-		std::vector<std::string> ret;
 		std::vector<QCheckBox*>::const_iterator it;
 		for (it = m_QCheckBoxes.begin(); it != m_QCheckBoxes.end(); ++it){
 			if((*it) -> isChecked()){
 				ret.push_back(((*it) -> toolTip()).toStdString());
 			}
 		}
-	} else {
-		return std::vector<std::string>();
 	}
+	return ret;
 }

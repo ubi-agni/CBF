@@ -777,6 +777,14 @@
 		<xsd:element name="Vector" type="CBF:Vector"/>
 	 </xsd:sequence>
   </xsd:complexType>
+  
+  <xsd:element name="XCFMemoryReferenceInfo" type="CBF:XCFMemoryReferenceInfo"/>
+  <xsd:complexType name="XCFMemoryReferenceInfo">
+	 <xsd:sequence>
+		<xsd:element name="ReferenceName" type="xsd:string"/>
+		<xsd:element name="Dimension" type="xsd:nonNegativeInteger"/>
+	 </xsd:sequence>
+  </xsd:complexType>
 
   <xsd:complexType name="XCFMemoryReference">
 	 <xsd:complexContent>
