@@ -41,6 +41,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
 #include <QtGui/QLabel>
+#include <QtGui/QScrollArea>
 #include <QMessageBox>
 
 
@@ -295,26 +296,32 @@ void XcfMemoryRunControllerOperator::stop(){
 }
 
 void XcfMemoryRunControllerDocumentDialog::init(std::map<std::string, std::string> attachment_map){
+
 	QGridLayout* windowLayout = new QGridLayout(this);
 
 	QLabel* title = new QLabel("Choose the source files for the namespace", this);
 	windowLayout -> addWidget(title, 0, 0, 1, 2);
 
+	QScrollArea* scrollArea = new QScrollArea(this);
+	QWidget* scrollWidget = new QWidget(scrollArea);
+	QVBoxLayout* scrollLayout = new QVBoxLayout(scrollWidget);
+
 	std::map<std::string, std::string>::const_iterator it;
-	int i = 1;
-	for(it = attachment_map.begin(); it != attachment_map.end(); ++it, ++i){
-		std::stringstream filenameAndID;
-		filenameAndID << (it -> first) << "(" << (it -> second) << ")";
+	for(it = attachment_map.begin(); it != attachment_map.end(); ++it){
 		std::string shortFilename = (it -> first);
-		size_t slashPos = shortFilename.find_last_of('\\');
-		if (slashPos == shortFilename.npos) slashPos = 0;
-		shortFilename = shortFilename.substr(slashPos, shortFilename.npos);
-		QCheckBox* cb = new QCheckBox((it -> first).c_str(), this);
+		size_t slashPos = shortFilename.find_last_of("/\\");
+		if (slashPos >= shortFilename.npos - 1) slashPos = 0;
+		shortFilename = shortFilename.substr(slashPos + 1, shortFilename.npos);
+		QCheckBox* cb = new QCheckBox(shortFilename.c_str(), scrollWidget);
 		//setting the attachment-id as tooltip.
-		cb -> setToolTip(filenameAndID.str().c_str());
+		cb -> setToolTip((it -> second).c_str());
  		m_QCheckBoxes.push_back(cb);
-		windowLayout ->  addWidget(cb, i, 0, 1, 2);
+ 		scrollLayout ->  addWidget(cb);
 	}
+
+	scrollWidget -> setLayout(scrollLayout);
+	scrollArea -> setWidget(scrollWidget);
+	windowLayout -> addWidget(scrollArea, 1, 0, 1, 2);
 
 	QPushButton* accept = new QPushButton("okay", this);
 	QPushButton* reject = new QPushButton("cancel", this);
@@ -322,8 +329,10 @@ void XcfMemoryRunControllerDocumentDialog::init(std::map<std::string, std::strin
 	QObject::connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
 	QObject::connect(reject, SIGNAL(clicked()), this, SLOT(reject()));
 
-	windowLayout ->  addWidget(reject, i + 1, 0, 1, 1);
-	windowLayout ->  addWidget(accept, i + 1, 1 , 1, 1);
+	windowLayout ->  addWidget(reject, 2, 0, 1, 1);
+	windowLayout ->  addWidget(accept, 2, 1, 1, 1);
+
+	this -> setLayout(windowLayout);
 }
 
 std::vector<std::string> XcfMemoryRunControllerDocumentDialog::exec(){
