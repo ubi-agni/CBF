@@ -24,11 +24,15 @@ include(CTest)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREAD OFF)
 
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  set (CBF_DEBUG_COLOR 1)
-endif()
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
 
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -DCBF_NDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DCBF_NDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DCBF_DEBUG_COLOR")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DCBF_NDEBUG")
 
 message(STATUS "==============================================================")
 message(STATUS "Configuring CBF:")
