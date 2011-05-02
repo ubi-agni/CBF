@@ -69,7 +69,7 @@ namespace CBF {
 
 
 	/**
-		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
+		@brief Pseudo inverse based generic effector transform (damped, non-weighted)
 	*/
 	struct DampedGenericEffectorTransform : public EffectorTransform {
 		DampedGenericEffectorTransform (const CBFSchema::DampedGenericEffectorTransform &xml_instnace, ObjectNamespacePtr object_namespace);
@@ -91,6 +91,14 @@ namespace CBF {
 			m_DampingConstant = damping_constant;
 		}	
 	
+		void setDampingConstant (Float damping_constant) {
+			m_DampingConstant = damping_constant;
+		}
+
+		Float getDampingConstant () const {
+			return m_DampingConstant;
+		}
+
 		protected:
 			Float m_DampingConstant;
 	};
