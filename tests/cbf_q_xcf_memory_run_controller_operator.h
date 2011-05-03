@@ -22,6 +22,9 @@
 #include <cbf/exceptions.h>
 
 #include <Memory/Interface.hpp>
+#include <Memory/Condition.hpp>
+#include <Memory/Subscription.hpp>
+#include <Memory/Event.hpp>
 
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
@@ -30,6 +33,10 @@
 #include <QtGui/QGridLayout>
 #include <QtGui/QErrorMessage>
 #include <QtGui/QCheckBox>
+#include <QtGui/QButtonGroup>
+
+#include <IceUtil/Monitor.h>
+#include <IceUtil/RecMutex.h>
 
 /**
 	@brief A struct that can be used to create XCFMemoryRunController[...] documents
@@ -61,6 +68,54 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		*/
 		std::map<std::string, std::string> m_AttachmentNames;
 
+		/**
+			@brief A set of (for execution) available controllers, must be synchronized
+		*/
+		std::set<std::string> m_AvailableControllers;
+
+		/**
+			@brief The mutex-lock that is used for the thread
+			syncronization of the available controllers set.
+		*/
+		IceUtil::Monitor<IceUtil::RecMutex> m_AvailableControllersMonitor;
+
+		std::string availableControllersXPath(){
+			std::stringstream ret;
+			ret << "/p1:XCFMemoryRunControllerNotification[RunControllerName='";
+			ret << m_RunControllerName << "']/ControllerAvailable";
+			return ret.str();
+		}
+
+		/**
+			@brief A thread-safe way to get the set of available controllers.
+			@return A copy of m_AvailableControllers.
+		*/
+		std::set<std::string> getAvailableControllers(){
+			IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_AvailableControllersMonitor);
+			return std::set<std::string>(m_AvailableControllers);
+		}
+
+		/**
+			@brief A thread-safe way to set the set of available controllers.
+			@brief A set of available controllers.
+		*/
+		void setAvailableControllers(std::set<std::string> controllers){
+			IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_AvailableControllersMonitor);
+			m_AvailableControllers = controllers;
+		}
+
+		/**
+			@brief A helper function. initializes the XcfMemoryRunControlleroperator.
+			@param active_memory_name The name/location of the actice_memory
+		*/
+		void init(std::string active_memory_name);
+
+		/**
+			@brief This function is tiggered, when a Notification with available controllers
+			is inserted at the memory.
+		*/
+		void controllers_available(const memory::interface::Event &event);
+
 	public:
 
 		/**
@@ -74,13 +129,7 @@ class XcfMemoryRunControllerOperator : public QWidget {
 		:
 		m_RunControllerName(run_controller_name)
 		{
-			try {
-				m_MemoryInterface = (memory::interface::MemoryInterface::getInstance(active_memory_name));	
-				m_DirPath = "";
-				m_AttachmentNames;
-			} catch (...) {
-				CBF_THROW_RUNTIME_ERROR("can't connect to memory: " << active_memory_name);
-			}
+		init(active_memory_name);
 		}
 
 	public slots:
@@ -145,7 +194,7 @@ class XcfMemoryRunControllerDocumentDialog : public QDialog {
 
 	public:
 	/**
-		@brief Initializes this QDialog end fills it with widets.
+		@brief Initializes this QDialog and fills it with widgets.
 		@param attachment_map The attachment-id's mapped to the corresponding filenames.
 		@param parent The parent-widget of this.
 	*/
@@ -163,5 +212,50 @@ class XcfMemoryRunControllerDocumentDialog : public QDialog {
 		@brief executes this dialog (modal)
 	*/
 	std::vector<std::string> exec();
+
+};
+
+/**
+	@brief A struct used by the XcfMemoryRunControllerOperator. It shows a
+	list of Controllers to choose from and returns a string representing the chosen one.
+*/
+class XcfMemoryRunControllerNameDialog : public QDialog {
+	Q_OBJECT
+
+	private:
+
+	/**
+		@brief The QButtonGroup for our RadioButtons.
+	*/
+	QButtonGroup m_QButtonGroup;
+
+	/**
+		@brief A helper function that initializes the widget.
+		@param controller_set The set of controller names.
+	*/
+	void init(std::set<std::string> controller_set);
+
+
+
+	public:
+	/**
+		@brief Initializes this QDialog end fills it with widgets.
+		@param controller_set A set of controller names.
+		@param parent The parent-widget of this.
+	*/
+	XcfMemoryRunControllerNameDialog(std::set<std::string> controller_set, QWidget* parent = 0)
+	:
+	QDialog(parent),
+	m_QButtonGroup(parent)
+	{
+		init(controller_set);
+	}
+
+	public slots:
+
+	/**
+		@brief executes this dialog (modal)
+	*/
+	std::string exec();
 
 };

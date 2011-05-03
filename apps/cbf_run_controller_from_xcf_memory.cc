@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 		(
 			"nlevel",
 			po::value<unsigned int>(),
-			"Notification Level: 0 = nothing, 1 = only error, 2 = only info, 3 = all"
+			"Notification Level: 0 = nothing, 1 = only error, 2 = only info, 3 = all(default)"
 		)
 		(
 			"verbose",
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
 		active_memory_name = variables_map["memory"].as<std::string>();
 	}
 
-	unsigned int notification_level = 0;
+	unsigned int notification_level = 3;
 		if (variables_map.count("nlevel")) {
 			notification_level = variables_map["nlevel"].as<unsigned int>();
 		}

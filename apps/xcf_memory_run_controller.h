@@ -228,9 +228,10 @@ struct XCFMemoryRunController {
 		@param documentD The dbxml:id of the xml document that triggered this note.
 		@param loaded_documents The documents that could be loaded into the namespace
 		@param not_found_documents A set of documents that were not found.
+		@param controller_names A set of CBF::Controllers which could be loaded from the namespace.
 	*/
 	void notifyLoad(int documentID, std::set<std::string> loaded_documents,
-			std::set<std::string> not_found_documents);
+			std::set<std::string> not_found_documents, std::set<std::string> controller_names);
 
 	/**
 		@brief A notify function for the stop-action.

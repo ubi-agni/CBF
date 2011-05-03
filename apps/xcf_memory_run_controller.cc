@@ -131,7 +131,7 @@ namespace mi = memory::interface;
 				CBF_DEBUG("saving attachment[" << it -> first << "]");
 				CBF_DEBUG("document: " << tmp.str());
 				//test whether it is parsable.
-				if(true){//test_initializable(tmp.str(), event.getID())){
+				if(test_initializable(tmp.str(), event.getID())){
 					//document is parsable. adding
 					m_DocumentMap[it -> first] = tmp.str();
 					added_documents.push_back(it -> first);
@@ -143,7 +143,7 @@ namespace mi = memory::interface;
 
 			CBF_DEBUG("notifying");
 			notifyAdd(event.getID(), added_documents, ignored_documents);
-			CBF_DEBUG("notifyed. returning.");
+			CBF_DEBUG("done");
 		} catch (const xml_schema::exception& e) {
 			std::string note("An error occured during parsing: ");
 			note.append(e.what());
@@ -330,7 +330,19 @@ namespace mi = memory::interface;
 				// set the namespace
 				m_RunController -> setObjectNamespace(object_namespace);
 			}
-			notifyLoad(event.getID(), loaded_documents, not_found_documents);
+			// check for Controllers
+			std::set<std::string> controllerNames;
+
+			CBF::ObjectNamespace::map::const_iterator it2;
+			for (it2 = object_namespace -> m_Map.begin(); it2 != object_namespace -> m_Map.end(); ++it2)  {
+				try{
+					object_namespace -> get<CBF::Controller>(it2 -> first, true);
+					controllerNames.insert(it2 -> first);
+				} catch (...) {
+					// do nothing.
+				}
+			}
+			notifyLoad(event.getID(), loaded_documents, not_found_documents, controllerNames);
 			
 		} catch (const ControllerRunningException& e){
 			notifyError("Error: Can not set ControlBasis while controller is running.", event.getID());
@@ -382,24 +394,22 @@ namespace mi = memory::interface;
 			// sending the document to the active_memory
 			m_MemoryInterface -> insert(s.str());
 		}
-		  
 	}
 	
 	void XCFMemoryRunController::notifyLoad(int documentID, std::set<std::string> loaded_documents,
-					std::set<std::string> not_found_documents)
+					std::set<std::string> not_found_documents, std::set<std::string> controller_names)
 	{
 		if (m_NotificationLevel & XCFMemoryRunController::INFO){
 			// creating the XCFMemoryRunControllerNotification document.
 			CBFSchema::XCFMemoryRunControllerNotification v(m_RunControllerName, documentID);
+			std::set<std::string>::const_iterator it;
 
 			//Adding information about loaded documents
-			for (std::set<std::string>::const_iterator it = loaded_documents.begin();
-				it != loaded_documents.end(); ++it)
+			for (it = loaded_documents.begin(); it != loaded_documents.end(); ++it)
 			{
 				 v.LoadDocumentName().push_back(*it);
 			}
 			//Adding information about not found documents
-			std::set<std::string>::const_iterator it;
 			for (it = not_found_documents.begin(); it != not_found_documents.end(); ++it)
 			{
 				 v.NotFoundDocumentName().push_back(*it);
@@ -407,6 +417,11 @@ namespace mi = memory::interface;
 			if(loaded_documents.size() == 0){
 				v.Note("No namespace set because no document could be parsed.");
 				CBF_DEBUG("No namespace set because no document could be parsed.");
+			}
+			//Adding information about available controllers
+			for (it = controller_names.begin();	it != controller_names.end(); ++it)
+			{
+				 v.ControllerAvailable().push_back(*it);
 			}
 
 			std::ostringstream s;

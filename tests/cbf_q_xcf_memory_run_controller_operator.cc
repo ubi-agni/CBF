@@ -36,12 +36,14 @@
 #include <memory>
 
 #include <boost/program_options.hpp>
-
+#include <boost/bind.hpp>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
 #include <QtGui/QLabel>
 #include <QtGui/QScrollArea>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QRadioButton>
 #include <QMessageBox>
 
 
@@ -144,6 +146,45 @@ int main(int argc, char *argv[]) {
 
 	//Starting the Application
 	app -> exec();
+}
+
+void XcfMemoryRunControllerOperator::init(std::string active_memory_name){
+	try {
+		m_MemoryInterface = (memory::interface::MemoryInterface::getInstance(active_memory_name));
+		m_DirPath = "";
+		m_AttachmentNames;
+	} catch (...) {
+		CBF_THROW_RUNTIME_ERROR("can't connect to memory: " << active_memory_name);
+	}
+
+	unsigned int event = memory::interface::Event::INSERT | memory::interface::Event::REPLACE;
+	CBF_DEBUG("Subscribing at memory");
+	memory::interface::Condition condition(event, availableControllersXPath());
+	memory::interface::TriggeredAction triggered_action(boost::bind(
+		&XcfMemoryRunControllerOperator::controllers_available, this, _1));
+	memory::interface::Subscription subscription(condition, triggered_action);
+	m_MemoryInterface -> subscribe(subscription);
+
+}
+
+void XcfMemoryRunControllerOperator::controllers_available(const memory::interface::Event &event){
+	CBF_DEBUG("doc: " << event.getDocument());
+
+	std::string documentText = event.getDocument().getRootLocation().getDocumentText();
+
+	CBF_DEBUG("parsing XML for available controllers");
+
+	try {
+		// parsing the XCFMemoryRunControllerNotification document.
+		std::istringstream s(documentText);
+		std::auto_ptr<CBFSchema::XCFMemoryRunControllerNotification> note =
+			CBFSchema::XCFMemoryRunControllerNotification_(s, xml_schema::flags::dont_validate);
+		std::set<std::string> controllers;
+		controllers.insert(note -> ControllerAvailable().begin(), note -> ControllerAvailable().end());
+		setAvailableControllers(controllers);
+	} catch(...){
+		CBF_DEBUG("An error occured while parsing a XCFMemoryRunControllerNotification.");
+	}
 }
 
 void XcfMemoryRunControllerOperator::send_descriptions(){
@@ -272,12 +313,22 @@ void XcfMemoryRunControllerOperator::set_steps(){
 
 void XcfMemoryRunControllerOperator::execute(){
 	// getting the name of the controller to execute.
+	std::string name;
 	bool ok;
-	QString text = QInputDialog::getText(this, tr("enter controller name to execute"),
-				tr("controller name:"), QLineEdit::Normal, "", &ok);
-	if (ok && !text.isEmpty()){
+	std::set<std::string> controllers = getAvailableControllers();
+	if(controllers.size() > 0){
+		XcfMemoryRunControllerNameDialog tmp(controllers, this);
+		name = tmp.exec();
+		if (name.size() > 0) ok = true;
+	} else {
+		name = QInputDialog::getText(this, tr("enter controller name to execute"),
+			tr("controller name:"), QLineEdit::Normal, "", &ok).toStdString();
+		if (name.size() == 0) ok = false;
+	}
+
+	if (ok){
 		// creating the XCFMemoryRunControllerExecute document with the controller name.
-		CBFSchema::XCFMemoryRunControllerExecute v(m_RunControllerName, text.toStdString());
+		CBFSchema::XCFMemoryRunControllerExecute v(m_RunControllerName, name);
 
 		std::ostringstream s;
 		CBFSchema::XCFMemoryRunControllerExecute_ (s, v);
@@ -348,4 +399,48 @@ std::vector<std::string> XcfMemoryRunControllerDocumentDialog::exec(){
 		}
 	}
 	return ret;
+}
+
+void XcfMemoryRunControllerNameDialog::init(std::set<std::string> controller_set){
+
+	QGridLayout* windowLayout = new QGridLayout(this);
+
+	QLabel* title = new QLabel("Choose the controller to run", this);
+	windowLayout -> addWidget(title, 0, 0, 1, 2);
+
+	QScrollArea* scrollArea = new QScrollArea(this);
+	QWidget* scrollWidget = new QWidget(scrollArea);
+	QVBoxLayout* scrollLayout = new QVBoxLayout(scrollWidget);
+
+	std::set<std::string>::const_iterator it;
+	for(it = controller_set.begin(); it != controller_set.end(); ++it){
+		QRadioButton* rb = new QRadioButton((*it).c_str(), scrollWidget);
+		m_QButtonGroup.addButton(rb);
+ 		scrollLayout ->  addWidget(rb);
+	}
+
+	scrollWidget -> setLayout(scrollLayout);
+	scrollArea -> setWidget(scrollWidget);
+	windowLayout -> addWidget(scrollArea, 1, 0, 1, 2);
+
+	QPushButton* accept = new QPushButton("okay", this);
+	QPushButton* reject = new QPushButton("cancel", this);
+
+	QObject::connect(accept, SIGNAL(clicked()), this, SLOT(accept()));
+	QObject::connect(reject, SIGNAL(clicked()), this, SLOT(reject()));
+
+	windowLayout ->  addWidget(reject, 2, 0, 1, 1);
+	windowLayout ->  addWidget(accept, 2, 1, 1, 1);
+
+	this -> setLayout(windowLayout);
+}
+
+std::string XcfMemoryRunControllerNameDialog::exec(){
+	CBF_DEBUG("running the dialog");
+	int i = QDialog::exec();
+	std::vector<std::string> ret;
+	if (i == QDialog::Accepted) {
+		return m_QButtonGroup.checkedButton() -> text().toStdString();
+	}
+	return "";
 }
