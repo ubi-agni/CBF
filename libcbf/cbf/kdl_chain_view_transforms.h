@@ -32,7 +32,7 @@ struct KDLChainViewSensorTransform : public SensorTransform {
 		CBF_DEBUG("pose size: " << m_ChainView->pose().size());
 		CBF_DEBUG("res size: " << res.size());
 		m_Operand->update(res);
-		std::copy(res.begin(), res.end(), m_ChainView->pose().begin());
+		std::copy(res.data(), res.data() + res.size(), m_ChainView->pose().begin());
 		m_ChainView->update();
 	}
 
@@ -69,7 +69,7 @@ struct KDLTreeViewSensorTransform : public SensorTransform {
 		CBF_DEBUG("pose size: " << m_TreeView->pose().size());
 		CBF_DEBUG("res size: " << res.size());
 		m_Operand->update(res);
-		std::copy(res.begin(), res.end(), m_TreeView->pose().begin());
+		std::copy(res.data(), res.data() + res.size(), m_TreeView->pose().begin());
 		m_TreeView->update();
 	}
 
