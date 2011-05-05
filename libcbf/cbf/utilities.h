@@ -137,13 +137,20 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &j);
 FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace);
 FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespacePtr object_namespace);
 
-boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace);
-boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance, ObjectNamespacePtr object_namespace);
-boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance, ObjectNamespacePtr object_namespace);
+boost::shared_ptr<KDL::Segment> 
+create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace);
 
-boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance, ObjectNamespacePtr object_namespace);
+boost::shared_ptr<KDL::Frame> 
+create_frame(const CBFSchema::Frame &xml_instance, ObjectNamespacePtr object_namespace);
 
-boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, ObjectNamespacePtr object_namespace);
+boost::shared_ptr<KDL::Joint> 
+create_joint(const CBFSchema::Joint &xml_instance, ObjectNamespacePtr object_namespace);
+
+boost::shared_ptr<KDL::Chain> 
+create_chain(const CBFSchema::ChainBase &xml_instance, ObjectNamespacePtr object_namespace);
+
+boost::shared_ptr<KDL::Tree> 
+create_tree(const CBFSchema::Tree &xml_instance, ObjectNamespacePtr object_namespace);
 
 
 } // namespace

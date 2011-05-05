@@ -21,7 +21,7 @@
 #include <cbf/utilities.h>
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 #ifdef CBF_HAVE_KDL
 	#include <kdl/jacobian.hpp>
@@ -625,6 +625,9 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 
 	template <> XMLFactory<KDL::Tree> 
 		*XMLFactory<KDL::Tree>::m_Instance = 0;
+
+//	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Tree>, CBFSchema::Tree> x4;
+
 
 #endif
 

@@ -25,7 +25,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/xsd_error_handler.h>
 #include <cbf/object_list.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>

@@ -599,6 +599,27 @@
 	 </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:complexType name="KDLTreeViewSensorTransform">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:SensorTransform">
+		  <xsd:sequence>
+			 <xsd:element name="Operand" type="CBF:KDLTreePositionSensorTransform"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="KDLChainViewSensorTransform">
+	 <xsd:complexContent>
+		<xsd:extension base="CBF:SensorTransform">
+		  <xsd:sequence>
+			 <xsd:element name="Operand" type="CBF:KDLChainPositionSensorTransform"/>
+		  </xsd:sequence>
+		</xsd:extension>
+	 </xsd:complexContent>
+  </xsd:complexType>
+
+
   <xsd:complexType name="NormSensorTransform">
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:SensorTransform">

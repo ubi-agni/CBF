@@ -19,6 +19,7 @@
 */
 
 #include <cbf/xcf_memory_resource.h>
+#include <cbf/xml_object_factory.h>
 #include <cbf/utilities.h>
 #include <xmltio/XPath.hpp>
 

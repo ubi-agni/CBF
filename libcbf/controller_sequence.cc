@@ -23,7 +23,7 @@
 #include <iostream>
 
 #ifdef CBF_HAVE_XSD
-	#include <cbf/xml_factory.h>
+	#include <cbf/xml_object_factory.h>
 #endif
 
 namespace CBF {

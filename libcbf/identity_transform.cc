@@ -20,7 +20,7 @@
 
 #include <cbf/identity_transform.h>
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 namespace CBF {
 	

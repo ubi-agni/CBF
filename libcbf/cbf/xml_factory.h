@@ -22,6 +22,7 @@
 #define CBF_XML_FACTORIES_HH
 
 #include <cbf/config.h>
+#include <cbf/foreign_object_wrapper.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
 #include <cbf/object.h>
@@ -36,111 +37,10 @@
 #endif
 
 namespace CBF {
+	class ObjectNamespace;
+	typedef boost::shared_ptr<ObjectNamespace> ObjectNamespacePtr;
+	
 	#ifdef CBF_HAVE_XSD
-		/**
-			@brief The base type for all concrete CBF::Object factories
-		*/
-		struct XMLDerivedFactoryBase {
-			virtual boost::shared_ptr<Object> create(const CBFSchema::Object &xml_instance, ObjectNamespacePtr object_namespace) = 0;
-			virtual ~XMLDerivedFactoryBase() { }
-		};
-
-		/**
-			@brief The central registry, where all types derived of CBF::Object that have
-			a constructor taking a CBFSchema::Object argument in their constructor register.
-
-			This factory is used for all CBFSchema types that can inherit from CBF::Object. 
-			This is not true for things like CBFSchema::BoostVector or CBFSchema::ZeroMatrix.
-			For these types the XMLFactory is used
-		*/
-		struct XMLObjectFactory {
-			protected:
-				static XMLObjectFactory *m_Instance;
-				XMLObjectFactory() { 
-
-				}
-	
-			public:
-				virtual ~XMLObjectFactory() { }
-	
-				std::map<std::string, XMLDerivedFactoryBase* > m_DerivedFactories;
-	
-				static XMLObjectFactory *instance() { 
-					if (m_Instance) 
-						{ return m_Instance; }
-
-					return (m_Instance = new XMLObjectFactory); 
-				}
-
-
-				/**
-					@brief This function can be used to create an Object from a CBFSchema::Object or
-					derived type instance. 
-
-					If the creation fails, a std::runtime_error is thrown
-				*/
-				template<class T>
-				boost::shared_ptr<T> create(
-					const CBFSchema::Object &xml_instance, 
-					ObjectNamespacePtr object_namespace
-				) {
-					if (m_DerivedFactories.find(std::string(typeid(xml_instance).name())) == m_DerivedFactories.end()) {
-						CBF_THROW_RUNTIME_ERROR(
-							"No factory found for type (possibly mangled): " << 
-							CBF_UNMANGLE(xml_instance)
-						);
-					}
-
-					boost::shared_ptr<T> p = 
-						boost::dynamic_pointer_cast<T>(
-							m_DerivedFactories[typeid(xml_instance).name()]->create(xml_instance, object_namespace)
-						)
-					;
-
-					if (p.get()) return p;
-
-					CBF_THROW_RUNTIME_ERROR(
-						"No factory found for type (possibly mangled): " << 
-						CBF_UNMANGLE(xml_instance)
-					);
-	
-					return boost::shared_ptr<T>();
-				}
-		};
-	
-		/**
-			This type is only available when XSD support is enabled via the CBF_HAVE_XSD macro define
-		*/
-		template <class T, class TType>
-		struct XMLDerivedFactory : public XMLDerivedFactoryBase {
-				XMLDerivedFactory() { 
-					CBF_DEBUG(
-						"registering (possibly mangled type name follows): " << 
-						CBF_UNMANGLE(T) << 
-						" with SchemaType: " << 
-						CBF_UNMANGLE(TType)
-					);
-					XMLObjectFactory::instance()->m_DerivedFactories[std::string(typeid(TType).name())] = this; 
-				}
-	
-			public:
-				virtual boost::shared_ptr<Object> create(
-					const CBFSchema::Object &xml_instance, 
-					ObjectNamespacePtr object_namespace
-				) {
-					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(this));
-					const TType* r = dynamic_cast<const TType*>(&xml_instance);
-					if (r) {
-						CBF_DEBUG("yes, i am the one");
-						ObjectPtr p(new T(*r, object_namespace));
-						object_namespace->register_object(p->name(), p);
-						return p;
-					}
-					CBF_DEBUG("no i am not the one");
-					return boost::shared_ptr<Object>();
-				}
-		};
-
 
 		template <class T>
 		struct XMLCreatorBase {
@@ -166,6 +66,13 @@ namespace CBF {
 				return m_Instance;
 			}
 	
+			/**
+				@brief create a boost::shared_ptr<T> from the xml_instance.
+
+				If the object has an element <ReferencedObjectName> then there will be a 
+				lookup in the object_namespace and instead a pointer to the referenced
+				object will be returned..
+			*/
 			virtual boost::shared_ptr<T> create(const CBFSchema::Object &xml_instance, ObjectNamespacePtr object_namespace) {
 				CBF_DEBUG(
 					"creating a " << 
@@ -174,6 +81,7 @@ namespace CBF {
 					CBF_UNMANGLE(xml_instance)
 				);
 
+#if 0
 				if(xml_instance.ReferencedObjectName().present()) {
 					boost::shared_ptr<ForeignObjectWrapper<T> > fptr = 
 						object_namespace->get<ForeignObjectWrapper<T> >(
@@ -186,6 +94,7 @@ namespace CBF {
 
 					return ptr;
 				}
+#endif
 
 				if (m_Creators.find(typeid(xml_instance).name()) == m_Creators.end()) {
 					CBF_THROW_RUNTIME_ERROR(
@@ -198,10 +107,12 @@ namespace CBF {
 
 				boost::shared_ptr<T> ptr = m_Creators[typeid(xml_instance).name()]->create(xml_instance, object_namespace);
 
+#if 0
 				if (xml_instance.Name().present()) {
 					CBF_DEBUG("registering foreign object");
 					object_namespace->register_foreign_object<T>(*xml_instance.Name(), ptr);
 				}
+#endif
 				return ptr;
 			}
 
@@ -246,11 +157,11 @@ namespace CBF {
 				);
 				const TSchemaType &tmp = dynamic_cast<const TSchemaType&>(xml_instance);
 				boost::shared_ptr<T> ptr = m_Creator(tmp, object_namespace);
-
+#if 0
 				if(xml_instance.Name().present()) {
 					object_namespace->register_foreign_object<T>(*xml_instance.Name(), ptr);
 				}
-
+#endif
 				return ptr;
 			}
 		};

@@ -20,7 +20,7 @@
 
 #include <cbf/config.h>
 #include <cbf/composite_potential.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 namespace CBF {
 

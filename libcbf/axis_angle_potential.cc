@@ -21,7 +21,7 @@
 #include <cbf/axis_angle_potential.h>
 #include <cbf/quaternion.h>
 #include <cbf/utilities.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 namespace CBF {
 

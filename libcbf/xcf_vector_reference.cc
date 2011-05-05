@@ -1,5 +1,5 @@
 #include <cbf/xcf_vector_reference.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 namespace CBF {
 
