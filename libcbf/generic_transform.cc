@@ -20,7 +20,7 @@
 
 #include <cbf/generic_transform.h>
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 #ifndef CBF_HAVE_EIGEN2
   #include <cbf/svd.h>

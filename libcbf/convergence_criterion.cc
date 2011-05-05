@@ -1,5 +1,5 @@
 #include <cbf/convergence_criterion.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 #include <cbf/primitive_controller.h>
 
 namespace CBF {

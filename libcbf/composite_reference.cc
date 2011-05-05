@@ -21,7 +21,7 @@
 #include <cbf/composite_reference.h>
 #include <cbf/namespace.h>
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 namespace CBF {
 

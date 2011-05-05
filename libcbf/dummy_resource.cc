@@ -21,7 +21,7 @@
 #include <cbf/dummy_resource.h>
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
-#include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 #include <string>
 #include <iostream>

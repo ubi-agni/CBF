@@ -4,24 +4,12 @@
 #include <cbf/object.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
+#include <cbf/xml_factory.h>
 
 #include <boost/shared_ptr.hpp>
 #include <map>
 
 namespace CBF {
-	template<class T> 
-	struct ForeignObjectWrapper : public Object {
-		boost::shared_ptr<T> m_Object;
-
-		ForeignObjectWrapper(boost::shared_ptr<T> object) :
-			Object("ForeignObjectWrapper"),
-			m_Object(object)
-		{
-			if (m_Object.get() == 0)
-				CBF_THROW_RUNTIME_ERROR("trying to register empty object");
-		}
-	};
-
 	struct ObjectNamespace {
 		typedef std::map<std::string, ObjectPtr> map;
 
@@ -69,16 +57,6 @@ namespace CBF {
 			for (map::iterator it = m_Map.begin(); it != m_Map.end(); ++it) {
 				CBF_DEBUG("\"" << (*it).first << "\" -> " << (*it).second);
 			}
-		}
-
-		template <class T>
-		void register_foreign_object(const std::string &key, boost::shared_ptr<T> object) {
-			register_object(
-				key, 
-				boost::shared_ptr<ForeignObjectWrapper<T> >(
-					new ForeignObjectWrapper<T>(object)
-				)
-			);
 		}
 	};
 

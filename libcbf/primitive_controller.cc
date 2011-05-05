@@ -25,6 +25,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
 #include <cbf/xml_factory.h>
+#include <cbf/xml_object_factory.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>

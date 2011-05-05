@@ -104,30 +104,17 @@ endif()
 #  set(CBF_HAVE_EIGEN2 1)
 #endif()
 
-message(STATUS "Looking for qkdlchainview")
-find_library(QKDLCHAINVIEW_LIB qkdlchainview)
-find_path(QKDLCHAINVIEW_INCLUDES qkdlchainview.h)
+message(STATUS "Looking for qkdlview")
+find_library(QKDLVIEW_LIB qkdlview)
+find_path(QKDLVIEW_INCLUDES qkdlview.h)
 if(
-	 NOT "${QKDLCHAINVIEW_LIB}" STREQUAL "QKDLCHAINVIEW_LIB-NOTFOUND" 
+	 NOT "${QKDLVIEW_LIB}" STREQUAL "QKDLVIEW_LIB-NOTFOUND" 
 	 AND 
-	 NOT "${QKDLCHAINVIEW_INCLUDES}" STREQUAL "QKDLCHAINVIEW_INCLUDES-NOTFOUND")
-  message(STATUS "  found qkdlchainview ${QKDLCHAINVIEW_LIB} ${QKDLCHAINVIEW_INCLUDES}")
-  set(CBF_HAVE_QKDLCHAINVIEW 1)
+	 NOT "${QKDLVIEW_INCLUDES}" STREQUAL "QKDLVIEW_INCLUDES-NOTFOUND")
+  message(STATUS "  found qkdlview ${QKDLVIEW_LIB} ${QKDLVIEW_INCLUDES}")
+  set(CBF_HAVE_QKDLVIEW 1)
 else()
-  message(STATUS "  qkdlchainview not found")
-endif()
-
-message(STATUS "Looking for qkdltreeview")
-find_library(QKDLTREEVIEW_LIB qkdltreeview)
-find_path(QKDLTREEVIEW_INCLUDES qkdltreeview.h)
-if(
-	 NOT "${QKDLTREEVIEW_LIB}" STREQUAL "QKDLTREEVIEW_LIB-NOTFOUND" 
-	 AND 
-	 NOT "${QKDLTREEVIEW_INCLUDES}" STREQUAL "QKDLTREEVIEW_INCLUDES-NOTFOUND")
-  message(STATUS "  found qkdltreeview ${QKDLTREEVIEW_LIB} ${QKDLTREEVIEW_INCLUDES}")
-  set(CBF_HAVE_QKDLTREEVIEW 1)
-else()
-  message(STATUS "  qkdltreeview not found")
+  message(STATUS "  qkdlview not found")
 endif()
 
 
