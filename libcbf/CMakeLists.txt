@@ -129,7 +129,7 @@ endif()
 if (CBF_HAVE_QKDLVIEW)
   message(STATUS "adding qkdl_chain_view_transforms.cc " ${QKDLVIEW_LIB})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${QKDLVIEW_INCLUDES} ${QKDLTREEVIEW_INCLUDES})
-  set(CBF_LIBS ${CBF_LIBS} ${QKDLVIEW_LIB} ${QKDLTREEVIEW_LIB})
+  set(CBF_LIBS ${CBF_LIBS} ${QKDLVIEW_LIB} ${QKDLVIEW_LIB})
   
   set(CBF_SOURCES ${CBF_SOURCES} kdl_chain_view_transforms.cc)
   # set(CBF_HEADERS ${CBF_HEADERS} qkdl_chain_view_transforms.h)
