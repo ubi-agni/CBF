@@ -125,6 +125,7 @@ if (CBF_HAVE_EIGEN2)
   set(CBF_INCLUDES ${CBF_INCLUDES} ${EIGEN2_INC})
 endif()
 
+
 if (CBF_HAVE_QKDLVIEW)
   message(STATUS "adding qkdl_chain_view_transforms.cc " ${QKDLVIEW_LIB})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${QKDLVIEW_INCLUDES} ${QKDLTREEVIEW_INCLUDES})

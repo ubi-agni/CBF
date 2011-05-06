@@ -4,6 +4,7 @@
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
+
 	KDLChainViewSensorTransform::KDLChainViewSensorTransform(const CBFSchema::KDLChainViewSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) {
 
 		KDLChainPositionSensorTransformPtr s = 
@@ -29,5 +30,6 @@ namespace CBF {
 	static XMLDerivedFactory<KDLTreeViewSensorTransform, CBFSchema::KDLTreeViewSensorTransform> x2;
 
 #endif
+
 
 } // namespace

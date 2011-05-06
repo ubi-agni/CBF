@@ -107,7 +107,7 @@ endif()
 
 message(STATUS "Looking for qkdlview")
 find_library(QKDLVIEW_LIB qkdlview)
-find_path(QKDLVIEW_INCLUDES qkdlview.h)
+find_path(QKDLVIEW_INCLUDES qkdltreeview.h)
 if(
 	 NOT "${QKDLVIEW_LIB}" STREQUAL "QKDLVIEW_LIB-NOTFOUND" 
 	 AND 
