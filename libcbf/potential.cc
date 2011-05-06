@@ -19,6 +19,7 @@
 */
 
 #include <cbf/potential.h>
+#include <cbf/xml_object_factory.h>
 #include <cbf/xml_factory.h>
 
 namespace CBF {

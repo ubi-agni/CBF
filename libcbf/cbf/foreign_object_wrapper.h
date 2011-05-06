@@ -28,6 +28,7 @@ namespace CBF {
 			// m_Object = XMLFactory<KDL::Tree>::instance()->create(xml_instance);
 		}
 #endif
+
 	};
 } // namespace
 

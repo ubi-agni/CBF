@@ -4,7 +4,7 @@
 #include <cbf/object.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factory.h>
+//#include <cbf/xml_factory.h>
 
 #include <boost/shared_ptr.hpp>
 #include <map>

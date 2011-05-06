@@ -20,6 +20,7 @@
 
 #include <cbf/square_potential.h>
 #include <cbf/xml_object_factory.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 

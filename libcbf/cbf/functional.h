@@ -9,6 +9,7 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
 #include <cbf/xml_object_factory.h>
+#include <cbf/xml_factory.h>
 #include <cbf/utilities.h>
 
 #ifdef CBF_HAVE_XSD

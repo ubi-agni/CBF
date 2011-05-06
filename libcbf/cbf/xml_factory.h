@@ -37,9 +37,7 @@
 #endif
 
 namespace CBF {
-	class ObjectNamespace;
-	typedef boost::shared_ptr<ObjectNamespace> ObjectNamespacePtr;
-	
+
 	#ifdef CBF_HAVE_XSD
 
 		template <class T>
@@ -210,7 +208,9 @@ namespace CBF {
 				);
 			}
 		};
+
 	#endif
+
 } // namespace
 
 #endif

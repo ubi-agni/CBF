@@ -24,6 +24,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_object_factory.h>
+#include <cbf/xml_factory.h>
 
 #include <kdl/chain.hpp>
 #include <kdl/tree.hpp>

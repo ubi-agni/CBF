@@ -37,7 +37,6 @@ namespace CBF {
 	/**
 		A typedef to make some other stuff shorter...
 	*/
-
 	typedef Eigen::VectorXd FloatVector;
 	typedef Eigen::MatrixXd FloatMatrix;
 

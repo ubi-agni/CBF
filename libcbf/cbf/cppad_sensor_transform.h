@@ -24,16 +24,16 @@ struct CppADSensorTransform : public SensorTransform {
 		m_Func = fun;
 		CppAD::CheckSimpleVector<Float, FloatVector>();
 		m_Result = FloatVector(task_dim);
-		m_TaskJacobian = FloatMatrix(task_dim, resource_dim);
+		m_TaskJacobian = FloatMatrix((int)task_dim, (int)resource_dim);
 		m_Tmp = FloatVector(task_dim * resource_dim);
 	}
 
 	virtual void update(const FloatVector &resource_value) {
 		FloatVector m_Tmp = m_Func.Jacobian<FloatVector>(resource_value);
 
-		unsigned int cols = m_TaskJacobian.size2();
-		for (unsigned int row = 0, mrow = m_TaskJacobian.size1(); row < mrow; ++row) {
-			for (unsigned int col = 0, mcol = m_TaskJacobian.size2(); col < mcol; ++col) {
+		unsigned int cols = m_TaskJacobian.cols();
+		for (unsigned int row = 0, mrow = m_TaskJacobian.rows(); row < mrow; ++row) {
+			for (unsigned int col = 0, mcol = m_TaskJacobian.cols(); col < mcol; ++col) {
 				m_TaskJacobian(row, col) = m_Tmp[cols * row + col];
 			}
 		}

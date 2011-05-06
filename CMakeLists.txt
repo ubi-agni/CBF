@@ -37,6 +37,7 @@ if(NOT ${CPPAD_PATH} STREQUAL "CPPAD_PATH-NOTFOUND")
   message(STATUS "  found")
   set(CBF_HAVE_CPPAD 1)
 endif()
+set(CBF_HAVE_CPPAD 0)
 
 include(FindPackageHandleStandardArgs)
 

@@ -35,7 +35,6 @@ namespace CBFSchema { class SquarePotential; }
 
 namespace CBF {
 
-
 /**
 	@brief A squared potential functions
 */
