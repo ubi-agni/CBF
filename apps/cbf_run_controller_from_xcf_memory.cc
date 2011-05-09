@@ -53,19 +53,19 @@ int main(int argc, char *argv[]) {
 			"produce help message"
 		)
 		(
-			"cname", 
+			"xcfname",
 			po::value<std::string>(), 
-			"Name of the XCFMemoryRunController to listen to."
+			"Name of the XCFMemoryRunController to listen to (default is 'RunController')."
 		)
 		(
 			"memory", 
 			po::value<std::string>(), 
-			"Name of the active_memory to connect to"
+			"Name of the active_memory to connect to (default is 'xcf:wb')."
 		)
 		(
 			"nlevel",
 			po::value<unsigned int>(),
-			"Notification Level: 0 = nothing, 1 = only error, 2 = only info, 3 = all(default)"
+			"Notification Level: 0 = nothing, 1 = only error, 2 = only info, 3 = all (default is '3')."
 		)
 		(
 			"verbose",
@@ -100,19 +100,17 @@ int main(int argc, char *argv[]) {
 	}
 
 	std::string run_controller_name;
-	if (!variables_map.count("cname")) {
-		std::cout << "No XCFMemoryRunController name specified" << std::endl;
-		std::cout << options_description << std::endl;
-		return(EXIT_FAILURE);
+	if (!variables_map.count("xcfname")) {
+		std::cout << "No XCFMemoryRunController name specified, using 'RunController'." << std::endl;
+		run_controller_name = "RunController";
 	} else {
-		run_controller_name = variables_map["cname"].as<std::string>();
+		run_controller_name = variables_map["xcfname"].as<std::string>();
 	}
 
 	std::string active_memory_name;
 	if (!variables_map.count("memory")) {
-		std::cout << "No active-memory name specified" << std::endl;
-		std::cout << options_description << std::endl;
-		return(EXIT_FAILURE);
+		std::cout << "No active-memory name specified, using 'xcf:wb'." << std::endl;
+		active_memory_name = "xcf:wb";
 	} else {
 		active_memory_name = variables_map["memory"].as<std::string>();
 	}

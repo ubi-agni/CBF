@@ -57,14 +57,14 @@ int main(int argc, char *argv[]) {
 			"produce help message"
 		)
 		(
-			"rcname",
+			"xcfname",
 			po::value<std::string>(), 
-			"The name of the XCFMemoryRunContoller to operate"
+			"The name of the XCFMemoryRunContoller to operate (default is 'RunController')."
 		)
 		(
-			"am",
+			"memory",
 			po::value<std::string>(), 
-			"Name of the active-memory on which to publish"
+			"Name of the active-memory on which to publish (default is 'xcf:wb')."
 		)
 		;
 
@@ -86,25 +86,23 @@ int main(int argc, char *argv[]) {
 		return(EXIT_SUCCESS);
 	}
 
-	if (!variables_map.count("am")) {
-		std::cout << "No active-memory specified" << std::endl;
-		std::cout << options_description << std::endl;
-		return(EXIT_FAILURE);
+	// getting the name of the run_controller
+	std::string run_controller_name;
+	if (!variables_map.count("xcfname")) {
+		std::cout << "No XCFMemoryRunController name specified, using 'RunController'." << std::endl;
+		run_controller_name = "RunController";
+	} else {
+		run_controller_name = variables_map["xcfname"].as<std::string>();
 	}
 
 	// getting the name of the actice_memory
-	std::string active_memory_name = 
-		variables_map["am"].as<std::string>();
-
-	if (!variables_map.count("rcname")) {
-		std::cout << "No run-controller-name specified" << std::endl;
-		std::cout << options_description << std::endl;
-		return(EXIT_FAILURE);
+	std::string active_memory_name;
+	if (!variables_map.count("memory")) {
+		std::cout << "No active-memory name specified, using 'xcf:wb'." << std::endl;
+		active_memory_name = "xcf:wb";
+	} else {
+		active_memory_name = variables_map["memory"].as<std::string>();
 	}
-
-	// getting the name of the run_controller
-	std::string run_controller_name = 
-		variables_map["rcname"].as<std::string>();
 
 	//Initializing the QApplication.
 	QApplication *app = new QApplication(argc, argv);
