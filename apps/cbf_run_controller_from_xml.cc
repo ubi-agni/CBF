@@ -63,9 +63,9 @@ int main(int argc, char *argv[]) {
 			"run exact number of steps. 0 means: never stop"
 		)
 		(
-			"control-basis", 
+			"object", 
 			po::value<std::vector<std::string> >(), 
-			"XML file containing controller specification(s)"
+			"XML file containing object specification(s) (including e.g. controllers)"
 		)
 		(
 			"controller", 
@@ -110,8 +110,8 @@ int main(int argc, char *argv[]) {
 	if (variables_map.count("sleep-time"))
 		sleep_time = variables_map["sleep-time"].as<unsigned int>();
 
-	if (!variables_map.count("control-basis")) {
-		std::cout << "No control basis specified" << std::endl;
+	if (!variables_map.count("object")) {
+		std::cout << "No XML files with object descriptions provided" << std::endl;
 		std::cout << options_description << std::endl;
 		return(EXIT_FAILURE);
 	}
@@ -122,8 +122,8 @@ int main(int argc, char *argv[]) {
 		return(EXIT_FAILURE);
 	}
 
-	std::vector<std::string> control_basis_names = 
-		variables_map["control-basis"].as<std::vector<std::string> >();
+	std::vector<std::string> object_names = 
+		variables_map["object"].as<std::vector<std::string> >();
 
 	std::string controller_name = 
 		variables_map["controller"].as<std::string>();
@@ -146,11 +146,11 @@ int main(int argc, char *argv[]) {
 	try {
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
 
-		for (unsigned int i = 0; i < control_basis_names.size(); ++i) {
-			CBF_DEBUG("loading control basis: " << control_basis_names[i]);
+		for (unsigned int i = 0; i < object_names.size(); ++i) {
+			CBF_DEBUG("loading control basis: " << object_names[i]);
 			std::auto_ptr<CBFSchema::Object> cbt
 				(CBFSchema::Object_
-					(control_basis_names[i], err_handler, xml_schema::flags::dont_validate));
+					(object_names[i], err_handler, xml_schema::flags::dont_validate));
 
 			// CBF::ObjectPtr cb(new CBF::Object(*cbt, object_namespace));
 			CBF::ObjectPtr cb = CBF::XMLObjectFactory::instance()->create<CBF::Object>(*cbt, object_namespace);
