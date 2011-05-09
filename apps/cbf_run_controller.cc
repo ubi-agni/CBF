@@ -71,6 +71,7 @@ namespace CBF {
 				{ std::cout << "step" << std::endl; }
 
 			usleep(sleepTime() * 1000);
+
 			#ifdef CBF_HAVE_QT
 				if (qtSupport()) QApplication::processEvents();
 			#endif
@@ -84,7 +85,9 @@ namespace CBF {
 				{return; }
 
 			m_ObjectNamespace -> get<CBF::Controller>(controller_name) -> step();
+
 			usleep(sleepTime() * 1000);
+
 			#ifdef CBF_HAVE_QT
 				if (qtSupport()) QApplication::processEvents();
 			#endif

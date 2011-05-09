@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 			(
 				"qt-main-loop",
 				po::value<bool>(),
-				"Provide Qt Mainloop and process events"
+				"Provide Qt Mainloop and process events (does not work at the moment)"
 			)
 		#endif
 		;
@@ -142,6 +142,8 @@ int main(int argc, char *argv[]) {
 		if (variables_map.count("qt-main-loop")) {
 			qt_support = variables_map["qt-main-loop"].as<bool>();
 		}
+		//QT not working now because of threads.
+		qt_support = false;
 	#endif
 
 	#ifdef CBF_HAVE_QT

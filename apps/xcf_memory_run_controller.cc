@@ -468,11 +468,12 @@ namespace mi = memory::interface;
 	}
 
 	bool XCFMemoryRunController::test_initializable(std::string document, int eventID){
-		// trying to parse the attachments as an object and
-		// initialize them in the object_namespace
-		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
-		CBF::XSDErrorHandler err_handler;
 		try {
+			// trying to parse the attachments as an object and
+			// initialize them in the object_namespace
+			CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
+			CBF::XSDErrorHandler err_handler;
+
 			// Create a cbfschema::object
 			std::stringstream doc(document);
 			CBF_DEBUG("parse document for CBF::Object: " << document);
