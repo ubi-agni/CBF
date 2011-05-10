@@ -40,23 +40,30 @@ namespace mi = memory::interface;
 				unsigned int verbosity_level
 				#ifdef CBF_HAVE_QT
 					,bool qt_support
+					,QWaitCondition* wait_condition
 				#endif
 				)
 		:
 		m_RunControllerName(run_controller_name),
 		m_MemoryInterface(mi::MemoryInterface::getInstance(active_memory_name)),
 		m_NotificationLevel(notification_level),
-		m_RunController(new CBFRunController(
-			sleep_time,
-			steps,
-			verbosity_level
-			#ifdef CBF_HAVE_QT
-				,qt_support
-			#endif
-			)),
+		m_RunController(new CBFRunController()),
 		m_DocumentMap()
+		#ifdef CBF_HAVE_QT
+			,m_WaitCondition(wait_condition)
+			,m_EventQueue()
+			,m_EventQueueLock()
+		#endif
 	{
-		// we only, listen to insert and replace events.
+		// set the options of RunController
+		m_RunController -> setSleepTime(sleep_time);
+		m_RunController -> setStepCount(steps);
+		m_RunController -> setVerbosityLevel(verbosity_level);
+		#ifdef CBF_HAVE_QT
+			m_RunController -> setQTSupport(qt_support);
+		#endif
+
+		//subscribe at memory: we only listen to insert and replace events.
 		unsigned int event = memory::interface::Event::INSERT | memory::interface::Event::REPLACE;
 
 		CBF_DEBUG("Subscribing Add at active_memory");
@@ -96,6 +103,15 @@ namespace mi = memory::interface;
 	}
 
 	void XCFMemoryRunController::triggered_action_add(const memory::interface::Event &event){
+		#ifdef CBF_HAVE_QT
+			push_event(XCFMemoryRunController::ADD, event);
+			m_WaitCondition -> wakeAll();
+			return;
+		#endif
+		action_add(event);
+	}
+
+	void XCFMemoryRunController::action_add(const memory::interface::Event &event){
 		CBF_DEBUG("doc: " << event.getDocument());
 	
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
@@ -210,6 +226,15 @@ namespace mi = memory::interface;
 	}
 
 	void XCFMemoryRunController::triggered_action_execute(const memory::interface::Event &event){
+		#ifdef CBF_HAVE_QT
+			push_event(XCFMemoryRunController::EXECUTE, event);
+			m_WaitCondition -> wakeAll();
+			return;
+		#endif
+		action_execute(event);
+	}
+
+	void XCFMemoryRunController::action_execute(const memory::interface::Event &event){
 		CBF_DEBUG("doc: " << event.getDocument());
 	
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
@@ -259,6 +284,15 @@ namespace mi = memory::interface;
 	}
 
 	void XCFMemoryRunController::triggered_action_load_namespace(const memory::interface::Event &event){
+		#ifdef CBF_HAVE_QT
+			push_event(XCFMemoryRunController::LOAD, event);
+			m_WaitCondition -> wakeAll();
+			return;
+		#endif
+		action_load_namespace(event);
+	}
+
+	void XCFMemoryRunController::action_load_namespace(const memory::interface::Event &event){
 		CBF_DEBUG("doc: " << event.getDocument());
 		CBF::XSDErrorHandler err_handler;
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
@@ -355,6 +389,37 @@ namespace mi = memory::interface;
 		}
 	}
 	
+	#ifdef CBF_HAVE_QT
+	void XCFMemoryRunController::handle_events(){
+		std::pair<Function, memory::interface::Event> event;
+		while(pop_event(&event)){
+			switch (event.first)
+			{
+			case XCFMemoryRunController::ADD : action_add(event.second); break;
+			case XCFMemoryRunController::EXECUTE : action_execute(event.second); break;
+			case XCFMemoryRunController::LOAD : action_load_namespace(event.second); break;
+			}
+		}
+	}
+
+	void XCFMemoryRunController::push_event(XCFMemoryRunController::Function func, memory::interface::Event event){
+		QMutexLocker locker(&m_EventQueueLock);
+		m_EventQueue.push(
+				std::pair<XCFMemoryRunController::Function, memory::interface::Event>(func, event));
+	}
+
+	bool XCFMemoryRunController::pop_event(std::pair<Function, memory::interface::Event>* event){
+		QMutexLocker locker(&m_EventQueueLock);
+		if(m_EventQueue.empty()){
+			return false;
+		}
+		event -> first = m_EventQueue.front().first;
+		event -> second = m_EventQueue.front().second;
+		m_EventQueue.pop();
+		return true;
+	}
+	#endif
+
 	void XCFMemoryRunController::notifyError(std::string note, int documentID){
 		CBF_DEBUG(note);
 		if (m_NotificationLevel & XCFMemoryRunController::ERROR){

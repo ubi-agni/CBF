@@ -29,6 +29,8 @@
 
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>
+	#include <QWaitCondition>
+	#include <QMutex>
 #endif
 
 #include <string>
@@ -142,15 +144,15 @@ int main(int argc, char *argv[]) {
 		if (variables_map.count("qt-main-loop")) {
 			qt_support = variables_map["qt-main-loop"].as<bool>();
 		}
-		//QT not working now because of threads.
-		qt_support = false;
-	#endif
 
-	#ifdef CBF_HAVE_QT
+		// initializing qtApplication.
 		QApplication *app;
 		if (qt_support) {
 			app = new QApplication(argc, argv);
 		}
+
+		QWaitCondition wait_condition;
+		QMutex mutex;
 	#endif
 
 	CBF_DEBUG("creating XCFMemoryRunController");
@@ -162,13 +164,22 @@ int main(int argc, char *argv[]) {
 				nlvl, SLEEP_TIME, STEPS, verbosity_level
 				#ifdef CBF_HAVE_QT
 					,qt_support
+					,&wait_condition
 				#endif
 					);
 
-	CBF_DEBUG("waiting...");
 	while(true){
-		// we just go to sleep. controller will run everything 
-		usleep(10000 * 10000);
+		#ifdef CBF_HAVE_QT
+			// go to sleep, run controller will call wake when necessary
+			mutex.lock();
+			wait_condition.wait(&mutex);
+			controller.handle_events();
+			mutex.unlock();
+		#else
+			CBF_DEBUG("sleeping...");
+			// we just go to sleep. controller will run everything
+			usleep(10000 * 10000);
+		#endif
 	}
 
 	CBF_DEBUG("Quitting with success");

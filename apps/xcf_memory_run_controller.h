@@ -31,6 +31,9 @@
 
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>
+	#include <QWaitCondition>
+	#include <QMutexLocker>
+	#include <QMutex>
 #endif
 
 #include <Memory/Condition.hpp>
@@ -40,6 +43,7 @@
 
 #include <memory>
 #include <map>
+#include <queue>
 
 namespace CBF {
 
@@ -54,6 +58,10 @@ struct XCFMemoryRunController {
 	public:
 
 	enum NotificationLevel { NOTHING = 0x0 , ERROR = 0x1, INFO = 0x2, ALL = 0x3};
+
+	#ifdef CBF_HAVE_QT
+		enum Function { ADD = 0x4 , LOAD = 0x5, EXECUTE = 0x6};
+	#endif
 
 	/**
 		@brief This struct connects to an active_memory and subscribes for
@@ -78,6 +86,7 @@ struct XCFMemoryRunController {
 				unsigned int verbosity_level = 0
 				#ifdef CBF_HAVE_QT
 					,bool qt_support = false
+					,QWaitCondition* wait_condition = 0
 				#endif
 				);
 
@@ -86,6 +95,14 @@ struct XCFMemoryRunController {
 		works nicely
 	*/
 	virtual ~XCFMemoryRunController() {}
+
+	#ifdef CBF_HAVE_QT
+		/**
+			@brief This function is called by the main thread and handles the events
+			from the event-queue.
+		 */
+		void handle_events();
+	#endif
 
 	private:
 
@@ -110,10 +127,29 @@ struct XCFMemoryRunController {
 	CBFRunControllerPtr m_RunController;
 
 	/**
-		@brief A map that holds received CBFObject-socuments as std::string
+		@brief A map that holds received CBFObject-documents as std::string
 		identified by their attachment-id.
 	*/
 	std::map<std::string, std::string> m_DocumentMap;
+
+	#ifdef CBF_HAVE_QT
+		/**
+			@brief This is used for thread synchronisation when Qt is available.
+		 */
+		QWaitCondition* m_WaitCondition;
+
+		/**
+			@brief This queue holds the events which need to be handled by the
+			applications main thread.
+		*/
+		std::queue<std::pair<Function, memory::interface::Event> > m_EventQueue;
+
+		/**
+			@brief This mutex-lock is used to synchronise the m_EventQueue
+		*/
+		QMutex m_EventQueueLock;
+
+	#endif
 
 	/**
 		@brief Returns the string that identifies the XML-document that
@@ -172,6 +208,7 @@ struct XCFMemoryRunController {
 		documents to the m_DocumentMap.
 	*/
 	void triggered_action_add(const memory::interface::Event &event);
+	void action_add(const memory::interface::Event &event);
 
 	/**
 		@brief The function that will be called by the active_memory when 
@@ -186,6 +223,7 @@ struct XCFMemoryRunController {
 		the execution of a controller.
 	*/
 	void triggered_action_execute(const memory::interface::Event &event);
+	void action_execute(const memory::interface::Event &event);
 
 	/**
 		@brief The function that will be called by the active_memory when 
@@ -200,6 +238,21 @@ struct XCFMemoryRunController {
 		creates an ObjectNamespace and sets it in m_RunController.
 	*/
 	void triggered_action_load_namespace(const memory::interface::Event &event);
+	void action_load_namespace(const memory::interface::Event &event);
+
+	#ifdef CBF_HAVE_QT
+
+		/**
+			@brief A thread-safe way to add an event to the event queue.
+		*/
+		void push_event(XCFMemoryRunController::Function func, memory::interface::Event event);
+
+		/**
+			@brief A thread-safe way to remove an event from the event queue.
+		*/
+		bool pop_event(std::pair<XCFMemoryRunController::Function, memory::interface::Event>* event);
+
+	#endif
 
 	/**
 		@brief Sends (not inserts) an error XCFMemoryRunControllerNotification document.
