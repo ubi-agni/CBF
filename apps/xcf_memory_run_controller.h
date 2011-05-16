@@ -322,6 +322,5 @@ struct XCFMemoryRunController {
 */
 typedef boost::shared_ptr<XCFMemoryRunController> XCFMemoryRunControllerPtr;
 
-
 } //namespace
 #endif

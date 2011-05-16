@@ -168,12 +168,14 @@ int main(int argc, char *argv[]) {
 				#endif
 					);
 
+	CBF_DEBUG("ready...");
 	while(true){
 		#ifdef CBF_HAVE_QT
 			// go to sleep, run controller will call wake when necessary
 			mutex.lock();
-			wait_condition.wait(&mutex);
+			wait_condition.wait(&mutex, 100);
 			controller.handle_events();
+			if (qt_support) QApplication::processEvents();
 			mutex.unlock();
 		#else
 			CBF_DEBUG("sleeping...");
