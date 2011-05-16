@@ -38,6 +38,7 @@
 #include <IceUtil/Monitor.h>
 #include <IceUtil/RecMutex.h>
 
+namespace CBF {
 /**
 	@brief A struct that can be used to create XCFMemoryRunController[...] documents
 	and send them to an active_memory.
@@ -259,3 +260,4 @@ class XcfMemoryRunControllerNameDialog : public QDialog {
 	std::string exec();
 
 };
+} // namespace

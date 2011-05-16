@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 	QApplication *app = new QApplication(argc, argv);
 
 	// initializing an XcfMemoryRunControllerOperator so we can connect it to buttons.
-	XcfMemoryRunControllerOperator op(active_memory_name, run_controller_name);
+	CBF::XcfMemoryRunControllerOperator op(active_memory_name, run_controller_name);
 
 	//Initializing the Applictaions main-window.
 	QWidget *window = new QWidget();
@@ -145,6 +145,8 @@ int main(int argc, char *argv[]) {
 	//Starting the Application
 	app -> exec();
 }
+
+namespace CBF {
 
 void XcfMemoryRunControllerOperator::init(std::string active_memory_name){
 	try {
@@ -442,3 +444,4 @@ std::string XcfMemoryRunControllerNameDialog::exec(){
 	}
 	return "";
 }
+} //namespace

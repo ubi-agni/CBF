@@ -56,11 +56,11 @@
 	@brief Initializes an instance of the CBF::Q_XCF_VECTOR_REFERENCE_CLIENT::Connection_dispatcher.
  */
 int main(int argc, char *argv[]){
-  new cbf_q_xcf_vector_reference_client::Connection_dispatcher(argc, argv);
+  new CBF::ConnectionDispatcher(argc, argv);
   return 0;
 }
 
-namespace cbf_q_xcf_vector_reference_client {
+namespace CBF {
 /** 
 	@brief Starts an QDialog with the passed Text and an OK button.
  */
@@ -86,10 +86,10 @@ void showDialog(QString text, QWidget *parent=0){
 }
 
 
-Connection_dispatcher::Connection_dispatcher(int argc, char *argv[]){
+ConnectionDispatcher::ConnectionDispatcher(int argc, char *argv[]){
 
 	//Initializing a vector to store the Connection_manager-tabs in.
-	tabs = new std::vector<Connection_manager*>;
+	tabs = new std::vector<ConnectionManager*>;
 
 	//Initializing the QApplication.
 	QApplication *app = new QApplication(argc, argv);
@@ -142,7 +142,7 @@ Connection_dispatcher::Connection_dispatcher(int argc, char *argv[]){
 }
 
 
-void Connection_dispatcher::connect(){
+void ConnectionDispatcher::connect(){
 	//Getting the text from the QlineEdit, which should hold the Servername.
 	std::string input = (lineedit -> text()).toStdString();
 	if(input.length()>0){
@@ -153,8 +153,8 @@ void Connection_dispatcher::connect(){
 			//Create a RemoteServerPtr with the entered servername.
 			XCF::RemoteServerPtr _remoteServer = XCF::RemoteServer::create(input.c_str());
 			//Open a connection_manager-tab, add and show it.
-			Connection_manager *new_tab = 
-				new Connection_manager(window, _remoteServer,  input);
+			ConnectionManager *new_tab = 
+				new ConnectionManager(window, _remoteServer,  input);
 			window -> addTab(new_tab, input.c_str());
 			tabs -> push_back(new_tab);
 			window -> setCurrentWidget(new_tab);
@@ -167,7 +167,7 @@ void Connection_dispatcher::connect(){
 }
 
 
-Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _remoteServer, std::string input):
+ConnectionManager::ConnectionManager(QWidget *parent, XCF::RemoteServerPtr _remoteServer, std::string input):
 	QWidget(parent)
 {
 	//Initialize a vector to store the QDoubleSpinboxes in.
@@ -306,7 +306,7 @@ Connection_manager::Connection_manager(QWidget *parent, XCF::RemoteServerPtr _re
 }
 
 
-void Connection_manager::makeOptionsWidget(){	
+void ConnectionManager::makeOptionsWidget(){	
 	//Initializing the QTabWidget, with the options.
 	optionsTabWidget = new QTabWidget(this);
 
@@ -442,7 +442,7 @@ void Connection_manager::makeOptionsWidget(){
 	optionsTabWidget -> addTab(spinboxOptionsWidget, "Spinboxes");
 }
 
-void Connection_manager::disconnect(){
+void ConnectionManager::disconnect(){
 	try{
 		//Disconnecting from the server.
 		_remoteServer -> destroy();
@@ -455,7 +455,7 @@ void Connection_manager::disconnect(){
 	this -> deleteLater();
 }
 
-void Connection_manager::send(){
+void ConnectionManager::send(){
 	//Creating the appropriate string for the server communication.
 	std::stringstream vector_string;
 	vector_string << "[" << dim <<"](";
@@ -496,7 +496,7 @@ void Connection_manager::send(){
 	}
 }
 
-void Connection_manager::changeSendMode(){
+void ConnectionManager::changeSendMode(){
 	if(alwaysSendCheckBox -> isChecked()){
 		for (unsigned int i = 0; i < dim; i++) {
 			//Connecting the valueChanged signal of the spinboxes directly to the send slot.
@@ -512,7 +512,7 @@ void Connection_manager::changeSendMode(){
 	}
 }
 
-CBF::FloatVector* Connection_manager::loadCurrentPositionVector(){
+CBF::FloatVector* ConnectionManager::loadCurrentPositionVector(){
 	try{
 		//Getting the current task position from the server.
 		std::string xml_in, out;
@@ -546,7 +546,7 @@ CBF::FloatVector* Connection_manager::loadCurrentPositionVector(){
 	return NULL;
 }
 
-void Connection_manager::loadRemoteValues(){
+void ConnectionManager::loadRemoteValues(){
 	CBF::FloatVector *currentPositionVector = loadCurrentPositionVector();
 	if(currentPositionVector != NULL){
 		for (unsigned int i = 0; i < dim; i++) {
@@ -561,7 +561,7 @@ void Connection_manager::loadRemoteValues(){
 	delete currentPositionVector;
 }
 
-void Connection_manager::changeLoadMode(){
+void ConnectionManager::changeLoadMode(){
 	if(alwaysLoadCheckBox -> isChecked()){
 		//Starting the timer
 		timer -> start(reloadPauseSpinbox -> value());
@@ -571,12 +571,12 @@ void Connection_manager::changeLoadMode(){
 	}
 }
 
-void Connection_manager::changeLoadPauseTime(int time){
+void ConnectionManager::changeLoadPauseTime(int time){
 	timer -> setInterval(time);
 }
 
 
-void Connection_manager::setSpinboxesTo(){
+void ConnectionManager::setSpinboxesTo(){
 	switch(comboSetSpinboxes -> currentIndex()){
 		case 0:{ //"set to current values from server" - Getting values from Server.
 			CBF::FloatVector *currentPositionVector = loadCurrentPositionVector();
@@ -643,7 +643,7 @@ void Connection_manager::setSpinboxesTo(){
 	}
 }
 
-void Connection_manager::showOptionsWidget(){
+void ConnectionManager::showOptionsWidget(){
 	if(optionsCheckBox -> isChecked()){
 		optionsTabWidget -> show();
 	} else {
@@ -651,7 +651,7 @@ void Connection_manager::showOptionsWidget(){
 	}
 }
 
-void Connection_manager::setDecimals(){
+void ConnectionManager::setDecimals(){
 	bool ok = false;
 	//Getting the int value from the decimalsLineEdit.
 	int value = (decimalsLineEdit -> text().toInt(&ok));
@@ -668,7 +668,7 @@ void Connection_manager::setDecimals(){
 }
 
 
-void Connection_manager::setStepSize(){
+void ConnectionManager::setStepSize(){
 	bool ok = false;
 	//Getting the double value from the stepSizeLineEdit.
 	double value = (stepSizeLineEdit -> text().toDouble(&ok));
@@ -684,7 +684,7 @@ void Connection_manager::setStepSize(){
 }
 
 
-void Connection_manager::setMinValue(){
+void ConnectionManager::setMinValue(){
 	bool ok = false;
 	//Getting the double value from the minLineEdit.
 	double value = (minLineEdit -> text().toDouble(&ok));
@@ -706,7 +706,7 @@ void Connection_manager::setMinValue(){
 }
 
 
-void Connection_manager::setMaxValue(){
+void ConnectionManager::setMaxValue(){
 	bool ok = false;
 	//Getting the double value from the maxLineEdit.
 	double value = (maxLineEdit -> text().toDouble(&ok));

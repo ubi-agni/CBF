@@ -45,13 +45,13 @@
 
 
 
-namespace cbf_q_xcf_vector_reference_client {
+namespace CBF {
 /** 
 	@brief A QWidget that can be used to set and load the reference of a controller over the network.
 	It gets the dimension of the controller through the (already initialized) XCF::RemoteServerPtr
 	and shows the appropriate amound of spinboxes to set new values and send them.
 */
-class Connection_manager : public QWidget{
+class ConnectionManager : public QWidget{
 	Q_OBJECT
 
 	private:
@@ -207,7 +207,7 @@ class Connection_manager : public QWidget{
 		@param _remoteServer The XCF::RemoteServerPtr, which is used to communicate with the server.
 		@param input The entered servername. it is only used to show the user the name of the server.
 	*/
-	Connection_manager(QWidget *parent, XCF::RemoteServerPtr _remoteServer, std::string input);
+	ConnectionManager(QWidget *parent, XCF::RemoteServerPtr _remoteServer, std::string input);
 
 	public slots:
 
@@ -286,7 +286,7 @@ class Connection_manager : public QWidget{
 	of a controller over the network. It only creates the RemoteServerPtr and lets the Connection_manager 
 	communicate with the server.
  */
-class Connection_dispatcher : public QObject{
+class ConnectionDispatcher : public QObject{
 	Q_OBJECT
 	
 	/** 
@@ -311,7 +311,7 @@ class Connection_dispatcher : public QObject{
 	/** 
 		@brief A list of all open Connection_manager tabs.
 	*/
-	std::vector<Connection_manager*> *tabs;
+	std::vector<ConnectionManager*> *tabs;
 
 	public:
 	/** 
@@ -321,7 +321,7 @@ class Connection_dispatcher : public QObject{
 		@param argc The command line argument count.
 		@param argv The command line arguments.
 	 */
-	Connection_dispatcher(int argc, char *argv[]);
+	ConnectionDispatcher(int argc, char *argv[]);
 
 	public slots:
 	/** 
