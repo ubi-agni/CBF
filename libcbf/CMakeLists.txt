@@ -30,7 +30,6 @@ set(CBF_SOURCES
   composite_resource.cc
   reference.cc
   dummy_reference.cc
-  gnuplot_i.cpp
   quaternion.cc
   difference_sensor_transform.cc
   weighted_sum_transforms.cc
