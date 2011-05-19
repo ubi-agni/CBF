@@ -57,7 +57,7 @@
 			 <Operand
 				 xsi:type="cbf:KDLTreePositionSensorTransform">
 				<Tree xsi:type="cbf:Tree">
-				  <Foo>Bar</Foo>
+				  <!--				  <Foo>Bar</Foo> -->
 				  <ReferencedObjectName>arms</ReferencedObjectName>
 				  <Name>arms-tree</Name>
 				  <!--

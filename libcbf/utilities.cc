@@ -618,6 +618,9 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;
 
+	template <> XMLFactory<FloatMatrix> 
+		*XMLFactory<FloatMatrix>::m_Instance = 0;
+
 	static XMLCreator<
 		KDL::Tree, 
 		CBFSchema::Tree, 
@@ -628,6 +631,13 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		*XMLFactory<KDL::Tree>::m_Instance = 0;
 
 	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Tree>, CBFSchema::Tree> x4;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::Vector> x5;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::Matrix> x6;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::BoostVector> x7;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::BoostMatrix> x8;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::EigenVector> x9;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::EigenMatrix> x10;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::SimpleVector> x11;
 
 #endif
 

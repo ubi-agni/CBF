@@ -79,21 +79,6 @@ namespace CBF {
 					CBF_UNMANGLE(xml_instance)
 				);
 
-#if 0
-				if(xml_instance.ReferencedObjectName().present()) {
-					boost::shared_ptr<ForeignObjectWrapper<T> > fptr = 
-						object_namespace->get<ForeignObjectWrapper<T> >(
-							*xml_instance.ReferencedObjectName()
-						)
-					;
-
-					CBF_DEBUG("m_Object has type: " << CBF_UNMANGLE(fptr->m_Object));
-					boost::shared_ptr<T> ptr = fptr->m_Object;
-
-					return ptr;
-				}
-#endif
-
 				if (m_Creators.find(typeid(xml_instance).name()) == m_Creators.end()) {
 					CBF_THROW_RUNTIME_ERROR(
 						"[" << CBF_UNMANGLE(this)<< "]: "  << 
@@ -155,11 +140,7 @@ namespace CBF {
 				);
 				const TSchemaType &tmp = dynamic_cast<const TSchemaType&>(xml_instance);
 				boost::shared_ptr<T> ptr = m_Creator(tmp, object_namespace);
-#if 0
-				if(xml_instance.Name().present()) {
-					object_namespace->register_foreign_object<T>(*xml_instance.Name(), ptr);
-				}
-#endif
+
 				return ptr;
 			}
 		};
