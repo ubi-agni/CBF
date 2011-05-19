@@ -22,6 +22,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
 #include <cbf/xml_object_factory.h>
+#include <cbf/foreign_object_wrapper.h>
 
 #ifdef CBF_HAVE_KDL
 	#include <kdl/jacobian.hpp>
@@ -311,6 +312,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 #endif
 
 #ifdef CBF_HAVE_XSD
+#if 0
 FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace) {
 	const CBFSchema::SimpleVector *simple_vector = dynamic_cast<const CBFSchema::SimpleVector*>(&xml_instance);
 
@@ -342,6 +344,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 
 	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
 }
+#endif
 
 boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<FloatVector> v(new FloatVector);
@@ -373,7 +376,7 @@ boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &x
 	return ret;
 }
 
-
+#if 0
 FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespacePtr object_namespace)
 {
 	const CBFSchema::Matrix *m = &xml_instance;
@@ -407,6 +410,7 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespace
 
 	throw std::runtime_error("[create_matrix()]: Matrix type not supported yet");
 }
+#endif
 
 #endif
 
@@ -439,7 +443,7 @@ boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance,
 		CBF_DEBUG("Extracting matrix...");
 
 		FloatMatrix m;
-		m = create_matrix((*matrix_frame_instance).Matrix(), object_namespace);
+		m = *XMLFactory<FloatMatrix>::instance()->create((*matrix_frame_instance).Matrix(), object_namespace);
 
 		if (m.rows() != 4 || m.cols() != 4)
 			throw std::runtime_error("Matrix is not 4x4");
@@ -618,6 +622,9 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;
 
+	template <> XMLFactory<FloatMatrix> 
+		*XMLFactory<FloatMatrix>::m_Instance = 0;
+
 	static XMLCreator<
 		KDL::Tree, 
 		CBFSchema::Tree, 
@@ -627,8 +634,14 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 	template <> XMLFactory<KDL::Tree> 
 		*XMLFactory<KDL::Tree>::m_Instance = 0;
 
-//	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Tree>, CBFSchema::Tree> x4;
-
+	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Tree>, CBFSchema::Tree> x4;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::Vector> x5;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::Matrix> x6;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::BoostVector> x7;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::BoostMatrix> x8;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::EigenVector> x9;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::EigenMatrix> x10;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::SimpleVector> x11;
 
 #endif
 

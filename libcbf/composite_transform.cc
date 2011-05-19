@@ -44,15 +44,6 @@ namespace CBF {
 		CBF_DEBUG("m_Result " << m_Result);
 	}
 
-#if 0
-	void CompositeSensorTransform::set_resource(ResourcePtr resource) {
-		SensorTransform::set_resource(resource);
-		CBF_DEBUG("set_resource()");
-		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i)
-			m_SensorTransforms[i]->set_resource(resource);
-	}
-#endif
-
 	void CompositeSensorTransform::update(const FloatVector &resource_value) {
 		unsigned int current_task_pos = 0;
 		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i) {

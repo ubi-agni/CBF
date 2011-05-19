@@ -4,30 +4,39 @@
 #include <cbf/xml_factory.h>
 #include <cbf/object.h>
 #include <cbf/exceptions.h>
+#include <cbf/debug_macros.h>
 
 namespace CBF {
+	/** 
+		@brief A class used to wrap instances of classes that are not derived from CBF::Object (e.g. KDL::Tree)
+	*/
 	template<class T> 
 	struct ForeignObjectWrapper : public Object {
-		boost::shared_ptr<T> m_Object;
+		boost::shared_ptr<T> m_WrappedObject;
 
 		ForeignObjectWrapper(boost::shared_ptr<T> object) :
 			Object("ForeignObjectWrapper"),
-			m_Object(object)
+			m_WrappedObject(object)
 		{
-			if (m_Object.get() == 0)
+			if (m_WrappedObject.get() == 0)
 				CBF_THROW_RUNTIME_ERROR("trying to register empty object");
 		}
 
-#if 0
+
 		ForeignObjectWrapper(
 			const CBFSchema::Object &xml_instance, 
 			boost::shared_ptr<ObjectNamespace> object_namespace	
 		) : 
-			m_Object(boost::shared_ptr<T>(new T("ewfew"))) 
+			Object("ForeignObjectWrapper")
 		{
+			if (xml_instance.Name().present()) {
+				CBF_DEBUG("creating ForeignObjectWrapper from xml element with name: " << *xml_instance.Name());
+				m_Name = *xml_instance.Name();
+			}
 			// m_Object = XMLFactory<KDL::Tree>::instance()->create(xml_instance);
+			m_WrappedObject = XMLFactory<T>::instance()->create(xml_instance, object_namespace);
 		}
-#endif
+
 
 	};
 } // namespace

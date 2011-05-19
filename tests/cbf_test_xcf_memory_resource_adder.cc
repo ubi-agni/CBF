@@ -3,6 +3,7 @@
 #include <cbf/utilities.h>
 #include <cbf/exceptions.h>
 #include <cbf/schemas.hxx>
+#include <cbf/xml_factory.h>
 
 #include <boost/numeric/ublas/io.hpp>
 
@@ -62,8 +63,8 @@ int main(int argc, char **argv) {
 		std::cin >> dim;
 	} else {
 		ObjectNamespacePtr object_namespace(new ObjectNamespace);
-		CBF_DEBUG("dimension: " << create_vector(resourceState -> Vector(), object_namespace));
-		dim = (create_vector(resourceState -> Vector(), object_namespace)).size();
+		CBF_DEBUG("dimension: " << *XMLFactory<FloatVector>::instance()->create(resourceState -> Vector(), object_namespace));
+		dim = (*XMLFactory<FloatVector>::instance()->create(resourceState -> Vector(), object_namespace)).size();
 	}
 
 	while(true) {

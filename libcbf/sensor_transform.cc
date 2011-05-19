@@ -22,6 +22,7 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/xml_object_factory.h>
+#include <cbf/foreign_object_wrapper.h>
 #include <cbf/xml_factory.h>
 #include <cbf/utilities.h>
 
@@ -52,7 +53,7 @@ namespace CBF {
 		) :
 			SensorTransform(xml_instance, object_namespace)	
 		{
-			init(*XMLFactory<FloatVector>::instance()->create(xml_instance.Value(), object_namespace));
+			init(*XMLObjectFactory::instance()->create<ForeignObjectWrapper<FloatVector> >(xml_instance.Value(), object_namespace)->m_WrappedObject);
 		}
 
 		BlockWiseMultiplySensorTransform::BlockWiseMultiplySensorTransform(
@@ -64,7 +65,7 @@ namespace CBF {
 			init(
 				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand(), object_namespace),
 				xml_instance.Blocksize(),
-				*XMLFactory<FloatVector>::instance()->create(xml_instance.Factors(), object_namespace)
+				*XMLObjectFactory::instance()->create<ForeignObjectWrapper<FloatVector> >(xml_instance.Factors(), object_namespace)->m_WrappedObject
 				//create_vector(xml_instance.Factors())
 			);
 		}

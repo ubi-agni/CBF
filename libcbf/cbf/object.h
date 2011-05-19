@@ -18,15 +18,22 @@ namespace CBF {
 		This type is introduced solely to ease some of the XML stuff
 	*/
 	struct Object {
-		std::string m_Name;
+
 	
-		Object(const CBFSchema::Object &xml_instance, boost::shared_ptr<ObjectNamespace> object_namespace);
+		Object(
+			const CBFSchema::Object &xml_instance, 
+			boost::shared_ptr<ObjectNamespace> object_namespace
+		);
 
 		Object(const std::string name) : m_Name(name) { }
 		//Object(const std::string name = "Object") : m_Name(name) { }
 
 		virtual ~Object() { }
+
 		const std::string &name() { return m_Name; }
+
+		protected:
+			std::string m_Name;
 	};
 	
 	typedef boost::shared_ptr<Object> ObjectPtr;

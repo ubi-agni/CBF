@@ -132,7 +132,7 @@ namespace CBF {
 				CBFSchema::XCFMemoryResourceAdd_(s, xml_schema::flags::dont_validate);
 
 		CBF_DEBUG("create vector");
-		FloatVector resourceVector = create_vector(resource -> Vector(), ObjectNamespacePtr(new ObjectNamespace));
+		FloatVector resourceVector = *XMLFactory<FloatVector>::instance()->create(resource -> Vector(), ObjectNamespacePtr(new ObjectNamespace));
 		CBF_DEBUG("vector: " << resourceVector);
 
 		CBF_DEBUG("vector created");

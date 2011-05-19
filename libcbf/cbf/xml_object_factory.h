@@ -65,6 +65,17 @@ namespace CBF {
 					const CBFSchema::Object &xml_instance, 
 					ObjectNamespacePtr object_namespace
 				) {
+					if(xml_instance.ReferencedObjectName().present()) {
+						boost::shared_ptr<T> fptr = 
+								object_namespace->get<T>(
+								*xml_instance.ReferencedObjectName()
+							)
+						;	
+
+						return fptr;
+					}
+
+
 					if (m_DerivedFactories.find(std::string(typeid(xml_instance).name())) == m_DerivedFactories.end()) {
 						CBF_THROW_RUNTIME_ERROR(
 							"No factory found for type (possibly mangled): " << 
@@ -109,6 +120,7 @@ namespace CBF {
 					const CBFSchema::Object &xml_instance, 
 					ObjectNamespacePtr object_namespace
 				) {
+
 					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(this));
 					const TType* r = dynamic_cast<const TType*>(&xml_instance);
 					if (r) {

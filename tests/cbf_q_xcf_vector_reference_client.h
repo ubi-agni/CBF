@@ -54,7 +54,7 @@ namespace CBF {
 class ConnectionManager : public QWidget{
 	Q_OBJECT
 
-	typedef boost::shared_ptr<FloatVector> FloatVectorPtr
+	typedef boost::shared_ptr<FloatVector> FloatVectorPtr;
 
 	private:
 	/** 
@@ -229,8 +229,7 @@ class ConnectionManager : public QWidget{
 	void changeSendMode();
 
 	/** 
-		@brief Gets the current position from the server. Returns a pointer to a CBF:FloatVector.
-		ATTENTION: dont forget to free the space with 'delete'.
+		@brief Gets the current position from the server. Returns a shared pointer to a CBF:FloatVector.
 	*/
 	FloatVectorPtr loadCurrentPositionVector();
 

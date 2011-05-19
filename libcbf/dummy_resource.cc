@@ -22,6 +22,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_object_factory.h>
+#include <cbf/foreign_object_wrapper.h>
 
 #include <string>
 #include <iostream>
@@ -40,10 +41,18 @@ namespace CBF {
 
 
 	#ifdef CBF_HAVE_XSD
-		DummyResource::DummyResource(const CBFSchema::DummyResource &xml_instance, ObjectNamespacePtr object_namespace) :
+		DummyResource::DummyResource(
+			const CBFSchema::DummyResource &xml_instance, 
+			ObjectNamespacePtr object_namespace
+		) :
 			Resource(xml_instance, object_namespace)
 		{
-			m_Variables = create_vector(xml_instance.Vector(), object_namespace);
+			m_Variables = 
+				*XMLObjectFactory::instance()->create<ForeignObjectWrapper<FloatVector> >(
+					xml_instance.Vector(), object_namespace
+				)->m_WrappedObject
+			;
+
 			CBF_DEBUG("current values: " << m_Variables);
 		
 		}

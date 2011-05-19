@@ -376,7 +376,7 @@ struct BlockWiseAccumulateSensorTransform : public SensorTransform {
 
 			m_Blocksize = xml_instance.Blocksize();
 			m_InitVector = *XMLFactory<FloatVector>::instance()->create(xml_instance.InitVector(), object_namespace);
-			m_InitMatrix = create_matrix(xml_instance.InitMatrix(), object_namespace);
+			m_InitMatrix = *XMLFactory<FloatMatrix>::instance()->create(xml_instance.InitMatrix(), object_namespace);
 
 			init_results(m_Operand);
 		}

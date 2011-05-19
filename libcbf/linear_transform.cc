@@ -23,6 +23,7 @@
 #include <cbf/linear_transform.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_object_factory.h>
+#include <cbf/xml_factory.h>
 
 namespace CBF {
 
@@ -32,7 +33,7 @@ namespace CBF {
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
 
-			init(create_matrix(xml_instance.Matrix(), object_namespace));
+			init(*XMLFactory<FloatMatrix>::instance()->create(xml_instance.Matrix(), object_namespace));
 		}
 
 		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform> x;

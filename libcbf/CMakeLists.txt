@@ -6,6 +6,7 @@ include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 set(CBF_SOURCES
   namespace.cc
   xml_factory.cc
+  xml_object_factory.cc
   object.cc
   sensor_transform.cc 
   composite_transform.cc
@@ -30,7 +31,6 @@ set(CBF_SOURCES
   composite_resource.cc
   reference.cc
   dummy_reference.cc
-  gnuplot_i.cpp
   quaternion.cc
   difference_sensor_transform.cc
   weighted_sum_transforms.cc

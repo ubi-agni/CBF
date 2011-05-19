@@ -187,6 +187,7 @@ int main(int argc, char *argv[]) {
 	} catch (const xml_schema::exception& e) {
 		std::cerr << "Error during parsing:" << std::endl;
 		std::cerr << e << std::endl;
+		return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;
