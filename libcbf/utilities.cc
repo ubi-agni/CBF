@@ -311,6 +311,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 #endif
 
 #ifdef CBF_HAVE_XSD
+#if 0
 FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace) {
 	const CBFSchema::SimpleVector *simple_vector = dynamic_cast<const CBFSchema::SimpleVector*>(&xml_instance);
 
@@ -342,6 +343,7 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 
 	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
 }
+#endif
 
 boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<FloatVector> v(new FloatVector);
@@ -373,7 +375,7 @@ boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &x
 	return ret;
 }
 
-
+#if 0
 FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespacePtr object_namespace)
 {
 	const CBFSchema::Matrix *m = &xml_instance;
@@ -407,6 +409,7 @@ FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespace
 
 	throw std::runtime_error("[create_matrix()]: Matrix type not supported yet");
 }
+#endif
 
 #endif
 
@@ -439,7 +442,7 @@ boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance,
 		CBF_DEBUG("Extracting matrix...");
 
 		FloatMatrix m;
-		m = create_matrix((*matrix_frame_instance).Matrix(), object_namespace);
+		m = *XMLFactory<FloatMatrix>::instance()->create((*matrix_frame_instance).Matrix(), object_namespace);
 
 		if (m.rows() != 4 || m.cols() != 4)
 			throw std::runtime_error("Matrix is not 4x4");

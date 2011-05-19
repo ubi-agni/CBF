@@ -22,6 +22,7 @@
 #include <cbf/utilities.h>
 
 #include <cbf/xml_object_factory.h>
+#include <cbf/xml_factory.h>
 
 #include <boost/bind.hpp>
 
@@ -104,7 +105,7 @@ namespace CBF {
 				CBFSchema::XCFMemoryReferenceVector_(s, xml_schema::flags::dont_validate);
 
 		CBF_DEBUG("create vector");
-		m_TempReference = create_vector(reference -> Vector(), ObjectNamespacePtr(new ObjectNamespace()));
+		m_TempReference = *XMLFactory<FloatVector>::instance()->create(reference -> Vector(), ObjectNamespacePtr(new ObjectNamespace()));
 		CBF_DEBUG("vector: " << m_TempReference);
 
 		CBF_DEBUG("vector created");

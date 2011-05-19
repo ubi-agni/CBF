@@ -3,6 +3,8 @@
 #include <cbf/schemas.hxx>
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
+#include <cbf/xml_factory.h>
+
 #include <boost/numeric/ublas/io.hpp>
 
 #include <string>
@@ -32,7 +34,7 @@ int main(int argc, char **argv) {
 
 	CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
 
-	CBF::FloatVector dim_vv = CBF::create_vector(*dim_v, object_namespace);
+	CBF::FloatVector dim_vv = *CBF::XMLFactory<FloatVector>::instance()->create(*dim_v, object_namespace);
 	CBF_DEBUG("dim_vv: " << dim_vv);
 	
 	unsigned int dim;

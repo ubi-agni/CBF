@@ -27,6 +27,8 @@
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/exceptions.h>
+#include <cbf/xml_factory.h>
+
 #include <boost/numeric/ublas/io.hpp>
 
 #include <string>
@@ -198,7 +200,7 @@ ConnectionManager::ConnectionManager(QWidget *parent, XCF::RemoteServerPtr _remo
 
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
 
-		CBF::FloatVector dim_vv = CBF::create_vector(*dim_v, object_namespace);
+		CBF::FloatVector dim_vv = *CBF::XMLFactory<FloatVector>::instance()->create(*dim_v, object_namespace);
 		CBF_DEBUG("dim_vv: " << dim_vv);
 
 		dim = dim_vv[0];
@@ -524,7 +526,7 @@ CBF::FloatVector* ConnectionManager::loadCurrentPositionVector(){
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector");
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
-		CBF::FloatVector *currentPositionVector = new CBF::FloatVector(CBF::create_vector(*v, object_namespace));
+		CBF::FloatVector *currentPositionVector = new CBF::FloatVector(*CBF::XMLFactory<FloatVector>::instance()->create(*v, object_namespace));
 
 		CBF_DEBUG("vector created");
 		if (currentPositionVector -> size() != dim) {

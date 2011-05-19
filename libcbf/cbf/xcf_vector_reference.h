@@ -160,7 +160,9 @@ struct XCFVectorReference : public Reference {
 		std::istringstream s(xml_in);
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector");
-		m_TempReference = create_vector(*v, ObjectNamespacePtr(new ObjectNamespace));
+		m_TempReference = *XMLFactory<FloatVector>::instance()->create(
+			*v, ObjectNamespacePtr(new ObjectNamespace)
+		);
 
 		CBF_DEBUG("vector created");
 		if (m_TempReference.size() != dim()) {

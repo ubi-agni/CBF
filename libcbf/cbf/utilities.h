@@ -134,8 +134,11 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j);
 */
 FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &j);
 
+#if 0
 FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace);
 FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespacePtr object_namespace);
+#endif
+
 
 boost::shared_ptr<KDL::Segment> 
 create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace);
