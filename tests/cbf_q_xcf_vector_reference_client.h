@@ -54,6 +54,8 @@ namespace CBF {
 class ConnectionManager : public QWidget{
 	Q_OBJECT
 
+	typedef boost::shared_ptr<FloatVector> FloatVectorPtr
+
 	private:
 	/** 
 		@brief The minimum count of decimals in a spinbox is:
@@ -230,7 +232,7 @@ class ConnectionManager : public QWidget{
 		@brief Gets the current position from the server. Returns a pointer to a CBF:FloatVector.
 		ATTENTION: dont forget to free the space with 'delete'.
 	*/
-	CBF::FloatVector* loadCurrentPositionVector();
+	FloatVectorPtr loadCurrentPositionVector();
 
 	/** 
 		@brief Gets the current position from the server and writes it into the labels next to the spinboxes.

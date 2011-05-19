@@ -71,16 +71,17 @@ void vector_from_boost_string(const std::string str, FloatVector* vec){
 	std::istringstream in(str);
 
 	// remove '[' - read size - remove ']' and '('
-	in.get(c_tmp);
+	//in.get(c_tmp);
+	in >> c_tmp;
 	if (c_tmp != '[') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: vector_from_boost_string(" << str << "): expected '['");
+			"[utilities]: vector_from_boost_string(" << str << "): expected '[' but got '" << c_tmp << "'");
 	in >> size;
-	in.get(c_tmp);
+	in >> c_tmp;
 	if (c_tmp != ']') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: vector_from_boost_string(" << str << "): expected ']'");
-	in.get(c_tmp);
+			"[utilities]: vector_from_boost_string(" << str << "): expected ']' but got '" << c_tmp << "'");
+	in >> c_tmp;
 	if (c_tmp != '(') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: vector_from_boost_string(" << str << "): expected '('");
+			"[utilities]: vector_from_boost_string(" << str << "): expected '(' but got '" << c_tmp << "'");
 
 	// resize passed vector.
 	vec -> resize(size);
@@ -89,7 +90,7 @@ void vector_from_boost_string(const std::string str, FloatVector* vec){
 		in >> value;
 		(*vec)(i) = value;
 		// remove ',' or ')'
-		in.get(c_tmp);
+		in >> c_tmp;
 	}
 	// check whether the boost-string-representation is at its end
 	if (c_tmp != ')') CBF_THROW_RUNTIME_ERROR(

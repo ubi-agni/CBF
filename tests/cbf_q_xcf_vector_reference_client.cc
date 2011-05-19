@@ -512,7 +512,7 @@ void ConnectionManager::changeSendMode(){
 	}
 }
 
-CBF::FloatVector* ConnectionManager::loadCurrentPositionVector(){
+CBF::FloatVector ConnectionManager::loadCurrentPositionVector(){
 	try{
 		//Getting the current task position from the server.
 		std::string xml_in, out;
@@ -524,10 +524,10 @@ CBF::FloatVector* ConnectionManager::loadCurrentPositionVector(){
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector");
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
-		CBF::FloatVector *currentPositionVector = new CBF::FloatVector(CBF::create_vector(*v, object_namespace));
+		CBF::FloatVector currentPositionVector(CBF::create_vector(*v, object_namespace));
 
 		CBF_DEBUG("vector created");
-		if (currentPositionVector -> size() != dim) {
+		if (currentPositionVector.size() != dim) {
 			CBF_THROW_RUNTIME_ERROR(
 				"Dimensions of xml vector not matching the dimension");
 		}
