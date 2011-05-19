@@ -22,7 +22,7 @@
 #define CBF_XML_FACTORIES_HH
 
 #include <cbf/config.h>
-#include <cbf/foreign_object_wrapper.h>
+//#include <cbf/foreign_object_wrapper.h>
 #include <cbf/exceptions.h>
 #include <cbf/debug_macros.h>
 #include <cbf/object.h>
