@@ -345,8 +345,8 @@ FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespace
 }
 #endif
 
-boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	boost::shared_ptr<FloatVector> v(new FloatVector);
+FloatVectorPtr create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
+	FloatVectorPtr v(new FloatVector);
 	CBF_DEBUG("string: " << xml_instance.String());
 	//yes it looks funny but a shared pointer is not a pointer
 	vector_from_boost_string(xml_instance.String(), &(*v));
@@ -355,15 +355,15 @@ boost::shared_ptr<FloatVector> create_boost_vector(const CBFSchema::BoostVector 
 	return v;
 }
 
-boost::shared_ptr<FloatVector> create_zero_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	boost::shared_ptr<FloatVector> ret = boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension()));
+FloatVectorPtr create_zero_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
+	FloatVectorPtr ret = FloatVectorPtr(new FloatVector(xml_instance.Dimension()));
 	ret -> setZero();
 	return ret;
 }
 
 
-boost::shared_ptr<FloatVector> create_basis_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	return boost::shared_ptr<FloatVector>(new FloatVector(xml_instance.Dimension()));
+FloatVectorPtr create_basis_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
+	return FloatVectorPtr(new FloatVector(xml_instance.Dimension()));
 }
 
 
@@ -622,13 +622,13 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 	static XMLCreator<
 		FloatVector, 
 		CBFSchema::BoostVector, 
-		boost::shared_ptr<FloatVector>(*)(const CBFSchema::BoostVector &, ObjectNamespacePtr)
+		FloatVectorPtr(*)(const CBFSchema::BoostVector &, ObjectNamespacePtr)
 	> x (create_boost_vector);
 
 	static XMLCreator<
 		FloatVector, 
 		CBFSchema::ZeroVector, 
-		boost::shared_ptr<FloatVector>(*)(const CBFSchema::ZeroVector &, ObjectNamespacePtr)
+		FloatVectorPtr(*)(const CBFSchema::ZeroVector &, ObjectNamespacePtr)
 	> x2 (create_zero_vector);
 	
 	static XMLCreator<
