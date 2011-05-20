@@ -312,39 +312,6 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 #endif
 
 #ifdef CBF_HAVE_XSD
-#if 0
-FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace) {
-	const CBFSchema::SimpleVector *simple_vector = dynamic_cast<const CBFSchema::SimpleVector*>(&xml_instance);
-
-	if (simple_vector) {
-		FloatVector ret((*simple_vector).Coefficient().size());
-		std::copy((*simple_vector).Coefficient().begin(),
-				(*simple_vector).Coefficient().end(), ret.data());
-		return ret;
-	}
-
-	const CBFSchema::BoostVector *boost_vector = dynamic_cast<const CBFSchema::BoostVector*>(&xml_instance);
-
-	if (boost_vector) {
-		CBF_DEBUG("string: " << boost_vector->String());
-		FloatVector ret;
-		vector_from_boost_string(boost_vector->String(), &ret);
-		return ret;
-	}
-
-	const CBFSchema::EigenVector *eigen_vector = dynamic_cast<const CBFSchema::EigenVector*>(&xml_instance);
-
-	if (eigen_vector) {
-		CBF_DEBUG("string: " << eigen_vector->String());
-		FloatVector ret;
-		vector_from_eigen_string(eigen_vector->String(), &ret);
-		if (ret.size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
-		return ret;
-	}
-
-	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
-}
-#endif
 
 FloatVectorPtr create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	FloatVectorPtr v(new FloatVector);
@@ -388,42 +355,6 @@ boost::shared_ptr<FloatMatrix> create_boost_matrix(const CBFSchema::BoostMatrix 
 	}
 	return matrix;
 }
-
-#if 0
-FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespacePtr object_namespace)
-{
-	const CBFSchema::Matrix *m = &xml_instance;
-
-	const CBFSchema::BoostMatrix *m2 = dynamic_cast<const CBFSchema::BoostMatrix*>(m);
-	if (m2) {
-		FloatMatrix matrix;
-		matrix_from_boost_string(m2->String(), &matrix);
-		CBF_DEBUG(matrix);
-		if ((matrix.rows() == 0) && (matrix.cols() == 0)) {
-			CBF_THROW_RUNTIME_ERROR("Matrix is empty")
-		}
-		return matrix;
-	}
-
-	const CBFSchema::EigenMatrix *m3 = dynamic_cast<const CBFSchema::EigenMatrix*>(m);
-	if (m3) {
-		FloatMatrix matrix;
-		matrix_from_eigen_string(m3->String(), &matrix);
-		CBF_DEBUG(matrix);
-		if ((matrix.rows() == 0) && (matrix.cols() == 0)) {
-			CBF_THROW_RUNTIME_ERROR("Matrix is empty")
-		}
-		return matrix;
-	}
-
-	const CBFSchema::ZeroMatrix *m4 = dynamic_cast<const CBFSchema::ZeroMatrix*>(m);
-	if (m4) {
-		return FloatMatrix::Zero((int) m4->Rows(), (int) m4->Columns());
-	}
-
-	throw std::runtime_error("[create_matrix()]: Matrix type not supported yet");
-}
-#endif
 
 #endif
 
