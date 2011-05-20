@@ -323,6 +323,23 @@ FloatVectorPtr create_boost_vector(const CBFSchema::BoostVector &xml_instance, O
 	return v;
 }
 
+FloatVectorPtr create_simple_vector(const CBFSchema::SimpleVector &xml_instance, ObjectNamespacePtr object_namespace) {
+	FloatVectorPtr v(new FloatVector);
+	std::vector<Float> tmp;
+	for (
+		CBFSchema::SimpleVector::Coefficient_const_iterator it = xml_instance.Coefficient().begin();
+		it != xml_instance.Coefficient().end();
+		++it
+	) {
+		tmp.push_back(*it);
+	}
+	v->resize(tmp.size());
+	std::copy(tmp.begin(), tmp.end(), v->data());
+	
+	return v;
+}
+
+
 FloatVectorPtr create_zero_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	FloatVectorPtr ret = FloatVectorPtr(new FloatVector(xml_instance.Dimension()));
 	ret -> setZero();
@@ -521,12 +538,19 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		FloatVectorPtr(*)(const CBFSchema::ZeroVector &, ObjectNamespacePtr)
 	> x2 (create_zero_vector);
 
+	static XMLCreator<
+		FloatVector, 
+		CBFSchema::SimpleVector, 
+		FloatVectorPtr(*)(const CBFSchema::SimpleVector &, ObjectNamespacePtr)
+	> x34857 (create_simple_vector);
+
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;
 
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::BoostVector> x7;
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::EigenVector> x9;
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::SimpleVector> x11;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::ZeroVector> x543;
 
 
 	
