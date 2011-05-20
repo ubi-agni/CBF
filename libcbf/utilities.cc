@@ -343,8 +343,6 @@ boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &x
 	return ret;
 }
 
-// TODO: create_boost_matrix, create_eigen_matrix, create_zero_matrix, etc..
-
 boost::shared_ptr<FloatMatrix> create_boost_matrix(const CBFSchema::BoostMatrix &xml_instance, ObjectNamespacePtr object_namespace)
 {
 	boost::shared_ptr<FloatMatrix> matrix(new FloatMatrix);
@@ -358,8 +356,7 @@ boost::shared_ptr<FloatMatrix> create_boost_matrix(const CBFSchema::BoostMatrix 
 
 #endif
 
-#ifdef CBF_HAVE_XSD
-#ifdef CBF_HAVE_KDL
+#if defined(CBF_HAVE_XSD) && defined(CBF_HAVE_KDL)
 
 boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<KDL::Frame> frame = create_frame(xml_instance.Frame(), object_namespace);
@@ -466,7 +463,7 @@ boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_insta
 
 void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &current_hook_name, const CBFSchema::TreeSegment &xml_instance, ObjectNamespacePtr object_namespace) {
 	CBF_DEBUG("adding segment");
-	boost::shared_ptr<KDL::Segment> segment = create_segment(xml_instance, object_namespace);
+	boost::shared_ptr<KDL::Segment> segment = XMLFactory<KDL::Segment>::instance()->create(xml_instance, object_namespace);
 
 	if (tree->addSegment(*segment, current_hook_name) == false)
 		throw std::runtime_error("Adding segment to tree failed");
@@ -510,7 +507,6 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 
 
 #endif
-#endif
 
 #ifdef CBF_HAVE_XSD
 	static XMLCreator<
@@ -528,8 +524,6 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;
 
-//	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::Vector> x5;
-//	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::Matrix> x6;
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::BoostVector> x7;
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::EigenVector> x9;
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::SimpleVector> x11;
