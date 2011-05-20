@@ -375,6 +375,10 @@ boost::shared_ptr<FloatMatrix> create_boost_matrix(const CBFSchema::BoostMatrix 
 
 #if defined(CBF_HAVE_XSD) && defined(CBF_HAVE_KDL)
 
+boost::shared_ptr<KDL::Segment> create_tree_segment(const CBFSchema::TreeSegment &xml_instance, ObjectNamespacePtr object_namespace) {
+	return create_segment(xml_instance, object_namespace);
+}
+
 boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace) {
 	boost::shared_ptr<KDL::Frame> frame = create_frame(xml_instance.Frame(), object_namespace);
 	boost::shared_ptr<KDL::Joint> joint = create_joint(xml_instance.Joint(), object_namespace);
@@ -470,7 +474,7 @@ boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_insta
 	{
 		CBF_DEBUG("Adding Segment...");
 
-		boost::shared_ptr<KDL::Segment> segment = create_segment(*it, object_namespace);
+		boost::shared_ptr<KDL::Segment> segment = XMLFactory<KDL::Segment>::instance()->create(*it, object_namespace);
 
 		chain->addSegment(*segment);
 		CBF_DEBUG("number of joints: " << chain->getNrOfJoints());
@@ -587,7 +591,6 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		*XMLFactory<KDL::Tree>::m_Instance = 0;
 
 
-
 	static XMLCreator<
 		KDL::Segment, 
 		CBFSchema::Segment, 
@@ -599,6 +602,14 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 	template <> XMLFactory<KDL::Segment> 
 		*XMLFactory<KDL::Segment>::m_Instance = 0;
 
+
+	static XMLCreator<
+		KDL::Segment, 
+		CBFSchema::TreeSegment, 
+		boost::shared_ptr<KDL::Segment>(*)(const CBFSchema::TreeSegment &, ObjectNamespacePtr)
+	> x1332 (create_tree_segment);
+
+	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Segment>, CBFSchema::TreeSegment> x14323;
 
 #endif
 
