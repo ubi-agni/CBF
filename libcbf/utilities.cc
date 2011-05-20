@@ -554,44 +554,6 @@ void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &curr
 	}
 }
 
-#if 0
-boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::TreeBase &xml_instance, ObjectNamespacePtr object_namespace) {
-
-	CBF_DEBUG("creating tree from xml");
-	boost::shared_ptr<KDL::Tree> tree(new KDL::Tree);
-
-	//! Check what kind of tree we have:
-
-	if (xml_instance.Name().present())
-		CBF_DEBUG("tree name: " << *xml_instance.Name());
-	else
-		CBF_DEBUG("tree has no name");
-
-
-	const CBFSchema::Tree *tree_instance  = dynamic_cast<const CBFSchema::Tree*>(&xml_instance);
-
-	if (tree_instance == 0) {
-		CBF_DEBUG("tree type not handled yet");
-		throw std::runtime_error("Tree type not handled yet..");
-	}
-
-	CBF_DEBUG("iterating over segments");
-
-	for (
-		CBFSchema::Tree::Segment_const_iterator it =(*tree_instance).Segment().begin(); 
-		it != (*tree_instance).Segment().end();
-		++it
-	)
-	{
-		CBF_DEBUG("Adding Segment...");
-
-		tree_add_segment(tree, "root", *it, object_namespace);
-
-		CBF_DEBUG("Number of joints: " << tree->getNrOfJoints());
-	}
-	return tree;
-}
-#endif
 
 boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, ObjectNamespacePtr object_namespace) {
 
@@ -631,6 +593,17 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		CBFSchema::ZeroVector, 
 		FloatVectorPtr(*)(const CBFSchema::ZeroVector &, ObjectNamespacePtr)
 	> x2 (create_zero_vector);
+
+	template <> XMLFactory<FloatVector> 
+		*XMLFactory<FloatVector>::m_Instance = 0;
+
+//	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::Vector> x5;
+//	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::Matrix> x6;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::BoostVector> x7;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::EigenVector> x9;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::SimpleVector> x11;
+
+
 	
 	static XMLCreator<
 		FloatMatrix, 
@@ -638,13 +611,20 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::BoostMatrix &, ObjectNamespacePtr)
 	> x12 (create_boost_matrix);
 
+	static XMLCreator<
+		FloatMatrix, 
+		CBFSchema::ZeroMatrix, 
+		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::ZeroMatrix &, ObjectNamespacePtr)
+	> x22 (create_zero_matrix);
 
-
-	template <> XMLFactory<FloatVector> 
-		*XMLFactory<FloatVector>::m_Instance = 0;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::EigenMatrix> x10;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::BoostMatrix> x8;
+	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::ZeroMatrix> x33;
 
 	template <> XMLFactory<FloatMatrix> 
 		*XMLFactory<FloatMatrix>::m_Instance = 0;
+
+
 
 	static XMLCreator<
 		KDL::Tree, 
@@ -652,21 +632,24 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		boost::shared_ptr<KDL::Tree>(*)(const CBFSchema::Tree &, ObjectNamespacePtr)
 	> x3 (create_tree);
 
+	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Tree>, CBFSchema::Tree> x4;
+
 	template <> XMLFactory<KDL::Tree> 
 		*XMLFactory<KDL::Tree>::m_Instance = 0;
 
-	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Tree>, CBFSchema::Tree> x4;
 
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::Vector> x5;
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::Matrix> x6;
 
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::BoostVector> x7;
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::BoostMatrix> x8;
+	static XMLCreator<
+		KDL::Segment, 
+		CBFSchema::Segment, 
+		boost::shared_ptr<KDL::Segment>(*)(const CBFSchema::Segment &, ObjectNamespacePtr)
+	> x13 (create_segment);
 
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::EigenVector> x9;
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::EigenMatrix> x10;
+	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Segment>, CBFSchema::Segment> x14;
 
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::SimpleVector> x11;
+	template <> XMLFactory<KDL::Segment> 
+		*XMLFactory<KDL::Segment>::m_Instance = 0;
+
 
 #endif
 
