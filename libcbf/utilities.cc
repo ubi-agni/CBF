@@ -120,7 +120,7 @@ void matrix_from_eigen_string(const std::string str, FloatMatrix* matr){
 	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << *matr);
 }
 
-void matrix_from_boost_string(const std::string str, FloatMatrix* matr){
+void matrix_from_boost_string(const std::string str, FloatMatrixPtr matr){
 	//TODO: use boost if exists
 	CBF_DEBUG("start parsing string to matrix");
 	float value; // will be written from stream
@@ -145,7 +145,7 @@ void matrix_from_boost_string(const std::string str, FloatMatrix* matr){
 			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
 
 	//resize passed matrix
-	matr -> resize(rows, cols);
+	matr->resize(rows, cols);
 	//write values from stream to matrix
 	for (row = 0; row < rows; ++row) {
 		in.get(c_tmp); //remove leading '(' of row
@@ -153,7 +153,7 @@ void matrix_from_boost_string(const std::string str, FloatMatrix* matr){
 				"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
 		for (int col = 0; col < cols; ++col) {
 			in >> value;
-			(*matr)(row,col) = value;
+			matr->operator()(row,col) = value;
 			in.get(c_tmp); //remove ',' or ')'
 		}
 		// remove ',' between rows or last ')'
@@ -162,7 +162,7 @@ void matrix_from_boost_string(const std::string str, FloatMatrix* matr){
 	// check whether the boost-string-representation is at its end
 	if (c_tmp != ')') CBF_THROW_RUNTIME_ERROR(
 			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
-	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << *matr);
+	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << matr);
 }
 
 FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
@@ -373,6 +373,19 @@ boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &x
 		= boost::shared_ptr<FloatMatrix>(new FloatMatrix((int) xml_instance.Rows(), (int) xml_instance.Columns()));
 	ret -> setZero();
 	return ret;
+}
+
+// TODO: create_boost_matrix, create_eigen_matrix, create_zero_matrix, etc..
+
+boost::shared_ptr<FloatMatrix> create_boost_matrix(const CBFSchema::BoostMatrix &xml_instance, ObjectNamespacePtr object_namespace)
+{
+	boost::shared_ptr<FloatMatrix> matrix(new FloatMatrix);
+	matrix_from_boost_string(xml_instance.String(), matrix);
+	CBF_DEBUG(matrix);
+	if ((matrix->rows() == 0) && (matrix->cols() == 0)) {
+		CBF_THROW_RUNTIME_ERROR("Matrix is empty")
+	}
+	return matrix;
 }
 
 #if 0
@@ -618,6 +631,14 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		boost::shared_ptr<FloatVector>(*)(const CBFSchema::ZeroVector &, ObjectNamespacePtr)
 	> x2 (create_zero_vector);
 	
+	static XMLCreator<
+		FloatMatrix, 
+		CBFSchema::BoostMatrix, 
+		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::BoostMatrix &, ObjectNamespacePtr)
+	> x12 (create_boost_matrix);
+
+
+
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;
 
@@ -634,12 +655,16 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		*XMLFactory<KDL::Tree>::m_Instance = 0;
 
 	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Tree>, CBFSchema::Tree> x4;
+
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::Vector> x5;
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::Matrix> x6;
+
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::BoostVector> x7;
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::BoostMatrix> x8;
+
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::EigenVector> x9;
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::EigenMatrix> x10;
+
 	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::SimpleVector> x11;
 
 #endif

@@ -26,6 +26,7 @@
 #include <cbf/config.h>
 
 #include <Eigen/Core>
+#include <boost/shared_ptr.hpp>
 
 namespace CBF {
 
@@ -40,6 +41,8 @@ namespace CBF {
 	typedef Eigen::VectorXd FloatVector;
 	typedef Eigen::MatrixXd FloatMatrix;
 
+	typedef boost::shared_ptr<FloatVector> FloatVectorPtr;
+	typedef boost::shared_ptr<FloatMatrix> FloatMatrixPtr;
 } // namespace
 
 #endif
