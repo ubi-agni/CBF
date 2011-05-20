@@ -514,7 +514,7 @@ void ConnectionManager::changeSendMode(){
 	}
 }
 
-CBF::FloatVector* ConnectionManager::loadCurrentPositionVector(){
+CBF::ConnectionManager::FloatVectorPtr ConnectionManager::loadCurrentPositionVector(){
 	try{
 		//Getting the current task position from the server.
 		std::string xml_in, out;
@@ -526,7 +526,10 @@ CBF::FloatVector* ConnectionManager::loadCurrentPositionVector(){
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector");
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
-		CBF::FloatVector *currentPositionVector = new CBF::FloatVector(*CBF::XMLFactory<FloatVector>::instance()->create(*v, object_namespace));
+		CBF::ConnectionManager::FloatVectorPtr currentPositionVector = 
+			CBF::ConnectionManager::FloatVectorPtr(new CBF::FloatVector
+					(*CBF::XMLFactory<FloatVector>::instance()
+						->create(*v, object_namespace)));
 
 		CBF_DEBUG("vector created");
 		if (currentPositionVector -> size() != dim) {
@@ -545,12 +548,12 @@ CBF::FloatVector* ConnectionManager::loadCurrentPositionVector(){
 	}
 	alwaysLoadCheckBox -> setChecked(false);
 	changeLoadMode();
-	return NULL;
+	return CBF::ConnectionManager::FloatVectorPtr();
 }
 
 void ConnectionManager::loadRemoteValues(){
-	CBF::FloatVector *currentPositionVector = loadCurrentPositionVector();
-	if(currentPositionVector != NULL){
+	CBF::ConnectionManager::FloatVectorPtr currentPositionVector = loadCurrentPositionVector();
+	if(currentPositionVector.get() != NULL){
 		for (unsigned int i = 0; i < dim; i++) {
 			//setting the value for every Label.
 			QLabel* label = (*currentValueLabels)[i];
@@ -560,7 +563,6 @@ void ConnectionManager::loadRemoteValues(){
 		}
 		inputWin -> resize(inputWin -> sizeHint());
 	}
-	delete currentPositionVector;
 }
 
 void ConnectionManager::changeLoadMode(){
@@ -581,15 +583,14 @@ void ConnectionManager::changeLoadPauseTime(int time){
 void ConnectionManager::setSpinboxesTo(){
 	switch(comboSetSpinboxes -> currentIndex()){
 		case 0:{ //"set to current values from server" - Getting values from Server.
-			CBF::FloatVector *currentPositionVector = loadCurrentPositionVector();
-			if(currentPositionVector != NULL){
+			CBF::ConnectionManager::FloatVectorPtr currentPositionVector = loadCurrentPositionVector();
+			if(currentPositionVector.get() != NULL){
 				for (unsigned int i = 0; i < dim; i++) {
 					//setting the value for every spinbox.
 					(*spinboxes)[i] -> setValue((*currentPositionVector)(i));
 				}
 				inputWin -> resize(inputWin -> sizeHint());
 			}
-			delete currentPositionVector;
 			break;
 		}
 		case 1:{ //"set to already loaded values" - Getting values from Labels.
