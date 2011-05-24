@@ -53,7 +53,7 @@ namespace CBF {
 		) :
 			SensorTransform(xml_instance, object_namespace)	
 		{
-			init(*XMLObjectFactory::instance()->create<ForeignObjectWrapper<FloatVector> >(xml_instance.Value(), object_namespace)->m_WrappedObject);
+			init(*XMLFactory<FloatVector>::instance()->create(xml_instance.Value(), object_namespace));
 		}
 
 		BlockWiseMultiplySensorTransform::BlockWiseMultiplySensorTransform(
@@ -65,8 +65,7 @@ namespace CBF {
 			init(
 				XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand(), object_namespace),
 				xml_instance.Blocksize(),
-				*XMLObjectFactory::instance()->create<ForeignObjectWrapper<FloatVector> >(xml_instance.Factors(), object_namespace)->m_WrappedObject
-				//create_vector(xml_instance.Factors())
+				*XMLFactory<FloatVector>::instance()->create(xml_instance.Factors(), object_namespace)
 			);
 		}
 

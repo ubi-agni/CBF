@@ -49,8 +49,7 @@ namespace CBF {
 
 			CBF_DEBUG("Extracting reference vector coefficients...");
 			try {
-				//tmp = create_vector(*it, object_namespace);
-				tmp = *XMLObjectFactory::instance()->create<ForeignObjectWrapper<FloatVector> >(*it, object_namespace)->m_WrappedObject;
+				tmp = *XMLFactory<FloatVector>::instance()->create(*it, object_namespace);
 			} catch(...) {
 				CBF_DEBUG("extracting cefficients failed");
 				throw;
@@ -59,8 +58,6 @@ namespace CBF {
 			CBF_DEBUG("Reference: " << tmp);
 
 			m_References.push_back(tmp);
-			//PrimitiveControllerPtr controller(new PrimitiveController(*it));
-			//m_SubordinateControllers.push_back(controller);
 		}
 	}
 

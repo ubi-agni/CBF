@@ -48,9 +48,9 @@ namespace CBF {
 			Resource(xml_instance, object_namespace)
 		{
 			m_Variables = 
-				*XMLObjectFactory::instance()->create<ForeignObjectWrapper<FloatVector> >(
+				*XMLFactory<FloatVector>::instance()->create(
 					xml_instance.Vector(), object_namespace
-				)->m_WrappedObject
+				)
 			;
 
 			CBF_DEBUG("current values: " << m_Variables);

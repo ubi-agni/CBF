@@ -74,7 +74,7 @@ void DampedWeightedGenericEffectorTransform::update(
 		init(
 			xml_instance.TaskDimension(), 
 			xml_instance.ResourceDimension(), 
-			*XMLObjectFactory::instance()->create<ForeignObjectWrapper<FloatVector> >(xml_instance.Diagonal(), object_namespace)->m_WrappedObject
+			*XMLFactory<FloatVector>::instance()->create(xml_instance.Diagonal(), object_namespace)
 		);
 	}
 	
