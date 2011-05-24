@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<cbf:ControlBasis
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
+	xsi:schemaLocation="http://www.cit-ec.uni-bielefeld.de/CBF /home/tapas/src/uni/CBF/schemas/schemas.xsd">
+
+  <Potential xsi:type="cbf:SquarePotential">
+	 <Name>BeThereOrBeSquare</Name>
+	 <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
+	 <Dimension> 3 </Dimension>
+	 <Coefficient> 0.1 </Coefficient>
+  </Potential>
+  
+  
+  <Controller xsi:type="cbf:PrimitiveController">
+	 <Name>foo</Name>
+
+	 <Coefficient> 1 </Coefficient>
+
+	 <ConvergenceCriterion xsi:type="cbf:ResourceStepNormThreshold">
+		<Name>foobar</Name>
+		<Threshold> 0.01 </Threshold>
+	 </ConvergenceCriterion>
+
+	 <Reference xsi:type="cbf:DummyReference">
+		<Vector xsi:type="cbf:SimpleVector">
+		  <Coefficient> 1 </Coefficient>
+		  <Coefficient> 0 </Coefficient>
+		  <Coefficient> 0 </Coefficient>
+		</Vector>
+	 </Reference>
+
+	 <Potential xsi:type="cbf:SquarePotential">
+		<MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
+		<Dimension> 3 </Dimension>
+		<Coefficient> 0.1 </Coefficient>
+	 </Potential>
+
+	 <SensorTransform xsi:type="cbf:IdentitySensorTransform">
+		<Dimension> 3 </Dimension>
+	 </SensorTransform>
+
+	 <EffectorTransform xsi:type="cbf:TransposeEffectorTransform">
+		<TaskDimension> 3 </TaskDimension>
+		<ResourceDimension> 3 </ResourceDimension>
+	 </EffectorTransform>
+
+	 <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
+
+	 <Resource xsi:type="cbf:DummyResource">
+		<Vector xsi:type="cbf:SimpleVector">
+		  <Coefficient> 5 </Coefficient>
+		  <Coefficient> 1 </Coefficient>
+		  <Coefficient> 10 </Coefficient>
+		</Vector>
+	 </Resource>
+
+
+  </Controller>
+
+</cbf:ControlBasis>

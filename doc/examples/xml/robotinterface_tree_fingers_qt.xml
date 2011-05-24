@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<cbf:Object
+	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:type="cbf:PrimitiveController">
+  <Name>foo</Name>
+  
+  <Coefficient>1</Coefficient>
+  
+  <ConvergenceCriterion 
+	  xsi:type="cbf:TaskSpaceDistanceThreshold">
+	 <Threshold> 0.001 </Threshold>
+  </ConvergenceCriterion>
+  <Reference xsi:type="cbf:DummyReference">
+	 <Vector xsi:type="cbf:BoostVector"><String>[15](-39.84578071371982,31.10497919114459,28.50276558302973,-40.03729559108493,19.19805719188912,30.90370216737265,-41.68248200910415,19.26295815875300,34.11214496390898,-43.79340775845618,17.72335524476873,27.77121202353494,-46.01513758795031,18.33785010801801,27.90665534016560)</String></Vector>
+  </Reference>
+<!--
+  </Reference>
+  <Reference xsi:type="cbf:QtReference">
+	 <Control>
+		<ControlName>X1</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>0</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Y1</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Z1</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>X2</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>0</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Y2</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Z2</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>X3</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>0</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Y3</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Z3</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>X4</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>0</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Y4</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Z4</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>X5</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>0</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Y5</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+	 <Control>
+		<ControlName>Z5</ControlName>
+		<Minimum>-100.0</Minimum>
+		<Maximum>100.0</Maximum>
+		<Decimals>3</Decimals>
+		<InitialValue>30</InitialValue>
+	 </Control>
+  </Reference>
+-->
+  <Potential
+	  xsi:type="cbf:SquarePotential">
+	 <MaxGradientStepNorm> 10 </MaxGradientStepNorm>
+	 <Dimension> 15 </Dimension>
+	 <Coefficient> 0.4 </Coefficient>
+  </Potential>
+
+  <SensorTransform
+	  xsi:type="cbf:QtSensorTransform">
+	 <ComponentName>X1</ComponentName>
+	 <ComponentName>Y1 </ComponentName>
+	 <ComponentName>Z1 </ComponentName>
+	 <ComponentName>X2</ComponentName>
+	 <ComponentName>Y2 </ComponentName>
+	 <ComponentName>Z2 </ComponentName>
+	 <ComponentName>X3</ComponentName>
+	 <ComponentName>Y3 </ComponentName>
+	 <ComponentName>Z3 </ComponentName>
+	 <ComponentName>X4</ComponentName>
+	 <ComponentName>Y4 </ComponentName>
+	 <ComponentName>Z4 </ComponentName>
+	 <ComponentName>X5</ComponentName>
+	 <ComponentName>Y5 </ComponentName>
+	 <ComponentName>Z5 </ComponentName>
+	 <Operand
+		 xsi:type="cbf:KDLTreePositionSensorTransform">
+		<Tree xsi:type="cbf:Tree">
+		  <Name>Arms</Name>
+		  <ReferencedName>arms</ReferencedName>
+		</Tree>
+
+		<SegmentName>Right.hand.th1</SegmentName>
+		<SegmentName>Right.hand.ff1</SegmentName>
+		<SegmentName>Right.hand.mf1</SegmentName>
+		<SegmentName>Right.hand.rf1</SegmentName>
+		<SegmentName>Right.hand.lf1</SegmentName>
+
+	 </Operand>
+  </SensorTransform>
+
+  <EffectorTransform 
+	  xsi:type="cbf:PaddedEffectorTransform">
+	 <TaskDimension>15</TaskDimension>
+	 <ResourceDimension>62</ResourceDimension>
+	 <Diagonal xsi:type="cbf:BoostVector"><String>[15](0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,)</String></Diagonal>
+  </EffectorTransform>
+
+<!--
+  <SubordinateController>
+	 <Coefficient>0.1</Coefficient>
+	 <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
+		<Threshold>0.001</Threshold>
+	 </ConvergenceCriterion>
+	 <Reference xsi:type="cbf:DummyReference">
+		<Vector xsi:type="cbf:BoostVector">
+		  <String>[62](1.17177391052246,1.17465364933014,-0.01421692874283,-1.03621065616608,-1.29099726676941,-1.39218807220459,-0.00087528611766,0.07538251578808,-0.12390407174826,0.00302278785966,-0.02402480691671,-0.00453403359279,-0.00681706378236,-0.00812316313386,0.00962474010885,-0.05716057866812,-0.00192619767040,-0.02326279506087,0.00473572406918,0.00853541027755,0.00809153821319,-0.02468628622591,0.01017017289996,-0.01877537928522,-0.00167385977693,0.01462276931852,-0.00925588328391,-0.00607252446935,-0.00045692021376,0.00307739945129,-0.00074033899000,1.56569826602936,1.18864953517914,0.00418268144131,-1.16614866256714,1.29254722595215,-1.39639425277710,-0.39376375079155,0.05193750932813,-0.13662630319595,0.00328565202653,0.02579980529845,-0.00224983412772,-0.00081805675291,0.00431537907571,0.00355544523336,-0.11220861226320,-0.00153098022565,-0.00889882259071,0.00222950102761,0.00773133710027,-0.00477958424017,-0.01911362260580,-0.00345391943119,0.00348030868918,-0.00407331902534,-0.00127798598260,0.00969249382615,-0.00684132426977,-0.01583277061582,0.00583315175027,0.01041781809181)</String>
+		</Vector>
+	 </Reference>
+	 <Potential xsi:type="cbf:SquarePotential">
+		<MaxGradientStepNorm>100</MaxGradientStepNorm>
+		<Dimension>62</Dimension>
+		<Coefficient>1</Coefficient>
+	 </Potential>
+	 <SensorTransform xsi:type="cbf:IdentitySensorTransform">
+		<Dimension>62</Dimension>
+	 </SensorTransform>
+	 <EffectorTransform xsi:type="cbf:IdentityEffectorTransform">
+		<Dimension>62</Dimension>
+	 </EffectorTransform>
+	 <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
+  </SubordinateController>
+  -->
+  <CombinationStrategy
+	  xsi:type="cbf:AddingStrategy"/>
+
+  <Resource
+	  xsi:type="cbf:CompositeResource">
+	 <Resource
+		 xsi:type="cbf:RobotInterfaceResource">
+		<SendMemoryName>xcf:wb</SendMemoryName>
+		<RecvMemoryName>xcf:wb</RecvMemoryName>
+		<RobotName>LeftArm</RobotName>
+		<NumberOfJoints> 7 </NumberOfJoints>
+	 </Resource>
+	 <Resource 
+		 xsi:type="cbf:RobotInterfaceResource">
+		<SendMemoryName>xcf:wb</SendMemoryName>
+		<RecvMemoryName>xcf:wb</RecvMemoryName>
+		<RobotName>LeftHand</RobotName>
+		<NumberOfJoints> 24 </NumberOfJoints>
+	 </Resource>
+	 <Resource
+		 xsi:type="cbf:RobotInterfaceResource">
+		<SendMemoryName>xcf:wb</SendMemoryName>
+		<RecvMemoryName>xcf:wb</RecvMemoryName>
+		<RobotName>RightArm</RobotName>
+		<NumberOfJoints> 7 </NumberOfJoints>
+	 </Resource>
+	 <Resource
+		 xsi:type="cbf:RobotInterfaceResource">
+		<SendMemoryName>xcf:wb</SendMemoryName>
+		<RecvMemoryName>xcf:wb</RecvMemoryName>
+		<RobotName>RightHand</RobotName>
+		<NumberOfJoints> 24 </NumberOfJoints>
+	 </Resource>
+  </Resource>
+
+  <!--
+	  <Resource 
+		  xsi:type="cbf:DummyResource">
+		 <Vector
+			 xsi:type="cbf:BoostVector">
+			<String>[62](0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)</String>
+		 </Vector>
+	  </Resource>
+	  -->
+</cbf:Object>
