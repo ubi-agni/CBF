@@ -27,8 +27,6 @@ find_package(Boost 1.40.0 COMPONENTS program_options)
 if(Boost_FOUND)
   set(CBF_HAVE_BOOST 1)
   set(CBF_HAVE_BOOST_PROGRAM_OPTIONS 1)
-else()
-  message(FATAL_ERROR "boost_program_options and boost_python are required for CBF")
 endif()
 
 message(STATUS "Looking for CppAD automatic differentiation package")
