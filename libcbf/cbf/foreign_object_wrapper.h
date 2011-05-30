@@ -25,7 +25,7 @@ namespace CBF {
 
 		ForeignObjectWrapper(
 			const CBFSchema::Object &xml_instance, 
-			boost::shared_ptr<ObjectNamespace> object_namespace	
+			ObjectNamespacePtr object_namespace	
 		) : 
 			Object("ForeignObjectWrapper")
 		{
@@ -33,11 +33,8 @@ namespace CBF {
 				CBF_DEBUG("creating ForeignObjectWrapper from xml element with name: " << *xml_instance.Name());
 				m_Name = *xml_instance.Name();
 			}
-			// m_Object = XMLFactory<KDL::Tree>::instance()->create(xml_instance);
 			m_WrappedObject = XMLFactory<T>::instance()->create(xml_instance, object_namespace);
 		}
-
-
 	};
 } // namespace
 
