@@ -22,7 +22,7 @@ namespace CBF {
 				CBF_THROW_RUNTIME_ERROR("trying to register empty object");
 		}
 
-
+		#ifdef CBF_HAVE_XSD
 		ForeignObjectWrapper(
 			const CBFSchema::Object &xml_instance, 
 			ObjectNamespacePtr object_namespace	
@@ -35,6 +35,7 @@ namespace CBF {
 			}
 			m_WrappedObject = XMLFactory<T>::instance()->create(xml_instance, object_namespace);
 		}
+		#endif
 	};
 } // namespace
 
