@@ -17,7 +17,7 @@
 
 
 namespace CBF {
-
+	#ifdef CBF_HAVE_XSD
 		/**
 			@brief The base type for all concrete CBF::Object factories
 		*/
@@ -133,7 +133,7 @@ namespace CBF {
 					return boost::shared_ptr<Object>();
 				}
 		};
-
+	#endif
 } // namespace
 
 
