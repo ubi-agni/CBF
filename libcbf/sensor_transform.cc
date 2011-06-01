@@ -22,7 +22,7 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object_wrapper.h>
+#include <cbf/foreign_object.h>
 #include <cbf/xml_factory.h>
 #include <cbf/utilities.h>
 

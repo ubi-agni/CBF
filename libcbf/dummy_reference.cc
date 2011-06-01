@@ -24,7 +24,7 @@
 #include <cbf/dummy_reference.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object_wrapper.h>
+#include <cbf/foreign_object.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
@@ -49,7 +49,10 @@ namespace CBF {
 
 			CBF_DEBUG("Extracting reference vector coefficients...");
 			try {
-				tmp = *XMLFactory<FloatVector>::instance()->create(*it, object_namespace);
+				tmp = 
+					*XMLObjectFactory::instance()->create<ForeignObject<FloatVector> >(
+						*it, object_namespace
+					)->m_Object;
 			} catch(...) {
 				CBF_DEBUG("extracting cefficients failed");
 				throw;

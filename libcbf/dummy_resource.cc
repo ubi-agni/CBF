@@ -22,7 +22,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object_wrapper.h>
+#include <cbf/foreign_object.h>
 
 #include <string>
 #include <iostream>

@@ -22,6 +22,7 @@
 #include <cbf/utilities.h>
 #include <cbf/xml_object_factory.h>
 #include <cbf/xml_factory.h>
+#include <cbf/foreign_object.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
@@ -49,7 +50,11 @@ namespace CBF {
 
 			set_transforms(transforms);
 
-			m_Weights = *XMLFactory<FloatVector>::instance()->create(xml_instance.Weights(), object_namespace);
+			m_Weights = 
+				*XMLObjectFactory::instance()->create<ForeignObject<FloatVector> >(
+					xml_instance.Weights(), object_namespace
+				)->m_Object;
+
 			if (m_Weights.size() != m_Transforms.size())
 				throw std::runtime_error ("[WeightedSumSensorTransform]: Mismatching number of weights and transforms");
 		}

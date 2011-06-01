@@ -22,7 +22,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>
 #include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object_wrapper.h>
+#include <cbf/foreign_object.h>
 
 #ifdef CBF_HAVE_KDL
 	#include <kdl/jacobian.hpp>
@@ -551,10 +551,10 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;
 
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::BoostVector> x7;
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::EigenVector> x9;
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::SimpleVector> x11;
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatVector>, CBFSchema::ZeroVector> x543;
+	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::BoostVector> x7;
+	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::EigenVector> x9;
+	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::SimpleVector> x11;
+	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::ZeroVector> x543;
 
 
 	
@@ -570,9 +570,9 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::ZeroMatrix &, ObjectNamespacePtr)
 	> x22 (create_zero_matrix);
 
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::EigenMatrix> x10;
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::BoostMatrix> x8;
-	static XMLDerivedFactory<ForeignObjectWrapper<FloatMatrix>, CBFSchema::ZeroMatrix> x33;
+	static XMLDerivedFactory<ForeignObject<FloatMatrix>, CBFSchema::EigenMatrix> x10;
+	static XMLDerivedFactory<ForeignObject<FloatMatrix>, CBFSchema::BoostMatrix> x8;
+	static XMLDerivedFactory<ForeignObject<FloatMatrix>, CBFSchema::ZeroMatrix> x33;
 
 	template <> XMLFactory<FloatMatrix> 
 		*XMLFactory<FloatMatrix>::m_Instance = 0;
@@ -585,7 +585,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		boost::shared_ptr<KDL::Tree>(*)(const CBFSchema::Tree &, ObjectNamespacePtr)
 	> x3 (create_tree);
 
-	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Tree>, CBFSchema::Tree> x4;
+	static XMLDerivedFactory<ForeignObject<KDL::Tree>, CBFSchema::Tree> x4;
 
 	template <> XMLFactory<KDL::Tree> 
 		*XMLFactory<KDL::Tree>::m_Instance = 0;
@@ -597,7 +597,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		boost::shared_ptr<KDL::Segment>(*)(const CBFSchema::Segment &, ObjectNamespacePtr)
 	> x13 (create_segment);
 
-	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Segment>, CBFSchema::Segment> x14;
+	static XMLDerivedFactory<ForeignObject<KDL::Segment>, CBFSchema::Segment> x14;
 
 	template <> XMLFactory<KDL::Segment> 
 		*XMLFactory<KDL::Segment>::m_Instance = 0;
@@ -609,7 +609,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		boost::shared_ptr<KDL::Segment>(*)(const CBFSchema::TreeSegment &, ObjectNamespacePtr)
 	> x1332 (create_tree_segment);
 
-	static XMLDerivedFactory<ForeignObjectWrapper<KDL::Segment>, CBFSchema::TreeSegment> x14323;
+	static XMLDerivedFactory<ForeignObject<KDL::Segment>, CBFSchema::TreeSegment> x14323;
 
 #endif
 

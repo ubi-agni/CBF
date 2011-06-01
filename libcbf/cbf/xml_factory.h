@@ -87,14 +87,11 @@ namespace CBF {
 					);
 				}
 
-				boost::shared_ptr<T> ptr = m_Creators[typeid(xml_instance).name()]->create(xml_instance, object_namespace);
+				boost::shared_ptr<T> ptr = 
+					m_Creators[typeid(xml_instance).name()]->create(
+						xml_instance, object_namespace
+					);
 
-#if 0
-				if (xml_instance.Name().present()) {
-					CBF_DEBUG("registering foreign object");
-					object_namespace->register_foreign_object<T>(*xml_instance.Name(), ptr);
-				}
-#endif
 				return ptr;
 			}
 

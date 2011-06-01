@@ -24,7 +24,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/utilities.h>
 #include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object_wrapper.h>
+#include <cbf/foreign_object.h>
 //#include <cbf/xml_factory.h>
 
 #include <kdl/chain.hpp>
@@ -336,9 +336,9 @@ namespace CBF {
 			CBF_DEBUG("[KDLTreeSensorTransform(const KDLTreeSensorTransformType &xml_instance)]: yay!");
 
 			m_Tree = 
-				XMLObjectFactory::instance()->create<ForeignObjectWrapper<KDL::Tree> >(
+				XMLObjectFactory::instance()->create<ForeignObject<KDL::Tree> >(
 					xml_instance, object_namespace
-				)->m_WrappedObject
+				)->m_Object
 			;
 
 			CBF_DEBUG("tree created");

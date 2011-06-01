@@ -22,7 +22,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/xml_object_factory.h>
 #include <cbf/xml_factory.h>
-#include <cbf/foreign_object_wrapper.h>
+#include <cbf/foreign_object.h>
 
 #ifndef CBF_HAVE_EIGEN2
   #include <cbf/svd.h>
@@ -74,7 +74,7 @@ void DampedWeightedGenericEffectorTransform::update(
 		init(
 			xml_instance.TaskDimension(), 
 			xml_instance.ResourceDimension(), 
-			*XMLFactory<FloatVector>::instance()->create(xml_instance.Diagonal(), object_namespace)
+			*XMLObjectFactory::instance()->create<ForeignObject<FloatVector> >(xml_instance.Diagonal(), object_namespace)->m_Object
 		);
 	}
 	

@@ -11,29 +11,29 @@ namespace CBF {
 		@brief A class used to wrap instances of classes that are not derived from CBF::Object (e.g. KDL::Tree)
 	*/
 	template<class T> 
-	struct ForeignObjectWrapper : public Object {
-		boost::shared_ptr<T> m_WrappedObject;
+	struct ForeignObject : public Object {
+		boost::shared_ptr<T> m_Object;
 
-		ForeignObjectWrapper(boost::shared_ptr<T> object) :
-			Object("ForeignObjectWrapper"),
-			m_WrappedObject(object)
+		ForeignObject(boost::shared_ptr<T> object) :
+			Object("ForeignObject"),
+			m_Object(object)
 		{
-			if (m_WrappedObject.get() == 0)
+			if (m_Object.get() == 0)
 				CBF_THROW_RUNTIME_ERROR("trying to register empty object");
 		}
 
 		#ifdef CBF_HAVE_XSD
-		ForeignObjectWrapper(
+		ForeignObject(
 			const CBFSchema::Object &xml_instance, 
 			ObjectNamespacePtr object_namespace	
 		) : 
-			Object("ForeignObjectWrapper")
+			Object("ForeignObject")
 		{
 			if (xml_instance.Name().present()) {
-				CBF_DEBUG("creating ForeignObjectWrapper from xml element with name: " << *xml_instance.Name());
+				CBF_DEBUG("creating ForeignObject from xml element with name: " << *xml_instance.Name());
 				m_Name = *xml_instance.Name();
 			}
-			m_WrappedObject = XMLFactory<T>::instance()->create(xml_instance, object_namespace);
+			m_Object = XMLFactory<T>::instance()->create(xml_instance, object_namespace);
 		}
 		#endif
 	};

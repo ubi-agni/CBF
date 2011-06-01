@@ -20,6 +20,7 @@
 
 #include <cbf/xcf_memory_resource.h>
 #include <cbf/xml_object_factory.h>
+#include <cbf/foreign_object.h>
 #include <cbf/utilities.h>
 #include <xmltio/XPath.hpp>
 
@@ -132,7 +133,10 @@ namespace CBF {
 				CBFSchema::XCFMemoryResourceAdd_(s, xml_schema::flags::dont_validate);
 
 		CBF_DEBUG("create vector");
-		FloatVector resourceVector = *XMLFactory<FloatVector>::instance()->create(resource -> Vector(), ObjectNamespacePtr(new ObjectNamespace));
+		FloatVector resourceVector = 
+			*XMLObjectFactory::instance()->create<ForeignObject<FloatVector> >(
+				resource -> Vector(), ObjectNamespacePtr(new ObjectNamespace)
+			)->m_Object;
 		CBF_DEBUG("vector: " << resourceVector);
 
 		CBF_DEBUG("vector created");
