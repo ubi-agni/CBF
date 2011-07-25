@@ -4,10 +4,14 @@
 	targetNamespace="http://www.cit-ec.uni-bielefeld.de/CBF"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xcf="http://xcf.sf.net">
+
+<xsd:import namespace="http://xcf.sf.net" schemaLocation="xcfschemas.xsd"/>
 
   <xsd:complexType name="Object">
 	 <xsd:sequence>
+	 	<xsd:element name="metadata" type="xcf:metadata" minOccurs="0"/>
 		<xsd:element name="Name" type="xsd:string" minOccurs="0"/>
 		<xsd:element name="ReferencedObjectName" type="xsd:string" minOccurs="0"/>
 	 </xsd:sequence>
@@ -199,6 +203,7 @@
 	 <xsd:complexContent>
 		<xsd:extension base="CBF:Vector"> 
 		  <xsd:sequence>
+			 <!--xsd:any namespace="##other" minOccurs="1" processContents="skip"/-->
 			 <xsd:element name="String" type="xsd:string"/>
 		  </xsd:sequence>
 		</xsd:extension>

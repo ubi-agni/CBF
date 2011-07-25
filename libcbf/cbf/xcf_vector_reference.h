@@ -155,10 +155,11 @@ struct XCFVectorReference : public Reference {
 		CBF_DEBUG("in");
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
 		CBF_DEBUG("locked");
-
 		CBF_DEBUG("doc: " << xml_in);
 		std::istringstream s(xml_in);
+		CBF_DEBUG("before create vector");
 		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
+
 		CBF_DEBUG("create vector");
 		m_TempReference = *XMLFactory<FloatVector>::instance()->create(
 			*v, ObjectNamespacePtr(new ObjectNamespace)
@@ -169,6 +170,7 @@ struct XCFVectorReference : public Reference {
 			CBF_DEBUG("meeeh!!!");
 			CBF_THROW_RUNTIME_ERROR("Dimensions of xml vector not matching the dimension of this reference");
 		}
+
 		CBF_DEBUG("out");
 	}
 };
