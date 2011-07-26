@@ -50,7 +50,7 @@
 
 namespace CBF {
 
-void vector_from_eigen_string(const std::string str, FloatVector* vec){
+void vector_from_eigen_string(const std::string str, FloatVectorPtr vec){
 	CBF_DEBUG("start parsing string to vector");
 	Float value;
 	std::vector<Float> values;
@@ -63,7 +63,7 @@ void vector_from_eigen_string(const std::string str, FloatVector* vec){
 	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << *vec);
 }
 
-void vector_from_boost_string(const std::string str, FloatVector* vec){
+void vector_from_boost_string(const std::string str, FloatVectorPtr vec){
 	//TODO: use boost if exists
 	CBF_DEBUG("start parsing string to vector");
 	Float value; // will be written from stream
@@ -99,7 +99,7 @@ void vector_from_boost_string(const std::string str, FloatVector* vec){
 	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << *vec);
 }
 
-void matrix_from_eigen_string(const std::string str, FloatMatrix* matr){
+void matrix_from_eigen_string(const std::string str, FloatMatrixPtr matr){
 	CBF_DEBUG("start parsing string to matrix");
 	float value;
 	std::vector<float> values;
@@ -316,8 +316,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 FloatVectorPtr create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	FloatVectorPtr v(new FloatVector);
 	CBF_DEBUG("string: " << xml_instance.String());
-	//yes it looks funny but a shared pointer is not a pointer
-	vector_from_boost_string(xml_instance.String(), &(*v));
+	vector_from_boost_string(xml_instance.String(), v);
 	if (v -> size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
 
 	return v;
@@ -346,6 +345,13 @@ FloatVectorPtr create_zero_vector(const CBFSchema::ZeroVector &xml_instance, Obj
 	return ret;
 }
 
+FloatVectorPtr create_eigen_vector(const CBFSchema::EigenVector &xml_instance, ObjectNamespacePtr object_namespace) {
+	FloatVectorPtr v(new FloatVector);
+	CBF_DEBUG("string: " << xml_instance.String());
+	vector_from_eigen_string(xml_instance.String(), v);
+	if (v -> size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
+	return v;
+}
 
 FloatVectorPtr create_basis_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
 	return FloatVectorPtr(new FloatVector(xml_instance.Dimension()));
@@ -353,17 +359,28 @@ FloatVectorPtr create_basis_vector(const CBFSchema::ZeroVector &xml_instance, Ob
 
 
 
-boost::shared_ptr<FloatMatrix> create_zero_matrix(const CBFSchema::ZeroMatrix &xml_instance, ObjectNamespacePtr object_namespace) {
-	boost::shared_ptr<FloatMatrix> ret
-		= boost::shared_ptr<FloatMatrix>(new FloatMatrix((int) xml_instance.Rows(), (int) xml_instance.Columns()));
+FloatMatrixPtr create_zero_matrix(const CBFSchema::ZeroMatrix &xml_instance, ObjectNamespacePtr object_namespace) {
+	FloatMatrixPtr ret
+		= FloatMatrixPtr(new FloatMatrix((int) xml_instance.Rows(), (int) xml_instance.Columns()));
 	ret -> setZero();
 	return ret;
 }
 
-boost::shared_ptr<FloatMatrix> create_boost_matrix(const CBFSchema::BoostMatrix &xml_instance, ObjectNamespacePtr object_namespace)
+FloatMatrixPtr create_boost_matrix(const CBFSchema::BoostMatrix &xml_instance, ObjectNamespacePtr object_namespace)
 {
-	boost::shared_ptr<FloatMatrix> matrix(new FloatMatrix);
+	FloatMatrixPtr matrix(new FloatMatrix);
 	matrix_from_boost_string(xml_instance.String(), matrix);
+	CBF_DEBUG(matrix);
+	if ((matrix->rows() == 0) && (matrix->cols() == 0)) {
+		CBF_THROW_RUNTIME_ERROR("Matrix is empty")
+	}
+	return matrix;
+}
+
+FloatMatrixPtr create_eigen_matrix(const CBFSchema::EigenMatrix &xml_instance, ObjectNamespacePtr object_namespace)
+{
+	FloatMatrixPtr matrix(new FloatMatrix);
+	matrix_from_eigen_string(xml_instance.String(), matrix);
 	CBF_DEBUG(matrix);
 	if ((matrix->rows() == 0) && (matrix->cols() == 0)) {
 		CBF_THROW_RUNTIME_ERROR("Matrix is empty")
@@ -548,6 +565,12 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		FloatVectorPtr(*)(const CBFSchema::SimpleVector &, ObjectNamespacePtr)
 	> x34857 (create_simple_vector);
 
+	static XMLCreator<
+		FloatVector,
+		CBFSchema::EigenVector,
+		FloatVectorPtr(*)(const CBFSchema::EigenVector &, ObjectNamespacePtr)
+	> x34878 (create_eigen_vector);
+
 	template <> XMLFactory<FloatVector> 
 		*XMLFactory<FloatVector>::m_Instance = 0;
 
@@ -555,6 +578,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::EigenVector> x9;
 	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::SimpleVector> x11;
 	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::ZeroVector> x543;
+	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::EigenVector> x544;
 
 
 	
@@ -569,6 +593,12 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		CBFSchema::ZeroMatrix, 
 		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::ZeroMatrix &, ObjectNamespacePtr)
 	> x22 (create_zero_matrix);
+
+	static XMLCreator<
+		FloatMatrix,
+		CBFSchema::EigenMatrix,
+		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::EigenMatrix &, ObjectNamespacePtr)
+	> x23 (create_eigen_matrix);
 
 	static XMLDerivedFactory<ForeignObject<FloatMatrix>, CBFSchema::EigenMatrix> x10;
 	static XMLDerivedFactory<ForeignObject<FloatMatrix>, CBFSchema::BoostMatrix> x8;

@@ -39,8 +39,7 @@ namespace CBF {
 	/**
 		@brief This is a wrapper to provide XCFMemory communication for the SensorTransform
 		it behaves like the passed SensorTransform except that after making the usual 
-		update() calculations, it publishes the resuliting matrices on the XCFMemory
-		server.
+		update() calculations, it publishes the resuliting matrices on the XCFMemory.
 	*/
 	struct XCFMemorySensorTransform : public SensorTransform {
 

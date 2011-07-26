@@ -52,6 +52,8 @@ int main(int argc, char **argv) {
 			std::istringstream s(document);
 			resourceState = CBFSchema::XCFMemoryResourceState_(s, xml_schema::flags::dont_validate);
 			noDocumentFound = false;
+		} catch (std::exception &e){
+			CBF_DEBUG("Could not parse document. Exception: " << e.what());
 		} catch (...){
 			CBF_DEBUG("Could not parse document. Trying next.");
 		}
@@ -63,8 +65,11 @@ int main(int argc, char **argv) {
 		std::cin >> dim;
 	} else {
 		ObjectNamespacePtr object_namespace(new ObjectNamespace);
-		CBF_DEBUG("dimension: " << *XMLFactory<FloatVector>::instance()->create(resourceState -> Vector(), object_namespace));
+		CBF_DEBUG("before");
+		CBF_DEBUG("dimension: " << *XMLFactory< >::instance()->create(resourceState -> Vector(), object_namespace));
+		CBF_DEBUG("between");
 		dim = (*XMLFactory<FloatVector>::instance()->create(resourceState -> Vector(), object_namespace)).size();
+		CBF_DEBUG("after");
 	}
 
 	while(true) {

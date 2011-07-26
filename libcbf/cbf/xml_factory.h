@@ -106,7 +106,7 @@ namespace CBF {
 			@brief This template allows registering a functor C that
 			constructs a boost::shared_ptr<T> from a TSchemaType.
 
-			THe signature of the functor's operator() has to be
+			The signature of the functor's operator() has to be
 
 			boost::shared_ptr<T>(*)(const TSchemaType&)
 		*/
