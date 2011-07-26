@@ -123,7 +123,7 @@ struct XCFVectorReference : public Reference {
 
 		vector_string << m_CurrentReferencePosition;
 
-		CBFSchema::BoostVector v(vector_string.str());
+		CBFSchema::EigenVector v(vector_string.str());
 
 		std::ostringstream s;
 		CBFSchema::Vector_ (s, v);

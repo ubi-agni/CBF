@@ -25,20 +25,24 @@ namespace mi = memory::interface;
 	Usage: cbf_test_xcf_memory_reference_client 'memory_server-uri' 'ResourceName'
 */
 int main(int argc, char **argv) {
+	std::string mname;
+	std::string rname;
 	if (argc < 3) {
-		std::cout << "Usage: cbf_test_xcf_memory_reference_client "
-				"'memory_server-uri' 'ReferenceName'" << std::endl;
-		exit (EXIT_FAILURE);
+		mname = "xcf:wb";
+		rname = "CBFMemoryReference";
+	} else {
+		mname = argv[1];
+		rname = argv[2];
 	}
 
 
 	CBF_DEBUG("connecting to XCFMemory...");
-	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(argv[1]));
+	mi::MemoryInterface::pointer memoryPtr(mi::MemoryInterface::getInstance(mname));
 
 	std::stringstream xPath;
 	xPath << "//*[local-name() = 'XCFMemoryReferenceInfo' and ";
 	xPath << "namespace-uri() = 'http://www.cit-ec.uni-bielefeld.de/CBF']";
-	xPath << "/ReferenceName[text() = '" << argv[2] << "']";
+	xPath << "/ReferenceName[text() = '" << rname << "']";
 
 	mi::ResultsPtr results = memoryPtr -> query(xPath.str());
 
@@ -48,20 +52,6 @@ int main(int argc, char **argv) {
 	while(results -> hasNext()){
 		results -> next(document);
 		try{
-			document = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><p1:XCFMemoryReferenceInfo xmlns:p1=\"http://www.cit-ec.uni-bielefeld.de/CBF\" xmlns:dbxml=\"http://www.sleepycat.com/2002/dbxml\" dbxml:id=\"58\">"
-//			  "<xcf:metadata xmlns:xcf=\"http://xcf.sf.net\">"
-//			    "<timing>"
-//			       "<ts dateTime=\"xs:dateTime\" key=\"xcf:cre\" ms=\"1304342142425\" ns=\"902099\" src=\"CBE43EFA-4B95-48BF-9C52-C3306585E12A\"/>"
-//			       "<ts dateTime=\"xs:dateTime\" key=\"xcf:pub\" ms=\"1304342142425\" ns=\"902099\" src=\"CBE43EFA-4B95-48BF-9C52-C3306585E12A\"/>"
-//			    "</timing>"
-//			  "</xcf:metadata>"
-
-			  "<ReferenceName>CBFMemoryReference</ReferenceName>"
-
-			  "<Dimension>3</Dimension>"
-
-			"</p1:XCFMemoryReferenceInfo>";
-
 			CBF_DEBUG("Parsing as XCFmemoryReferenceInfo: " << document);
 			std::istringstream s(document);
 			reference = CBFSchema::XCFMemoryReferenceInfo_(s, xml_schema::flags::dont_validate);
@@ -110,7 +100,7 @@ int main(int argc, char **argv) {
 		// creating the XCFMemoryReferenceVector document
 		std::stringstream vecstr;
 		vecstr << tmp;
-		CBFSchema::XCFMemoryReferenceVector v(argv[2], CBFSchema::EigenVector(vecstr.str()));
+		CBFSchema::XCFMemoryReferenceVector v(rname, CBFSchema::EigenVector(vecstr.str()));
 
 		std::ostringstream s;
 		CBFSchema::XCFMemoryReferenceVector_ (s, v);

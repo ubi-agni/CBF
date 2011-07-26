@@ -541,6 +541,7 @@ CBF::ConnectionManager::FloatVectorPtr ConnectionManager::loadCurrentPositionVec
 		CBF_DEBUG("The Remote does not seem to provide souch a service.");
 		throw;
 	} catch (const std::runtime_error &e){
+		CBF_DEBUG("Runtime error while parsing remote vector: " << e.what());
 		CBF_DEBUG("The dimension of the remote task does not match the local saved dimension. Maybe"
 			"the Task needs to be run first.");
 	} catch (const XCF::CommunicationException &e){

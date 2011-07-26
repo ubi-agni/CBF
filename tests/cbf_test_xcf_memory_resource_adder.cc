@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 	} else {
 		ObjectNamespacePtr object_namespace(new ObjectNamespace);
 		CBF_DEBUG("before");
-		CBF_DEBUG("dimension: " << *XMLFactory< >::instance()->create(resourceState -> Vector(), object_namespace));
+		CBF_DEBUG("dimension: " << *XMLFactory<FloatVector>::instance()->create(resourceState -> Vector(), object_namespace));
 		CBF_DEBUG("between");
 		dim = (*XMLFactory<FloatVector>::instance()->create(resourceState -> Vector(), object_namespace)).size();
 		CBF_DEBUG("after");
