@@ -49,11 +49,10 @@ namespace CBF {
 
 /**
 	@brief This reference exposes the set_reference method via 
-	XCFMemory. This can be used to set the reference of a controller..
+	XCFMemory. This can be used to set the reference of a controller.
 
 	The Reference listens for an XCFMemoryReferenceVector with the specified
-	ReferenceName on the MemoryServer referenced by the URL
-. 
+	ReferenceName on the MemoryServer referenced by the URL.
 */
 struct XCFMemoryReference : public Reference {
 
@@ -61,6 +60,7 @@ struct XCFMemoryReference : public Reference {
 		@brief Creates an XCFMemoryReference from an xml-instance.
 
 		@param xml_instance An instance of a CBFSchema::XCFMemoryReference.
+		@param object_namespace A pointer to an ObjectNamespace
 	*/
 	XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance, ObjectNamespacePtr object_namespace);
 

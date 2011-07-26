@@ -96,12 +96,10 @@ struct CBFRunController {
 		@brief Creates a CBFRunController struct, does not start to run the controller.
 		Execution can be started with start_controller() after an ObjectNamespace was set.
 
-		@param sleep-time The sleep time after each step of execution in milliseconds.
+		@param sleep_time The sleep time after each step of execution in milliseconds.
 		@param steps The count of steps to execute. Setting steps to 0 lets the controller run
 		until convergence.
-		@param verbosity_level Sets the verbosity level.
-		@param qt_support Switches the qt-support. Only available when Qt was found.
-		A QApplication needs to be created by the initializing program.
+		@param verbosity_level Sets the verbosity level.s
 				
 	*/	
 	CBFRunController(

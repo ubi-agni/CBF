@@ -51,6 +51,7 @@ struct XCFMemoryResource : public Resource {
 		@brief Creates an XCFMemoryResource from an xml-instance.
 
 		@param xml_instance An instance of a CBFSchema::XCFMemoryResource.
+		@param object_namespace A pointer to an ObjectNamespace.
 	*/	
 	XCFMemoryResource(const CBFSchema::XCFMemoryResource &xml_instance, ObjectNamespacePtr object_namespace);	
 

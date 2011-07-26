@@ -92,7 +92,7 @@ namespace CBF {
 		}
 	}
 
-	void XCFMemoryReference::set_reference(const mi::Event &event) {
+	void XCFMemoryReference::set_reference(const memory::interface::Event &event) {
 		CBF_DEBUG("in");
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ReferenceMonitor); 
 		CBF_DEBUG("locked");

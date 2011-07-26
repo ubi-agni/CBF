@@ -71,13 +71,11 @@ struct XCFMemoryRunController {
 
 		@param run_controller_name The name of the RunController to listen for.
 		@param active_memory_name The name of the active_memory to connect to.
-		@param sleep-time (CBFRunController) The sleep time after each step of execution in milliseconds.
+		@param notification_level The notification level defines which messages are inserted into memory.
+		@param sleep_time (CBFRunController) The sleep time after each step of execution in milliseconds.
 		@param steps (CBFRunController) The count of steps to execute. Setting steps to 0 lets the controller run
 		until convergence.
-		@param (CBFRunController) verbosity_level Sets the verbosity level.
-		@param qt_support (CBFRunController) Switches the qt-support. Only available when Qt was found.
-		A QApplication needs to be created by the initializing program.
-				
+		@param verbosity_level (CBFRunController) verbosity_level Sets the verbosity level.
 	*/
 	XCFMemoryRunController(std::string run_controller_name, std::string active_memory_name,
 				NotificationLevel notification_level = NOTHING,
@@ -259,7 +257,7 @@ struct XCFMemoryRunController {
 		Whether a notification will be send defines the m_NotificationLevel.
 
 		@param note Will be filled into the 'Note' element.
-		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param documentID The dbxml:id of the xml document that triggered this note.
 	*/
 	void notifyError(std::string note, int documentID);
 	
@@ -267,7 +265,7 @@ struct XCFMemoryRunController {
 		@brief A notify function for the add-action.
 		Whether a notification will be send defines the m_NotificationLevel.
 
-		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param documentID The dbxml:id of the xml document that triggered this note.
 		@param added_documents The a vector of added document names.
 		@param ignored_documents A vector of document names that were ignored.
 	*/
@@ -278,7 +276,7 @@ struct XCFMemoryRunController {
 		@brief A notify function for the load-action.
 		Whether a notification will be send defines the m_NotificationLevel.
 
-		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param documentID The dbxml:id of the xml document that triggered this note.
 		@param loaded_documents The documents that could be loaded into the namespace
 		@param not_found_documents A set of documents that were not found.
 		@param controller_names A set of CBF::Controllers which could be loaded from the namespace.
@@ -290,7 +288,7 @@ struct XCFMemoryRunController {
 		@brief A notify function for the stop-action.
 		Whether a notification will be send defines the m_NotificationLevel.
 
-		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param documentID The dbxml:id of the xml document that triggered this note.
 		@param controller_name The name of the controller that was stopped.
 	*/
 	void notifyStop(int documentID, std::string controller_name);
@@ -299,7 +297,7 @@ struct XCFMemoryRunController {
 		@brief A notify function for the sleep-time/steps-change.
 		Whether a notification will be send defines the m_NotificationLevel.
 
-		@param documentD The dbxml:id of the xml document that triggered this note.
+		@param documentID The dbxml:id of the xml document that triggered this note.
 		@param sleep_time The new sleep-time.
 		@param steps The new amount of steps.
 		@param time_set Whether the time was changed.
