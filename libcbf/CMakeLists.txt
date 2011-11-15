@@ -66,6 +66,7 @@ set(CBF_HEADERS
   cbf/dummy_resource.h
   cbf/effector_transform.h
   cbf/exceptions.h
+  cbf/foreign_object.h
   cbf/functional.h
   cbf/generic_transform.h
   cbf/identity_transform.h
