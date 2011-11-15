@@ -192,7 +192,8 @@ namespace CBF {
 
 		void init(unsigned int task_dim, unsigned int resource_dim, FloatVector diagonal) {
 			CBF_DEBUG("Padded transform init");
-			if (task_dim != diagonal.size()) CBF_THROW_RUNTIME_ERROR("dimension mismatch");
+			if (task_dim != (unsigned int)diagonal.size()) 
+				CBF_THROW_RUNTIME_ERROR("dimension mismatch");
 
 			m_PaddedTaskJacobian = FloatMatrix::Zero(task_dim, resource_dim + task_dim);
 
