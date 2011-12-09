@@ -45,8 +45,8 @@ struct CompositeReference : public Reference
 	protected:
 		bool m_UpdateSuccessfull;
 		std::vector<ReferencePtr> m_References;
-		std::vector<FloatVector> m_ReferenceValues;
-		std::vector<FloatVector> m_EmptyReferenceValues;
+		std::vector<FloatVector>  m_ReferenceValues;
+		std::vector<FloatVector>  m_EmptyReferenceValues;
 
 	public:
 		CompositeReference(const CBFSchema::CompositeReference &xml_instance, ObjectNamespacePtr object_namespace);
@@ -61,10 +61,8 @@ struct CompositeReference : public Reference
 	
 			m_ReferenceValues.clear();
 
-			for (
-				unsigned int i = 0, len = m_References.size();
-				i < len;
-				++i)
+			for (unsigned int i = 0, len = m_References.size();
+				  i < len; ++i)
 			{
 				dim += m_References[i]->dim();
 			}
@@ -87,18 +85,18 @@ struct CompositeReference : public Reference
 		virtual void update() {
 			unsigned int current_start_index = 0;
 
-			for (
-				unsigned int i = 0, len = m_References.size();
-				i < len;
-				++i)
+			FloatVector& ref_values=m_ReferenceValues[0];
+			for (std::vector<ReferencePtr>::const_iterator
+					  ref=m_References.begin(), end=m_References.end();
+				  ref != end; ++ref)
 			{
-				m_References[i]->update();
+				(*ref)->update();
 
-				if (m_References[i]->get().size() == 0)
+				if ((*ref)->get().size() == 0)
 					return;
-				m_ReferenceValues[0].segment(current_start_index, m_References[i] -> get().size())
-						= m_References[i] -> get()[0];
-				current_start_index += m_References[i]->dim();
+				ref_values.segment(current_start_index, (*ref)->dim())
+					= (*ref)->get()[0];
+				current_start_index += (*ref)->dim();
 			}
 			m_UpdateSuccessfull = true;
 		}
