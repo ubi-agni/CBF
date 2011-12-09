@@ -106,6 +106,7 @@ set(CBF_HEADERS
   cbf/xcf_resource.h
   cbf/xcf_vector_reference.h
   cbf/xml_factory.h
+  cbf/xml_object_factory.h
   cbf/xsd_error_handler.h
   )
 
