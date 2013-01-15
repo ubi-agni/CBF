@@ -78,16 +78,14 @@ if (MEMORY_FOUND)
   set(CBF_HAVE_MEMORY 1)
 endif()
 
+# find eigen2
 message(STATUS "Looking for EIGEN2")
-pkg_check_modules(EIGEN2 eigen2)
-if (EIGEN2_FOUND)
-  message(STATUS "  found")
-else()
-  set(EIGEN2_INCLUDE_DIRS eigen)
-  #include_directories(eigen)
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+find_package(Eigen2 2.0 REQUIRED)
+if(EIGEN2_FOUND)
+    set(CBF_HAVE_EIGEN2 1)
+    message(STATUS "  ${EIGEN2_VERSION} found")
 endif()
-set(CBF_HAVE_EIGEN2 1)
-
 
 message(STATUS "Looking for QT4")
 pkg_check_modules(QT QtCore QtGui)
@@ -97,11 +95,6 @@ if(QT_FOUND)
   include(FindQt4)
   set(CBF_HAVE_QT 1)
 endif()
-
-#find_path(EIGEN2_INC eigen2/Eigen/Core)
-#if (NOT "${EIGEN2_INC}" STREQUAL "EIGEN2_INC-NOTFOUND")
-#  set(CBF_HAVE_EIGEN2 1)
-#endif()
 
 message(STATUS "Looking for qkdlview")
 find_library(QKDLVIEW_LIB qkdlview)
@@ -116,8 +109,6 @@ if(
 else()
   message(STATUS "  qkdlview not found")
 endif()
-
-
 
 message(STATUS "Looking for Xerces-C")
 find_library(XERCESC_LIB xerces-c)
