@@ -85,6 +85,7 @@ find_package(Eigen2 2.0 REQUIRED)
 if(EIGEN2_FOUND)
     set(CBF_HAVE_EIGEN2 1)
     message(STATUS "  ${EIGEN2_VERSION} found")
+    include_directories(SYSTEM ${EIGEN2_INCLUDE_DIR})
 endif()
 
 message(STATUS "Looking for QT4")

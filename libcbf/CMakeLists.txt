@@ -119,12 +119,6 @@ set(CBF_LIBS "")
 set(CBF_INCLUDES "")
 set(CBF_LINKDIRS "")
 
-
-if (CBF_HAVE_EIGEN2)
-  set(CBF_INCLUDES ${CBF_INCLUDES} ${EIGEN2_INCLUDE_DIRS})
-endif()
-
-
 if (CBF_HAVE_QKDLVIEW)
   message(STATUS "adding qkdl_chain_view_transforms.cc " ${QKDLVIEW_LIB})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${QKDLVIEW_INCLUDES} ${QKDLTREEVIEW_INCLUDES})
@@ -133,8 +127,6 @@ if (CBF_HAVE_QKDLVIEW)
   set(CBF_SOURCES ${CBF_SOURCES} kdl_chain_view_transforms.cc)
   # set(CBF_HEADERS ${CBF_HEADERS} qkdl_chain_view_transforms.h)
 endif()
-
-
 
 if(CBF_HAVE_CPPAD)
   set(CBF_INCLUDES ${CBF_INCLUDES} ${CPPAD_PATH})
