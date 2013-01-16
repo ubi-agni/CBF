@@ -24,6 +24,9 @@ if(CBF_HAVE_MEMORY)
   include_directories(${MEMORY_INCLUDE_DIRS})
 endif()
 
+if (CBF_HAVE_EIGEN2)
+  include_directories(${EIGEN2_INCLUDE_DIRS})
+endif()
 
 message(STATUS "  adding executable: cbf_test_functional")
 add_executable(cbf_test_functional

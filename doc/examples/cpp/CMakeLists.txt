@@ -15,6 +15,9 @@ if(CBF_HAVE_KDL)
   include_directories(AFTER ${KDL_INCLUDE_DIRS})
 endif()
 
+if (CBF_HAVE_EIGEN2)
+  include_directories(${EIGEN2_INCLUDE_DIRS})
+endif()
 
 message(STATUS "  adding executable cbf_simple_test")
 add_executable(cbf_simple_test
