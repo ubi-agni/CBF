@@ -86,6 +86,9 @@ if(EIGEN2_FOUND)
     set(CBF_HAVE_EIGEN2 1)
     message(STATUS "  ${EIGEN2_VERSION} found")
     include_directories(SYSTEM ${EIGEN2_INCLUDE_DIR})
+    
+    # In case anything else includes eigen3 (e.g. kdl), we need eigen2 support
+    add-Definitions("-DEIGEN2_SUPPORT")
 endif()
 
 message(STATUS "Looking for QT4")
