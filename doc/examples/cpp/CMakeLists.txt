@@ -30,7 +30,6 @@ SET_TARGET_PROPERTIES(cbf_simple_test
   SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
   )
 
-
 if(CBF_HAVE_MEMORY AND CBF_HAVE_XSD)
   message(STATUS "  adding executable cbf_simple_test_memory")
 

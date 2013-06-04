@@ -1,13 +1,24 @@
 cmake_minimum_required(VERSION 2.6)
-
-
 project(CBF)
 
 set(CBF_VERSION_MAJOR 0)
 set(CBF_VERSION_MINOR 1)
+set(CBF_VERSION_PATCH 1)
+
+# module path
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
+include(CheckIncludeFileCXX)
+include(InstallFilesRecursive)
+include(EnableCoverageReport)
+include(EnableSlocCount)
+include(GenerateDoxygen)
+include(GenerateCppcheck)
+include(FindPkgConfig)
+include(SuperPedanticCompilerWarnings)
 
 enable_testing()
-INCLUDE(CTest) 
+include(CTest) 
 
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREAD OFF)
@@ -80,7 +91,6 @@ endif()
 
 # find eigen2
 message(STATUS "Looking for EIGEN2")
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 find_package(Eigen2 2.0 REQUIRED)
 if(EIGEN2_FOUND)
     set(CBF_HAVE_EIGEN2 1)
@@ -157,24 +167,6 @@ else()
   message(STATUS "  git not found!")
 endif()
 
-message(STATUS "Looking for doxygen")
-find_program(DOXYGEN_BIN NAMES doxygen)
-if(NOT "${DOXYGEN_BIN}" STREQUAL "DOXYGEN_BIN-NOTFOUND")
-  message(STATUS "found Doxygen, a documentation can be built with 'make doxy'")
-  add_custom_target(doxy
-    COMMAND ${DOXYGEN_BIN} ${PROJECT_BINARY_DIR}/Doxyfile
-    COMMENT "Creating html and tex documentation in doc/"
-  )
-  install(
-	 DIRECTORY ${PROJECT_BINARY_DIR}/doc/html 
-	 DESTINATION share/doc/cbf/
-	 DIRECTORY_PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ WORLD_EXECUTE OWNER_EXECUTE GROUP_EXECUTE
-	 FILE_PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE 
-	 )
-else()
-  message(STATUS "  doxygen not found, documentation will not be available")
-endif()
-
 configure_file(
   "${PROJECT_SOURCE_DIR}/libcbf/cbf/config.h.in"
   "${PROJECT_BINARY_DIR}/libcbf/cbf/config.h"
@@ -190,3 +182,21 @@ add_subdirectory(libcbf)
 add_subdirectory(apps)
 add_subdirectory(tests)
 add_subdirectory(doc)
+
+# --- sloccount ---
+enable_sloccount(FOLDERS apps libcbf tests)
+
+# --- cppcheck ---
+generate_cppcheck(SOURCES apps libcbf tests
+    "${CMAKE_CURRENT_BINARY_DIR}/apps" "${CMAKE_CURRENT_BINARY_DIR}/libcbf" "${CMAKE_CURRENT_BINARY_DIR}/tests"
+    ENABLE_IDS style)
+
+# --- package ---
+set(CPACK_PACKAGE_VERSION_MAJOR ${CBF_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${CBF_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${CBF_VERSION_PATCH})
+
+set(CPACK_PACKAGE_VENDOR "CoR-Lab Bielefeld University")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING.txt")
+
+include(ProvideFlexibleCPack)
