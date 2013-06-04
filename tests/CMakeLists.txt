@@ -30,7 +30,7 @@ add_executable(cbf_test_functional
   cbf_test_functional.cc
   )
 target_link_libraries(cbf_test_functional
-  cbf
+  ${CBF_LIBRARY_NAME}
   )  
 set_target_properties(cbf_test_functional
   PROPERTIES VERSION ${CBF_VERSION_MAJOR}
@@ -45,7 +45,7 @@ if(CBF_HAVE_CPPAD)
     cbf_test_cppad.cc
     )
   target_link_libraries(cbf_test_cppad
-    cbf
+    ${CBF_VERSIONED_NAME}
     )
   set_target_properties(cbf_test_cppad
     PROPERTIES VERSION ${CBF_VERSION_MAJOR}
@@ -67,35 +67,35 @@ if(CBF_HAVE_MEMORY AND CBF_HAVE_XCF AND CBF_HAVE_XMLTIO AND CBF_HAVE_XSD)
     cbf_test_xcf_reference.cc
     )
   target_link_libraries(cbf_test_xcf_reference
-    cbf
+    ${CBF_LIBRARY_NAME}
     )
 
   add_executable(cbf_test_xcf_reference_client
     cbf_test_xcf_reference_client.cc
     )
   target_link_libraries(cbf_test_xcf_reference_client
-    cbf
+    ${CBF_LIBRARY_NAME}
     )
 
   add_executable(cbf_test_xcf_memory_reference
     cbf_test_xcf_memory_reference.cc
     )
   target_link_libraries(cbf_test_xcf_memory_reference
-    cbf
+    ${CBF_LIBRARY_NAME}
     )
 
   add_executable(cbf_test_xcf_memory_reference_client
     cbf_test_xcf_memory_reference_client.cc
     )
   target_link_libraries(cbf_test_xcf_memory_reference_client
-    cbf
+    ${CBF_LIBRARY_NAME}
     )
 
   add_executable(cbf_test_xcf_memory_resource_adder
     cbf_test_xcf_memory_resource_adder.cc
     )
   target_link_libraries(cbf_test_xcf_memory_resource_adder
-    cbf
+    ${CBF_LIBRARY_NAME}
     )
 
   set_target_properties(
@@ -151,7 +151,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY AND CBF_H
     cbf_q_xcf_memory_run_controller_operator.cc ${MOC_SOURCES_2}
     )
   target_link_libraries(cbf_q_xcf_memory_run_controller_operator
-    cbf
+    ${CBF_LIBRARY_NAME}
     ${Boost_LIBRARIES}
     ${MEMORY_LDFLAGS}
     ${QT_LIBRARIES}

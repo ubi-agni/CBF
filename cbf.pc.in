@@ -1,0 +1,10 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${prefix}/lib
+includedir=${prefix}/include/@CBF_PATH_PREFIX@
+
+Name: libcbf
+Description: Hierarchical controller framework following the idea of the Control Basis Framework by Grupen et. al.
+Version: @CBF_VERSION@
+Requires: 
+Libs: -L${libdir} -l@CBF_LIBRARY_NAME@
+Cflags: -I${includedir}

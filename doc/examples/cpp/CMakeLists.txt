@@ -22,7 +22,7 @@ add_executable(cbf_simple_test
   )
 
 target_link_libraries(cbf_simple_test
-  cbf
+  ${CBF_LIBRARY_NAME}
   )
 
 SET_TARGET_PROPERTIES(cbf_simple_test 
@@ -38,7 +38,7 @@ if(CBF_HAVE_MEMORY AND CBF_HAVE_XSD)
     )
 
   target_link_libraries(cbf_simple_test_memory
-    cbf ${MEMORY_LDFLAGS}
+    ${CBF_LIBRARY_NAME} ${MEMORY_LDFLAGS}
     )
 
   SET_TARGET_PROPERTIES(cbf_simple_test_memory
@@ -61,7 +61,7 @@ if(CBF_HAVE_KDL)
    )
 
  target_link_libraries(cbf_test_kdl_transforms
-   cbf
+   ${CBF_LIBRARY_NAME}
    )
 
  SET_TARGET_PROPERTIES(cbf_test_kdl_transforms
@@ -76,7 +76,7 @@ if(CBF_HAVE_KDL)
    )
 
  target_link_libraries(cbf_test_axis_potential
-   cbf
+   ${CBF_LIBRARY_NAME}
    )
 
  SET_TARGET_PROPERTIES(cbf_test_axis_potential
@@ -90,7 +90,7 @@ if(CBF_HAVE_KDL)
    )
 
  target_link_libraries(cbf_test_axis_potential2
-   cbf
+   ${CBF_LIBRARY_NAME}
    )
 
  SET_TARGET_PROPERTIES(cbf_test_axis_potential2

@@ -1,21 +1,21 @@
 cmake_minimum_required(VERSION 2.6)
-project(CBF)
+project(cbf)
 
 set(CBF_VERSION_MAJOR 0)
 set(CBF_VERSION_MINOR 1)
 set(CBF_VERSION_PATCH 1)
+set(CBF_VERSION "${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}.${CBF_VERSION_PATCH}")
+set(CBF_VERSIONED_NAME "${PROJECT_NAME}${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}")
+set(CBF_PATH_PREFIX "${CBF_VERSIONED_NAME}")
+set(CBF_LIBRARY_NAME "${CBF_VERSIONED_NAME}")
 
 # module path
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(CheckIncludeFileCXX)
 include(InstallFilesRecursive)
-include(EnableCoverageReport)
-include(EnableSlocCount)
-include(GenerateDoxygen)
-include(GenerateCppcheck)
 include(FindPkgConfig)
-include(SuperPedanticCompilerWarnings)
+include(ParseArguments)
 
 enable_testing()
 include(CTest) 
@@ -177,19 +177,31 @@ configure_file(
   "${PROJECT_BINARY_DIR}/Doxyfile"
   ) 
 
+# --- pkgconfig file ---
+configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${CBF_PATH_PREFIX}.pc @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/${CBF_PATH_PREFIX}.pc DESTINATION lib/pkgconfig)
+
+# --- cmake config file ---
+set(LIB_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
+if(CMAKE_LINK_LIBRARY_SUFFIX)
+    set(LIB_SUFFIX ${CMAKE_LINK_LIBRARY_SUFFIX})
+endif()
+configure_file(CBFConfig.cmake.in ${CMAKE_BINARY_DIR}/CBFConfig.cmake @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/CBFConfig.cmake DESTINATION
+              share/${CBF_PATH_PREFIX})
+configure_file(CBFConfigVersion.cmake.in ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake DESTINATION
+              share/${CBF_PATH_PREFIX})
+
+EXPORT(TARGETS ${LIB_NAME} FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
+INSTALL(EXPORT CBFDepends
+        DESTINATION "share/${CBF_PATH_PREFIX}")
+
 add_subdirectory(schemas)
 add_subdirectory(libcbf)
 add_subdirectory(apps)
 add_subdirectory(tests)
 add_subdirectory(doc)
-
-# --- sloccount ---
-enable_sloccount(FOLDERS apps libcbf tests)
-
-# --- cppcheck ---
-generate_cppcheck(SOURCES apps libcbf tests
-    "${CMAKE_CURRENT_BINARY_DIR}/apps" "${CMAKE_CURRENT_BINARY_DIR}/libcbf" "${CMAKE_CURRENT_BINARY_DIR}/tests"
-    ENABLE_IDS style)
 
 # --- package ---
 set(CPACK_PACKAGE_VERSION_MAJOR ${CBF_VERSION_MAJOR})

@@ -24,7 +24,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
     cbf_run_controller_from_xml.cc
     )
   target_link_libraries(cbf_run_controller
-    cbf
+    ${CBF_LIBRARY_NAME}
     ${Boost_LIBRARIES}
     )
   set_target_properties(cbf_run_controller
@@ -53,7 +53,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY)
     xcf_memory_run_controller.cc
     )
   target_link_libraries(cbf_xcf_memory_run_controller
-    cbf
+    ${CBF_LIBRARY_NAME}
     ${Boost_LIBRARIES}
     ${MEMORY_LDFLAGS}
     )
