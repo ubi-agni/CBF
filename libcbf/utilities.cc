@@ -608,6 +608,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 		*XMLFactory<FloatMatrix>::m_Instance = 0;
 
 
+#ifdef CBF_HAVE_KDL
 
 	static XMLCreator<
 		KDL::Tree, 
@@ -641,6 +642,7 @@ boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, Ob
 
 	static XMLDerivedFactory<ForeignObject<KDL::Segment>, CBFSchema::TreeSegment> x14323;
 
+#endif
 #endif
 
 
