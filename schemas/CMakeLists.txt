@@ -27,11 +27,14 @@ if(CBF_HAVE_XSD)
   SET_TARGET_PROPERTIES(cbf_schemas PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
 
   install(TARGETS cbf_schemas
+     EXPORT cbf_schemas
 	 RUNTIME DESTINATION bin
 	 LIBRARY DESTINATION lib
 	 ARCHIVE DESTINATION lib/static
 	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
 	 )
+    install(EXPORT cbf_schemas
+        DESTINATION "share/${CBF_PATH_PREFIX}")
 else()
   message(STATUS "  schemas.hxx and schemas.cxx will not be created, because XSD was not found")
 endif()

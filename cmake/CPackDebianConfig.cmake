@@ -16,11 +16,13 @@ set(CPACK_STRIP_FILES "TRUE")
 
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "orocos-kdl")
+set(CPACK_DEBIAN_PACKAGE_SUGGESTS "xsdcxx, libeigen2-dev")
 
 set(CPACK_DEBIAN_PACKAGE_NAME "${PACKAGE_NAME}${VERSION_SUFFIX}-dev")
 set(CPACK_DEBIAN_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION})
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Arne Nordmann <anordman@cor-lab.uni-bielefeld.de>")
-set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Control Basis Framework.
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "Control Basis Framework
+
  Hierarchical controller framework following the idea of the Control Basis Framework by Grupen et. al.")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 set(CPACK_DEBIAN_PACKAGE_SECTION "devel")

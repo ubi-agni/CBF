@@ -11,6 +11,7 @@ set(CBF_LIBRARY_NAME "${CBF_VERSIONED_NAME}")
 
 # module path
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "share/${CBF_PATH_PREFIX}")
 
 include(CheckIncludeFileCXX)
 include(InstallFilesRecursive)
@@ -194,7 +195,7 @@ install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake DESTINATION
               share/${CBF_PATH_PREFIX})
 
 EXPORT(TARGETS ${LIB_NAME} FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
-INSTALL(EXPORT CBFDepends
+INSTALL(EXPORT CBFDepends DEPENDS cbf_schemas
         DESTINATION "share/${CBF_PATH_PREFIX}")
 
 add_subdirectory(schemas)
