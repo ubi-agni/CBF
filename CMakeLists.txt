@@ -195,7 +195,7 @@ install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake DESTINATION
               share/${CBF_PATH_PREFIX})
 
 EXPORT(TARGETS ${LIB_NAME} FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
-INSTALL(EXPORT CBFDepends DEPENDS cbf_schemas
+INSTALL(EXPORT CBFDepends
         DESTINATION "share/${CBF_PATH_PREFIX}")
 
 add_subdirectory(schemas)
