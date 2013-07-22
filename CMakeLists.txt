@@ -139,7 +139,7 @@ message(STATUS "Looking for xmlstarlet")
 find_program(XMLSTARLET_BIN NAMES xmlstarlet)
 
 message(STATUS "Looking for XSD CXX")
-find_program(XSD_BIN NAMES xsd xsdcxx)
+find_program(XSD_BIN NAMES xsdcxx xsd)
 find_path(XSD_INC xsd/cxx/config.hxx)
 if (NOT "${XSD_BIN}" STREQUAL "XSD_BIN-NOTFOUND" AND NOT "${XSD_INC}" STREQUAL "XSD_INC-NOTFOUND" )
   message(STATUS "  found XSD CXX: ${XSD_BIN} ${XSD_INC}")
