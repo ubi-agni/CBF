@@ -267,10 +267,10 @@ install(TARGETS ${CBF_LIBRARY_NAME}
 
 install(
   FILES ${CBF_HEADERS} 
-  DESTINATION include/${CBF_PATH_PREFIX}
+  DESTINATION include/${CBF_PATH_PREFIX}/cbf
   )
 
 install(
   DIRECTORY ${PROJECT_BINARY_DIR}/libcbf/cbf 
-  DESTINATION include/${CBF_PATH_PREFIX}
+  DESTINATION include/${CBF_PATH_PREFIX}/cbf
   )
