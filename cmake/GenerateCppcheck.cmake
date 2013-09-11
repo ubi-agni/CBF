@@ -6,8 +6,7 @@
 #                   [SUPPRESSION_FILE <file>]
 #                   [ENABLE_IDS <id...>]
 #                   [TARGET_NAME <name>]
-#                   [INCLUDES <dir...>]
-#                   [INLINE_SUPPRESSION])
+#                   [INCLUDES <dir...>])
 #
 # Generates a target "cppcheck" that executes cppcheck on the specified sources.
 # Sources may either be file names or directories containing files where all
@@ -25,7 +24,6 @@
 # CMake project, as otherwise the target names collide.
 # Additional include directories for the cppcheck program can be given with
 # INCLUDES.
-# If INLINE_SUPPRESSION is set, cppcheck inline-suppression comments are parsed.
 #
 # cppcheck will be executed with CMAKE_CURRENT_SOURCE_DIR as working directory.
 #
@@ -34,23 +32,17 @@
 #
 # Copyright (C) 2011 by Johannes Wienke <jwienke at techfak dot uni-bielefeld dot de>
 #
-# This file may be licensed under the terms of the
-# GNU Lesser General Public License Version 3 (the ``LGPL''),
-# or (at your option) any later version.
+# This program is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General
+# Public License as published by the Free Software Foundation;
+# either version 2, or (at your option)
+# any later version.
 #
-# Software distributed under the License is distributed
-# on an ``AS IS'' basis, WITHOUT WARRANTY OF ANY KIND, either
-# express or implied. See the LGPL for the specific language
-# governing rights and limitations.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# You should have received a copy of the LGPL along with this
-# program. If not, go to http://www.gnu.org/licenses/lgpl.html
-# or write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-#
-# The development of this software was supported by:
-#   CoR-Lab, Research Institute for Cognition and Robotics
-#     Bielefeld University
 
 GET_FILENAME_COMPONENT(GENERATE_CPPCHECK_MODULE_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
 
@@ -60,7 +52,7 @@ FUNCTION(GENERATE_CPPCHECK)
 
     IF(CPPCHECK_FOUND)
     
-        PARSE_ARGUMENTS(ARG "SOURCES;SUPPRESSION_FILE;ENABLE_IDS;TARGET_NAME;INCLUDES" "INLINE_SUPPRESSION" ${ARGN})
+        PARSE_ARGUMENTS(ARG "SOURCES;SUPPRESSION_FILE;ENABLE_IDS;TARGET_NAME;INCLUDES" "" ${ARGN})
         
         SET(TARGET_NAME "cppcheck")
         SET(TARGET_NAME_SUFFIX "")
@@ -94,12 +86,6 @@ FUNCTION(GENERATE_CPPCHECK)
             SET(SUPPRESSION_FILE "\"${ABS}\"")
         ENDIF()
         
-        # inline suppressions
-        SET(INLINE_ARG)
-        IF(ARG_INLINE_SUPPRESSION)
-            SET(INLINE_ARG "--inline-suppr")
-        ENDIF()
-        
         # includes
         SET(INCLUDE_ARGUMENTS "")
         FOREACH(INCLUDE ${ARG_INCLUDES})
@@ -122,7 +108,7 @@ FUNCTION(GENERATE_CPPCHECK)
         
         FILE(WRITE ${CPPCHECK_WRAPPER_SCRIPT}
 "
-EXECUTE_PROCESS(COMMAND \"${CPPCHECK_EXECUTABLE}\" ${INCLUDE_ARGUMENTS} ${SUPPRESSION_ARGUMENT} ${SUPPRESSION_FILE} ${INLINE_ARG} ${IDS_ARGUMENT} --xml ${SOURCE_ARGS}
+EXECUTE_PROCESS(COMMAND \"${CPPCHECK_EXECUTABLE}\" ${INCLUDE_ARGUMENTS} ${SUPPRESSION_ARGUMENT} ${SUPPRESSION_FILE} ${IDS_ARGUMENT} --inline-suppr --xml ${SOURCE_ARGS}
                 RESULT_VARIABLE CPPCHECK_EXIT_CODE
                 ERROR_VARIABLE ERROR_OUT
                 WORKING_DIRECTORY \"${CMAKE_CURRENT_SOURCE_DIR}\")

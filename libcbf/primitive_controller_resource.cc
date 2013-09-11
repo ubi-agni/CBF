@@ -21,7 +21,7 @@
 #include <cbf/primitive_controller_resource.h>
 
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factories.h>
+#include <cbf/plugin_impl_macros.h>
 
 
 namespace CBF {
@@ -35,8 +35,6 @@ namespace CBF {
 		}	
 	#endif
 	
-	static XMLDerivedFactory<PrimitiveControllerResource, CBFSchema::PrimitiveControllerResource, Resource, CBFSchema::Resource> x;
-
-
+	CBF_PLUGIN_CLASS(PrimitiveControllerResource, Resource)
 } // namespace
 

@@ -33,9 +33,7 @@ transforms to control position and orientation simultaneously.
   </Potential>
  </Potential>
 
- <EffectorTransform xsi:type="DampedGenericEffectorTransformType">
-  <DampingConstant> 0.1 </DampingConstant>
- </EffectorTransform>
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
 
  <SensorTransform xsi:type="CompositeSensorTransformType">
 

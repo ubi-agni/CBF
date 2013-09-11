@@ -25,28 +25,19 @@
 
 #include <cbf/reference.h>
 #include <cbf/types.h>
-#include <cbf/exceptions.h>
-#include <cbf/namespace.h>
+#include <cbf/plugin_decl_macros.h>
 
 #include <boost/numeric/ublas/vector.hpp>
 
-#include <stdexcept>
-
-namespace CBFSchema { class DummyReference; }
+CBF_PLUGIN_PREAMBLE(DummyReference)
 
 namespace CBF {
 
 	struct DummyReference : public Reference {
-		DummyReference(const CBFSchema::DummyReference &xml_instance, ObjectNamespacePtr object_namespace);
+		CBF_PLUGIN_DECL_METHODS(DummyReference)
 
 		DummyReference(unsigned int num_references = 1, unsigned int dim = 1)
 		{
-			if (num_references < 1)
-				CBF_THROW_RUNTIME_ERROR("num_references < 1");
-
-			if (dim < 1)
-				CBF_THROW_RUNTIME_ERROR("dim < 1");
-
 			m_References = std::vector<FloatVector>(num_references, FloatVector(dim));
 			for (unsigned int i = 0; i < num_references; ++i)
 				for (unsigned int j = 0; j < dim; ++j)
@@ -55,35 +46,19 @@ namespace CBF {
 
 		virtual void update() { }
 	
-		virtual void set_references(const std::vector<FloatVector> &refs) {
-			if (refs.empty())
-				CBF_THROW_RUNTIME_ERROR("num_references < 1");
-
-			if (refs[0].size() != m_References[0].size())
-				CBF_THROW_RUNTIME_ERROR("dim < 1");
-
+		virtual void set_references(std::vector<FloatVector> &refs) {
 			m_References = refs;
-			for (unsigned int i = 0; i < refs.size(); ++i)
-				CBF_DEBUG("new reference[" << i << "]: " << refs[i]);
 		}
 
 		/**
 			Convenience function if there's only a single reference
 		*/
-		virtual void set_reference(const FloatVector &ref) {
-			if (ref.size() != m_References[0].size())
-				CBF_THROW_RUNTIME_ERROR("ref dim mismatch");
-
+		virtual void set_reference(FloatVector &ref) {
 			m_References[0] = ref;
-			CBF_DEBUG("new reference[0]: " << ref);
 		}
 
 		virtual std::vector<FloatVector> &references() {
 			return m_References;
-		}
-
-		virtual unsigned int dim() {
-			return m_References[0].size();
 		}
 
 		protected:

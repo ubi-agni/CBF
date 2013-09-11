@@ -21,13 +21,10 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/controller.h>
-#include <cbf/xml_factory.h>
+
+#include <stdexcept>
+#include <string>
 
 namespace CBF {
-#ifdef CBF_HAVE_XSD
-		Controller::Controller(const CBFSchema::Controller &xml_instance, ObjectNamespacePtr object_namespace) :
-			Object(xml_instance, object_namespace) {
-
-		}
-#endif
+	
 } // namespace

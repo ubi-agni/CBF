@@ -23,9 +23,8 @@
 #ifndef CBF_COMBINATION_STRATEGY_HH
 #define CBF_COMBINATION_STRATEGY_HH
 
+#include <cbf/plugin_decl_macros.h>
 #include <cbf/types.h>
-#include <cbf/object.h>
-#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -33,27 +32,23 @@
 #include <vector>
 #include <string>
 
-namespace CBFSchema { 
-	class CombinationStrategy;
-	class AddingStrategy; 
-}
+CBF_PLUGIN_PREAMBLE(AddingStrategy)
 
 namespace CBF {
 
+namespace ublas = boost::numeric::ublas;
 
+class CombinationStrategy;
 
 
 /**
 	@brief This class is responsible for combining different variable changes
 	before they get projected into the nullspace of a controller..
 */
-struct CombinationStrategy : public Object {
-	CombinationStrategy() : Object("CombinationStrategy") { }
+struct CombinationStrategy {
 	virtual ~CombinationStrategy() {
 
 	}
-
-	CombinationStrategy(const CBFSchema::CombinationStrategy &xml_instance, ObjectNamespacePtr object_namespace);
 
 	virtual void exec(
 		FloatVector &result, 
@@ -61,7 +56,8 @@ struct CombinationStrategy : public Object {
 	) = 0;
 };
 
-typedef boost::shared_ptr<CombinationStrategy> CombinationStrategyPtr;
+class AddingStrategy;
+typedef boost::shared_ptr<AddingStrategy> AddingStrategyPtr;
 
 
 /**
@@ -69,12 +65,12 @@ typedef boost::shared_ptr<CombinationStrategy> CombinationStrategyPtr;
 	result vector beforehand yourself if needed..
 */
 struct AddingStrategy : public CombinationStrategy {
-	AddingStrategy (
-		const ::CBFSchema::AddingStrategy &xml_instance,
-		ObjectNamespacePtr object_namespace
-	);
+	CBF_PLUGIN_DECL_METHODS(AddingStrategy)
 
-	AddingStrategy() { }
+	AddingStrategy()
+	{
+
+	}
 
 	virtual void exec(
 		FloatVector &result, 
@@ -85,7 +81,12 @@ struct AddingStrategy : public CombinationStrategy {
 	}
 };
 
-typedef boost::shared_ptr<AddingStrategy> AddingStrategyPtr;
+struct WinnerTakesAllStrategy {
+	// CBF_PLUGIN_CONSTRUCTOR(WinnerTakesAllStrategy)
+
+};
+
+typedef boost::shared_ptr<CombinationStrategy> CombinationStrategyPtr;
 
 } // namespace
 

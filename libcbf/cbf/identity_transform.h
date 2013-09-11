@@ -21,75 +21,74 @@
 #ifndef CBF_IDENTITY_TRANSFORM_HH
 #define CBF_IDENTITY_TRANSFORM_HH
 
-#include <cbf/config.h>
-
+#include <cbf/plugin_decl_macros.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
-#include <cbf/functional.h>
-#include <cbf/namespace.h>
 
-namespace CBFSchema {
-	class IdentityEffectorTransform;
-	class IdentitySensorTransform;
-}
+CBF_PLUGIN_PREAMBLE(IdentityEffectorTransform)
+CBF_PLUGIN_PREAMBLE(IdentitySensorTransform)
 
 namespace CBF {
 	/**
 		@brief Trivial transform that passes the input through unchanged
 	*/
 	struct IdentityEffectorTransform : public EffectorTransform {
-		IdentityEffectorTransform(const CBFSchema::IdentityEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
+		CBF_PLUGIN_DECL_METHODS(IdentityEffectorTransform)
 
-		IdentityEffectorTransform(unsigned int dim = 1)
-		{
-			init(dim);
-		}
-
-		void init(unsigned int dim) {
-			m_InverseTaskJacobian = FloatMatrix::Identity(dim, dim);
-		}
-
-		/**
-			@brief This does nothing.
-		*/
-		virtual void update(
-			const FloatVector &resource_value, 
-			const FloatMatrix &task_jacobian) 
-		{ }	
+		unsigned int m_Dim;
 	
-		virtual void exec(const CBF::FloatVector& in, CBF::FloatVector& result)
+		IdentityEffectorTransform(unsigned int dim = 1) :
+			m_Dim(dim)
 		{
-			result = in;
+			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim);
+		}
+
+		virtual void update() {
+			
+		}	
+	
+		virtual unsigned get_resource_dim() const {
+			return m_Dim;
+		}
+	
+		virtual unsigned int get_task_dim() const {
+			return m_Dim;
 		}
 	};
-
-	typedef boost::shared_ptr<IdentityEffectorTransform> IdentityEffectorTransformPtr;
-
 	
 	/**
 		@brief Trivial transform that passes the input through unchanged
 	*/
 	struct IdentitySensorTransform : public SensorTransform {
-		IdentitySensorTransform(const CBFSchema::IdentitySensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
+		CBF_PLUGIN_DECL_METHODS(IdentitySensorTransform)
 	
-		IdentitySensorTransform(unsigned int dim = 1)
+		unsigned int m_Dim;
+	
+		IdentitySensorTransform(unsigned int dim = 1) :
+			m_Dim(dim)
 		{
-			init(dim);
 			// Setup the (constant) jacobian which is just the identity matrix.. [TODO: erm, check this]
+			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(dim,dim);
 		}
 
-		virtual void update(const FloatVector &resource_value) {
+		virtual void update() {
 			//! nothing to do as the jacobian is constant and computed during construction time
-			m_Result = resource_value;
+			m_Result = m_Resource->get();
 		}
 	
-		virtual void init(unsigned int dim) {
-			m_TaskJacobian = FloatMatrix::Identity(dim, dim);
+		virtual unsigned int resource_dim() const {
+			return m_Dim;
+		}
+	
+		virtual unsigned int task_dim() const {
+			return m_Dim;
 		}
 	};
 
-	typedef boost::shared_ptr<IdentitySensorTransform> IdentitySensorTransformPtr;
 
+	typedef boost::shared_ptr<IdentityEffectorTransform> IdentityEffectorTransformPtr;
+	
+	typedef boost::shared_ptr<IdentitySensorTransform> IdentitySensorTransformPtr;
 } // namespace
 
 #endif

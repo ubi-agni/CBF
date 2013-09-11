@@ -23,9 +23,11 @@
 
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
+
+#include <cbf/plugin_decl_macros.h>
 #include <cbf/utilities.h>
 
-namespace CBFSchema { class LinearSensorTransform; }
+CBF_PLUGIN_PREAMBLE(LinearSensorTransform)
 
 namespace CBF {
 
@@ -36,34 +38,41 @@ typedef boost::shared_ptr<LinearSensorTransform> LinearSensorTransformPtr;
 	@brief A linear sensor transform
 */
 struct LinearSensorTransform : public SensorTransform {
-	LinearSensorTransform (const CBFSchema::LinearSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
+	CBF_PLUGIN_DECL_METHODS(LinearSensorTransform)
 
-	void update(const FloatVector &resource_value) {
-		m_Result = m_CoefficientMatrix * resource_value;
+	FloatMatrix m_Matrix;
+
+	void update() {
+		m_Result = ublas::prod(m_Matrix, m_Resource->get());
 	}
 
-	LinearSensorTransform(const FloatMatrix &coefficient_matrix) 
+	LinearSensorTransform() :
+		m_Matrix(ublas::identity_matrix<Float>(1))
 	{
-		init(coefficient_matrix);
+
 	}
 
-	void init (const FloatMatrix &coefficient_matrix) {
-		m_CoefficientMatrix = coefficient_matrix;
-		m_TaskJacobian = FloatMatrix::Identity(
-			coefficient_matrix.rows(),
-			coefficient_matrix.cols()
-		);
-	}
-
-	LinearSensorTransform(FloatMatrix &m) 
+	LinearSensorTransform(FloatMatrix &m) :
+		m_Matrix(m)
 	{
-		m_TaskJacobian = m ;
+
 	}
 
-	/** 
-		A linear map is described by a matrix of coefficients
+	/**
+		Needs to be implemented in subclass to allow dimensionality checking when
+		this is bound to a resource.
 	*/
-	FloatMatrix m_CoefficientMatrix;
+	virtual unsigned int resource_dim() const {
+		return m_Matrix.size2();
+	}
+
+	/**
+		Needs to be implemented in subclass to allow dimensionality checking when
+		this is bound to a resource.
+	*/
+	virtual unsigned int task_dim() const {
+		return m_Matrix.size1();
+	}
 };
 
 

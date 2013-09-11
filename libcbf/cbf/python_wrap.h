@@ -24,11 +24,10 @@
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 #include <cbf/potential.h>
+#include <cbf/plugin_decl_macros.h>
 
-namespace CBFSchema {
-	class PythonPotential;
-	class PythonSensorTransform;
-}
+CBF_PLUGIN_PREAMBLE(PythonPotential)
+CBF_PLUGIN_PREAMBLE(PythonSensorTransform)
 
 namespace CBF {
 	
@@ -82,7 +81,7 @@ namespace CBF {
 		additional characters on the two comment lines.
 	*/
 	struct PythonPotential : public Potential {
-		PythonPotential(const CBFSchema::PythonPotential &xml_instance);
+		CBF_PLUGIN_DECL_METHODS(PythonPotential)
 
 		protected:
 			const PythonInterpreter &m_Interpreter;
@@ -104,7 +103,7 @@ namespace CBF {
 				const FloatVector &input
 			);
 		
-			virtual unsigned int dim() const;
+			virtual unsigned int task_dim() const;
 	
 			std::string m_InitScript;
 	

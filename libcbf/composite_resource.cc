@@ -19,37 +19,4 @@
 */
 
 #include <cbf/composite_resource.h>
-#include <cbf/xml_object_factory.h>
-
-namespace CBF {
-
-#ifdef CBF_HAVE_XSD
-	CompositeResource::CompositeResource(const CBFSchema::CompositeResource &xml_instance, ObjectNamespacePtr object_namespace) :
-		Resource(xml_instance, object_namespace)
-	 {
-			std::vector<ResourcePtr> resources;
-		
-			//! Instantiate the subordinate resources
-			CBFSchema::CompositeResource::Resource1_const_iterator it;
-			for (
-				it = xml_instance.Resource1().begin(); 
-				it != xml_instance.Resource1().end();
-				++it
-			)
-			{
-				ResourcePtr tr(XMLObjectFactory::instance()->create<Resource>(*it, object_namespace));
-				resources.push_back(tr);
-				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
-			}
-		
-			set_resources(resources);
-			CBF_DEBUG("dim: " << dim());
-	}
-	static XMLDerivedFactory<CompositeResource, CBFSchema::CompositeResource> x;
-
-#endif
-
-} // namespace
-
-
 

@@ -21,16 +21,7 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/resource.h>
-#include <cbf/xml_factory.h>
 
 namespace CBF {
-
-#ifdef CBF_HAVE_XSD
-		Resource::Resource(const CBFSchema::Resource &xml_instance, ObjectNamespacePtr object_namespace) :
-			Object(xml_instance, object_namespace) {
-
-		}
-
-#endif
 
 } // namespace

@@ -24,26 +24,35 @@
 #include <cbf/resource.h>
 #include <cbf/types.h>
 #include <cbf/sensor_transform.h>
-#include <cbf/object.h>
 
 #include <boost/shared_ptr.hpp>
-
-namespace CBFSchema {
-	class EffectorTransform;
-}
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 
 namespace CBF {
+	namespace ublas = boost::numeric::ublas;
 	
 	class EffectorTransform;
 	typedef boost::shared_ptr<EffectorTransform> EffectorTransformPtr;
 	
 	
 	/**
-		@brief The EffectorTransform takes a gradient step in task space
-		and maps it to the resource's configuration space.
+		@brief The effector transform takes a gradient step in task space
+		and maps it to the resource's configuration space by way of local
+		pseudoinverse control..
 	*/
-	struct EffectorTransform : public Object {
-		EffectorTransform() : Object("EffectorTransform") { }
+	struct EffectorTransform {
+		FloatVector m_ResourceValue;
+	
+		/**
+			Sensor and Effector transforms always come in pairs. So before doing anything with
+			this effector transform, be sure to set this member.
+		*/
+		SensorTransformPtr m_SensorTransform;
+	
+		EffectorTransform() {
+	
+		}
 
 		/**
 			A virtual destructor to make destruction of objects of derived types possible
@@ -52,12 +61,12 @@ namespace CBF {
 		virtual ~EffectorTransform() {
 	
 		}
-
-		EffectorTransform(const CBFSchema::EffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
-
-		/**
-			@brief This function is called by a controller in each control cycle
 	
+		virtual void set_sensor_transform(SensorTransformPtr sensor_transform) {
+			m_SensorTransform = sensor_transform;
+		}
+	
+		/**
 			This method must be called before exec. Ideally right after the resource has 
 			changed and the SensorTransfor has been read(). This method is meant for 
 			EffectorTransforms to be able to do one-shot expensive computations whose 
@@ -65,10 +74,7 @@ namespace CBF {
 			the inverse task jacobian given that it depends on the current resource
 			value / the current task jacobian (in the common case that it is not constant).
 		*/
-		virtual void update(
-			const FloatVector &resource_value, 
-			const FloatMatrix &task_jacobian
-		) = 0;
+		virtual void update() = 0;
 
 	
 		/**
@@ -78,9 +84,6 @@ namespace CBF {
 			This method must map the input gradient step onto a step in resource space.
 			This step is then added lateron to the current resource values by the
 			controller.
-
-			Call this only after calling update() to make sure the EffectorTransform
-			is in a valid state..
 		*/
 		virtual void exec(
 			const FloatVector &input,
@@ -89,26 +92,43 @@ namespace CBF {
 	
 		/**
 			A way to get to the current task jacobian. This is needed by the
-			controller to construct the nullspace projector (but for nothing 
-			else. Implementations are thus free to do anything they want to 
-			calculate the resource step update in exec())
+			controller to construct the nullspace projector.
 	
-			May only be called after a call to update() to update the internal
+			May only be called after a call to exec() to update the internal
 			matrices.
 		*/
-		virtual const FloatMatrix &inverse_task_jacobian() const { 
-			return m_InverseTaskJacobian; 
+		virtual const FloatMatrix &inverse_task_jacobian() const { return m_InverseTaskJacobian; }
+	
+	
+	
+		/**
+			Needs to be implemented in subclass to allow dimensionality checking when
+			this is bound to a resource.
+		*/
+		virtual unsigned resource_dim() const = 0;
+	
+		ResourcePtr resource() {
+			return m_Resource;
 		}
 	
-		virtual unsigned int task_dim() const { 
-			return m_InverseTaskJacobian.cols();
+		virtual void set_resource(ResourcePtr r) {
+			if (r->dim() != resource_dim()) throw std::runtime_error("[EffectorTransform]: Dimension mismatch!");
+	
+			m_Resource = r;
 		}
-
-		virtual unsigned int resource_dim() const {
-			return m_InverseTaskJacobian.rows();
-		}
-
+	
+		/**
+			Needs to be implemented in subclass to allow dimensionality checking when
+			this is bound to a resource.
+		*/
+		virtual unsigned int task_dim() const = 0;
+	
 		protected:
+			/** 
+				An effector transform is bound to a resource
+			*/
+			ResourcePtr m_Resource;
+
 			/**
 				This should be calculated in the update() function. the inverse_task_jacobian() function
 				should then return a reference to this to avoid unnessecary recomputations.

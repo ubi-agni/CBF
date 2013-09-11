@@ -22,31 +22,24 @@
 #define CONTROL_BASIS_SENSOR_TRANSFORM_HH
 
 #include <cbf/config.h>
+
 #include <cbf/types.h>
 #include <cbf/resource.h>
-#include <cbf/object.h>
-#include <cbf/debug_macros.h>
-#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 
 #include <vector>
 #include <string>
 #include <stdexcept>
-#include <functional>
-#include <map>
-#include <string>
 
-namespace CBFSchema { 
-	class SensorTransform; 
-	class ConstantSensorTransform;
-	class BlockWiseMultiplySensorTransform;
-}
+class SensorTransformType;
 
 namespace CBF {
 	
-
-
+	namespace ublas = boost::numeric::ublas;
+	
 	/**
 		@brief A SensorTransform maps resource values into the task space. 
 
@@ -60,49 +53,20 @@ namespace CBF {
 		Note that for the functionality that allows creation of controllers
 		from XML files requires that all subclasses have a default 
 		constructor (i.e. one without arguments)..
-
-		NOTE: Subclasses must make sure that the m_TaskJacobian is
-		set to the right source during initialization (in all possible
-		constructors) because the default implementations of
-		task_dim() and resource_dim() use the task jacobian sizes
-		to determine the respective dimensionalities.. I.e. The 
-		task jacobian has to has task_dim rows and resource_dim
-		columns.
 	*/
-	struct SensorTransform : public Object {
-		SensorTransform()	:
-			Object("SensorTransform"),
-			m_DefaultComponentName("A task space variable")
-		{
+	struct SensorTransform {
+		SensorTransform()	{
 	
 		}
 
-		SensorTransform(const CBFSchema::SensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
+		SensorTransform(const SensorTransformType &xml_instance);	
 
 		/**
 			@brief A virtual desctructor to allow the clean destruction 
 			of subclass objects through a base class pointer..
 		*/
-		virtual ~SensorTransform() { }
-
-		/**
-			@brief The task space dimensionality 
-
-			The default implementation returns the number of 
-			rows in the task jacobian
-		*/
-		virtual unsigned int task_dim() const {
-			return m_TaskJacobian.rows();
-		}
-
-		/**
-			@brief The resource space dimensionality 
-
-			The default implementation returns the number of 
-			columns in the task jacobian
-		*/
-		virtual unsigned int resource_dim() const {
-			return m_TaskJacobian.cols();
+		virtual ~SensorTransform() {
+	
 		}
 	
 		/**
@@ -115,7 +79,7 @@ namespace CBF {
 			different methods, e.g. the jacobian given that it depends 
 			on the current resource value.
 		*/
-		virtual void update(const FloatVector &resource_value) = 0;
+		virtual void update() = 0;
 	
 		/**
 			@brief Return a reference to the result calculated in the 
@@ -123,6 +87,34 @@ namespace CBF {
 		*/
 		virtual const FloatVector &result() const { return m_Result; }
 
+		/**
+			@brief Needs to be implemented in subclass to allow 
+			dimensionality checking when this is bound to a resource.
+		*/
+		virtual unsigned int resource_dim() const = 0;
+	
+		/**
+			@brief Needs to be implemented in subclass to allow 
+			dimensionality checking when bound to a resource.
+		*/
+		virtual unsigned int task_dim() const = 0;
+	
+		const ResourcePtr resource() const {
+			return m_Resource;
+		}
+
+		/**
+			@brief Bind this sensor transform to a resource
+
+			Subclasses might have to override this. See e.g. 
+			CompositeSensorTransform for an example that does this.
+		*/
+		virtual void set_resource(ResourcePtr r) {
+			if (r->dim() != resource_dim()) {
+				throw std::runtime_error("[SensorTransform]: Dimension mismatch");
+			}
+			m_Resource = r;
+		}
 	
 		/**
 			@brief returns the current task jacobian
@@ -149,6 +141,17 @@ namespace CBF {
 
 		protected:
 			/**
+				@brief This value should be checked against by update(). 
+				to avoid calling update more often than nessecary.
+			*/
+			int m_Cycle;
+
+			/**
+				A sensor transformation is bound to a resource..
+			*/
+			ResourcePtr m_Resource;
+
+			/**
 				This variable is used to cache the resourcevalue..
 			*/
 			FloatVector m_ResourceValue;
@@ -172,91 +175,8 @@ namespace CBF {
 
 			std::string m_DefaultComponentName;
 	};
-
-	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;
-
-
-	struct ConstantSensorTransform : public SensorTransform {
-		ConstantSensorTransform(const FloatVector &value) {
-			init(value);
-		}
-
-		ConstantSensorTransform(const CBFSchema::ConstantSensorTransform& xml_instance, ObjectNamespacePtr object_namespace);
-
-		void init(const FloatVector &value) {
-			m_Result = value;
-			m_TaskJacobian = FloatMatrix::Zero(m_Result.size(), m_Result.size());
-		}
-
-		virtual void update(const FloatVector &resource_value) {
-
-		}
-	};
-
-
-	/**
-		@brief A SensorTransform to multiply different blocks with different constants
-	*/
-	struct BlockWiseMultiplySensorTransform : public SensorTransform {
-		
-		BlockWiseMultiplySensorTransform(
-			SensorTransformPtr operand,
-			const unsigned int blocksize, 
-			const FloatVector &factors) {
-
-		}
-
-		BlockWiseMultiplySensorTransform(const CBFSchema::BlockWiseMultiplySensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
-
-		void init(
-			SensorTransformPtr operand,
-			unsigned int blocksize,
-			const FloatVector &factors
-		) {
-			m_Operand = operand;
-			m_Blocksize = blocksize;
-			m_Factors = factors;
-
-			m_Result = FloatVector(m_Operand->task_dim());
-			m_TaskJacobian = FloatMatrix((int) m_Operand->task_dim(), (int) m_Operand->resource_dim());
-		}
-
-		virtual void update(const FloatVector &resource_value) {
-			m_Operand->update(resource_value);
-			m_Result = m_Operand->result();
-			m_TaskJacobian = m_Operand->task_jacobian();
-
-			CBF_DEBUG(m_Result.size());
-
-			for (
-				unsigned int current_row = 0, max_row = task_dim(); 
-				current_row < max_row; 
-				++current_row
-			) {
-				CBF_DEBUG((unsigned int)(current_row / m_Blocksize));
-
-				m_Result[current_row] *= m_Factors[(unsigned int)(current_row / m_Blocksize)];
-
-				for (unsigned int i = 0, imax = resource_dim(); i < imax; ++i) {
-					m_TaskJacobian(current_row, i) *= m_Factors[(unsigned int)(current_row / m_Blocksize)];
-				}
-			}
-		}
-
-		virtual unsigned int task_dim() const { 
-			return m_Operand->task_dim();
-		}
-
-		virtual unsigned int resource_dim() const {
-			return m_Operand->resource_dim();
-		}
 	
-		protected:
-			SensorTransformPtr m_Operand;
-			unsigned int m_Blocksize;
-			FloatVector m_Factors;
-	};
-
+	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;
 } // namespace
 
 #endif

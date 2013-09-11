@@ -23,16 +23,17 @@
 #ifndef CBF_COMPOSITE_TRANSFORM_HH
 #define CBF_COMPOSITE_TRANSFORM_HH
 
+#include <cbf/plugin_decl_macros.h>
 #include <cbf/sensor_transform.h>
-#include <cbf/namespace.h>
 
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
 
-namespace CBFSchema { class CompositeSensorTransform; }
+CBF_PLUGIN_PREAMBLE(CompositeSensorTransform)
 
 namespace CBF {
 	
+	namespace ublas = boost::numeric::ublas;
 	
 	/**
 		@brief This sensor transform allows to compose different sensor transforms into a single
@@ -49,20 +50,18 @@ namespace CBF {
 		positive non zero number of transforms...
 	*/
 	struct CompositeSensorTransform : public SensorTransform {
+		CBF_PLUGIN_DECL_METHODS(CompositeSensorTransform)
 
 		protected:
 			std::vector<SensorTransformPtr> m_SensorTransforms;
+
 	
 		public:
-			CompositeSensorTransform(std::vector<SensorTransformPtr> transforms = std::vector<SensorTransformPtr>()) 
-			{
+			CompositeSensorTransform(std::vector<SensorTransformPtr> transforms = std::vector<SensorTransformPtr>()) {
 				set_transforms(transforms);
 			}
 
-			CompositeSensorTransform(const CBFSchema::CompositeSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
-
-			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2)
-			{
+			CompositeSensorTransform(SensorTransformPtr t1, SensorTransformPtr t2) {
 				std::vector<SensorTransformPtr> v;
 				v.push_back(t1);
 				v.push_back(t2);
@@ -71,25 +70,20 @@ namespace CBF {
 
 			virtual void set_transforms(std::vector<SensorTransformPtr> transforms);
 		
-			virtual void update(const FloatVector &resource_value);
+			virtual unsigned resource_dim() const;
+
+			virtual unsigned int task_dim() const;
+
+			virtual void update();
 	
-			virtual const std::vector<SensorTransformPtr> &sensor_transforms() const {
+			virtual void set_resource(ResourcePtr resource);
+
+			virtual std::vector<SensorTransformPtr> &transforms() {
 				return m_SensorTransforms;
 			}
 	};
 	
 	typedef boost::shared_ptr<CompositeSensorTransform> CompositeSensorTransformPtr;
-
-	/**
-		This Sensor Transform allows to view a SensorTransform with a large
-		task space as a CompositeSensorTransform allowing to apply a
-		UnarySensorTransformOperation to each block..
-	*/
-	struct AsCompositeSensorTransform : public SensorTransform {
-		//! The transform we are wrapping
-		SensorTransformPtr m_Transform;
-
-	};
 	
 } // Namespace
 

@@ -44,14 +44,14 @@ void cbf_init();
 
 /**
 	This function creates a controller from a file representing an XML infoset. The parameter
-	c needs to be pointing to a preallocated struct cbf_primitive_controller.
+	c needs to be pointing to a preallocated struct primitive_controller.
 
 	Return 0 on failure. Else the memory pointed to by c is filled with appropriate data 
 	and returned.
 */
-struct cbf_primitive_controller*
+struct primitive_controller*
 cbf_controller_create_from_file(
-	struct cbf_primitive_controller *c, 
+	struct primitive_controller *c, 
 	const char *filename
 );
 
@@ -63,20 +63,20 @@ cbf_controller_create_from_file(
 
 	TODO: Implement!!
 */
-struct cbf_primitive_controller*
+struct primitive_controller*
 cbf_controller_create_from_memory(
-	struct cbf_primitive_controller *c, 
+	struct primitive_controller *c, 
 	const char *mem
 );
 
 
 /**
-	Fills a preallocated struct cbf_primitive_controller with a pointer that refers
+	Fills a preallocated struct primitive_controller with a pointer that refers
 	to the index-th subordinate controller.
 
 	Arguments:
-		pc - Pointer to a struct cbf_primitive controller of which a subordinate controller
-		spc - Pointer to a struct cbf_primitive_controller that will hold a reference to the subordinate controller
+		pc - Pointer to a struct primitive controller of which a subordinate controller
+		spc - Pointer to a struct primitive_controller that will hold a reference to the subordinate controller
 
 	CAUTION:
 	
@@ -85,10 +85,10 @@ cbf_controller_create_from_memory(
 
 	Returns the pointer to the struct primitve_controller that was passed in as spc..
 */
-struct cbf_primitive_controller*
+struct primitive_controller*
 cbf_controller_get_subordinate_controller(
-	struct cbf_primitive_controller *pc, 
-	struct cbf_primitive_controller *spc, 
+	struct primitive_controller *pc, 
+	struct primitive_controller *spc, 
 	int index
 );
 
@@ -103,7 +103,7 @@ cbf_controller_get_subordinate_controller(
 	sensible values
 */
 int
-cbf_controller_is_finished(struct cbf_primitive_controller *pc);
+cbf_controller_is_finished(struct primitive_controller *pc);
 
 /**
 	Fills out with the current task space position represented as a double[]. Make
@@ -116,7 +116,7 @@ cbf_controller_is_finished(struct cbf_primitive_controller *pc);
 */
 int 
 cbf_controller_get_current_task_position(
-	struct cbf_primitive_controller *c, 
+	struct primitive_controller *c, 
 	double *out
 );
 
@@ -127,7 +127,7 @@ cbf_controller_get_current_task_position(
 */
 int
 cbf_controller_get_resource_dim(
-	struct cbf_primitive_controller *c
+	struct primitive_controller *c
 );
 
 /**
@@ -140,13 +140,13 @@ cbf_controller_get_resource_dim(
 */
 int
 cbf_controller_set_reference(
-	struct cbf_primitive_controller* c, 
+	struct primitive_controller* c, 
 	double *reference
 );
 
 int 
 cbf_controller_get_reference(
-	struct cbf_primitive_controller* c, 
+	struct primitive_controller* c, 
 	double *reference
 );
 
@@ -156,14 +156,14 @@ cbf_controller_get_reference(
 
 	Arguments:
 
-	c - The struct cbf_primitive_controller thhat is referenced
+	c - The struct primitive_controller thhat is referenced
 	resource_out - an array of doubles holding values to be passed
 
 	Returns -1 on failure
 */
 int 
 cbf_controller_set_resource(
-	struct cbf_primitive_controller *c, 
+	struct primitive_controller *c, 
 	double *resource_in
 );
 
@@ -172,14 +172,14 @@ cbf_controller_set_resource(
 
 	Arguments:
 
-	c - The struct cbf_primitive_controller thhat is referenced
+	c - The struct primitive_controller thhat is referenced
 	resource_out - a preallocated array of doubles to be filled with the resource values
 
 	Returns -1 on failure
 */
 int 
 cbf_controller_get_resource(
-	struct cbf_primitive_controller *c, 
+	struct primitive_controller *c, 
 	double *resource_out
 );
 
@@ -194,7 +194,7 @@ cbf_controller_get_resource(
 */
 int
 cbf_controller_step(
-	struct cbf_primitive_controller *c, 
+	struct primitive_controller *c, 
 	double *in, 
 	double *out
 );
@@ -208,17 +208,17 @@ cbf_controller_step(
 */
 int
 cbf_controller_step_internal(
-	struct cbf_primitive_controller *c
+	struct primitive_controller *c
 );
 
 /**
-	Destroy the controller wrapped by the struct cbf_primitive_controller pointed to by c.
+	Destroy the controller wrapped by the struct primitive_controller pointed to by c.
 
 	This does not free() the struct itself. This is left to the user.
 */
-struct cbf_primitive_controller*
+struct primitive_controller*
 cbf_controller_destroy(
-	struct cbf_primitive_controller *c
+	struct primitive_controller *c
 );
 
 #ifdef __cplusplus

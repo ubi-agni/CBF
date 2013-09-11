@@ -1,192 +1,181 @@
 <?xml version="1.0"?>
-<cbf:Object 
-	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:type="cbf:PrimitiveController">
-  <Name>foo</Name>
-  <Coefficient>1</Coefficient>
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
+ <Coefficient> 1 </Coefficient>
 
-  <ConvergenceCriterion xsi:type="cbf:TaskSpaceDistanceThreshold">
-	 <Threshold> 0.01 </Threshold>
-  </ConvergenceCriterion>
+ <Potential xsi:type="SquarePotentialType">
+  <Dimension>   3 </Dimension>
+  <Coefficient> 0.01 </Coefficient>
+ </Potential>
 
-  <Reference xsi:type="cbf:DummyReference">
-	 <Vector xsi:type="cbf:BoostVector">
-		<String> [3](0,1,3) </String>
-	 </Vector>
-  </Reference>
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
 
-  <Potential xsi:type="cbf:SquarePotential">
-	 <MaxGradientStepNorm>0.1</MaxGradientStepNorm>
-	 <Dimension> 3 </Dimension>
-	 <Coefficient> 0.01 </Coefficient>
-  </Potential>
+ <SensorTransform xsi:type="KDLChainPositionSensorTransformType">
+  <Chain xsi:type="ChainType">
+   <Name> SuperChain </Name>
 
-  <SensorTransform xsi:type="cbf:KDLChainViewSensorTransform">
-	 <Operand xsi:type="cbf:KDLChainPositionSensorTransform">
-		<Chain xsi:type="cbf:Chain">
-		  <Name> SuperChain </Name>
-		  
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>X</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>X</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>Y</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>Y</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>Z</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>Z</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>X</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>X</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>Y</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>Y</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>Z</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>Z</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>X</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>X</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>Y</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>Y</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>Z</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>Z</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>X</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>X</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>Y</Axis>
-			 </Joint>
-		  </Segment>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>Y</Axis>
+    </Joint>
+   </Segment>
 
-		  <Segment>
-			 <Frame xsi:type="cbf:MatrixFrame">
-				<Matrix xsi:type="cbf:BoostMatrix">
-				  <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
-				</Matrix>
-			 </Frame>
-			 <Joint xsi:type="cbf:Joint">
-				<Type>Rotational</Type>
-				<Axis>Z</Axis>
-			 </Joint>
-		  </Segment>
-		</Chain>
-	 </Operand>
-  </SensorTransform>
+   <Segment>
+    <Frame xsi:type="MatrixFrameType">
+     <Matrix xsi:type="BoostMatrixType">
+      <String> [4,4]((1,0,0,0),(0,1,0,0),(0,0,1,1),(0,0,0,1)) </String>
+     </Matrix>
+    </Frame>
+    <Joint xsi:type="JointType">
+     <Type>Rotational</Type>
+     <Axis>Z</Axis>
+    </Joint>
+   </Segment>
 
-  <EffectorTransform xsi:type="cbf:GenericEffectorTransform">
-	 <TaskDimension>3</TaskDimension>
-	 <ResourceDimension>12</ResourceDimension>
-  </EffectorTransform>
-  
-  <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
 
-  <Resource xsi:type="cbf:DummyResource">
-	 <Vector xsi:type="cbf:BoostVector">
-		<String> [12](0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1) </String>
-	 </Vector>
-  </Resource>
+  </Chain>
+ </SensorTransform>
+ 
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 12 </Dimension>
+  <Vector xsi:type="BoostVectorType">
+   <String> [12](0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1) </String>
+  </Vector>
+ </Resource>
 
-</cbf:Object>
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="BoostVectorType">
+   <String> [3](0,1,3) </String>
+  </Vector>
+ </Reference>
+
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
+
+</Controller>
 
 

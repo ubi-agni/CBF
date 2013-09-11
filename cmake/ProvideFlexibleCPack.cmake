@@ -30,7 +30,6 @@
 SET(CPACK_GENERATOR "TGZ")
 # allow to override packaging system
 SET(CPACK_CONFIG_FILE "" CACHE FILEPATH "Path to a CMake lists syntax file overriding settings for CPack so that additional configurations are possible.")
-SET(CPACK_PACKAGE_REVISION "" CACHE STRING "A version suffix which can optionally be appended to package versions to express the package revision (given a fixed software version).")
 IF(CPACK_CONFIG_FILE)
     INCLUDE(${CPACK_CONFIG_FILE})
 ENDIF()

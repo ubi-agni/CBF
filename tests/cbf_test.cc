@@ -23,7 +23,6 @@
 #include <cbf/primitive_controller.h>
 
 #include <cbf/potential.h>
-#include <cbf/square_potential.h>
 #include <cbf/effector_transform.h>
 #include <cbf/identity_transform.h>
 #include <cbf/dummy_resource.h>
@@ -41,6 +40,8 @@
 #include <cstdlib>
 
 #define NUM_OF_STEPS 10
+
+namespace ublas = boost::numeric::ublas;
 
 int main(int argc, char *argv[]) {
 	//! Initialize pseudo random number gen with 0, so we get reproducable results..
@@ -68,17 +69,28 @@ int main(int argc, char *argv[]) {
 	{
 		std::cout << "Controller related stuff" << std::endl;
 
-		CBF::SensorTransformPtr st(new CBF::IdentitySensorTransform(6));
- 		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,6));
-
 		//! Create a primitive controller.
-		CBF::PrimitiveController controller(
-			ref,
-			CBF::PotentialPtr(new CBF::SquarePotential(6)),
-			st,
-			CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform),
-			CBF::ResourcePtr(new CBF::DummyResource(6))
-		);
+		CBF::PrimitiveController controller;
+	
+		//! Create nessecary members of the primitive controller.
+		controller.set_potential(CBF::PotentialPtr(new CBF::SquarePotential(6)));
+	
+		//! For this simple test we only use the identity transform
+		controller.set_sensor_transform(CBF::SensorTransformPtr(new CBF::IdentitySensorTransform(6)));
+
+		controller.set_effector_transform(CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(controller.sensor_transform())));
+	
+		//! And a dummy resource.
+		CBF::ResourcePtr resource = CBF::ResourcePtr(new CBF::DummyResource(6));
+	
+		controller.set_resource(resource);
+	
+		//! Adding of a combination strategy is really unnecessary but the design dictates we 
+		//! do it anyways (TODO: fix so this is not necessary anymore)
+		controller.set_combination_strategy(CBF::CombinationStrategyPtr(new CBF::AddingStrategy));
+
+		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,6));
+		controller.set_reference(ref);
 
 		//! Set a reference to the controller.
 		ref->references()[0][0] = 1;
@@ -164,8 +176,8 @@ int main(int argc, char *argv[]) {
 		q1 = v1;
 		q2 = v2;
 
-		q1.from_axis_angle4(q1);
-		q2.from_axis_angle4(q2);
+		q1.from_axis_angle(q1);
+		q2.from_axis_angle(q2);
 
 		CBF::Quaternion q3;
 		q3 = q1.conjugate() * q2;

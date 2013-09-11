@@ -18,14 +18,14 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-#include <cbf/python_wrap.h>
-#include <cbf/debug_macros.h>
-#include <cbf/xml_factories.h>
-
-#include <string>
-
 #include <Python.h>
 #include <boost/python.hpp>
+
+#include <cbf/python_wrap.h>
+#include <cbf/debug_macros.h>
+#include <cbf/plugin_impl_macros.h>
+
+#include <string>
 
 namespace CBF {
 	
@@ -84,7 +84,7 @@ namespace CBF {
 	{
 	}
 	
-	unsigned int PythonPotential::dim() const {
+	unsigned int PythonPotential::task_dim() const {
 		return m_Dim;
 	}
 	
@@ -226,12 +226,14 @@ namespace CBF {
 			sanitize_string(m_ExecScript);
 			CBF_DEBUG("ExecScript:\n" << m_ExecScript)
 		
-			m_InitScript = xml_instance.InitScript();
+			if (xml_instance.InitScript().present())
+				m_InitScript = *(xml_instance.InitScript());
 		
 			sanitize_string(m_InitScript);
 			CBF_DEBUG("InitScript:\n" << m_InitScript)
 		
-			m_FiniScript = xml_instance.FiniScript();
+			if (xml_instance.FiniScript().present())
+				m_FiniScript = *(xml_instance.FiniScript());
 		
 			sanitize_string(m_FiniScript);
 			CBF_DEBUG("FiniScript:\n" << m_FiniScript)
@@ -248,20 +250,22 @@ namespace CBF {
 			sanitize_string(m_ExecScript);
 			CBF_DEBUG("ExecScript:\n" << m_ExecScript)
 		
-			m_InitScript = xml_instance.InitScript();
+			if (xml_instance.InitScript().present())
+				m_InitScript = *(xml_instance.InitScript());
 		
 			sanitize_string(m_InitScript);
 			CBF_DEBUG("InitScript:\n" << m_InitScript)
 		
-			m_FiniScript = xml_instance.FiniScript();
+			if (xml_instance.FiniScript().present())
+				m_FiniScript = *(xml_instance.FiniScript());
 		
 			sanitize_string(m_FiniScript);
 			CBF_DEBUG("FiniScript:\n" << m_FiniScript)
 		}
 		
-		static XMLDerivedFactory<PythonPotential, CBFSchema::PythonPotential, Potential, CBFSchema::Potential> x;
-		static XMLDerivedFactory<PythonSensorTransform, CBFSchema::PythonSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
-
+		CBF_PLUGIN_CLASS(PythonPotential, Potential)
+		CBF_PLUGIN_CLASS(PythonSensorTransform, SensorTransform)
+		
 	#endif
 } // namespace
 

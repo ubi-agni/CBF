@@ -27,6 +27,7 @@
 
 namespace CBF {
 
+namespace ublas = boost::numeric::ublas;
 
 
 /**
@@ -46,7 +47,7 @@ struct Quaternion {
 		Float x = 1,
 		Float y = 0,
 		Float z = 0
-	) :
+		) :
 		w(w),
 		x(x),
 		y(y),
@@ -79,7 +80,7 @@ struct Quaternion {
 			w * q_rhs.w
 			+ x * q_rhs.x
 			+ y * q_rhs.y
-			+ z * q_rhs.z
+			+ z * q_rhs.z 
 		);
 	}
 
@@ -182,7 +183,7 @@ struct Quaternion {
 
 	#define CBF_QUAT_AXIS_THRESH 0.00001
 	Quaternion &from_axis_angle3(const FloatVector &v) {
-		Float norm = v.norm();
+		Float norm = ublas::norm_2(v);
 		w = cos(0.5 * norm);
 		Float sin_a = sin(0.5 * norm);
 
@@ -206,7 +207,7 @@ struct Quaternion {
 		ret[0] = x;
 		ret[1] = y;
 		ret[2] = z;
-		Float norm = ret.norm();
+		Float norm = ublas::norm_2(ret);
 		// CBF_DEBUG("norm " << norm)
 		if (norm > CBF_QUAT_AXIS_THRESH) {
 			ret *= 1.0 / norm;
@@ -281,7 +282,7 @@ struct Quaternion {
 	}
 
 	/** Setup this quaternion from an unpacked axis angle representation */
-	void from_axis_angle4(Quaternion &q)
+	void from_axis_angle(Quaternion &q)
 	{
 		Float sinAngle;
 		Float half_angle = 0.5 * q.w;
@@ -365,7 +366,7 @@ struct Quaternion {
 		A conversion operator to create a 3x3 rotation matrix from this quaternion..
 	*/
 	operator FloatMatrix () {
-		FloatMatrix m = FloatMatrix::Zero(3,3);
+		FloatMatrix m = ublas::zero_matrix<Float>(3,3);
 
 		m(0,0) = 1.0 - 2.0 * (y*y + z*z);
 		m(1,0) = 2.0 * x * y + 2.0 * z * w;

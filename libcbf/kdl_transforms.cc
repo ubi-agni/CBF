@@ -22,19 +22,16 @@
 
 #include <cbf/utilities.h>
 #include <cbf/debug_macros.h>
-#include <cbf/utilities.h>
-#include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object.h>
-//#include <cbf/xml_factory.h>
+#include <cbf/plugin_macros.h>
 
 #include <kdl/chain.hpp>
-#include <kdl/tree.hpp>
 #include <kdl/jntarray.hpp>
 #include <kdl/frames.hpp>
+#include <kdl/chainiksolvervel_pinv.hpp>
 #include <kdl/chainjnttojacsolver.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
-#include <kdl/treejnttojacsolver.hpp>
-#include <kdl/treefksolverpos_recursive.hpp>
+//#include <kdl/utilities/svd_boost_HH.hpp>
+#include <kdl/chainfksolvervel_recursive.hpp>
 #include <kdl/jntarrayvel.hpp>
 
 namespace CBF {
@@ -45,10 +42,14 @@ namespace CBF {
 		m_Frame(new KDL::Frame),
 		m_Jacobian(new KDL::Jacobian)
 	{
-		init_solvers();
+		//init_solvers();
 	}
 	
 	void BaseKDLChainSensorTransform::init_solvers() {
+	
+		m_FKVelSolver = boost::shared_ptr<KDL::ChainFkSolverVel_recursive>(
+			new KDL::ChainFkSolverVel_recursive(*m_Chain)
+		);
 	
 		m_Twists = FloatMatrix(6, m_Chain->getNrOfJoints());
 	
@@ -63,19 +64,41 @@ namespace CBF {
 		m_Jacobian = boost::shared_ptr<KDL::Jacobian>(new KDL::Jacobian(m_Chain->getNrOfJoints()));
 	}
 	
-	void BaseKDLChainSensorTransform::update(const FloatVector &resource_value) {
+	void BaseKDLChainSensorTransform::update() {
+		//SensorTransform::update();
+	
 		KDL::JntArray jnt_array(resource_dim());
 	
 		//const ublas::vector<Float> &resource = m_Resource->get();
 	
-		CBF_DEBUG(resource_value);
+		CBF_DEBUG(m_Resource->get())
 	
 		for (unsigned int i = 0; i < resource_dim(); ++i) {
-			jnt_array(i) = resource_value[i];
+			jnt_array(i) = m_Resource->get()[i];
 		}
 	
 		m_JacSolver->JntToJac(jnt_array, *m_Jacobian);
 		m_FKSolver->JntToCart(jnt_array, *m_Frame);
+	
+	#if 0
+		for (unsigned int i = 0; i < get_resource_dim(); ++i) {
+	
+			//for (unsigned int j = 0; j < get_resource_dim(); ++j)
+			//	jnt_array(i) = 0;
+	
+			KDL::FrameVel vel;
+			//jnt_array(i) = 1.0;
+			KDL::Twist twist;
+			m_FKVelSolver->JntToCart(jnt_array, vel);
+			twist = vel.GetTwist();
+			for (unsigned int j = 0; j < 6; ++j) {
+				m_Twists(j,i) = twist(j);
+				CBF_DEBUG(twist(j))
+			}
+		}
+		CBF_DEBUG(m_Twists)
+	#endif
+		
 	}
 	
 	unsigned int BaseKDLChainSensorTransform::resource_dim() const {
@@ -87,15 +110,13 @@ namespace CBF {
 	KDLChainPositionSensorTransform::KDLChainPositionSensorTransform(boost::shared_ptr<KDL::Chain> chain) :
 		BaseKDLChainSensorTransform(chain)
 	{
-		m_TaskDim = 3;
-		m_ResourceDim = chain->getNrOfJoints();
-
-		m_Result = FloatVector(3);
+		m_Result = ublas::vector<Float>(3);
+		init_solvers();
 	}
 	
-	void KDLChainPositionSensorTransform::update(const FloatVector &resource_value) {
-		BaseKDLChainSensorTransform::update(resource_value);
-
+	void KDLChainPositionSensorTransform::update() {
+		BaseKDLChainSensorTransform::update();
+	
 		//! Update the jacobian so we can hand it out...
 		m_TaskJacobian = FloatMatrix(3, resource_dim());
 		for (unsigned int i = 0; i < 3; ++i) {
@@ -110,21 +131,43 @@ namespace CBF {
 		}
 	}
 	
+	KDLChainOrientationQuatSensorTransform::KDLChainOrientationQuatSensorTransform(boost::shared_ptr<KDL::Chain> chain) :
+		BaseKDLChainSensorTransform(chain)
+	{
+		m_Result = ublas::vector<Float>(3);
+		init_solvers();
+	}
+	void KDLChainOrientationQuatSensorTransform::update() {
+		BaseKDLChainSensorTransform::update();
+	
+		CBF_DEBUG("Updating Jacobian")
+		//! Update the jacobian so we can hand it out...
+		m_TaskJacobian = FloatMatrix(4, resource_dim());
+		for (unsigned int i = 0; i < 3; ++i) {
+			for (unsigned int j = 0; j < resource_dim(); ++j) {
+				m_TaskJacobian(i,j) = (*m_Jacobian)(i,j);
+			}
+		}
+	
+		//! Buffer result, so we can return it when requested...
+		for (unsigned int i = 0; i < 3; ++i) {
+			m_Result[i] = m_Frame->p(i);
+		}
+	}
 	
 	KDLChainAxisAngleSensorTransform::KDLChainAxisAngleSensorTransform(boost::shared_ptr<KDL::Chain> chain) :
 		BaseKDLChainSensorTransform(chain)
 	{
-		m_TaskDim = 3;
-		m_ResourceDim = chain->getNrOfJoints();
-		m_Result = FloatVector(3);
+		m_Result = ublas::vector<Float>(3);
+		init_solvers();
 	}
 	
-	void KDLChainAxisAngleSensorTransform::update(const FloatVector &resource_value) {
-		BaseKDLChainSensorTransform::update(resource_value);
+	void KDLChainAxisAngleSensorTransform::update() {
+		BaseKDLChainSensorTransform::update();
 	
-		CBF_DEBUG("Updating Jacobian");
+		CBF_DEBUG("Updating Jacobian")
 		//! Update the jacobian so we can hand it out...
-		m_TaskJacobian = FloatMatrix::Zero(3, resource_dim());
+		m_TaskJacobian = ublas::zero_matrix<Float>(3, resource_dim());
 	
 		//CBF_DEBUG(m_ConcreteJacobian)
 		//CBF_DEBUG(get_resource_dim())
@@ -136,7 +179,15 @@ namespace CBF {
 			}
 		}
 	
-		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian);
+	#if 0
+		for (unsigned int i = 0; i < 3; ++i) {
+			for (unsigned int j = 0; j < resource_dim(); ++j) {
+				CBF_DEBUG(m_ConcreteJacobian(i,j));
+			}
+		}
+	#endif
+	
+		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian)
 	
 		//! Buffer result, so we can return it when requested...
 		KDL::Vector vec;
@@ -152,252 +203,123 @@ namespace CBF {
 		}
 	}
 	
-
-
-
-
-
-	BaseKDLTreeSensorTransform::BaseKDLTreeSensorTransform(
-		boost::shared_ptr<KDL::Tree> tree,
-		const std::vector<std::string> &segment_names
-	) :
-		m_Tree(tree),
-		m_SegmentNames(segment_names)
-	{
-		init_solvers();
-	}
-	
-	void BaseKDLTreeSensorTransform::init_solvers() {
-	
-		m_Twists = FloatMatrix(6, m_Tree->getNrOfJoints());
-		CBF_DEBUG("nr of joints: " << m_Tree->getNrOfJoints());
-	
-		m_JacSolver = boost::shared_ptr<KDL::TreeJntToJacSolver>(
-			new KDL::TreeJntToJacSolver(*m_Tree)
-		);
-	
-		m_FKSolver = boost::shared_ptr<KDL::TreeFkSolverPos_recursive>(
-			new KDL::TreeFkSolverPos_recursive(*m_Tree)
-		);
-
-		for (unsigned int i = 0; i < m_SegmentNames.size(); ++i) {
-			if (m_Tree->getSegments().find(m_SegmentNames[i]) == m_Tree->getSegments().end())
-				CBF_THROW_RUNTIME_ERROR("The tree has no segment with name: " << m_SegmentNames[i]);
-
-			m_Jacobians.push_back(boost::shared_ptr<KDL::Jacobian>(new KDL::Jacobian(m_Tree->getNrOfJoints())));
-			m_Frames.push_back(boost::shared_ptr<KDL::Frame>(new KDL::Frame));
-		}
-	}
-	
-	void BaseKDLTreeSensorTransform::update(const FloatVector &resource_value) {
-		KDL::JntArray jnt_array(resource_dim());
-	
-		//const ublas::vector<Float> &resource = m_Resource->get();
-	
-		CBF_DEBUG(resource_value);
-	
-		for (unsigned int i = 0; i < resource_dim(); ++i) {
-			jnt_array(i) = resource_value[i];
-		}
-
-		for (unsigned int i = 0; i < m_SegmentNames.size(); ++i) {
-			m_JacSolver->JntToJac(jnt_array, *(m_Jacobians[i]), m_SegmentNames[i]);
-			m_FKSolver->JntToCart(jnt_array, *(m_Frames[i]), m_SegmentNames[i]);
-		}
-	
-	}
-	
-	unsigned int BaseKDLTreeSensorTransform::resource_dim() const {
-		return m_Tree->getNrOfJoints();
-	}
-	
-
-	KDLTreePositionSensorTransform::KDLTreePositionSensorTransform(
-		boost::shared_ptr<KDL::Tree> tree, 
-		std::vector<std::string> segment_names
-	) : 
-		BaseKDLTreeSensorTransform(tree, segment_names)
-	{
-		m_TaskDim = 3;
-		m_ResourceDim = tree->getNrOfJoints();
-		m_Result = FloatVector(3 * segment_names.size());
-		m_TaskJacobian = FloatMatrix((int) 3 * segment_names.size(), (int) tree->getNrOfJoints());
-
-		CBF_DEBUG("# of segments: " << segment_names.size());
-		for (unsigned int i = 0; i < segment_names.size(); ++i) {
-			CBF_DEBUG("name: " << segment_names[i]);
-		}
-	}
-
-
-
-
-	void KDLTreePositionSensorTransform::update(const FloatVector &resource_value) {
-		BaseKDLTreeSensorTransform::update(resource_value);
-
-		unsigned int total_row = 0;
-
-		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i) {
-			for (unsigned int row = 0; row < 3; ++row, ++total_row) {
-				for (unsigned int col = 0; col < resource_dim(); ++col) {
-					m_TaskJacobian(total_row, col) = (*m_Jacobians[i])(row,col);
-				}
-				m_Result[total_row] = m_Frames[i]->p(row);
-			}
-		}
-		CBF_DEBUG("TaskJacobian " << m_TaskJacobian);
-	}
-	
-
-
-
-
-	KDLTreeAxisAngleSensorTransform::KDLTreeAxisAngleSensorTransform(
-		boost::shared_ptr<KDL::Tree> tree, 
-		std::vector<std::string> segment_names
-	) : 
-		BaseKDLTreeSensorTransform(tree, segment_names)
-	{
-		m_TaskDim = 3;
-		m_ResourceDim = tree->getNrOfJoints();
-
-		m_Result = FloatVector(3 * segment_names.size());
-		m_TaskJacobian = FloatMatrix((int) 3 * segment_names.size(),(int)  tree->getNrOfJoints());
-	}
-
-
-	void KDLTreeAxisAngleSensorTransform::update(const FloatVector &resource_value) {
-		BaseKDLTreeSensorTransform::update(resource_value);
-
-		CBF_DEBUG("Updating Jacobian");
-	
-		unsigned int total_row = 0;
-		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i) {
-			for (unsigned int row = 0; row < 3; ++row, ++total_row) {
-				for (unsigned int col = 0; col < resource_dim(); ++col) {
-					m_TaskJacobian(total_row,col) = (*m_Jacobians[i])(row+3, col);
-				}
-			}
-			//! Buffer result, so we can return it when requested...
-			KDL::Vector vec;
-			float angle;
-			angle = (m_Frames[i]->M).GetRotAngle(vec, 0.0000000000001);
-	
-			// angle = fmod(angle + 2.0 * M_PI, 2.0 * M_PI);
-			if (angle > M_PI) angle -= 2.0 * M_PI;
-			if (angle <= -M_PI) angle += 2.0 * M_PI;
-	
-			for (unsigned int row = 0; row < 3; ++row) {
-				m_Result[total_row] = vec(row) * angle;
-			}
-		}
-
-		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian);
-	
-	}
-
-
-
-
 	
 	#ifdef CBF_HAVE_XSD
-		BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(const CBFSchema::ChainBase &xml_instance, const CBFSchema::SensorTransform &xml_st_instance, ObjectNamespacePtr object_namespace) :
-			SensorTransform(xml_st_instance, object_namespace),
+		BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(const ChainBaseType &xml_instance, const SensorTransformType &xml_st_instance) :
+			SensorTransform(xml_st_instance),
 			m_Frame(new KDL::Frame),
 			m_Jacobian(new KDL::Jacobian)
 		{
-			CBF_DEBUG("[KDLChainSensorTransform(const KDLChainSensorTransformType &xml_instance)]: yay!");
-			m_Chain = create_chain(xml_instance, object_namespace);		
+			CBF_DEBUG("[KDLChainSensorTransform(const KDLChainSensorTransformType &xml_instance)]: yay!")
+			//! Check what kind of chain we have:
+		
+			const ChainType *chain_instance  = dynamic_cast<const ChainType*>(&xml_instance);
+		
+			if (chain_instance == 0)
+				throw std::runtime_error("[KDLChainSensorTransform]: Chain type not handled yet..");
+		
+		
+			m_Chain = boost::shared_ptr<KDL::Chain>(new KDL::Chain());
+		
+			for (
+				ChainType::Segment_const_iterator it =(*chain_instance).Segment().begin(); 
+				it != (*chain_instance).Segment().end();
+				++it
+			)
+			{
+				CBF_DEBUG("[KDLChainSensorTransform]: Adding Segment...")
+		
+				KDL::Frame frame;
+				KDL::Joint joint;
+		
+				const MatrixFrameType *matrix_frame_instance = dynamic_cast<const MatrixFrameType*>(&(*it).Frame());
+		
+				if (matrix_frame_instance != 0)
+				{
+					CBF_DEBUG("[KDLChainSensorTransform]: Extracting matrix...")
+		
+					FloatMatrix m;
+					m = create_matrix((*matrix_frame_instance).Matrix());
+		
+					if (m.size1() != 4 || m.size2() != 4)
+						throw std::runtime_error("[KDLChainSensorTransform]: Matrix is not 4x4");
+		
+					for (int row = 0; row < 3; ++row)
+					{
+						for (int col = 0; col < 3; ++col)
+						{
+							frame.M(row, col) = m(row, col);
+						}
+					}
+		
+					for (int row = 0; row < 3; ++row)
+						frame.p(row) = m(row, 3);
+				}
+				else
+					throw std::runtime_error("[KDLChainSensorTransform]: Frame type not supported yet..");
+		
+				CBF_DEBUG("[KDLChainSensorTransform]: Extracting joint...")
+		
+				const JointType joint_instance = (*it).Joint();
+				if (joint_instance.Type() == "Rotational") {
+					CBF_DEBUG("[KDLChainSensorTransform]: Extracting rotational joint...")
+					if (joint_instance.Axis() == "X") {
+						CBF_DEBUG("X")
+						joint = KDL::Joint(KDL::Joint::RotX);
+					}
+					if (joint_instance.Axis() == "Y") {
+						CBF_DEBUG("Y")
+						joint = KDL::Joint(KDL::Joint::RotY);
+					}
+					if (joint_instance.Axis() == "Z") {
+						CBF_DEBUG("Z")
+						joint = KDL::Joint(KDL::Joint::RotZ);
+					}
+				}
+		
+				if (joint_instance.Type() == "Translational") {
+					throw std::logic_error("[KDLChainSensorTransform]: Translational joints not supported yet. TODO: fix this :)");
+				}
+		
+				CBF_DEBUG("[KDLChainSensorTransform]: Adding Segment for real..")
+				m_Chain->addSegment(KDL::Segment(joint, frame));
+				CBF_DEBUG("[KDLChainSensorTransform]: number of joints: " << m_Chain->getNrOfJoints())
+			}
+		
 			init_solvers();
 		}
 		
-		KDLChainPositionSensorTransform::KDLChainPositionSensorTransform(const CBFSchema::KDLChainPositionSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
-			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance, object_namespace)
+		KDLChainPositionSensorTransform::KDLChainPositionSensorTransform(const KDLChainPositionSensorTransformType &xml_instance) :
+			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance)
 		{
 			//! TODO: recheck this function to make sure it works in all cases..
 		
 			m_Result = FloatVector(3);
+		}
+		
+		KDLChainOrientationQuatSensorTransform::KDLChainOrientationQuatSensorTransform(
+			const KDLChainOrientationQuatSensorTransformType &xml_instance
+		) :
+			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance)
+		{
+			//! TODO: recheck this function to make sure it works in all cases..
+		
+			m_Result = FloatVector(4);
 		}
 		
 		KDLChainAxisAngleSensorTransform::KDLChainAxisAngleSensorTransform(
-			const CBFSchema::KDLChainAxisAngleSensorTransform &xml_instance, ObjectNamespacePtr object_namespace
+			const KDLChainAxisAngleSensorTransformType &xml_instance
 		) :
-			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance, object_namespace)
+			BaseKDLChainSensorTransform(xml_instance.Chain(), xml_instance)
 		{
 			//! TODO: recheck this function to make sure it works in all cases..
 		
 			m_Result = FloatVector(3);
 		}
-
-
-		BaseKDLTreeSensorTransform::BaseKDLTreeSensorTransform(const CBFSchema::TreeBase &xml_instance, const CBFSchema::SensorTransform &xml_st_instance, ObjectNamespacePtr object_namespace) :
-			SensorTransform(xml_st_instance, object_namespace)
-		{
-			CBF_DEBUG("[KDLTreeSensorTransform(const KDLTreeSensorTransformType &xml_instance)]: yay!");
-
-			m_Tree = 
-				XMLObjectFactory::instance()->create<ForeignObject<KDL::Tree> >(
-					xml_instance, object_namespace
-				)->m_Object
-			;
-
-			CBF_DEBUG("tree created");
-
-			init_solvers();
-		}
-		
-		KDLTreePositionSensorTransform::KDLTreePositionSensorTransform(const CBFSchema::KDLTreePositionSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
-			BaseKDLTreeSensorTransform(xml_instance.Tree(), xml_instance, object_namespace)
-		{
-
-			for (
-				CBFSchema::KDLTreePositionSensorTransform::SegmentName_const_iterator it = xml_instance.SegmentName().begin();
-				it != xml_instance.SegmentName().end();
-				++it
-			) 
-			{
-				m_SegmentNames.push_back(*it);
-			}
-
-			m_Result = FloatVector(3 *  m_SegmentNames.size());
-
-			m_TaskJacobian = FloatMatrix(
-					(int) 3 * m_SegmentNames.size(),
-					(int)  m_Tree->getNrOfJoints()
-					);
-
-			init_solvers();
-		}
-		
-		KDLTreeAxisAngleSensorTransform::KDLTreeAxisAngleSensorTransform(
-			const CBFSchema::KDLTreeAxisAngleSensorTransform &xml_instance, ObjectNamespacePtr object_namespace
-		) :
-			BaseKDLTreeSensorTransform(xml_instance.Tree(), xml_instance, object_namespace)
-		{
-
-		}
-
-		static XMLDerivedFactory<
-			KDLChainPositionSensorTransform, 
-			CBFSchema::KDLChainPositionSensorTransform
-		> x1;
-
-		static XMLDerivedFactory<
-			KDLChainAxisAngleSensorTransform, 
-			CBFSchema::KDLChainAxisAngleSensorTransform
-		> x2;
-
-		static XMLDerivedFactory<
-			KDLTreePositionSensorTransform, 
-			CBFSchema::KDLTreePositionSensorTransform
-		> x3;
-
-		static XMLDerivedFactory<
-			KDLTreeAxisAngleSensorTransform, 
-			CBFSchema::KDLTreeAxisAngleSensorTransform
-		> x4;
-
 	#endif
-
+	
+	CBF_PLUGIN_CLASS(KDLChainPositionSensorTransform, SensorTransform)
+	CBF_PLUGIN_CLASS(KDLChainAxisAngleSensorTransform, SensorTransform)
+	CBF_PLUGIN_CLASS(KDLChainOrientationQuatSensorTransform, SensorTransform)
 } // namespace
 

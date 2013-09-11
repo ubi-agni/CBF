@@ -20,45 +20,43 @@
 
 #include <cbf/dummy_resource.h>
 #include <cbf/debug_macros.h>
+#include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
-#include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object.h>
-
-#include <string>
-#include <iostream>
-#include <cstdlib>
-#include <cmath>
-#include <deque>
-
-#include <boost/numeric/ublas/io.hpp>
-
 
 namespace CBF {
-	void DummyResource::add(const FloatVector &arg) {
-		set(m_Variables + arg);
-		CBF_DEBUG("current values" << m_Variables);
-	}
-
-
 	#ifdef CBF_HAVE_XSD
-		DummyResource::DummyResource(
-			const CBFSchema::DummyResource &xml_instance, 
-			ObjectNamespacePtr object_namespace
-		) :
-			Resource(xml_instance, object_namespace)
+	#ifdef CBF_HAVE_PLUGIN_SUPPORT
+		DummyResource::DummyResource(const DummyResourceType &xml_instance)
 		{
-			m_Variables = 
-				*XMLFactory<FloatVector>::instance()->create(
-					xml_instance.Vector(), object_namespace
-				)
-			;
+			m_Variables = ublas::zero_vector<Float>(xml_instance.Dimension());
 
-			CBF_DEBUG("current values: " << m_Variables);
+#ifdef CBF_HAVE_GNUPLOT
+			m_History = std::deque<FloatVector>(CBF_HIST_SIZE, FloatVector(m_Variables.size())),
+			m_Times = FloatVector(CBF_HIST_SIZE, 0);
+
+
+			for (unsigned int i = 0; i < CBF_HIST_SIZE; ++i) {
+				m_Times[i] = i;
+			}
+
+			m_Count = 0;
+
+#endif
+
+			for (unsigned int i = 0; i < m_Variables.size(); ++i) {
+				m_Variables[i] = 0.1 * 2 * M_PI * ((Float)rand()-(RAND_MAX/2.0))/(Float)RAND_MAX;
+			}
+
+
+		
+			if (xml_instance.Vector().present())
+				m_Variables = create_vector(xml_instance.Vector().get());
+			CBF_DEBUG("current values: " << m_Variables)
 		
 		}
-
-		static XMLDerivedFactory<DummyResource, CBFSchema::DummyResource> x;
+	#endif
 	#endif
 	
+	CBF_PLUGIN_CLASS(DummyResource, Resource)
 } //namespace
 

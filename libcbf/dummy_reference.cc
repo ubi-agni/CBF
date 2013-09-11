@@ -22,50 +22,43 @@
 
 #include <cbf/config.h>
 #include <cbf/dummy_reference.h>
+#include <cbf/plugin_macros.h>
 #include <cbf/utilities.h>
-#include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object.h>
 
 namespace CBF {
+
 	#ifdef CBF_HAVE_XSD
-	DummyReference::DummyReference(
-		const CBFSchema::DummyReference &xml_instance, 
-		ObjectNamespacePtr object_namespace	
-	) : 
-		Reference(xml_instance, object_namespace) 
-	{
-		CBF_DEBUG("constructing");
+	DummyReference::DummyReference(const DummyReferenceType &xml_instance) {
+		CBF_DEBUG("constructing")
 
 		//! Set references..
-		CBF_DEBUG("Setting Reference(s)...");
+		CBF_DEBUG("Setting Reference(s)...")
 		for (
-			CBFSchema::DummyReference::Vector_const_iterator it = 
+			DummyReferenceType::Vector_const_iterator it = 
 				xml_instance.Vector().begin(); 
 			it != xml_instance.Vector().end();
 			++it
 		)
 		{
 			FloatVector tmp;
-
-			CBF_DEBUG("Extracting reference vector coefficients...");
+			CBF_DEBUG("Extracting reference vector coefficients...")
 			try {
-				tmp = 
-					*XMLObjectFactory::instance()->create<ForeignObject<FloatVector> >(
-						*it, object_namespace
-					)->m_Object;
+				tmp = create_vector(*it);
 			} catch(...) {
 				CBF_DEBUG("extracting cefficients failed");
 				throw;
 			}
 	
-			CBF_DEBUG("Reference: " << tmp);
+			CBF_DEBUG("Reference: " << tmp)
 
 			m_References.push_back(tmp);
+			//PrimitiveControllerPtr controller(new PrimitiveController(*it));
+			//m_SubordinateControllers.push_back(controller);
 		}
 	}
-
-	static XMLDerivedFactory<DummyReference, CBFSchema::DummyReference> x;
 	#endif
+
+	CBF_PLUGIN_CLASS(DummyReference, Reference)
 } // namespace
 
 

@@ -19,40 +19,30 @@
 */
 
 #include <cbf/controller_sequence.h>
-#include <cbf/namespace.h>
-#include <iostream>
+#include <cbf/plugin_macros.h>
 
-#ifdef CBF_HAVE_XSD
-	#include <cbf/xml_object_factory.h>
-#endif
+#include <iostream>
 
 namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
-		ControllerSequence::ControllerSequence(const CBFSchema::ControllerSequence &xml_instance, ObjectNamespacePtr object_namespace) {
+		ControllerSequence::ControllerSequence(const ControllerSequenceType &xml_instance) {
 			std::cout << "[ControllerSequence(const ControllerSequenceType &xml_instance)]: " << std::endl;
-
-			std::vector<ControllerPtr> controllers;
+		
 			//! Instantiate the subordinate controllers
-			CBFSchema::ControllerSequence::Controller1_const_iterator it;
+			ControllerSequenceType::Controller_const_iterator it;
 			for (
-				it = xml_instance.Controller1().begin(); 
-				it != xml_instance.Controller1().end();
+				it = xml_instance.Controller().begin(); 
+				it != xml_instance.Controller().end();
 				++it
 			)
 			{
-					ControllerPtr controller(XMLObjectFactory::instance()->create<Controller>(*it, object_namespace));
-					controllers.push_back(controller);
+					ControllerPtr controller(PluginPool<Controller>::get_instance()->create_from_xml(*it));
+					m_Controllers.push_back(controller);
 			}
-
-			init(controllers);
+		
+			m_Iterator = m_Controllers.begin();
 		}
-
-		static XMLDerivedFactory<
-			ControllerSequence, 
-			CBFSchema::ControllerSequence
-		> x1;
-
 	#endif
 	
 	bool ControllerSequence::step() {
@@ -74,5 +64,8 @@ namespace CBF {
 	
 		return false;
 	}
+	
+	CBF_PLUGIN_CLASS(ControllerSequence, Controller)
+	
 } // namespace
 

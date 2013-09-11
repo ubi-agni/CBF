@@ -19,45 +19,30 @@
 */
 
 #include <cbf/identity_transform.h>
+#include <cbf/plugin_macros.h>
+
 #include <cbf/debug_macros.h>
-#include <cbf/xml_object_factory.h>
 
 namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
-		IdentityEffectorTransform::IdentityEffectorTransform(
-			const CBFSchema::IdentityEffectorTransform &xml_instance,
-			ObjectNamespacePtr object_namespace
-		) :
-			EffectorTransform(xml_instance, object_namespace)
+		IdentityEffectorTransform::IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance) :
+			m_Dim(xml_instance.Dimension())
 		{
-			init(xml_instance.Dimension());
-			CBF_DEBUG("[IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance)]: yay!!!");
+			m_InverseTaskJacobian = boost::numeric::ublas::identity_matrix<Float>(xml_instance.Dimension());
+
+			 CBF_DEBUG("[IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance)]: yay!!!")
 		}
-
-
-
-		IdentitySensorTransform::IdentitySensorTransform(
-			const CBFSchema::IdentitySensorTransform &xml_instance, 
-			ObjectNamespacePtr object_namespace
-		) : 
-			SensorTransform(xml_instance, object_namespace)
+		
+		IdentitySensorTransform::IdentitySensorTransform(const IdentitySensorTransformType &xml_instance) :
+			SensorTransform(xml_instance),
+			m_Dim(xml_instance.Dimension())
 		{
-			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!");
-			init(xml_instance.Dimension());
+			CBF_DEBUG("[IdentitySensorTransform(const IdentitySensorTransformType &xml_instance)]: yay!!!")
+			m_TaskJacobian = boost::numeric::ublas::identity_matrix<Float>(m_Dim,m_Dim);
 		}
-
-		static XMLDerivedFactory<
-			IdentitySensorTransform, 
-			CBFSchema::IdentitySensorTransform
-		> x1;
-
-		static XMLDerivedFactory<
-			IdentityEffectorTransform, 
-			CBFSchema::IdentityEffectorTransform
-		> x2;
-
 	#endif
-
+	
+	CBF_PLUGIN_CLASS(IdentitySensorTransform, SensorTransform)
 } // namespace
 

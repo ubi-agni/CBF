@@ -23,23 +23,16 @@
 #ifndef CBF_GENERIC_TRANSFORM_H
 #define CBF_GENERIC_TRANSFORM_H
 
-#include <cbf/config.h>
-#include <cbf/debug_macros.h>
-#include <cbf/types.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/effector_transform.h>
 #include <cbf/utilities.h>
-#include <cbf/exceptions.h>
-#include <cbf/namespace.h>
+#include <cbf/plugin_decl_macros.h>
 
-#include <algorithm>
 
-namespace CBFSchema {
-	class GenericEffectorTransform;
-	class PaddedEffectorTransform;
-	class DampedGenericEffectorTransform;
-	class DampedWeightedGenericEffectorTransform;
-}
+#include <boost/numeric/ublas/io.hpp>
+
+CBF_PLUGIN_PREAMBLE(GenericEffectorTransform)
+CBF_PLUGIN_PREAMBLE(DampedWeightedGenericEffectorTransform)
 
 namespace CBF {
 
@@ -47,55 +40,29 @@ namespace CBF {
 		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
 	*/
 	struct GenericEffectorTransform : public EffectorTransform {
-		GenericEffectorTransform (const CBFSchema::GenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
-
-		GenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim) 
-		{ 
-			init(task_dim, resource_dim);
-		}
+		CBF_PLUGIN_DECL_METHODS(GenericEffectorTransform)
 	
-		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
+		virtual void update();
+	
+		GenericEffectorTransform(SensorTransformPtr sensor_transform = SensorTransformPtr())
+		{
+			set_sensor_transform(sensor_transform);
+		}
 	
 		virtual void exec(const FloatVector &input, FloatVector &result) {
-			result = m_InverseTaskJacobian * input;
+			result = ublas::prod(m_InverseTaskJacobian, input);
 		}
-
-		void init(unsigned int task_dim, unsigned int resource_dim) {
-			m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
-		}	
+	
+		virtual unsigned resource_dim() const {
+			return m_SensorTransform->resource_dim();
+		}
+	
+		virtual unsigned int task_dim() const {
+			return m_SensorTransform->task_dim();
+		}
 	};
 	
 	typedef boost::shared_ptr<GenericEffectorTransform> GenericEffectorTransformPtr;
-
-
-	/**
-		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
-	*/
-	struct DampedGenericEffectorTransform : public EffectorTransform {
-		DampedGenericEffectorTransform (const CBFSchema::DampedGenericEffectorTransform &xml_instnace, ObjectNamespacePtr object_namespace);
-	
-		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
-	
-		DampedGenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim,	Float damping_constant = 0.5)
-		{
-			init(task_dim, resource_dim, damping_constant);
-		}
-	
-		virtual void exec(const FloatVector &input, FloatVector &result) {
-			result = m_InverseTaskJacobian * input;
-		}
-
-
-		void init(unsigned int task_dim, unsigned int resource_dim, Float damping_constant) {
-			m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
-			m_DampingConstant = damping_constant;
-		}	
-	
-		protected:
-			Float m_DampingConstant;
-	};
-	
-	typedef boost::shared_ptr<DampedGenericEffectorTransform> DampedGenericEffectorTransformPtr;
 
 	
 	/**
@@ -104,7 +71,7 @@ namespace CBF {
 		TODO: Implement!!!
 	*/
 	struct DampedWeightedGenericEffectorTransform : public EffectorTransform {
-		DampedWeightedGenericEffectorTransform (const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
+		CBF_PLUGIN_DECL_METHODS(DampedWeightedGenericEffectorTransform)
 
 		protected:	
 	 		FloatMatrix m_Weights;
@@ -118,91 +85,31 @@ namespace CBF {
 			Float m_DampingConstant;
 
 		public:	
-			virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
+			virtual void update();
 		
 			DampedWeightedGenericEffectorTransform(
-				unsigned int task_dim,
-				unsigned int resource_dim,
-				Float damping_constant
-			) 
+				SensorTransformPtr sensor_transform = SensorTransformPtr(),
+				Float dampingConstant = 0.1)
 			{
-				init(task_dim, resource_dim, damping_constant);
-			}		
+				m_DampingConstant = dampingConstant;
+				set_sensor_transform(sensor_transform);
+			}
+		
 		
 			virtual void exec(const FloatVector &input, FloatVector &result) {
-				result = m_InverseTaskJacobian * input;
+				result = ublas::prod(m_InverseTaskJacobian, input);
 			}
-
-			void init(unsigned int task_dim, unsigned int resource_dim, Float damping_constant) {
-				m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
-				m_DampingConstant = damping_constant;
-			}		
+		
+			virtual unsigned resource_dim() const {
+				return m_SensorTransform->resource_dim();
+			}
+		
+			virtual unsigned int task_dim() const {
+				return m_SensorTransform->task_dim();
+			}
 	};
 	
 	typedef boost::shared_ptr<DampedWeightedGenericEffectorTransform> DampedWeightedGenericEffectorTransformPtr;
-
-
-	/**
-		@brief Effector Transform based on padded Jacobian pseudo inverse
-	*/
-	struct PaddedEffectorTransform : public EffectorTransform {
-		PaddedEffectorTransform (const CBFSchema::PaddedEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
-
-		PaddedEffectorTransform(
-			unsigned int task_dim, 
-			unsigned int resource_dim, 
-			FloatVector diagonal_elements
-		) { 
-			init(task_dim, resource_dim, diagonal_elements);
-		}
-
-		PaddedEffectorTransform(
-			unsigned int task_dim, 
-			unsigned int resource_dim, 
-			float diagonal
-		) { 
-			FloatVector diagonal_elements = FloatVector::Constant(task_dim, diagonal);
-			init(task_dim, resource_dim, diagonal_elements);
-		}
-	
-		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
-			CBF_DEBUG("update padded");
-			pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
-
-			m_PaddedTaskJacobian.block(0, 0, task_jacobian.rows(), task_jacobian.cols())
-					= task_jacobian;
-			CBF_DEBUG("padded jacobian: " << m_PaddedTaskJacobian);
-
-			pseudo_inverse(m_PaddedTaskJacobian, m_PaddedInverseTaskJacobian);
-		}
-	
-		virtual void exec(const FloatVector &input, FloatVector &result) {
-			FloatVector res = m_PaddedInverseTaskJacobian * input;
-			CBF_DEBUG("padded result: " << res);
-			result = res.segment(0, m_InverseTaskJacobian.rows());
-		}
-
-		void init(unsigned int task_dim, unsigned int resource_dim, FloatVector diagonal) {
-			CBF_DEBUG("Padded transform init");
-			if (task_dim != diagonal.size()) CBF_THROW_RUNTIME_ERROR("dimension mismatch");
-
-			m_PaddedTaskJacobian = FloatMatrix::Zero(task_dim, resource_dim + task_dim);
-
-			for (unsigned int i = 0; i < task_dim; ++i) {
-				m_PaddedTaskJacobian(i, resource_dim+i) = diagonal[i];
-			}
-
-			m_PaddedInverseTaskJacobian = FloatMatrix((int) resource_dim + task_dim, (int) task_dim);
-			m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
-		}	
-
-
-		protected:
-			FloatMatrix m_PaddedTaskJacobian;
-			FloatMatrix m_PaddedInverseTaskJacobian;
-	};
-	
-	typedef boost::shared_ptr<PaddedEffectorTransform> PaddedEffectorTransformPtr;
 	
 	
 } // namespace

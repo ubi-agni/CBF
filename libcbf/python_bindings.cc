@@ -28,6 +28,7 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/resource.h>
 #include <cbf/generic_transform.h>
+#include <cbf/orientation_potentials.h>
 #include <cbf/potential.h>
 #include <cbf/sensor_transform.h>
 
@@ -78,8 +79,8 @@ BOOST_PYTHON_MODULE(pycbf)
 		.def("finished", &CBF::Controller::finished)
 	;
 
-//	class_<CBF::PrimitiveController, bases<CBF::Controller>, CBF::PrimitiveControllerPtr>("PrimitiveController")
-//		.def("step", &CBF::PrimitiveController::step)
-//		.def("finished", &CBF::PrimitiveController::finished)
-//	;
+	class_<CBF::PrimitiveController, bases<CBF::Controller>, CBF::PrimitiveControllerPtr>("PrimitiveController")
+		.def("step", &CBF::PrimitiveController::step)
+		.def("finished", &CBF::PrimitiveController::finished)
+	;
 }

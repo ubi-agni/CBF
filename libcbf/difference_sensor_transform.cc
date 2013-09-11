@@ -19,26 +19,27 @@
 */
 
 #include <cbf/difference_sensor_transform.h>
-#include <cbf/xml_object_factory.h>
+
+#include <cbf/plugin_impl_macros.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		DifferenceSensorTransform::DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
-			SensorTransform(xml_instance, object_namespace)
+		DifferenceSensorTransform::DifferenceSensorTransform(const DifferenceSensorTransformType &xml_instance) :
+			SensorTransform(xml_instance)
 		{
 			CBF_DEBUG("yay!!!");
 		
 			std::vector<SensorTransformPtr> transforms;
 		
 			//! Instantiate the subordinate transforms
-			CBFSchema::DifferenceSensorTransform::SensorTransform1_const_iterator it;
+			SensorTransformChainType::SensorTransform_const_iterator it;
 			for (
-				it = xml_instance.SensorTransform1().begin(); 
-				it != xml_instance.SensorTransform1().end();
+				it = xml_instance.SensorTransform().begin(); 
+				it != xml_instance.SensorTransform().end();
 				++it
 			)
 			{
-				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it, object_namespace));
+				SensorTransformPtr tr(PluginPool<SensorTransform>::get_instance()->create_from_xml(*it));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}
@@ -46,20 +47,18 @@ namespace CBF {
 			if (transforms.size() != 2) 
 				throw std::runtime_error("[DifferenceSensorTransform]: Number of transforms != 2");
 
-			if (transforms[0]->task_jacobian().cols() != transforms[1]->task_jacobian().cols())
+			if (transforms[0]->resource_dim() != transforms[1]->resource_dim())
 				throw std::runtime_error("[DifferenceSensorTransform]: Resource dimensions do not match");
 
-			if (transforms[0]->task_jacobian().rows() != transforms[1]->task_jacobian().rows())
+			if (transforms[0]->task_dim() != transforms[1]->task_dim())
 				throw std::runtime_error("[DifferenceSensorTransform]: Task dimensions do not match");
 
 			set_transforms(transforms[0], transforms[1]);
 		}
-
-		static XMLDerivedFactory<
-			DifferenceSensorTransform, 
-			CBFSchema::DifferenceSensorTransform
-		> x;
 		
 	#endif
+
+	CBF_PLUGIN_CLASS(DifferenceSensorTransform, SensorTransform)
+
 } // namespace
 

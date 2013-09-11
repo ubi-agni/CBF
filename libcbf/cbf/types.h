@@ -25,8 +25,9 @@
 
 #include <cbf/config.h>
 
-#include <Eigen/Core>
-#include <boost/shared_ptr.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
 
 namespace CBF {
 
@@ -38,11 +39,9 @@ namespace CBF {
 	/**
 		A typedef to make some other stuff shorter...
 	*/
-	typedef Eigen::VectorXd FloatVector;
-	typedef Eigen::MatrixXd FloatMatrix;
-
-	typedef boost::shared_ptr<FloatVector> FloatVectorPtr;
-	typedef boost::shared_ptr<FloatMatrix> FloatMatrixPtr;
+	typedef boost::numeric::ublas::vector<Float> FloatVector;
+	typedef boost::numeric::ublas::matrix<Float> FloatMatrix;
+	
 } // namespace
 
 #endif

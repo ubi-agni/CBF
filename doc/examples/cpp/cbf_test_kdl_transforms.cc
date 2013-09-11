@@ -18,13 +18,14 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
+/* -*- mode: c-non-suck; -*- */
+
 #include <cbf/primitive_controller.h>
 
-#include <cbf/square_potential.h>
-#include <cbf/composite_potential.h>
-#include <cbf/kdl_transforms.h>
+#include <cbf/potential.h>
 #include <cbf/effector_transform.h>
 #include <cbf/sensor_transform.h>
+#include <cbf/kdl_transforms.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/combination_strategy.h>
 #include <cbf/utilities.h>
@@ -34,67 +35,76 @@
 #include <iostream>
 #include <cstdlib>
 
-// #include <kdl/jacobian.hpp>
+#include <kdl/jacobian.hpp>
 #include <kdl/chain.hpp>
 
-#define NUM_OF_STEPS 1000
+#define NUM_OF_STEPS 1000 
 #define NUM_OF_RUNS 1
 
 
 int main(int argc, char *argv[]) {
 	srand(1);
 
-	CBF::PrimitiveControllerPtr controller;
+#if 0
 	{
+		//! Test some matrix conversion functions which are specific to KDL stuff
+		KDL::Jacobian jac(3,1);
+		CBF::ublas::matrix<CBF::CBFFloat> m;
+		m = CBF::assign(m, jac);
+		std::cout << "m: " << m << std::endl;
+
+		KDL::Frame f;
+		m = CBF::assign(m, f);
+		std::cout << "m: " << m << std::endl;
+	}
+#endif
+
+	CBF::PrimitiveControllerPtr controller;
+	for (int i = 0; i < 3; ++i)
+
+	{
+		//! Use a simple primitive controller for this test
+		controller = CBF::PrimitiveControllerPtr(new CBF::PrimitiveController);
+	
 		//! Build up a fairly simple KDL::Chain
 		boost::shared_ptr<KDL::Chain> chain (new KDL::Chain);
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotX), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotY), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
-		chain->addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ), 
-												 KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotY, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotY, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotY, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotX, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotY, KDL::Frame(KDL::Vector(1,0,0))));
+		chain->addSegment(KDL::Segment(KDL::Joint::RotZ, KDL::Frame(KDL::Vector(1,0,0))));
 	
+	
+		//! Add sensor and effector transform that transform to/fro position/orientation space
+		controller->set_sensor_transform(CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)));
+
+		controller->set_effector_transform(CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(controller->sensor_transform())));
+	
+		//! Add a potential function
+		controller->set_potential(CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)));
+	
+		//! Since no subordinate controller is used, this is really not necessary (TODO: Fix
+		//! this, so it's really not necessary)
+		controller->set_combination_strategy(CBF::CombinationStrategyPtr(new CBF::AddingStrategy));
 
 		CBF::DummyReferencePtr ref(new CBF::DummyReference(1,3));
-		ref->references()[0] = CBF::FloatVector::Unit(3,1);
-
-		//! Use a simple primitive controller for this test
-		controller = CBF::PrimitiveControllerPtr(
-			new CBF::PrimitiveController(
-				1.0,
-				std::vector<CBF::ConvergenceCriterionPtr>(),
-				ref,
-				CBF::PotentialPtr(new CBF::SquarePotential(3, 0.1)),
-				CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
-				CBF::EffectorTransformPtr(new CBF::PaddedEffectorTransform(3, 12, 1.5)),
-				std::vector<CBF::SubordinateControllerPtr>(),
-				CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
-				CBF::ResourcePtr(new CBF::DummyResource(12))
-			)
-		);
+		ref->references()[0] = CBF::ublas::unit_vector<CBF::Float>(3,1);
+		controller->set_reference(ref);
+		
 
 		unsigned int total_steps = 0;
 		for (unsigned int run = 0; run < NUM_OF_RUNS; ++run) {
-			std::cout << "[test_kdl_transforms]: run: " << run << std::endl;
+			//! Finally bind this controller to a dummy resource (one variable for each
+			//! joint of the KDL::Chain
+			controller->set_resource(CBF::ResourcePtr(new CBF::DummyResource(12)));
+			//std::cout << "[test_kdl_transforms]: run: " << run << std::endl;
 			//! Execute until convergence or NUM_OF_STEPS, whatever comes first
 			unsigned int i = 0;
 			do {

@@ -1,8 +1,11 @@
 message(STATUS "In subdirectory apps:")
 
 include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
-include_directories("${PROJECT_SOURCE_DIR}/apps/")
 include_directories("${PROJECT_BINARY_DIR}/libcbf/")
+include_directories("${PROJECT_SOURCE_DIR}/libcbf/cbf/")
+include_directories("${PROJECT_BINARY_DIR}/libcbf/cbf/")
+
+include_directories("${PROJECT_SOURCE_DIR}/apps/")
 
 if(CBF_HAVE_XSD)
   include_directories(${XSD_INC})
@@ -16,7 +19,6 @@ if(CBF_HAVE_MEMORY)
   include_directories(${MEMORY_INCLUDE_DIRS})
 endif()
 
-
 if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
   message(STATUS "  adding executable: cbf_run_controller")
 
@@ -25,6 +27,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
     )
   target_link_libraries(cbf_run_controller
     ${CBF_LIBRARY_NAME}
+    cbf_schemas
     ${Boost_LIBRARIES}
     )
   set_target_properties(cbf_run_controller
@@ -37,7 +40,6 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
 	 ARCHIVE DESTINATION lib/static
 	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
 	 )
-
 
 else()
   message(STATUS "  not adding executable cbf_run_controller because xsd or boost-program-options was not found")

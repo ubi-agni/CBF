@@ -22,12 +22,12 @@
 #define CBF_DIFFERENCE_SENSOR_TRANSFORM
 
 #include <cbf/sensor_transform.h>
-#include <cbf/namespace.h>
+#include <cbf/plugin_decl_macros.h>
 
 #include <vector>
 #include <cassert>
 
-namespace CBFSchema { class DifferenceSensorTransform; }
+CBF_PLUGIN_PREAMBLE(DifferenceSensorTransform)
 
 namespace CBF {
 
@@ -36,24 +36,36 @@ namespace CBF {
 		operating on the same resources..
 	*/
 	struct DifferenceSensorTransform : public SensorTransform {
-		DifferenceSensorTransform(const CBFSchema::DifferenceSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
+		CBF_PLUGIN_DECL_METHODS(DifferenceSensorTransform)
 
-		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr()) 
+		DifferenceSensorTransform(SensorTransformPtr t1 = SensorTransformPtr(), SensorTransformPtr t2 = SensorTransformPtr())
 		{
 			if (t1.get() && t2.get())
 				set_transforms(t1, t2);
 		}
 
 		void set_transforms(SensorTransformPtr t1, SensorTransformPtr t2) {
+			if (t1->resource_dim() != t2->resource_dim())
+				throw std::runtime_error("[DifferenceSensorTransform]: Resource dimensions do not match");
+
+			if (t1->task_dim() != t2->task_dim())
+				throw std::runtime_error("[DifferenceSensorTransform]: Task dimensions do not match");
+
 			m_Transform1 = t1;
 			m_Transform2 = t2;
 		}
 
-		void update(const FloatVector &resource_value) {
-			assert(m_Transform1->task_jacobian().rows() == m_Transform2->task_jacobian().rows());
+		void set_resource(ResourcePtr resource) {
+			m_Transform1->set_resource(resource);
+			m_Transform2->set_resource(resource);
+			m_Resource = resource;
+		}
 
-			m_Transform1->update(resource_value);
-			m_Transform2->update(resource_value);
+		void update() {
+			assert(m_Transform1->task_dim() == m_Transform2->task_dim());
+
+			m_Transform1->update();
+			m_Transform2->update();
 
 			//! The jacobian is just the difference of the individual transforms
 			m_TaskJacobian = m_Transform1->task_jacobian() - m_Transform2->task_jacobian();
@@ -62,6 +74,8 @@ namespace CBF {
 			m_Result = m_Transform1->result() - m_Transform2->result();
 		}
 
+		// As both sensor transforms are required to have the same resource dimensionality, it does not matter
+		// which one we return
 		unsigned int resource_dim() const { return m_Transform1->resource_dim(); }
 
 		// As both sensor transforms are required to have the same task dimensionality, it does not matter

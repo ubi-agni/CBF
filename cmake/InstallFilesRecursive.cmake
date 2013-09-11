@@ -4,7 +4,7 @@
 # support for not mixing up the path logic is provided for generated files
 # if they are located in CMAKE_CURRENT_BINARY dir. Otherwise
 # CMAKE_CURRENT_SOURCE_DIR is assumed as the absolute location for the files to
-# install. 
+# install.
 #
 # INSTALL_FILES_RECURSIVE(DESTINATION FILE_LIST)
 #
@@ -13,10 +13,14 @@
 #                  locations will be relative to CMAKE_INSTALL_PREFIX.
 #     FILE_LIST: list of files to install
 #
+# Additional arguments given to the function will be passed directly to the
+# INSTALL command with the FILE syntax after the DESTINATION argument.
+#
 # Exmaple:
-# INSTALL_FILES_RECURSIVE(include "rsc/foo.h"
-#                                 "rsc/test/bla.h"
-#                                 "${CMAKE_CURRENT_BINARY_DIR}/rsc/narf/damn/xxx.h")
+# SET(FILES "rsc/foo.h"
+#           "rsc/test/bla.h"
+#           "${CMAKE_CURRENT_BINARY_DIR}/rsc/narf/damn/xxx.h")
+# INSTALL_FILES_RECURSIVE(include FILES)
 # will install:
 #   ${CMAKE_INSTALL_PREFIX}/include/rsc/foo.h
 #   ${CMAKE_INSTALL_PREFIX}/include/rsc/test/bla.h
@@ -69,7 +73,7 @@ MACRO(INSTALL_FILES_RECURSIVE DESTINATION FILE_LIST)
         GET_FILENAME_COMPONENT(REL_PATH ${BASE_PATH} PATH)
         #MESSAGE("REL_PATH: ${REL_PATH}")
     
-        INSTALL(FILES ${FILE} DESTINATION ${DESTINATION}/${REL_PATH})
+        INSTALL(FILES ${FILE} DESTINATION "${DESTINATION}/${REL_PATH}" ${ARGN})
         
     ENDFOREACH()
 

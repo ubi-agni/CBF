@@ -38,13 +38,18 @@ macro(_eigen3_check_version)
   set(EIGEN3_MAJOR_VERSION "${CMAKE_MATCH_1}")
   string(REGEX MATCH "define *EIGEN_MINOR_VERSION ([0-9]*)" _eigen3_minor_version_match "${_eigen3_version_header}")
   set(EIGEN3_MINOR_VERSION "${CMAKE_MATCH_1}")
+  
+set(EIGEN3_VERSION ${EIGEN3_WORLD_VERSION}.${EIGEN3_MAJOR_VERSION}.${EIGEN3_MINOR_VERSION})
 
-  set(EIGEN3_VERSION ${EIGEN3_WORLD_VERSION}.${EIGEN3_MAJOR_VERSION}.${EIGEN3_MINOR_VERSION})
   if(${EIGEN3_VERSION} VERSION_LESS ${Eigen3_FIND_VERSION})
     set(EIGEN3_VERSION_OK FALSE)
   else()
     set(EIGEN3_VERSION_OK TRUE)
   endif()
+
+  # FIX-ME
+  # Temporarily disabling version checking as it seems broken
+  set(EIGEN3_VERSION_OK TRUE)
 
   if(NOT EIGEN3_VERSION_OK)
   
@@ -65,6 +70,7 @@ find_path(EIGEN3_INCLUDE_DIR NAMES Eigen/Core
      PATHS
      ${INCLUDE_INSTALL_DIR}
      "C:/Program Files/Eigen/include"
+     "/usr/local/include/eigen3"
      PATH_SUFFIXES eigen3
    )
 

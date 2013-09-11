@@ -20,30 +20,25 @@
 
 /* -*- mode: c-non-suck; -*- */
 
-#include <cbf/c_api.h>
+#include <cbf/c_bindings.h>
 
 #include <cbf/config.h>
-#include <cbf/xml_factory.h>
+#include <schemas.hxx>
 #include <cbf/controller.h>
 #include <cbf/primitive_controller.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/debug_macros.h>
 #include <cbf/dummy_reference.h>
-#include <cbf/xml_object_factory.h>
-#include <cbf/namespace.h>
-#include <cbf/types.h>
-
 #include <algorithm>
 #include <cstdlib>
-
 
 void cbf_init() {
 
 }
 
-struct cbf_primitive_controller*
+struct primitive_controller*
 cbf_controller_create_from_file(
-	struct cbf_primitive_controller *c, 
+	struct primitive_controller *c, 
 	const char *filename)
 {
 	CBF::PrimitiveControllerPtr *p = 0;
@@ -51,23 +46,22 @@ cbf_controller_create_from_file(
 		//! Create an empty PrimitiveControllerPtr..
 		p = new CBF::PrimitiveControllerPtr();
 
-		CBF_DEBUG("[create_controller_from_file]: Creating ControllerType instance");
+		CBF_DEBUG("[create_controller_from_file]: Creating ControllerType instance")
 		//! Create ControllerType instance from xml file...
-		std::auto_ptr< CBFSchema::ControlBasis> xml_instance (
-			CBFSchema::ControlBasis_(
+		std::auto_ptr<ControllerType> xml_instance (
+			Controller(
 				filename,
 				xml_schema::flags::dont_validate
 			)
 		);
 	
-		CBF_DEBUG("[create_controller_from_file]: Creating controller...");
+		CBF_DEBUG("[create_controller_from_file]: Creating controller...")
 
-		//! TODO: Check if the creating a new namespace is the right thing to do here
 		//! Finally let's create the controller instance..
 		CBF::ControllerPtr controller = 
-			CBF::XMLObjectFactory::instance()->create<CBF::Controller>(*xml_instance, CBF::ObjectNamespacePtr(new CBF::ObjectNamespace));
+			CBF::PluginPool<CBF::Controller>::get_instance()->create_from_xml(*xml_instance);
 
-		CBF_DEBUG("[create_controller_from_file]: Checking if it's a PrimitiveController");
+		CBF_DEBUG("[create_controller_from_file]: Checking if it's a PrimitiveController")
 		//! Checking whether the created controller is a PrimitiveController.
 		*p = boost::dynamic_pointer_cast<CBF::PrimitiveController>(controller);
 
@@ -82,14 +76,14 @@ cbf_controller_create_from_file(
 	}
 	catch (const xml_schema::exception& e) 
 	{
-		CBF_DEBUG("[create_controller_from_file]: Some error happened: during parsing " << e);
+		CBF_DEBUG("[create_controller_from_file]: Some error happened: during parsing " << e)
 		delete p;
 
 		//! Rethrow the exception, so a debugger might catch it :)
 		return 0;
 	}
 	catch(...) {
-		CBF_DEBUG("[create_controller_from_file]: Some error happened");
+		CBF_DEBUG("[create_controller_from_file]: Some error happened")
 		delete p;
 
 		return 0;
@@ -100,18 +94,18 @@ cbf_controller_create_from_file(
 struct primitive_controller*
 cbf_controller_create_from_memory(struct primitive_controller *c, const char *mem)
 {
-	CBF_DEBUG("[create_controller_from_memory]: Not implemented yet");
+	CBF_DEBUG("[create_controller_from_memory]: Not implemented yet")
 	return c;
 }
 
 int
-cbf_controller_get_resource_dim(struct cbf_primitive_controller *c) {
+cbf_controller_get_resource_dim(struct primitive_controller *c) {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 	try {
 		//! Check whether the controller contains a dummy resource..
-		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
+		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->sensor_transform()->resource());
 		if (res.get() == 0) {
-			CBF_DEBUG("[step_controller]: No dummy resource found in controller");
+			CBF_DEBUG("[step_controller]: No dummy resource found in controller")
 			return 0;
 		}
 
@@ -120,7 +114,7 @@ cbf_controller_get_resource_dim(struct cbf_primitive_controller *c) {
 	}
 	catch (...)
 	{
-		CBF_DEBUG("[controller_get_resource_dim]: Something went wrong");
+		CBF_DEBUG("[controller_get_resource_dim]: Something went wrong")
 		return -1;
 	}
 
@@ -128,85 +122,77 @@ cbf_controller_get_resource_dim(struct cbf_primitive_controller *c) {
 
 
 int
-cbf_controller_set_reference(struct cbf_primitive_controller* c, double *reference) {
+cbf_controller_set_reference(struct primitive_controller* c, double *reference) {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
 	boost::shared_ptr<CBF::DummyReference> d = boost::dynamic_pointer_cast<CBF::DummyReference, CBF::Reference>((*p)->reference());
 
 	if (d.get() == 0) {
-		CBF_DEBUG("[controller_set_reference]: controlle_set_reference only works with a reference of type CBF::DummyReference");
+		CBF_DEBUG("[controller_set_reference]: controlle_set_reference only works with a reference of type CBF::DummyReference")
 		return -1;
 	}
 
-	std::copy(
-		reference,
-		reference + d->references()[0].size(),
-		d->references()[0].data()
-	);
+	std::copy(reference, reference + d->references()[0].size(), d->references()[0].begin());
 
 	return 1;
 }
 
 int
-cbf_controller_get_reference(struct cbf_primitive_controller* c, double *reference) {
+cbf_controller_get_reference(struct primitive_controller* c, double *reference) {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
 	boost::shared_ptr<CBF::DummyReference> d = boost::dynamic_pointer_cast<CBF::DummyReference, CBF::Reference>((*p)->reference());
 
 	if (d.get() == 0) {
-		CBF_DEBUG("[controller_set_reference]: controlle_set_reference only works with a reference of type CBF::DummyReference");
+		CBF_DEBUG("[controller_set_reference]: controlle_set_reference only works with a reference of type CBF::DummyReference")
 		return -1;
 	}
 
-	std::copy(
-		d->references()[0].data(),
-		d->references()[0].data() + d->references()[0].size(),
-		reference
-		);
+	std::copy(d->references()[0].begin(), d->references()[0].end(), reference);
 
 	return 1;
 }
 
 
 int
-cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
+cbf_controller_step(struct primitive_controller *c, double *in, double *out)
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 	try {
 		//! Check whether the controller contains a dummy resource..
-		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
+		CBF::DummyResourcePtr res = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->sensor_transform()->resource());
 		if (res.get() == 0) {
-			CBF_DEBUG("[step_controller]: No dummy resource found in controller");
+			CBF_DEBUG("[step_controller]: No dummy resource found in controller")
 			return -1;
 		}
 
 		//! Copy data over into the resource (assuming it's a dummy resource)..
-		std::copy(in, in+res->dim(), res -> m_Variables.data());
+		std::copy(in, in+res->dim(), res->m_Variables.begin());
 
-		CBF_DEBUG(res->m_Variables);
+		CBF_DEBUG(res->m_Variables)
 
 		//! A place to store the result...
-		CBF::FloatVector result;
+		boost::numeric::ublas::vector<CBF::Float> result;
 
 		//! Update the controller state
-		(*p)->update();
+		(*p)->update(rand());
 
 		result = (*p)->result();
 
 		//! Copy result over into out array...
-		std::copy(result.data(), result.data() + result.size(), out);
+		std::copy(result.begin(), result.end(), out);
 	}
 	catch (...)
 	{
-		CBF_DEBUG("[step_controller]: Something went wrong");
+		CBF_DEBUG("[step_controller]: Something went wrong")
 		return -1;
 	}
 
 	return 1;
 }
 
-struct cbf_primitive_controller*
-cbf_controller_destroy(struct cbf_primitive_controller *c)
+struct primitive_controller*
+cbf_controller_destroy(struct primitive_controller *c)
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 	CBF::PrimitiveControllerPtr empty = CBF::PrimitiveControllerPtr();
@@ -217,21 +203,17 @@ cbf_controller_destroy(struct cbf_primitive_controller *c)
 }
 
 int 
-cbf_controller_get_current_task_position(struct cbf_primitive_controller *c, double *out)
+cbf_controller_get_current_task_position(struct primitive_controller *c, double *out)
 {
 	CBF::PrimitiveControllerPtr *p = ((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
-	std::copy(
-		(*p)->current_task_position().data(),
-		(*p)->current_task_position().data() + (*p)->current_task_position().size(),
-		out
-	);
+	std::copy((*p)->current_task_position().begin(),(*p)->current_task_position().end(), out);
 
 	return 1;	
 }
 
-struct cbf_primitive_controller*
-cbf_controller_get_subordinate_controller(struct cbf_primitive_controller *pc, struct cbf_primitive_controller *spc, int index) {
+struct primitive_controller*
+cbf_controller_get_subordinate_controller(struct primitive_controller *pc, struct primitive_controller *spc, int index) {
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)pc->controller_ptr);
 	
@@ -243,32 +225,35 @@ cbf_controller_get_subordinate_controller(struct cbf_primitive_controller *pc, s
 
 
 int 
-cbf_controller_set_resource(struct cbf_primitive_controller *c, double *resource_in) {
+cbf_controller_set_resource(struct primitive_controller *c, double *resource_in) {
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
-	int resource_dim = (*p)->resource()->dim();
+	int resource_dim = (*p)->sensor_transform()->resource()->dim();
 
 	CBF::FloatVector vec(resource_dim);
 
-	std::copy(resource_in, resource_in + resource_dim, vec.data());
+	std::copy(
+		resource_in, 
+		resource_in + resource_dim, 
+		vec.begin()
+	);
 
-	CBF::DummyResourcePtr dr = boost::dynamic_pointer_cast<CBF::DummyResource>((*p)->resource());
-
-	dr->set(vec);
+	(*p)->sensor_transform()->resource()->set(vec);
 
 	return 1;
 }
 
 
 int 
-cbf_controller_get_resource(struct cbf_primitive_controller *c, double *resource_out) {
+cbf_controller_get_resource(struct primitive_controller *c, double *resource_out) {
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
+
 	std::copy(
-		(*p)->resource()->get().data(),
-		(*p)->resource()->get().data() + (*p)->resource()->get().size(),
+		(*p)->sensor_transform()->resource()->get().begin(),
+		(*p)->sensor_transform()->resource()->get().end(),
 		resource_out
 	);
 
@@ -276,7 +261,7 @@ cbf_controller_get_resource(struct cbf_primitive_controller *c, double *resource
 }
 
 int
-cbf_controller_is_finished(struct cbf_primitive_controller *pc) {
+cbf_controller_is_finished(struct primitive_controller *pc) {
 	CBF::PrimitiveControllerPtr *p = 
 		((CBF::PrimitiveControllerPtr*)pc->controller_ptr);
 

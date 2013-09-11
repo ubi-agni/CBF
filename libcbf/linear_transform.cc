@@ -21,22 +21,29 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/linear_transform.h>
-#include <cbf/utilities.h>
-#include <cbf/xml_object_factory.h>
-#include <cbf/xml_factory.h>
+#include <cbf/plugin_macros.h>
 
 namespace CBF {
 
 	#ifdef CBF_HAVE_XSD
-		LinearSensorTransform::LinearSensorTransform(const CBFSchema::LinearSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) : 
-			SensorTransform(xml_instance, object_namespace)
+		LinearSensorTransform::LinearSensorTransform(const LinearSensorTransformType &xml_instance) 
 		{
 			CBF_DEBUG("[LinearSensorTransform(const LinearSensorTransformType &xml_instance)]: yay!!!");
+			const MatrixType *m = &xml_instance.Matrix();
+		
+			const BoostMatrixType *m2 = 
+				dynamic_cast<const BoostMatrixType*>(m);
 
-			init(*XMLFactory<FloatMatrix>::instance()->create(xml_instance.Matrix(), object_namespace));
+			if (m2) {
+				std::stringstream stream(std::string(m2->String()));
+				stream >> m_Matrix;
+				CBF_DEBUG(m_Matrix)
+				if ((m_Matrix.size1() == 0) && (m_Matrix.size2() == 0)) 
+					throw std::runtime_error
+						("[LinearSensorTransform]: Matrix is empty");
+			}
 		}
-
-		static XMLDerivedFactory<LinearSensorTransform, CBFSchema::LinearSensorTransform> x;
 	#endif
 		
+	CBF_PLUGIN_CLASS(LinearSensorTransform, SensorTransform)
 } // namespace

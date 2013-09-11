@@ -61,7 +61,7 @@ Quaternion qslerp(Quaternion q, Quaternion r, Float t)
 	// Travel along the shorter path. Ref : Adv Anim. by Watt & Watt
 	if ( (1.0 + cos_theta) > EPSILON )
 	{
-		CBF_DEBUG("short path");
+		CBF_DEBUG("short path")
 		// If angle is not small use SLERP.
 		if ( (1.0 - cos_theta) > EPSILON )
 		{
@@ -78,7 +78,7 @@ Quaternion qslerp(Quaternion q, Quaternion r, Float t)
 	}
 	else // This is a long way
 	{
-		CBF_DEBUG("long path");
+		CBF_DEBUG("long path")
 		// Clear the concept later...
 		val.assign(r.z, -r.y, r.x, -r.w);
 		scaleQ = sin( (1.0 - t)* PID2 );

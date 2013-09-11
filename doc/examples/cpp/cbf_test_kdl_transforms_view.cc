@@ -22,22 +22,24 @@
 #include <qkdlchainview.h>
 
 #include <cbf/primitive_controller.h>
-#include <cbf/dummy_reference.h>
-#include <cbf/kdl_transforms.h>
-#include <cbf/composite_potential.h>
-#include <cbf/composite_transform.h>
-#include <cbf/square_potential.h>
+
+#include <cbf/potential.h>
 #include <cbf/effector_transform.h>
 #include <cbf/sensor_transform.h>
+#include <cbf/kdl_transforms.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/combination_strategy.h>
 #include <cbf/identity_transform.h>
-#include <cbf/axis_angle_potential.h>
+#include <cbf/composite_transform.h>
+#include <cbf/orientation_potentials.h>
 #include <cbf/generic_transform.h>
+#include <cbf/dummy_reference.h>
 #include <cbf/utilities.h>
-#include <cbf/quaternion.h>
+#include <cbf/avoid_singularities.h>
 
-#ifdef CBF_HAVE_SPACEMOUSE
+#include <cbf/plugin_decl_macros.h>
+
+#ifdef HAVE_SPACEMOUSE
 	#include <spacenavi.h>
 	#include <sys/stat.h>
 	#include <fcntl.h>
@@ -46,10 +48,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <unistd.h>
-
-
-#include <boost/shared_ptr.hpp>
-#include <kdl/chain.hpp>
 
 #define NUM_OF_STEPS 10000 
 
@@ -65,7 +63,7 @@ int main(int argc, char *argv[]) {
 	CBF::PrimitiveControllerPtr primary_controller(
 		new CBF::PrimitiveController(1, 1));
 
-	CBF::DummyReferencePtr ref(new CBF::DummyReference(1, 6));
+	CBF::DummyReferencePtr ref(new CBF::DummyReference(1,6));
 	primary_controller->set_reference(ref);
 	
 
@@ -97,22 +95,30 @@ int main(int argc, char *argv[]) {
 	*/
 	std::vector<CBF::SensorTransformPtr> sensor_trafos;
 
-	sensor_trafos.push_back
-		(CBF::SensorTransformPtr
-			(new CBF::KDLChainPositionSensorTransform(chain)));
+	sensor_trafos.push_back(
+		CBF::SensorTransformPtr(
+			new CBF::KDLChainPositionSensorTransform(chain)
+		)
+	);
 
-	sensor_trafos.push_back
-		(CBF::SensorTransformPtr
-			(new CBF::KDLChainAxisAngleSensorTransform(chain)));
+	sensor_trafos.push_back(
+		CBF::SensorTransformPtr(
+			new CBF::KDLChainAxisAngleSensorTransform(chain)
+		)
+	);
 
-	primary_controller->set_sensor_transform
-		(CBF::SensorTransformPtr
-			(new CBF::CompositeSensorTransform(sensor_trafos)));
+	primary_controller->set_sensor_transform( 
+		CBF::SensorTransformPtr(
+			new CBF::CompositeSensorTransform(sensor_trafos)
+		)
+	);
 
 	//! We use the generic pseudo inverse based effector transform,.
-	primary_controller->set_effector_transform
-		(CBF::EffectorTransformPtr
-			(new CBF::DampedGenericEffectorTransform(primary_controller->sensor_transform())));
+	primary_controller->set_effector_transform(
+		CBF::EffectorTransformPtr(
+			new CBF::GenericEffectorTransform(primary_controller->sensor_transform())
+		)
+	);
 
 	/**
 		Add a potential function. The potential function is again a composite one,
@@ -150,7 +156,7 @@ int main(int argc, char *argv[]) {
 
 	secondary_controller->set_effector_transform(
 		CBF::EffectorTransformPtr(
-			new CBF::DampedGenericEffectorTransform(
+			new CBF::GenericEffectorTransform(
 				secondary_controller->sensor_transform())));
 
 	secondary_controller->set_potential(
@@ -163,19 +169,16 @@ int main(int argc, char *argv[]) {
 		minimize joint angles and their minimum is at 0 :)
 	*/
 	// secondary_controller->references().push_back(CBF::ublas::zero_vector<CBF::Float>(NUM_OF_JOINT_TRIPLES * 3));
-	secondary_controller->set_reference(
-		CBF::ReferencePtr(new CBF::DummyReference(1,NUM_OF_JOINT_TRIPLES * 3)));
+	secondary_controller->set_reference(CBF::ReferencePtr(new CBF::DummyReference(1,NUM_OF_JOINT_TRIPLES * 3)));
 
 	/**
 		Finally add the secondary controller so its output is projected into the
 		nullspace of the primary controller
 	*/
-	primary_controller->subordinate_controllers().push_back(secondary_controller);
+	//primary_controller->subordinate_controllers().push_back(secondary_controller);
 
 
-#ifdef CBF_HAVE_SPACEMOUSE
-	//! If there was libnavi present at configuration time, then the user
-	//! can specify any argument. Then this example is controlled by the spacemouse
+#ifdef HAVE_SPACEMOUSE
 	std::cout << "HAVE_SPACEMOUSE" << std::endl;
 	if (argc > 1)
 	{
@@ -207,18 +210,35 @@ int main(int argc, char *argv[]) {
 	
 					const double factor = 0.0001;
 	
+#if 0
+					primary_controller->references()[0][0] += factor * axes[0];
+					primary_controller->references()[0][1] += -factor * axes[1];
+					primary_controller->references()[0][2] += -factor * axes[2];
+#endif
 					ref->references()[0][0] += factor * axes[0];
 					ref->references()[0][1] += -factor * axes[1];
 					ref->references()[0][2] += -factor * axes[2];
 
-					CBF::ublas::vector<CBF::Float> current_rot_ref(3);
+					CBF::ublas::vector<CBF::Float> current_rot_ref(4);
+					current_rot_ref[0] = 0;
 					std::copy(
 						ref->references()[0].begin() + 3,
 						ref->references()[0].end(),
-						current_rot_ref.begin());
+						current_rot_ref.begin() + 1);
 	
+					float w = CBF::ublas::norm_2(current_rot_ref);
+					if (w != 0)
+						current_rot_ref = current_rot_ref * (1.0/w);
+					else {
+						current_rot_ref = CBF::ublas::zero_vector<CBF::Float>(4);
+						current_rot_ref[1] = 1;
+					}
+	
+					current_rot_ref[0] = w;
+	
+					CBF::Quaternion tmp = current_rot_ref;
 					CBF::Quaternion current_rot_ref_q;
-					current_rot_ref_q.from_axis_angle3(current_rot_ref);
+					current_rot_ref_q.from_axis_angle(tmp);
 	
 					std::cout << "current_q: " << current_rot_ref_q << std::endl;
 	
@@ -227,31 +247,32 @@ int main(int argc, char *argv[]) {
 					CBF::Quaternion rot_x(cos(rot_factor * axes[3] / 2.0), sin(rot_factor * axes[3] / 2.0), 0, 0);
 					CBF::Quaternion rot_y(cos(rot_factor * axes[4] / 2.0), 0, sin(rot_factor * axes[4] / 2.0), 0);
 					CBF::Quaternion rot_z(cos(rot_factor * axes[5] / 2.0), 0, 0, sin(rot_factor * axes[5] / 2.0));
-
-					rot_x.normalize(); rot_y.normalize(); rot_z.normalize();
+					rot_x.normalize();
+					rot_y.normalize();
+					rot_z.normalize();
 	
-					current_rot_ref_q = 
-						rot_x * rot_y * rot_z
-						* current_rot_ref_q
-						* rot_z.conjugate() * rot_y.conjugate() * rot_x.conjugate();
-
+					current_rot_ref_q = rot_z.conjugate() * rot_y.conjugate() * rot_x.conjugate() * current_rot_ref_q;
 					//current_rot_ref_q = rot_y * current_rot_ref_q;
 	
 					std::cout << "next_q: " << current_rot_ref_q << std::endl;
 	
 					current_rot_ref_q.normalize();
-					current_rot_ref_q.to_axis_angle3(current_rot_ref);
+					current_rot_ref_q.axis_angle();
 	
 					std::cout << "next_q axis/angle " << current_rot_ref_q << std::endl;
-
+	
+					current_rot_ref = current_rot_ref_q;
+					current_rot_ref = current_rot_ref * current_rot_ref[0];
+					current_rot_ref[0] = 0;
+	
 					std::cout << "new_rot_ref: " << current_rot_ref << std::endl;
 					std::copy(
-						current_rot_ref.begin(),
+						current_rot_ref.begin() + 1,
 						current_rot_ref.end(),
 						ref->references()[0].begin() + 3
 					);
 	
-					std::cout << "ref: " << primary_controller->reference()->get()[0] << std::endl;
+					//std::cout << "ref: " << primary_controller->references()[0] << std::endl;
 				}
 				primary_controller->step();
 	
@@ -274,6 +295,37 @@ int main(int argc, char *argv[]) {
 	}
 #endif
 
+#if 0
+	ref->references()[0][0] = 1;//1.0 * sin(angle);
+	ref->references()[0][1] = 1;//1.0 * cos(angle);
+	ref->references()[0][2] = 0;//1.0 * cos(angle);
+
+	primary_controller->step();
+
+	while (true) {
+		CBF::FloatVector cur_task_pos(primary_controller->get_current_task_position().size());
+		std::copy(
+			primary_controller->get_current_task_position().begin(), 
+			primary_controller->get_current_task_position().end(), 
+			cur_task_pos.begin());
+	
+		ref->set_reference(cur_task_pos);
+		primary_controller->step();
+
+		for (unsigned int j = 0; j < chain_view.pose().size(); ++j)
+		{
+			chain_view.pose()[j] = primary_controller->effector_transform()->resource()->get()[j];
+		}
+		chain_view.show();
+		chain_view.update();
+
+		app.processEvents();
+		usleep(10000);
+	}
+
+#endif
+
+
 	unsigned int count = 0;
 
 	float angle = 0;
@@ -295,6 +347,7 @@ int main(int argc, char *argv[]) {
 			ref->references()[0][3] = angle;//M_PI/2.0;
 			ref->references()[0][4] = 0;//angle;
 			ref->references()[0][5] = 0;//angle;
+
 
 			primary_controller->step();
 

@@ -19,28 +19,27 @@
 */
 
 #include <cbf/weighted_sum_transforms.h>
+
+#include <cbf/plugin_impl_macros.h>
 #include <cbf/utilities.h>
-#include <cbf/xml_object_factory.h>
-#include <cbf/xml_factory.h>
-#include <cbf/foreign_object.h>
 
 namespace CBF {
 	#ifdef CBF_HAVE_XSD
-		WeightedSumSensorTransform::WeightedSumSensorTransform(const CBFSchema::WeightedSumSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) 
+		WeightedSumSensorTransform::WeightedSumSensorTransform(const WeightedSumSensorTransformType &xml_instance)
 		{
 			CBF_DEBUG("yay!!!");
 		
 			std::vector<SensorTransformPtr> transforms;
 		
 			//! Instantiate the subordinate transforms
-			CBFSchema::WeightedSumSensorTransform::SensorTransform1_const_iterator it;
+			SensorTransformChainType::SensorTransform_const_iterator it;
 			for (
-				it = xml_instance.SensorTransform1().begin(); 
-				it != xml_instance.SensorTransform1().end();
+				it = xml_instance.SensorTransform().begin(); 
+				it != xml_instance.SensorTransform().end();
 				++it
 			)
 			{
-				SensorTransformPtr tr(XMLObjectFactory::instance()->create<SensorTransform>(*it, object_namespace));
+				SensorTransformPtr tr(PluginPool<SensorTransform>::get_instance()->create_from_xml(*it));
 				transforms.push_back(tr);
 				//tr->set_resource(ResourcePtr(new DummyResource(tr->get_resource_dim())));
 			}
@@ -50,20 +49,14 @@ namespace CBF {
 
 			set_transforms(transforms);
 
-			m_Weights = 
-				*XMLObjectFactory::instance()->create<ForeignObject<FloatVector> >(
-					xml_instance.Weights(), object_namespace
-				)->m_Object;
-
+			m_Weights = create_vector(xml_instance.Weights());
 			if (m_Weights.size() != m_Transforms.size())
 				throw std::runtime_error ("[WeightedSumSensorTransform]: Mismatching number of weights and transforms");
 		}
 		
-		static XMLDerivedFactory<WeightedSumSensorTransform, CBFSchema::WeightedSumSensorTransform> x;
-
 	#endif
 
-
+	CBF_PLUGIN_CLASS(WeightedSumSensorTransform, SensorTransform)
 
 } // namespace
 

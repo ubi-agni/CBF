@@ -19,110 +19,45 @@
 */
 
 #include <cbf/generic_transform.h>
-#include <cbf/debug_macros.h>
-#include <cbf/xml_object_factory.h>
-#include <cbf/xml_factory.h>
-#include <cbf/foreign_object.h>
-
-#ifndef CBF_HAVE_EIGEN2
-  #include <cbf/svd.h>
-#endif
+#include <cbf/plugin_macros.h>
 
 namespace CBF {
 
-
-void GenericEffectorTransform::update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
-	CBF_DEBUG("updating");
-
-	//m_SensorTransform->task_jacobian(m_Jacobian);
-	pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
-}
-
-void DampedGenericEffectorTransform::update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
-	CBF_DEBUG("updating");
+void GenericEffectorTransform::update() {
+	CBF_DEBUG("updating")
 
 	//m_SensorTransform->task_jacobian(m_Jacobian);
-	damped_pseudo_inverse(task_jacobian, m_InverseTaskJacobian, m_DampingConstant);
+	pseudo_inverse(m_SensorTransform->task_jacobian(), m_InverseTaskJacobian);
+
+	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
 }
 
 
-void DampedWeightedGenericEffectorTransform::update(
-	const FloatVector &resource_value, 
-	const FloatMatrix &task_jacobian
-) {
-	CBF_DEBUG("updating");
+void DampedWeightedGenericEffectorTransform::update() {
+	CBF_DEBUG("updating")
 
 	//m_SensorTransform->task_jacobian(m_Jacobian);
-	damped_pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
+	damped_pseudo_inverse(m_SensorTransform->task_jacobian(), m_InverseTaskJacobian);
+
+	CBF_DEBUG("m_InvJacobian: " << m_InverseTaskJacobian)
 }
 
 
 #ifdef CBF_HAVE_XSD
-	GenericEffectorTransform::GenericEffectorTransform(
-		const CBFSchema::GenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
-	) :
-		EffectorTransform(xml_instance, object_namespace)
+	GenericEffectorTransform::GenericEffectorTransform(const GenericEffectorTransformType &xml_instance)
 	{
-		init(xml_instance.TaskDimension(), xml_instance.ResourceDimension());
-	}
-
-	PaddedEffectorTransform::PaddedEffectorTransform(
-		const CBFSchema::PaddedEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
-	) :
-		EffectorTransform(xml_instance, object_namespace)
-	{
-		init(
-			xml_instance.TaskDimension(), 
-			xml_instance.ResourceDimension(), 
-			*XMLObjectFactory::instance()->create<ForeignObject<FloatVector> >(xml_instance.Diagonal(), object_namespace)->m_Object
-		);
+	
 	}
 	
-
-	DampedGenericEffectorTransform::DampedGenericEffectorTransform(
-		const CBFSchema::DampedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
-	) :
-		EffectorTransform(xml_instance, object_namespace)
+	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const DampedWeightedGenericEffectorTransformType &xml_instance)
 	{
-		init(
-			xml_instance.TaskDimension(), 
-			xml_instance.ResourceDimension(),
-			xml_instance.DampingConstant()
-		);
+	
 	}
-
-	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
-		EffectorTransform(xml_instance, object_namespace)
-	{
-		init(
-			xml_instance.TaskDimension(), 
-			xml_instance.ResourceDimension(),
-			xml_instance.DampingConstant()
-		);
-	}
-
-	static XMLDerivedFactory<
-		GenericEffectorTransform, 
-		CBFSchema::GenericEffectorTransform
-	> x1;
-
-	static XMLDerivedFactory<
-		DampedGenericEffectorTransform, 
-		CBFSchema::DampedGenericEffectorTransform
-	> x2;
-
-	static XMLDerivedFactory<
-		DampedWeightedGenericEffectorTransform, 
-		CBFSchema::DampedWeightedGenericEffectorTransform
-	> x3;
-
-	static XMLDerivedFactory<
-		PaddedEffectorTransform, 
-		CBFSchema::PaddedEffectorTransform
-	> x4;
-
-
 #endif
+
+CBF_PLUGIN_CLASS(GenericEffectorTransform, EffectorTransform)
+CBF_PLUGIN_CLASS(DampedWeightedGenericEffectorTransform, EffectorTransform)
+
 
 } // namespace
 

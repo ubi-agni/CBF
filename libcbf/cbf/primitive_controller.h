@@ -28,79 +28,79 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 #include <vector>
+#include <stdexcept>
+#include <string>
 
 #include <cbf/controller.h>
-#include <cbf/convergence_criterion.h>
 #include <cbf/potential.h>
 #include <cbf/resource.h>
 #include <cbf/effector_transform.h>
 #include <cbf/reference.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/combination_strategy.h>
-#include <cbf/namespace.h>
 
-namespace CBFSchema { 
-	class PrimitiveController; 
-	class SubordinateController;
-}
+CBF_PLUGIN_PREAMBLE(PrimitiveController)
 
 namespace CBF {
-	class SubordinateController;
-	typedef boost::shared_ptr<SubordinateController> SubordinateControllerPtr;
-
 	class PrimitiveController;
 	typedef boost::shared_ptr<PrimitiveController> PrimitiveControllerPtr;
+
+	struct PrimitiveController;
+
+	/**
+		@brief The "primitive" controller is the 
+		main tool to use in the control basis framework.
 	
+		A primitive controller can be "synthesized" 
+		by combining an artificial potential function,
+		a sensor transform, an effector transform 
+		and a resource to act on.
+	
+		Additionally several subordinate controllers 
+		can be specified which will try to reach 
+		secondary goals. The result of the gradient 
+		steps of the subordinate controller is 
+		projected into the null space of this controller.
+	*/
+	struct PrimitiveController : public Controller {
+		CBF_PLUGIN_DECL_METHODS(PrimitiveController)
 
-	struct SubordinateController : public Controller {
-
-		friend class TaskSpaceDistanceThreshold;
-		friend class ResourceStepNormThreshold;
-
-		SubordinateController(const CBFSchema::SubordinateController &xml_instance, ObjectNamespacePtr object_namespace);
-
+		/** 
+			@brief: Create a barebones controller which is 
+			not useful in itself 
+	
+			Note that init_reference_from_sensor_transform 
+			is only supported for DummyReferences		
+		*/	
+		PrimitiveController(
+			Float alpha = 1.0,
+			Float beta = 1.0,
+			bool init_reference_from_sensor_transform = false
+		);
+	
 		/**
 			@brief Create a controller with the members 
 			set from the specified arguments
+	
+			Note that init_reference_from_sensor_transform 
+			is only supported for DummyReferences		
 		*/
-		SubordinateController(
-			SubordinateController *master,
-			Float coefficient,
-			std::vector<ConvergenceCriterionPtr> convergence_criteria,
-			ReferencePtr reference,
+		PrimitiveController(
 			PotentialPtr potential,
-			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
-			std::vector<SubordinateControllerPtr> subordinate_controllers,
-			CombinationStrategyPtr combination_strategy
+			SensorTransformPtr sensor_transform,
+			CombinationStrategyPtr combination_strategy = CombinationStrategyPtr(new AddingStrategy),
+			std::vector<PrimitiveControllerPtr> subordinate_controllers = std::vector<PrimitiveControllerPtr>(),
+			Float alpha = 1.0,
+			Float beta = 1.0,
+			bool init_reference_from_sensor_transform = false
 		);
 	
 	
 		protected:
-			SubordinateController* m_Master;
-			bool m_Converged;
+			//* @brief Function for stuff common to all constructors */
+			void init();
 
-			/**
-				@brief: Check for convergence of the controller
-		
-				This should only be used after the result has been calculated
-			*/ 
-			virtual bool check_convergence();
-
-			std::vector<ConvergenceCriterionPtr> m_ConvergenceCriteria;
-	
-			/*** @brief Function for stuff common to all constructors */
-			void init(
-				SubordinateController* master,
-				Float coefficient,
-				std::vector<ConvergenceCriterionPtr> convergence_criteria,
-				ReferencePtr reference,
-				PotentialPtr potential,
-				SensorTransformPtr sensor_transform,
-				EffectorTransformPtr effector_transform,
-				std::vector<SubordinateControllerPtr> subordinate_controllers,
-				CombinationStrategyPtr combination_strategy
-			);
 
 			/**
 				A reference determines the task 
@@ -117,7 +117,7 @@ namespace CBF {
 				A controller can have subordinate controllers whose control signal
 				get projected into the nullspace of the task jacobian
 			*/
-			std::vector<SubordinateControllerPtr> m_SubordinateControllers;
+			std::vector<PrimitiveControllerPtr> m_SubordinateControllers;
 	
 			/**
 				The sensor transform is responsible for providing the feedback
@@ -148,43 +148,91 @@ namespace CBF {
 				The factor for the primary gradient step
 			*/
 			Float m_Coefficient;
+	
+			/**
+				The factor for the secondary gradient step
+			*/
+			Float m_SubordinateCoefficient;
+	
+			/**
+				This bool tells the primitive controller to set the
+				reference to the result of the sensor transform during the
+				first run.
+			*/
+			bool m_InitReferenceFromSensorTransform;
 
 		public:
 			/**
 				This function only returns sensible values after
 				the controller has run at least once...
 			*/
-			const FloatVector &current_task_position() 
-				{ return m_CurrentTaskPosition; }
+			const FloatVector &current_task_position() {
+				return m_CurrentTaskPosition; }
 
-			ReferencePtr reference() 
-				{ return m_Reference; }
+			void set_reference(ReferencePtr reference) {
+				m_Reference = reference; }
 	
-			std::vector<SubordinateControllerPtr> &subordinate_controllers() 
-				{ return m_SubordinateControllers; }
+			ReferencePtr reference() { return m_Reference; }
 	
-			SensorTransformPtr sensor_transform() 
-				{ return m_SensorTransform; }
+			void set_subordinate_controllers(
+				std::vector<PrimitiveControllerPtr> subordinate_controllers) {
+				m_SubordinateControllers = subordinate_controllers; }
+		
+			std::vector<PrimitiveControllerPtr> &subordinate_controllers() {
+				return m_SubordinateControllers;	}
 	
-			PotentialPtr potential() 
-				{ return m_Potential; }
+			void set_sensor_transform(SensorTransformPtr sensor_transform) {
+				m_SensorTransform = sensor_transform; }
 	
-			EffectorTransformPtr effector_transform() 
-				{ return m_EffectorTransform; }
+			SensorTransformPtr sensor_transform() {
+				return m_SensorTransform; }
 	
-			CombinationStrategyPtr combination_strategy() 
-				{ return m_CombinationStrategy; }
+			void set_potential(PotentialPtr potential) {
+				m_Potential = potential; }
 	
+			PotentialPtr potential() {	return m_Potential; }
+	
+			void set_effector_transform(
+				EffectorTransformPtr effector_transform) {
+				m_EffectorTransform = effector_transform; }
+	
+			EffectorTransformPtr effector_transform() {
+				return m_EffectorTransform; }
+	
+			void set_combination_strategy(
+				CombinationStrategyPtr combination_strategy) {
+				m_CombinationStrategy = combination_strategy; }
+	
+			CombinationStrategyPtr combination_strategy() {
+				return m_CombinationStrategy; }
+	
+			void set_coefficient(Float coefficient);
+
 			Float coefficient();
 	
+			void set_subordinate_coefficient(Float beta);
+
+			Float subordinate_coefficient();
+	
+
+			/**
+				This method might throw a std::runtime_error describing a dimension
+				mismatch. 
+
+				Also note that this binds both the sensor and the effector 
+				transform to the same resource. If that is not what you want (e.g.
+				your sensor and effector transform work with different resources, then
+				use the setter methods of the sensor and effector transforms respectively.
+			*/
+			virtual void set_resource(ResourcePtr resource) throw (std::runtime_error);
 		
 			/**
 				This reimplementation of the base class' method assumes that we are not a subordinate
 				controller, because subordinate controllers are always called via the do_step() method
 			*/
-			virtual void update();
+			virtual void do_update(int cycle);
 
-			virtual void action() { }
+			virtual void do_action(int cycle);
 
 			/**
 				@brief Returns the result of the calculationss done on update().
@@ -195,17 +243,13 @@ namespace CBF {
 			*/
 			virtual FloatVector &result() { return m_Result; }
 
-			virtual ResourcePtr resource();
-
 			/**
 
 				Check if controller is converged. Call this function only
 				after calling step() at least once..
 			*/
 			virtual bool finished();
-
-			virtual void check_dimensions();
-
+	
 		protected:
 			FloatVector m_Result;
 
@@ -235,73 +279,6 @@ namespace CBF {
 	
 			/**	Member variable for efficiency reasons.. */
 			std::vector<FloatVector> m_References;
-	};
-
-
-
-	/**
-		@brief The "primitive" controller is the 
-		main tool to use in the control basis framework.
-	
-		A primitive controller can be "synthesized" 
-		by combining an artificial potential function,
-		a sensor transform, an effector transform 
-		and a resource to act on.
-	
-		Additionally several subordinate controllers 
-		can be specified which will try to reach 
-		secondary goals. The result of the gradient 
-		steps of the subordinate controller is 
-		projected into the null space of this controller.
-	*/
-	struct PrimitiveController : public SubordinateController {
-
-		PrimitiveController(const CBFSchema::PrimitiveController &xml_instance, ObjectNamespacePtr object_namespace);
-
-		/**
-			@brief Create a controller with the members 
-			set from the specified arguments
-		*/
-		PrimitiveController(
-			Float coefficient,
-			std::vector<ConvergenceCriterionPtr> convergence_criteria,
-			ReferencePtr reference,
-			PotentialPtr potential,
-			SensorTransformPtr sensor_transform,
-			EffectorTransformPtr effector_transform,
-			std::vector<SubordinateControllerPtr> subordinate_controllers,
-			CombinationStrategyPtr combination_strategy,
-			ResourcePtr resource
-		);
-	
-	
-		protected:
-			bool m_Converged;
-
-			/*** @brief Function for stuff common to all constructors */
-			void init(ResourcePtr resource);
-
-			/**
-				A controller can have subordinate controllers whose control signal
-				get projected into the nullspace of the task jacobian
-			*/
-			std::vector<PrimitiveControllerPtr> m_SubordinateControllers;
-	
-
-			/**
-				The resource this controller acts upon
-			*/
-			ResourcePtr m_Resource;
-
-			virtual void check_dimensions();
-
-		public:
-
-			virtual ResourcePtr resource() { return m_Resource; }
-
-			virtual void update();
-
-			virtual void action();
 	};
 
 } // namespace

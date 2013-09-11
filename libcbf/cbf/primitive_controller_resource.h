@@ -25,8 +25,9 @@
 
 #include <cbf/primitive_controller.h>
 #include <cbf/resource.h>
+#include <cbf/plugin_decl_macros.h>
 
-namespace CBFSchema { class PrimitiveControllerResource; }
+CBF_PLUGIN_PREAMBLE(PrimitiveControllerResource)
 
 namespace CBF {
 	
@@ -51,7 +52,7 @@ namespace CBF {
 	
 	*/
 	struct PrimitiveControllerResource : public Resource {
-		PrimitiveControllerResource (const CBFSchema::PrimitiveControllerResource &xml_instance);
+		CBF_PLUGIN_DECL_METHODS(PrimitiveControllerResource)
 	
 		PrimitiveControllerPtr m_PrimitiveController;
 	

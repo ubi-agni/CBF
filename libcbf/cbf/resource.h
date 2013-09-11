@@ -23,16 +23,14 @@
 
 #include <cbf/config.h>
 #include <cbf/types.h>
-#include <cbf/object.h>
-#include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/numeric/ublas/vector.hpp>
 
 #include <vector>
 
-namespace CBFSchema { class Resource; }
-
 namespace CBF {
+	namespace ublas = boost::numeric::ublas;
 	
 	/**
 		@brief A Resource represents a controller resource for a specific
@@ -43,11 +41,7 @@ namespace CBF {
 		for an example..
 	*/
 	
-	struct Resource : public Object {
-		Resource() : Object("Resource") { }
-
-		Resource(const CBFSchema::Resource &xml_instance, ObjectNamespacePtr object_namespace);
-
+	struct Resource {
 		virtual ~Resource() {
 	
 		}
@@ -76,6 +70,8 @@ namespace CBF {
 			but rather arg is added to the current value.
 		*/
 		virtual void add(const FloatVector &arg) = 0;
+	
+		virtual void set(const FloatVector &arg) = 0;
 	
 		/**
 			The resource's representation is a vector from R^n. This function

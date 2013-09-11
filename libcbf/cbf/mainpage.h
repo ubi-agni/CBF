@@ -52,9 +52,10 @@ namespace CBF {
 
 	- Resource A resource represents capabilities of a robot as a vector of CBFFloat. Often these are control affordances of a robotic manipulator, e.g. joint angles.
 
-	- Reference A reference represents a point in task space that the controller is supposed to reach. More generally speaking it's a set of points and the controller is free to converge to any of them.
+   - Reference A reference represents a point in task space that the controller is supposed to reach. More generally speaking it's a set of points and the controller is free to converge to any of them.
 
 	- EffectorTransform This transform implements the inverse of the task jacobian. It is used to transform the gradient step in Task space to a gradient step in Resource space
+
 
 	- CombinationStrategy This allows to specify how results from multiple subordinate controllers are combined before being projected into the nullspace of the controller. An example would be the simple AddingStrategy which simply adds all contributions
 
@@ -78,7 +79,6 @@ namespace CBF {
 
 	- CompositeSensorTransform - A SensorTransform that combines several sensor transforms into a single composite one. This allows assembling the task space from different sensor readings. E.g. combining KDLChainPositionSensorTransform and KDLChainAxisAngleSensorTransform into a composite position/orientation SensorTransform. See also the CompositePotential class
 
-	- XCFMemorySensorTransform - A wrapper that holds a SensorTransform and publishes the result and task-jacobian matrices via XCFMemory.
 	\subsection EffectorTransforms
 
 	- GenericEffectorTransform - An EffectorTransform that is based on the Moore-Penrose Pseudoinverse
@@ -126,14 +126,6 @@ namespace CBF {
 	- cbf_test_kdl_transforms.cc This example manually builds a PrimitiveController using the KDLChainEffectorTransform and KDLChainSensorTransform.
 
 	- cbf_test_kdl_transforms_view.cc This example is like the one above, but it also visualizes the results using the QKDLChainView class.
-
-	- cbf_test_xcf_memory_reference_client.cc This example can be used to send vectors to an xcf_memory_reference.
-
-	- cbf_test_xcf_memory_resource_adder.cc This example can be used to add vectors to an xcf_memory_resource.
-
-	- cbf_q_xcf_vector_reference_client.cc This is a little gui-tool which can connect to an xcf_vector_reference and set and get the reference vector.
-
-	- cbf_q_xcf_memory_run_controller_operator.cc This is little gui-tool which can operate an cbf_xcf_memory_run_controller via the XCFMemory. Multiple controller-definitions can be send as xml-Documents, can be loaded into a namespace and a controller can be executed and stopped via the XCFMemory.
 
 	\section Third-Party-Class-Integration
 

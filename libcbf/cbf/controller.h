@@ -21,15 +21,12 @@
 #ifndef CBF_BASE_CONTROLLER_HH
 #define CBF_BASE_CONTROLLER_HH
 
+#include <cbf/plugin_decl_macros.h>
 #include <cbf/types.h>
-#include <cbf/namespace.h>
-#include <cbf/object.h>
 
 #include <cstdlib>
 
 #include <boost/shared_ptr.hpp>
-
-namespace CBFSchema { class Controller; }
 
 /**
 	@brief The CBF namespace holds the user visible classes provided by the ControlBasisFramework lib.
@@ -45,12 +42,9 @@ namespace CBF {
 		need a base class providing a common controller 
 		interface.
 	*/
-	struct Controller : public Object {
-
-		Controller(const CBFSchema::Controller &xml_instance, ObjectNamespacePtr object_namespace);
+	struct Controller {
 
 		Controller() :
-			Object("Controller"),
 			m_UpdateCycle(-2),
 			m_ActionCycle(-2)
 		{
@@ -75,10 +69,21 @@ namespace CBF {
 			Always run step() at least once before 
 			calling finished() for the first time.
 		*/
-		virtual bool step() {
-			update();
-			action();
-			return finished();
+		virtual bool step(int cycle = -1) { 
+			int real_cycle;
+
+			if (cycle == -1) 
+				real_cycle = rand();
+			else
+				real_cycle = cycle;
+
+			//! Update internal state
+			update(real_cycle);
+
+			//! Put results of update() into effect..
+			action(real_cycle);
+
+			return finished(); 
 		}
 	
 		/**
@@ -98,7 +103,23 @@ namespace CBF {
 			depending on whether it's a new cycle or not
 			(by calling do_update() if appropriate).
 		*/
-		virtual void update() { }
+		virtual void update(int cycle) {
+			if (m_UpdateCycle != cycle) 
+				do_update(cycle);
+
+			m_UpdateCycle = cycle;
+		}
+
+		/**
+			@brief This function should do the
+			calculation. 
+
+			It is only called by update() when nessecary 
+			(i.e. the cycle ID changed)..
+
+			The default implementation does nothing
+		*/
+		virtual void do_update(int cycle)  { }
 
 		/**
 			@brief This member checks whether it's 
@@ -106,8 +127,22 @@ namespace CBF {
 
 			If it is time, then it calls the do_action() method
 		*/
-		virtual void action() { }
+		virtual void action(int cycle) {
+			if (m_ActionCycle != cycle) 
+				do_action(cycle);
 
+			m_ActionCycle = cycle;
+		}
+	
+
+
+		/**
+			@brief This function should put the result of the update()
+			step into action
+
+			The default implementation does nothing.
+		*/
+		virtual void do_action(int cycle) { }
 
 		/**
 			@brief Returns a reference to the user given name of this controller..
@@ -120,6 +155,7 @@ namespace CBF {
 			int m_UpdateCycle;
 			int m_ActionCycle;
 
+			std::string m_Name;
 	};
 	
 	//! Convenience typedef

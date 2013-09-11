@@ -1,51 +1,35 @@
 <?xml version="1.0"?>
-<cbf:Object
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:cbf="http://www.cit-ec.uni-bielefeld.de/CBF"
-	xsi:schemaLocation="http://www.cit-ec.uni-bielefeld.de/CBF /home/tapas/src/uni/CBF/schemas/schemas.xsd"
-	xsi:type="cbf:PrimitiveController">
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
 
- <Name>foo</Name>
+ <Potential xsi:type="SquarePotentialType">
+  <Coefficient> 0.1 </Coefficient>
+  <Dimension> 3 </Dimension>
+ </Potential>
 
- <Coefficient> 1 </Coefficient>
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
 
- <ConvergenceCriterion xsi:type="cbf:ResourceStepNormThreshold">
-  <Name>foobar</Name>
-  <Threshold> 0.01 </Threshold>
- </ConvergenceCriterion>
+ <SensorTransform xsi:type="IdentitySensorTransformType">
+  <Dimension> 3 </Dimension>
+ </SensorTransform>
 
- <Reference xsi:type="cbf:DummyReference">
-  <Vector xsi:type="cbf:SimpleVector">
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 3 </Dimension>
+  <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 0 </Coefficient>
    <Coefficient> 1 </Coefficient>
    <Coefficient> 0 </Coefficient>
+  </Vector>
+ </Resource>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 0 </Coefficient>
+   <Coefficient> 1 </Coefficient>
    <Coefficient> 0 </Coefficient>
   </Vector>
  </Reference>
 
- <Potential xsi:type="cbf:SquarePotential">
-<!--  <Name>Be there or be square</Name> -->
-  <MaxGradientStepNorm> 0.2 </MaxGradientStepNorm>
-  <Dimension> 3 </Dimension>
-  <Coefficient> 0.1 </Coefficient>
- </Potential>
+ <CombinationStrategy xsi:type="AddingStrategyType"/>
 
- <SensorTransform xsi:type="cbf:IdentitySensorTransform">
-<!--  <Name>IdentitySensor </Name> -->
-  <Dimension> 3 </Dimension>
- </SensorTransform>
+</Controller>
 
- <EffectorTransform xsi:type="cbf:TransposeEffectorTransform">
-  <TaskDimension> 3 </TaskDimension>
-  <ResourceDimension> 3 </ResourceDimension>
- </EffectorTransform>
-
- <CombinationStrategy xsi:type="cbf:AddingStrategy"/>
-
- <Resource xsi:type="cbf:DummyResource">
-  <Vector xsi:type="cbf:SimpleVector">
-   <Coefficient> 5 </Coefficient>
-   <Coefficient> 1 </Coefficient>
-   <Coefficient> 10 </Coefficient>
-  </Vector>
- </Resource>
-</cbf:Object>

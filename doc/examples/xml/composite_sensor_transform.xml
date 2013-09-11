@@ -1,5 +1,3 @@
-<?xml version="1.0"?>
-
 <!--
 This document shows how to combine several sensor transforms
 into a single composite transform. This is useful e.g.
@@ -8,32 +6,19 @@ orientation of a robot end effector. See the kdl_rot_euler.xml
 example for a more "real life example".
 -->
 
-<ControlBasis xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-<Controller xsi:type="PrimitiveControllerType">
- <Name>foo</Name>
+<?xml version="1.0"?>
+<Controller xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PrimitiveControllerType">
 
- <Coefficient> 0.5 </Coefficient>
-
- <ConvergenceCriterion xsi:type="TaskSpaceDistanceThresholdType">
-  <Threshold>0.01</Threshold>
- </ConvergenceCriterion>x
-
- <Reference xsi:type="DummyReferenceType">
-  <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 0 </Coefficient>
-   <Coefficient> 1 </Coefficient>
-   <Coefficient> 15 </Coefficient>
-  </Vector>
- </Reference>
-
-
+ <Coefficient> 1 </Coefficient>
  <Potential xsi:type="SquarePotentialType">
-  <MaxGradientStepNorm>0.1</MaxGradientStepNorm>
-  <Dimension>3</Dimension>
-  <Coefficient>0.1</Coefficient>
+  <Dimension> 3 </Dimension>
+  <Coefficient> 0.1 </Coefficient>
  </Potential>
  
+ <EffectorTransform xsi:type="GenericEffectorTransformType"/>
+
  <SensorTransform xsi:type="CompositeSensorTransformType">
+
   <SensorTransform xsi:type="LinearSensorTransformType">
    <Matrix xsi:type="BoostMatrixType">
     <String> [1,3]((1,2,3)) </String>
@@ -51,20 +36,23 @@ example for a more "real life example".
     <String> [1,3]((1,3,2)) </String>
    </Matrix>
   </SensorTransform>
+
  </SensorTransform>
 
- <EffectorTransform xsi:type="TransposeEffectorTransformType"/>
+ <Resource xsi:type="DummyResourceType">
+  <Dimension> 3 </Dimension>
+ </Resource>
+
+ <Reference xsi:type="DummyReferenceType">
+  <Vector xsi:type="SimpleVectorType">
+   <Coefficient> 0 </Coefficient>
+   <Coefficient> 1 </Coefficient>
+   <Coefficient> 15 </Coefficient>
+  </Vector>
+ </Reference>
 
  <CombinationStrategy xsi:type="AddingStrategyType"/>
 
- <Resource xsi:type="DummyResourceType">
-  <Vector xsi:type="SimpleVectorType">
-   <Coefficient> 1 </Coefficient>
-   <Coefficient> 1 </Coefficient>
-   <Coefficient> 1 </Coefficient>
-  </Vector>
- </Resource>
-
 </Controller>
 
-</ControlBasis>
+

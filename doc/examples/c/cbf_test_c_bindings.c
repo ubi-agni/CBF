@@ -18,7 +18,7 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-#include <cbf/c_api.h>
+#include <cbf/c_bindings.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,34 +27,39 @@
 
 int
 main(int argc, char **argv) {
-	cbf_init();
+	init_cbf();
 
 	//! Create controller from XML file...
-	struct cbf_primitive_controller c;
-
-	if (cbf_controller_create_from_file(&c, argv[1]) == 0)
+	struct primitive_controller c;
+	if (create_controller_from_file(&c, argv[1]) == 0)
 	{
 		printf("Error constructing controller. Exiting...\n");
 		exit(EXIT_FAILURE);
 	}
 
 	//! Create placeholders for holding resource values and update steps...
-	double *in  = calloc(cbf_controller_get_resource_dim(&c), sizeof(double));
+	double *in  = calloc(controller_get_resource_dim(&c), sizeof(double));
 
 	int i;
 
-	double *out = calloc(cbf_controller_get_resource_dim(&c), sizeof(double));
+#if 0
+	for (i = 0; i < controller_get_resource_dim(&c); ++i) {
+		in[i] = 0.1;
+	}
+#endif
+
+	double *out = calloc(controller_get_resource_dim(&c), sizeof(double));
 
 	//! Execute controller some million times..
 	for (i = 0; i < MAX_NUMBER_OF_STEPS; ++i)
 	{
-		cbf_controller_step(&c, in, out);
+		step_controller(&c, in, out);
 
 		int j;
-		for (j = 0; j < cbf_controller_get_resource_dim(&c); ++j)
+		for (j = 0; j < controller_get_resource_dim(&c); ++j)
 			in[j] += out[j];
 	}
 
-	cbf_controller_destroy(&c);
+	destroy_controller(&c);
 }
 

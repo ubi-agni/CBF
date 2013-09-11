@@ -15,21 +15,14 @@
     along with CBF.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Copyright 2009, 2010 Florian Paul Schmidt, Viktor Richter
+    Copyright 2009, 2010 Florian Paul Schmidt
 */
 
 #include <cbf/utilities.h>
 #include <cbf/debug_macros.h>
-#include <cbf/exceptions.h>
-#include <cbf/xml_object_factory.h>
-#include <cbf/foreign_object.h>
 
 #ifdef CBF_HAVE_KDL
 	#include <kdl/jacobian.hpp>
-	#include <kdl/tree.hpp>
-	#include <kdl/chain.hpp>
-	#include <kdl/segment.hpp>
-	#include <kdl/joint.hpp>
 #endif
 
 #ifdef CBF_HAVE_EIGEN2
@@ -40,7 +33,7 @@
 #endif
 
 #ifdef CBF_HAVE_XSD
-	#include <cbf/xml_factory.h>
+	#include <schemas.hxx>
 	#include <sstream>
 	#include <boost/numeric/ublas/io.hpp>
 #endif
@@ -50,152 +43,26 @@
 
 namespace CBF {
 
-void vector_from_eigen_string(const std::string str, FloatVectorPtr vec){
-	CBF_DEBUG("start parsing string to vector");
-	Float value;
-	std::vector<Float> values;
-	std::istringstream in(str);
-	while (in >> value) {
-		values.push_back(value);
-	}
-	vec -> resize(values.size());
-	std::copy(values.begin(), values.end(), vec -> data());
-	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << *vec);
-}
-
-void vector_from_boost_string(const std::string str, FloatVectorPtr vec){
-	//TODO: use boost if exists
-	CBF_DEBUG("start parsing string to vector");
-	Float value; // will be written from stream
-	int size; // size of the vector, from stream too
-	char c_tmp; // used for removing chars from stream.
-	std::istringstream in(str);
-
-	// remove '[' - read size - remove ']' and '('
-	//in.get(c_tmp);
-	in >> c_tmp;
-	if (c_tmp != '[') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: vector_from_boost_string(" << str << "): expected '[' but got '" << c_tmp << "'");
-	in >> size;
-	in >> c_tmp;
-	if (c_tmp != ']') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: vector_from_boost_string(" << str << "): expected ']' but got '" << c_tmp << "'");
-	in >> c_tmp;
-	if (c_tmp != '(') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: vector_from_boost_string(" << str << "): expected '(' but got '" << c_tmp << "'");
-
-	// resize passed vector.
-	vec -> resize(size);
-	// write values from stream to vector
-	for (int i = 0; i < size; ++i) {
-		in >> value;
-		(*vec)(i) = value;
-		// remove ',' or ')'
-		in >> c_tmp;
-	}
-	// check whether the boost-string-representation is at its end
-	if (c_tmp != ')') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: vector_from_boost_string(" << str << "): expected ')'");
-	CBF_DEBUG("parsed string: \n" + str + "\n to FloatVector \n" << *vec);
-}
-
-void matrix_from_eigen_string(const std::string str, FloatMatrixPtr matr){
-	CBF_DEBUG("start parsing string to matrix");
-	float value;
-	std::vector<float> values;
-	int rows = count(str.begin(), str.end(), '\n') + 1;
-	std::istringstream in(str);
-	while (in >> value) {
-		values.push_back(value);
-	}
-	matr -> resize(rows, values.size()/rows);
-	int pos = 0;
-	//No std::copy because eigen::matrix seems to be written column by column.
-	//I tryed std::copy + transposeInPlace() but it is slower
-	for (int i = 0; i < rows; ++i){
-		for (int j = 0; j < values.size()/rows; ++j){
-			(*matr)(i,j) = values.at(pos);
-			++pos;
-		}
-	}
-	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << *matr);
-}
-
-void matrix_from_boost_string(const std::string str, FloatMatrixPtr matr){
-	//TODO: use boost if exists
-	CBF_DEBUG("start parsing string to matrix");
-	float value; // will be written from stream
-	int rows, cols, row, col;
-	char c_tmp; // used for removing chars from stream.
-	std::istringstream in(str);
-
-	// remove '[' - read rows - remove ',' - read cols - remove ']' and '('
-	in.get(c_tmp);
-	if (c_tmp != '[') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
-	in >> rows;
-	in.get(c_tmp);
-	if (c_tmp != ',') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
-	in >> cols;
-	in.get(c_tmp);
-	if (c_tmp != ']') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
-	in.get(c_tmp);
-	if (c_tmp != '(') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
-
-	//resize passed matrix
-	matr->resize(rows, cols);
-	//write values from stream to matrix
-	for (row = 0; row < rows; ++row) {
-		in.get(c_tmp); //remove leading '(' of row
-		if (c_tmp != '(') CBF_THROW_RUNTIME_ERROR(
-				"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
-		for (int col = 0; col < cols; ++col) {
-			in >> value;
-			matr->operator()(row,col) = value;
-			in.get(c_tmp); //remove ',' or ')'
-		}
-		// remove ',' between rows or last ')'
-		in.get(c_tmp);
-	}
-	// check whether the boost-string-representation is at its end
-	if (c_tmp != ')') CBF_THROW_RUNTIME_ERROR(
-			"[utilities]: matrix_from_boost_string(" << str << "): wrong form");
-	CBF_DEBUG("parsed string: \n" + str + "\n to FloatMatrix \n" << matr);
-}
-
 FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result) {
-	CBF_DEBUG("start: " << start);
-	CBF_DEBUG("end: " << end);
-	Float inner = start.normalized().dot(end/start.norm());
-	CBF_DEBUG("inner: " << 1.0 - inner);
-	if (inner > 1.0) inner = 1.0;
-	if (inner < -1.0) inner = -1.0;
-
-	Float angle = acos(inner);
-	CBF_DEBUG("angle: " << angle);
+	Float angle = acos(ublas::inner_prod(start, end));
 
 	if (fabs(angle) <= slerp_threshold) {
-		CBF_DEBUG("small angle");
+		CBF_DEBUG("small angle")
 		result = end;
 		return result;
 	}
 
 	result = start * (sin((1 - step)* angle)/sin(angle)) + (sin(step * angle)/sin(angle)) * end;
 
-	CBF_DEBUG(result);
+	CBF_DEBUG(result)
 
 	return result;
 }
 
-
-
 #ifdef CBF_HAVE_KDL
 FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j) {
-	if (m.rows() != j.rows() || m.cols() != j.columns())
-		m.resize(j.rows(), j.columns());
+	if (m.size1() != j.rows() || m.size2() != j.columns())
+		m = ublas::zero_matrix<Float>(j.rows(), j.columns());
 
 	unsigned int rows, columns;
 	rows = j.rows();
@@ -210,8 +77,8 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j) {
 }
 
 FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
-	if (m.rows() != 4 || m.cols() != 4)
-		m.resize(4,4);
+	if (m.size1() != 4 || m.size2() != 4)
+		m = ublas::zero_matrix<Float>(4,4);
 
 	for (unsigned int row = 0; row < 4; ++row) {
 		for (unsigned int column = 0; column < 4; ++column) {
@@ -226,76 +93,48 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 
 
 #ifdef CBF_HAVE_EIGEN2
-	static const double pseudo_inv_precision_threshold = 0.001;
-
 	Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
-		bool transpose = M.cols() > M.rows();
+		bool transpose = false;
+	
+		if (M.size2() > M.size1()) transpose = true;
+	
+		//! Placeholders for the singular value decomposition
+		Eigen::MatrixXd m((int)M.size1(), (int)M.size2());
 	
 		//! rows and cols hold dimensions of input matrix
-		int rows = (int)M.rows();
-		int cols = (int)M.cols();
-
-		//! Placeholders for the singular value decomposition
-		FloatMatrix m = M;
+		int rows = (int)M.size1();
+		int cols = (int)M.size2();
 	
-		if (transpose) m.transposeInPlace();
-	
-		Eigen::SVD<FloatMatrix> svd = m.svd();
-	
-		const FloatMatrix& Sv = svd.singularValues();
-		CBF_DEBUG("singularValues: " << Sv);
-	
-		//! Prepare a diagonal matrix from the singularValues vector
-		FloatMatrix SvMatrix(Sv.rows(), Sv.rows());
-		SvMatrix.setZero();
-		Float det = 1.0;
-		for (int i = 0; i < Sv.rows(); ++i) {
-			det *= SvMatrix(i,i);
-			if (fabs(Sv(i,0)) > pseudo_inv_precision_threshold)
-				SvMatrix(i,i) = 1.0 / (Sv(i,0));
-			else {
-				CBF_DEBUG("SINGULAR");
-				SvMatrix(i,i) = 0.0;
+		for (int row = 0; row < rows; ++row)
+		{
+			for (int col = 0; col < cols; ++col)
+			{
+				m(row,col) = M(row,col);	
 			}
 		}
-		CBF_DEBUG("deter:" << det);
-		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
-	
-		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
-	
-		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-
-		if (transpose) result.transposeInPlace();
-
-		return det;
-	}
-
-	Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, Float damping_constant) {
-		bool transpose = M.cols() > M.rows();
-
-		//! rows and cols hold dimensions of input matrix
-		int rows = (int)M.rows();
-		int cols = (int)M.cols();
-	
-		//! Placeholders for the singular value decomposition
-		FloatMatrix m = M;
 	
 		if (transpose) m.transposeInPlace();
 	
-		Eigen::SVD<FloatMatrix> svd = m.svd();
+		Eigen::SVD<Eigen::MatrixXd> svd = m.svd();
 	
-		const FloatMatrix& Sv = svd.singularValues();
+		const Eigen::MatrixXd& Sv = svd.singularValues();
 		CBF_DEBUG("singularValues: " << Sv);
 	
 		//! Prepare a diagonal matrix from the singularValues vector
-		FloatMatrix SvMatrix(Sv.rows(), Sv.rows());
+		Eigen::MatrixXd SvMatrix(Sv.rows(), Sv.rows());
 		SvMatrix.setZero();
 	
 		Float det = 1.0;
 		//! We use the ordinary reciprocal for testing purposes here
 		for (int i = 0; i < Sv.rows(); ++i) {
-			SvMatrix(i,i) = Sv(i,0) / (damping_constant + (Sv(i,0) * Sv(i,0)));
+			//SvMatrix(i,i) = Sv(i,0) / (0.00 + (Sv(i,0) * Sv(i,0)));
 			det *= SvMatrix(i,i);
+			if (Sv(i,0) > 0.001)
+				SvMatrix(i,i) = 1.0 / (Sv(i,0));
+			else {
+				CBF_DEBUG("SINGULAR");
+				SvMatrix(i,i) = 0.0;
+			}
 			// std::cout << Sv(i,0)  << std::endl;
 		}
 		CBF_DEBUG("deter:" << det);
@@ -303,348 +142,143 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	
 		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
 	
-		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+		Eigen::MatrixXd res = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+	
+		result = FloatMatrix(res.rows(), res.cols());
+	
+		for (int row = 0; row < res.rows(); ++row)
+		{
+			for (int col = 0; col < res.cols(); ++col)
+			{
+				result(row,col) = res(row,col);
+			}
+		}
+	
+		if (transpose) result = ublas::trans(result);
+		return det;
+	}
 
-		if (transpose) result.transposeInPlace();
-
+	Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, Float damping_constant) {
+		bool transpose = false;
+	
+		if (M.size2() > M.size1()) transpose = true;
+	
+		//! Placeholders for the singular value decomposition
+		Eigen::MatrixXd m((int)M.size1(), (int)M.size2());
+	
+		//! rows and cols hold dimensions of input matrix
+		int rows = (int)M.size1();
+		int cols = (int)M.size2();
+	
+		for (int row = 0; row < rows; ++row)
+		{
+			for (int col = 0; col < cols; ++col)
+			{
+				m(row,col) = M(row,col);	
+			}
+		}
+	
+		if (transpose) m.transposeInPlace();
+	
+		Eigen::SVD<Eigen::MatrixXd> svd = m.svd();
+	
+		const Eigen::MatrixXd& Sv = svd.singularValues();
+		CBF_DEBUG("singularValues: " << Sv);
+	
+		//! Prepare a diagonal matrix from the singularValues vector
+		Eigen::MatrixXd SvMatrix(Sv.rows(), Sv.rows());
+		SvMatrix.setZero();
+	
+		Float det = 1.0;
+		//! We use the ordinary reciprocal for testing purposes here
+		for (int i = 0; i < Sv.rows(); ++i) {
+			SvMatrix(i,i) = Sv(i,0) / (damping_constant + (Sv(i,0) * Sv(i,0)));
+			det *= SvMatrix(i,i);
+#if 0
+			if (Sv(i,0) > 0.001)
+				SvMatrix(i,i) = 1.0 / (Sv(i,0));
+			else {
+				CBF_DEBUG("SINGULAR");
+				SvMatrix(i,i) = 0.0;
+			}
+#endif
+			// std::cout << Sv(i,0)  << std::endl;
+		}
+		CBF_DEBUG("deter:" << det)
+		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
+	
+		CBF_DEBUG("svd: "<< std::endl << SvMatrix)
+	
+		Eigen::MatrixXd res = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
+	
+		result = FloatMatrix(res.rows(), res.cols());
+	
+		for (int row = 0; row < res.rows(); ++row)
+		{
+			for (int col = 0; col < res.cols(); ++col)
+			{
+				result(row,col) = res(row,col);
+			}
+		}
+	
+		if (transpose) result = ublas::trans(result);
 		return det;
 	}
 #endif
 
 #ifdef CBF_HAVE_XSD
+ublas::vector<Float> create_vector(const VectorType &xml_instance) {
+	const SimpleVectorType *simple_vector = dynamic_cast<const SimpleVectorType*>(&xml_instance);
 
-FloatVectorPtr create_boost_vector(const CBFSchema::BoostVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	FloatVectorPtr v(new FloatVector);
-	CBF_DEBUG("string: " << xml_instance.String());
-	vector_from_boost_string(xml_instance.String(), v);
-	if (v -> size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
-
-	return v;
-}
-
-FloatVectorPtr create_simple_vector(const CBFSchema::SimpleVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	FloatVectorPtr v(new FloatVector);
-	std::vector<Float> tmp;
-	for (
-		CBFSchema::SimpleVector::Coefficient_const_iterator it = xml_instance.Coefficient().begin();
-		it != xml_instance.Coefficient().end();
-		++it
-	) {
-		tmp.push_back(*it);
-	}
-	v->resize(tmp.size());
-	std::copy(tmp.begin(), tmp.end(), v->data());
-	
-	return v;
-}
-
-
-FloatVectorPtr create_zero_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	FloatVectorPtr ret = FloatVectorPtr(new FloatVector(xml_instance.Dimension()));
-	ret -> setZero();
-	return ret;
-}
-
-FloatVectorPtr create_eigen_vector(const CBFSchema::EigenVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	FloatVectorPtr v(new FloatVector);
-	CBF_DEBUG("string: " << xml_instance.String());
-	vector_from_eigen_string(xml_instance.String(), v);
-	if (v -> size() == 0) CBF_THROW_RUNTIME_ERROR("[utilities]: create_vector(): Empty Vector");
-	return v;
-}
-
-FloatVectorPtr create_basis_vector(const CBFSchema::ZeroVector &xml_instance, ObjectNamespacePtr object_namespace) {
-	return FloatVectorPtr(new FloatVector(xml_instance.Dimension()));
-}
-
-
-
-FloatMatrixPtr create_zero_matrix(const CBFSchema::ZeroMatrix &xml_instance, ObjectNamespacePtr object_namespace) {
-	FloatMatrixPtr ret
-		= FloatMatrixPtr(new FloatMatrix((int) xml_instance.Rows(), (int) xml_instance.Columns()));
-	ret -> setZero();
-	return ret;
-}
-
-FloatMatrixPtr create_boost_matrix(const CBFSchema::BoostMatrix &xml_instance, ObjectNamespacePtr object_namespace)
-{
-	FloatMatrixPtr matrix(new FloatMatrix);
-	matrix_from_boost_string(xml_instance.String(), matrix);
-	CBF_DEBUG(matrix);
-	if ((matrix->rows() == 0) && (matrix->cols() == 0)) {
-		CBF_THROW_RUNTIME_ERROR("Matrix is empty")
-	}
-	return matrix;
-}
-
-FloatMatrixPtr create_eigen_matrix(const CBFSchema::EigenMatrix &xml_instance, ObjectNamespacePtr object_namespace)
-{
-	FloatMatrixPtr matrix(new FloatMatrix);
-	matrix_from_eigen_string(xml_instance.String(), matrix);
-	CBF_DEBUG(matrix);
-	if ((matrix->rows() == 0) && (matrix->cols() == 0)) {
-		CBF_THROW_RUNTIME_ERROR("Matrix is empty")
-	}
-	return matrix;
-}
-
-#endif
-
-#if defined(CBF_HAVE_XSD) && defined(CBF_HAVE_KDL)
-
-boost::shared_ptr<KDL::Segment> create_tree_segment(const CBFSchema::TreeSegment &xml_instance, ObjectNamespacePtr object_namespace) {
-	return create_segment(xml_instance, object_namespace);
-}
-
-boost::shared_ptr<KDL::Segment> create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace) {
-	boost::shared_ptr<KDL::Frame> frame = create_frame(xml_instance.Frame(), object_namespace);
-	boost::shared_ptr<KDL::Joint> joint = create_joint(xml_instance.Joint(), object_namespace);
-
-
-	CBF_DEBUG("Extracting joint...");
-
-
-	CBF_DEBUG("Adding Segment for real..");
-
-	if (xml_instance.Name().present()) {
-		return boost::shared_ptr<KDL::Segment>(new KDL::Segment(*xml_instance.Name(), *joint, *frame));
-	} else {
-		return boost::shared_ptr<KDL::Segment>(new KDL::Segment("KDL::Segment", *joint, *frame));
-	}
-}
-
-boost::shared_ptr<KDL::Frame> create_frame(const CBFSchema::Frame &xml_instance, ObjectNamespacePtr object_namespace) {
-	boost::shared_ptr<KDL::Frame> frame(new KDL::Frame);
-	const CBFSchema::MatrixFrame *matrix_frame_instance = dynamic_cast<const CBFSchema::MatrixFrame*>(&(xml_instance));
-
-	if (matrix_frame_instance != 0)
-	{
-		CBF_DEBUG("Extracting matrix...");
-
-		FloatMatrix m;
-		m = *XMLFactory<FloatMatrix>::instance()->create((*matrix_frame_instance).Matrix(), object_namespace);
-
-		if (m.rows() != 4 || m.cols() != 4)
-			throw std::runtime_error("Matrix is not 4x4");
-
-		for (int row = 0; row < 3; ++row)
+	if (simple_vector) {
+		std::vector<Float> tmp;
+		for (
+			SimpleVectorType::Coefficient_const_iterator it = (*simple_vector).Coefficient().begin();
+			it != (*simple_vector).Coefficient().end();
+			++it
+		)
 		{
-			for (int col = 0; col < 3; ++col)
-			{
-				frame->M(row, col) = m(row, col);
-			}
+			tmp.push_back((*it));
 		}
-
-		for (int row = 0; row < 3; ++row)
-			frame->p(row) = m(row, 3);
-	}
-	else
-		throw std::runtime_error("Frame type not supported yet..");
-
-	return frame;
-}
-
-boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance, ObjectNamespacePtr object_namespace) {
-	boost::shared_ptr<KDL::Joint> joint;
-
-	if (xml_instance.Type() == "Rotational") {
-		CBF_DEBUG("Extracting rotational joint...");
-		if (xml_instance.Axis() == "X") {
-			CBF_DEBUG("X");
-			joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::RotX));
-		}
-		if (xml_instance.Axis() == "Y") {
-			CBF_DEBUG("Y");
-			joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::RotY));
-		}
-		if (xml_instance.Axis() == "Z") {
-			CBF_DEBUG("Z");
-			joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::RotZ));
-		}
+		ublas::vector<Float> ret(tmp.size());
+		std::copy(tmp.begin(), tmp.end(), ret.begin());
+		return ret;
 	}
 
-	if (xml_instance.Type() == "None")
-		joint = boost::shared_ptr<KDL::Joint>(new KDL::Joint(KDL::Joint::None));
+	const BoostVectorType *boost_vector = dynamic_cast<const BoostVectorType*>(&xml_instance);
 
-	if (xml_instance.Type() == "Translational") {
-		throw std::logic_error("Translational joints not supported yet. TODO: fix this :)");
+	if (boost_vector) {
+		std::stringstream stream(boost_vector->String());
+		ublas::vector<Float> v;
+		stream >> v;
+		if (v.size() == 0) throw std::runtime_error("[utilities]: create_vector(): Empty Vector");
+
+		return v;
 	}
-	return joint;
-}
 
-boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance, ObjectNamespacePtr object_namespace) {
-	CBF_DEBUG("adding chain");
-	boost::shared_ptr<KDL::Chain> chain(new KDL::Chain);
-
-	//! Check what kind of chain we have:
-
-	const CBFSchema::Chain *chain_instance  = dynamic_cast<const CBFSchema::Chain*>(&xml_instance);
-
-	if (chain_instance == 0)
-		throw std::runtime_error("Chain type not handled yet..");
-
-	for (
-		CBFSchema::Chain::Segment_const_iterator it =(*chain_instance).Segment().begin(); 
-		it != (*chain_instance).Segment().end();
-		++it
-	)
-	{
-		CBF_DEBUG("Adding Segment...");
-
-		boost::shared_ptr<KDL::Segment> segment = XMLFactory<KDL::Segment>::instance()->create(*it, object_namespace);
-
-		chain->addSegment(*segment);
-		CBF_DEBUG("number of joints: " << chain->getNrOfJoints());
-	}
-	return chain;
-}
-
-void tree_add_segment(boost::shared_ptr<KDL::Tree> tree, const std::string &current_hook_name, const CBFSchema::TreeSegment &xml_instance, ObjectNamespacePtr object_namespace) {
-	CBF_DEBUG("adding segment");
-	boost::shared_ptr<KDL::Segment> segment = XMLFactory<KDL::Segment>::instance()->create(xml_instance, object_namespace);
-
-	if (tree->addSegment(*segment, current_hook_name) == false)
-		throw std::runtime_error("Adding segment to tree failed");
-
-	for (
-		CBFSchema::TreeSegment::Segment1_const_iterator it =(xml_instance).Segment1().begin(); 
-		it != (xml_instance).Segment1().end();
-		++it
-	) {
-		if (xml_instance.Name().present()) {
-			tree_add_segment(tree, *xml_instance.Name(), *it, object_namespace);
-		}
-		else {
-			tree_add_segment(tree, "KDL::Segment", *it, object_namespace);
-		}
-	}
+	throw std::runtime_error("[utilities]: create_vector(): Unknown VectorType");
 }
 
 
-boost::shared_ptr<KDL::Tree> create_tree(const CBFSchema::Tree &xml_instance, ObjectNamespacePtr object_namespace) {
+FloatMatrix create_matrix(const MatrixType &xml_instance)
+{
+	const MatrixType *m = &xml_instance;
 
-	CBF_DEBUG("creating tree from xml");
-	boost::shared_ptr<KDL::Tree> tree(new KDL::Tree);
+	const BoostMatrixType *m2 = dynamic_cast<const BoostMatrixType*>(m);
+	if (m2) {
+		FloatMatrix matrix;
+		std::stringstream stream(std::string(m2->String()));
+		stream >> matrix;
+		CBF_DEBUG(matrix)
+		if ((matrix.size1() == 0) && (matrix.size2() == 0)) throw std::runtime_error("[LinearEffectorTransform]: Matrix is empty");
 
-	CBF_DEBUG("iterating over segments");
-
-	for (
-		CBFSchema::Tree::Segment_const_iterator it =(xml_instance).Segment().begin(); 
-		it != (xml_instance).Segment().end();
-		++it
-	)
-	{
-		CBF_DEBUG("Adding Segment...");
-
-		tree_add_segment(tree, "root", *it, object_namespace);
-
-		CBF_DEBUG("Number of joints: " << tree->getNrOfJoints());
+		return matrix;
 	}
-	return tree;
-}
 
+	throw std::runtime_error("[create_matrix()]: Matrix type not supported yet");
+}
 
 #endif
-
-#ifdef CBF_HAVE_XSD
-	static XMLCreator<
-		FloatVector, 
-		CBFSchema::BoostVector, 
-		FloatVectorPtr(*)(const CBFSchema::BoostVector &, ObjectNamespacePtr)
-	> x (create_boost_vector);
-
-	static XMLCreator<
-		FloatVector, 
-		CBFSchema::ZeroVector, 
-		FloatVectorPtr(*)(const CBFSchema::ZeroVector &, ObjectNamespacePtr)
-	> x2 (create_zero_vector);
-
-	static XMLCreator<
-		FloatVector, 
-		CBFSchema::SimpleVector, 
-		FloatVectorPtr(*)(const CBFSchema::SimpleVector &, ObjectNamespacePtr)
-	> x34857 (create_simple_vector);
-
-	static XMLCreator<
-		FloatVector,
-		CBFSchema::EigenVector,
-		FloatVectorPtr(*)(const CBFSchema::EigenVector &, ObjectNamespacePtr)
-	> x34878 (create_eigen_vector);
-
-	template <> XMLFactory<FloatVector> 
-		*XMLFactory<FloatVector>::m_Instance = 0;
-
-	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::BoostVector> x7;
-	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::EigenVector> x9;
-	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::SimpleVector> x11;
-	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::ZeroVector> x543;
-	static XMLDerivedFactory<ForeignObject<FloatVector>, CBFSchema::EigenVector> x544;
-
-
-	
-	static XMLCreator<
-		FloatMatrix, 
-		CBFSchema::BoostMatrix, 
-		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::BoostMatrix &, ObjectNamespacePtr)
-	> x12 (create_boost_matrix);
-
-	static XMLCreator<
-		FloatMatrix, 
-		CBFSchema::ZeroMatrix, 
-		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::ZeroMatrix &, ObjectNamespacePtr)
-	> x22 (create_zero_matrix);
-
-	static XMLCreator<
-		FloatMatrix,
-		CBFSchema::EigenMatrix,
-		boost::shared_ptr<FloatMatrix>(*)(const CBFSchema::EigenMatrix &, ObjectNamespacePtr)
-	> x23 (create_eigen_matrix);
-
-	static XMLDerivedFactory<ForeignObject<FloatMatrix>, CBFSchema::EigenMatrix> x10;
-	static XMLDerivedFactory<ForeignObject<FloatMatrix>, CBFSchema::BoostMatrix> x8;
-	static XMLDerivedFactory<ForeignObject<FloatMatrix>, CBFSchema::ZeroMatrix> x33;
-
-	template <> XMLFactory<FloatMatrix> 
-		*XMLFactory<FloatMatrix>::m_Instance = 0;
-
-
-#ifdef CBF_HAVE_KDL
-
-	static XMLCreator<
-		KDL::Tree, 
-		CBFSchema::Tree, 
-		boost::shared_ptr<KDL::Tree>(*)(const CBFSchema::Tree &, ObjectNamespacePtr)
-	> x3 (create_tree);
-
-	static XMLDerivedFactory<ForeignObject<KDL::Tree>, CBFSchema::Tree> x4;
-
-	template <> XMLFactory<KDL::Tree> 
-		*XMLFactory<KDL::Tree>::m_Instance = 0;
-
-
-	static XMLCreator<
-		KDL::Segment, 
-		CBFSchema::Segment, 
-		boost::shared_ptr<KDL::Segment>(*)(const CBFSchema::Segment &, ObjectNamespacePtr)
-	> x13 (create_segment);
-
-	static XMLDerivedFactory<ForeignObject<KDL::Segment>, CBFSchema::Segment> x14;
-
-	template <> XMLFactory<KDL::Segment> 
-		*XMLFactory<KDL::Segment>::m_Instance = 0;
-
-
-	static XMLCreator<
-		KDL::Segment, 
-		CBFSchema::TreeSegment, 
-		boost::shared_ptr<KDL::Segment>(*)(const CBFSchema::TreeSegment &, ObjectNamespacePtr)
-	> x1332 (create_tree_segment);
-
-	static XMLDerivedFactory<ForeignObject<KDL::Segment>, CBFSchema::TreeSegment> x14323;
-
-#endif
-#endif
-
 
 } // namespace
 
