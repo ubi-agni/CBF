@@ -12,6 +12,7 @@ set(CBF_LIBRARY_NAME "${CBF_VERSIONED_NAME}")
 set(CBF_LIBS "")
 set(CBF_INCLUDES "")
 set(CBF_LINKDIRS "")
+set(CBF_LIBRARIES "")
 
 # module path
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -229,6 +230,13 @@ include_directories(SYSTEM "${CBF_INCLUDES}")
 # --- pkgconfig file ---
 configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${CBF_PATH_PREFIX}.pc @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/${CBF_PATH_PREFIX}.pc DESTINATION lib/pkgconfig)
+        
+add_subdirectory(schemas)
+add_subdirectory(libcbf)
+add_subdirectory(apps)
+add_subdirectory(tests)
+add_subdirectory(doc)
+
 
 # --- cmake config file ---
 set(LIB_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -245,12 +253,6 @@ install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake DESTINATION
 EXPORT(TARGETS ${LIB_NAME} FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
 INSTALL(EXPORT CBFDepends
         DESTINATION "share/${CBF_PATH_PREFIX}")
-        
-add_subdirectory(schemas)
-add_subdirectory(libcbf)
-add_subdirectory(apps)
-add_subdirectory(tests)
-add_subdirectory(doc)
 
 # --- package ---
 set(CPACK_PACKAGE_VERSION_MAJOR ${CBF_VERSION_MAJOR})
