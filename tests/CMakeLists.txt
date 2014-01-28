@@ -15,6 +15,10 @@ if(CBF_HAVE_XSD)
   include_directories(${XSD_INC})
 endif()
 
+if (CBF_HAVE_EIGEN2)
+  include_directories(${EIGEN2_INCLUDE_DIRS})
+endif()
+
 if(CBF_HAVE_QT)
   include_directories(${QT_INCLUDE_DIRS})
   include_directories(${PROJECT_SOURCE_DIR}/tests)

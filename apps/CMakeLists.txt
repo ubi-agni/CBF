@@ -16,6 +16,9 @@ if(CBF_HAVE_MEMORY)
   include_directories(${MEMORY_INCLUDE_DIRS})
 endif()
 
+if (CBF_HAVE_EIGEN2)
+  include_directories(${EIGEN2_INCLUDE_DIRS})
+endif()
 
 if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
   message(STATUS "  adding executable: cbf_run_controller")
