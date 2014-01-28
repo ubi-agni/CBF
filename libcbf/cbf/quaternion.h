@@ -200,13 +200,13 @@ struct Quaternion {
 
 	/** Precondition: ret must have size() == 3 */
 	void to_axis_angle3(FloatVector &ret) {
-		Float angle = acos(w) * 2.0;
 		// CBF_DEBUG("angle: " << angle)
 		ret.resize(3);
 		ret[0] = x;
 		ret[1] = y;
 		ret[2] = z;
 		Float norm = ret.norm();
+		Float angle = atan2(norm, w) * 2.0;
 		// CBF_DEBUG("norm " << norm)
 		if (norm > CBF_QUAT_AXIS_THRESH) {
 			ret *= 1.0 / norm;
