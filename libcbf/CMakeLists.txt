@@ -200,6 +200,7 @@ endif()
 
 if (CBF_HAVE_SPACEMOUSE)
   set(CBF_SOURCES ${CBF_SOURCES} spacenavi_reference.cc)
+  set(CBF_LIBS ${CBF_LIBS} ${SPACEMOUSE_LIBS})
 else()
   message(STATUS "  excluding spacenavi_reference.cc because spacemouse was not found")
 endif()

@@ -62,7 +62,8 @@ struct XCFMemoryReference : public Reference {
 		@param xml_instance An instance of a CBFSchema::XCFMemoryReference.
 		@param object_namespace A pointer to an ObjectNamespace
 	*/
-	XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance, ObjectNamespacePtr object_namespace);
+	XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance, 
+							 ObjectNamespacePtr object_namespace);
 
 	/**
 		@brief Creates an XCFMemoryReference connecting to the Memory named URI
@@ -74,7 +75,9 @@ struct XCFMemoryReference : public Reference {
 		@param reference_name The name of the XCFMemoryReference.
 		@param dim The dimesion of the reference.
 	*/
-	XCFMemoryReference(const std::string &uri, const std::string &reference_name, unsigned int dim = 1);
+	XCFMemoryReference(const std::string &uri, 
+							 const std::string &reference_name, 
+							 unsigned int dim = 1);
 
 	/** 
 		@brief update is a noop in this case as updates are handled asynchronously 

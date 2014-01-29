@@ -21,14 +21,55 @@
 /* -*- mode: c-non-suck; -*- */
 
 #include <cbf/spacenavi_reference.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_object_factory.h>
+#include <spacenavi.h>
 
 namespace CBF {
 
 #ifdef CBF_HAVE_XSD
-	SpaceNaviReference::SpaceNaviReference(const SpaceNaviReferenceType &xml_instance) {
+SpaceNaviReference::SpaceNaviReference(
+	const CBFSchema::SpaceNaviReference &xml_instance,
+	ObjectNamespacePtr object_namespace) : 
+	Reference(xml_instance, object_namespace) 
+{
+	init();
+}
+
+void SpaceNaviReference::init() 
+{
+	m_References.push_back(FloatVector(6));
+	m_Device = snavi_open(NULL, O_NONBLOCK);
+	if (m_Device == 0)
+		throw std::runtime_error("Could not open SpaceMouse device"); 
+	// turn on LED
+	snavi_set_led (m_Device, 1);
+
+	m_References.resize(1);
+	m_References[0] = FloatVector(6);
+}
+
+SpaceNaviReference::~SpaceNaviReference() 
+{
+	if (m_Device) {
+		snavi_set_led (m_Device, 0);
+		snavi_close (m_Device);
 	}
-	static XMLDerivedFactory<SpaceNaviReference, CBFSchema::SpaceNaviReference, Reference, CBFSchema::Reference> x;
+}
+void SpaceNaviReference::update() 
+{
+	snavi_event_t e;
+	/** get all events from the queue */
+	while(snavi_get_event(m_Device, &e) >= 0) {
+		if (e.type == MotionEvent) {
+			FloatVector tmp;
+			// TODO accumulate axes values
+			tmp << e.axes[0], e.axes[1], e.axes[2], e.axes[3], e.axes[4], e.axes[5];
+			m_References[0] = tmp;
+		}
+	}
+}
+
+static XMLDerivedFactory<SpaceNaviReference, CBFSchema::SpaceNaviReference> x;
 
 #endif
 

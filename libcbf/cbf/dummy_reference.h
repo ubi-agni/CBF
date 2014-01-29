@@ -37,7 +37,8 @@ namespace CBFSchema { class DummyReference; }
 namespace CBF {
 
 	struct DummyReference : public Reference {
-		DummyReference(const CBFSchema::DummyReference &xml_instance, ObjectNamespacePtr object_namespace);
+		DummyReference(const CBFSchema::DummyReference &xml_instance, 
+							ObjectNamespacePtr object_namespace);
 
 		DummyReference(unsigned int num_references = 1, unsigned int dim = 1)
 		{

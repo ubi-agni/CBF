@@ -134,6 +134,20 @@ else()
   message(STATUS "  qkdlview not found")
 endif()
 
+message(STATUS "Looking for spacemouse")
+find_library(SPACEMOUSE_LIBS spacenavi)
+find_path(SPACEMOUSE_INCLUDES spacenavi.h)
+if(
+	 NOT "${SPACEMOUSE_LIBS}" STREQUAL "SPACEMOUSE_LIBS-NOTFOUND" 
+	 AND 
+	 NOT "${SPACEMOUSE_INCLUDES}" STREQUAL "SPACEMOUSE_INCLUDES-NOTFOUND"
+	 )
+  message(STATUS "  found spacemouse ${SPACEMOUSE_LIBS} ${SPACEMOUSE_INCLUDES}")
+  set(CBF_HAVE_SPACEMOUSE 1)
+else()
+  message(STATUS "  spacemouse not found")
+endif()
+
 message(STATUS "Looking for Xerces-C")
 find_library(XERCESC_LIB xerces-c)
 find_path(XERCESC_INC xercesc/dom/DOM.hpp)

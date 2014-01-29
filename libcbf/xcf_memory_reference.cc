@@ -32,7 +32,8 @@ namespace CBF {
 	namespace mi = memory::interface;
 
 	#ifdef CBF_HAVE_XSD
-		XCFMemoryReference::XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance, ObjectNamespacePtr object_namespace)
+		XCFMemoryReference::XCFMemoryReference(const CBFSchema::XCFMemoryReference &xml_instance, 
+															ObjectNamespacePtr object_namespace)
 			:
 			m_MemoryInterface(mi::MemoryInterface::getInstance(xml_instance.URI())),
 			m_ReferenceName(xml_instance.ReferenceName()),
@@ -67,7 +68,7 @@ namespace CBF {
 
 		CBF_DEBUG("Document" << document);
 
-		mi::Condition::Condition condition((mi::Event::REPLACE | mi::Event::INSERT), XPathString());
+		mi::Condition condition((mi::Event::REPLACE | mi::Event::INSERT), XPathString());
 
 		boost::function<void (const mi::Event&) > f;
 
@@ -118,7 +119,6 @@ namespace CBF {
 			CBF_DEBUG("meeeh!!!");
 			CBF_THROW_RUNTIME_ERROR("Dimensions of xml vector not matching the dimension of this reference");
 		}
-		CBF_DEBUG("out");
 	}
 } // namespace
 

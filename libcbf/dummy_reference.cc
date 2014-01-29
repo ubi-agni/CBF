@@ -54,7 +54,7 @@ namespace CBF {
 						*it, object_namespace
 					)->m_Object;
 			} catch(...) {
-				CBF_DEBUG("extracting cefficients failed");
+				CBF_DEBUG("extracting coefficients failed");
 				throw;
 			}
 	

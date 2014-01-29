@@ -25,7 +25,6 @@
 
 #include <stdexcept>
 
-#include <spacenavi.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
@@ -40,34 +39,28 @@ namespace CBF {
 	
 	/** @brief: A reference that takes its information from a SpaceMouse */
 	struct SpaceNaviReference : public Reference {
-		SpaceNaviReference(const CBFSchema::SpaceNaviReference &xml_instance);
+		SpaceNaviReference(const CBFSchema::SpaceNaviReference &xml_instance,
+								 ObjectNamespacePtr object_namespace);
 	
 		SpaceNaviReference()
 		{
-			m_References.push_back(FloatVector(6));
-			m_Device = snavi_open(NULL, O_NONBLOCK);
-			if (m_Device == 0)
-				throw std::runtime_error("Could not open SpaceMouse device");
+			init();
 		}
+
+		virtual ~SpaceNaviReference();
 	
-		virtual void update() {
-			int ret = 0;
-			bool got_event = false;
-			/** get all events from the queue */
-			while((ret = snavi_get_event(m_Device, &m_Event)) >= 0) {
-				got_event = true;
-			}
-			if (got_event == true) {
-	
-			}
-		}
+		virtual void update();
 
 		virtual unsigned int dim() {
 			return 6u;
 		}
 	
+		/**
+			@brief Utility function for the constructor.
+		*/
+		void init();
+
 		protected:
-			snavi_event_t m_Event;
 			void *m_Device;
 	};
 	
