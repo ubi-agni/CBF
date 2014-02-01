@@ -52,22 +52,22 @@ else()
   message(STATUS "  because KDL or Eigen2 was not found")
 endif()
 
-set(exe,cbf_test_kdl_transforms_view)
-if(CBF_HAVE_KDL AND CBF_HAVE_KDLCHAINVIEW)
+set(exe cbf_test_kdl_transforms_view)
+if(CBF_HAVE_KDL AND CBF_HAVE_QKDLVIEW)
   message(STATUS "adding executable ${exe}")
   add_executable(${exe} ${exe}.cc)
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})
   target_link_libraries(${exe}
 	 ${CBF_LIBRARY_NAME}
-	 ${KDLCHAINVIEW_LIBS}
+	 ${QKDLVIEW_LIB}
 	 ${QT_LIBS}
 	 )
-  include_directories(${KDLCHAINVIEW_INCLUDES} ${QT_INCLUDES})
+  include_directories(${QKDLVIEW_INCLUDES} ${QT_INCLUDES})
 
   if(HAVE_SPACEMOUSE)
 	 include_directories(${SPACEMOUSE_INCLUDES})
 	 target_link_libraries(${exe} ${SPACEMOUSE_LIBS})
   endif()
 else()
-  message(STATUS "  not adding executable cbf_test_kdl_transforms_view because KDLCHAINVIZ was not found")
+  message(STATUS "  not adding executable cbf_test_kdl_transforms_view because libqkdlview was not found")
 endif()

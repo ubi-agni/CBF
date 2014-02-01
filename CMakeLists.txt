@@ -123,15 +123,9 @@ endif()
 message(STATUS "Looking for qkdlview")
 find_library(QKDLVIEW_LIB qkdlview)
 find_path(QKDLVIEW_INCLUDES qkdltreeview.h)
-if(
-	 NOT "${QKDLVIEW_LIB}" STREQUAL "QKDLVIEW_LIB-NOTFOUND" 
-	 AND 
-	 NOT "${QKDLVIEW_INCLUDES}" STREQUAL "QKDLVIEW_INCLUDES-NOTFOUND"
-	 )
+if(QKDLVIEW_LIB AND QKDLVIEW_INCLUDES)
   message(STATUS "  found qkdlview ${QKDLVIEW_LIB} ${QKDLVIEW_INCLUDES}")
   set(CBF_HAVE_QKDLVIEW 1)
-else()
-  message(STATUS "  qkdlview not found")
 endif()
 
 message(STATUS "Looking for spacemouse")
@@ -144,8 +138,6 @@ if(
 	 )
   message(STATUS "  found spacemouse ${SPACEMOUSE_LIBS} ${SPACEMOUSE_INCLUDES}")
   set(CBF_HAVE_SPACEMOUSE 1)
-else()
-  message(STATUS "  spacemouse not found")
 endif()
 
 message(STATUS "Looking for Xerces-C")
@@ -154,8 +146,6 @@ find_path(XERCESC_INC xercesc/dom/DOM.hpp)
 if(NOT "${XERCESC_LIB}" STREQUAL "XERCESC_LIB-NOTFOUND" AND NOT "${XERCESC_INC}" STREQUAL "XERCESC_INC-NOTFOUND")
   message(STATUS "  found Xerces-C ${XERCESC_LIB} ${XERCESC_INC}")
   set(CBF_HAVE_XERCESC 1)
-else()
-  message(STATUS "  Xerces-C not found")
 endif()
 
 message(STATUS "Looking for xmlstarlet")
@@ -169,8 +159,6 @@ if (NOT "${XSD_BIN}" STREQUAL "XSD_BIN-NOTFOUND" AND NOT "${XSD_INC}" STREQUAL "
   if(CBF_HAVE_XERCESC)
 	 set(CBF_HAVE_XSD 1)
   endif()
-else()
-  message(STATUS "  XSD CXX not found")
 endif()
 
 message(STATUS "Looking for pyxbgen")
@@ -178,17 +166,6 @@ find_program(PYXBGEN_BIN NAMES pyxbgen)
 if (NOT "${PYXBGEN_BIN}" STREQUAL "PYXBGEN_BIN-NOTFOUND")
   message(STATUS "  found pyxbgen: ${PYXBGEN_BIN}")
   set(CBF_HAVE_PYXBGEN 1)
-else()
-  message(STATUS "  pyxbgen not found")
-endif()
-
-message(STATUS "Looking for git")
-find_program(GIT_BIN NAMES git)
-if (NOT "${GIT_BIN}" STREQUAL "GIT_BIN-NOTFOUND")
-  message(STATUS "  found git: ${GIT_BIN}")
-  set(CBF_HAVE_GIT 1)
-else()
-  message(STATUS "  git not found!")
 endif()
 
 configure_file(
