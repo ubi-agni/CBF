@@ -94,34 +94,6 @@ Float damped_pseudo_inverse(const FloatMatrix &m, FloatMatrix &result, Float dam
 
 Float pseudo_inverse(const FloatMatrix &m, FloatMatrix &result);
 
-/*FIXME: still needed?
-template<class matrix_T>
-Float determinant(ublas::matrix_expression<matrix_T> const& mat_r)
-{
-  Float det = 1.0;
-
-  matrix_T mLu(mat_r());
-  ublas::permutation_matrix<std::size_t> pivots(mat_r().size1() );
-
-  int is_singular = lu_factorize(mLu, pivots);
-
-  if (!is_singular)
-  {
-    for (std::size_t i=0; i < pivots.size(); ++i)
-    {
-      if (pivots(i) != i)
-        det *= -1.0;
-
-      det *= mLu(i,i);
-    }
-  }
-  else
-    det = 0.0;
-
-  return det;
-}
-*/
-
 /** 
 	A function to create a CBF::FloatMatrix from a KDL::Jacobian. The argument m is
 	filled with a new matrix and a reference to m is returned, too
@@ -133,12 +105,6 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j);
 	filled with a new matrix and a reference to m is returned, too
 */
 FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &j);
-
-#if 0
-FloatVector create_vector(const CBFSchema::Vector &xml_instance, ObjectNamespacePtr object_namespace);
-FloatMatrix create_matrix(const CBFSchema::Matrix &xml_instance, ObjectNamespacePtr object_namespace);
-#endif
-
 
 boost::shared_ptr<KDL::Segment> 
 create_segment(const CBFSchema::Segment &xml_instance, ObjectNamespacePtr object_namespace);
