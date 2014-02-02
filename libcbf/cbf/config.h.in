@@ -5,5 +5,7 @@
 #cmakedefine CBF_HAVE_XMLTIO
 #cmakedefine CBF_HAVE_XCF
 #cmakedefine CBF_HAVE_QT
+#cmakedefine CBF_HAVE_QKDLVIEW
+#cmakedefine CBF_HAVE_SPACEMOUSE
 
 #undef cbf

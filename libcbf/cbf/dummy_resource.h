@@ -58,12 +58,10 @@ namespace CBF {
 				for (unsigned int i = 0; i < variables; ++i)
 					m_Variables[i] = 2 * M_PI * ((Float)rand()-(RAND_MAX/2.0))/(Float)RAND_MAX;
 			}
-			//CBF_DEBUG("current values" << m_Variables);
 		}
 	
 	
 		~DummyResource() {
-			//CBF_DEBUG("Destructor")
 		}
 	
 		virtual const FloatVector &get() {
@@ -72,7 +70,6 @@ namespace CBF {
 	
 		virtual void set(const FloatVector &arg) {
 			m_Variables = arg;
-			// CBF_DEBUG("current values" << m_Variables);
 		}
 	
 		virtual void add(const FloatVector &arg);

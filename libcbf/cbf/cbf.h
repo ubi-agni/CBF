@@ -26,18 +26,24 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/resource.h>
 #include <cbf/dummy_resource.h>
-#include <cbf/primitive_controller_resource.h>
-#include <cbf/orientation_potentials.h>
+
+#include <cbf/dummy_reference.h>
+#include <cbf/spacenavi_reference.h>
+
 #include <cbf/linear_transform.h>
 #include <cbf/generic_transform.h>
-#include <controller_sequence.h>
 #include <cbf/composite_transform.h>
+#include <cbf/kdl_transforms.h>
+
+#include <cbf/controller_sequence.h>
 #include <cbf/combination_strategy.h>
+
 #include <cbf/potential.h>
-#include <cbf/sensor_transform.h>
+#include <cbf/composite_potential.h>
+#include <cbf/square_potential.h>
+#include <cbf/axis_potential.h>
+#include <cbf/axis_angle_potential.h>
+
 #include <cbf/utilities.h>
-#include <transform_chains.h>
-#include <dummy_reference.h>
-#include <spacenavi_reference.h>
 
 #endif
