@@ -220,7 +220,6 @@ namespace CBF {
 	}
 	
 	void PrimitiveController::action() {
-		update();
 		m_Resource->add(m_Result);
 		m_Converged = check_convergence();
 	}
