@@ -33,9 +33,9 @@ namespace CBF {
 	/**
 		@brief This type represents a primitive controller as resource. 
 	
-		The current
-		value of the resource is the controller's sensor transformed resource
-		value. An incremental resource update step is realized as setting
+		The current value of the resource is the controller's 
+		sensor-transformed own resource value. 
+		An incremental resource update step is realized as setting
 		the controller's reference to the current sensor transformed resource
 		value plus the incremental resource update step.
 	
@@ -55,15 +55,11 @@ namespace CBF {
 	
 		PrimitiveControllerPtr m_PrimitiveController;
 	
-		CBFFloatVector m_Result;
-	
-		std::vector<CBFFloatVector > m_References;
+		FloatVector m_Result;
 	
 		PrimitiveControllerResource(PrimitiveControllerPtr controller = PrimitiveControllerPtr()) :
 			m_PrimitiveController(controller),
-			m_References(1)
 		{
-	
 		}
 	
 		public:
@@ -72,20 +68,18 @@ namespace CBF {
 				m_PrimitiveController->sensor_transform()->exec(m_Result);
 			}
 	
-			virtual const CBFFloatVector &get() {
+			virtual const FloatVector &get() {
 				return m_Result;
 			}
 	
-			virtual void add(const CBFFloatVector &arg) {
+			virtual void add(const FloatVector &arg) {
 				set(m_Result + arg);
 			}
 	
-			virtual void set(const CBFFloatVector &arg) {
+			virtual void set(const FloatVector &arg) {
 				//! Setup reference..
-				m_References[0] = arg;
-				m_PrimitiveController->set_references(m_References);
+				m_PrimitiveController->set_reference(arg);
 	
-				// CBF_DEBUG("Running controller 'til convergence...")
 				//! And run controller until convergence..
 				do {
 					m_PrimitiveController->step();

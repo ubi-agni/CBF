@@ -19,6 +19,7 @@ set(CBF_SOURCES
   primitive_controller.cc 
   resource.cc 
   dummy_resource.cc 
+#  primitive_controller_resource.cc 
   effector_transform.cc 
   potential.cc 
   utilities.cc
