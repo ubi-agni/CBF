@@ -61,7 +61,7 @@ namespace CBF {
 				CBF_THROW_RUNTIME_ERROR("num_references < 1");
 
 			if (refs[0].size() != m_References[0].size())
-				CBF_THROW_RUNTIME_ERROR("dim < 1");
+				CBF_THROW_RUNTIME_ERROR("dims differ");
 
 			m_References = refs;
 			for (unsigned int i = 0; i < refs.size(); ++i)

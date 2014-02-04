@@ -78,8 +78,7 @@ namespace CBF {
 
 					if (m_DerivedFactories.find(std::string(typeid(xml_instance).name())) == m_DerivedFactories.end()) {
 						CBF_THROW_RUNTIME_ERROR(
-							"No factory found for type (possibly mangled): " << 
-							CBF_UNMANGLE(xml_instance)
+							"No factory found for type: " << CBF_UNMANGLE(xml_instance)
 						);
 					}
 
@@ -92,8 +91,7 @@ namespace CBF {
 					if (p.get()) return p;
 
 					CBF_THROW_RUNTIME_ERROR(
-						"No factory found for type (possibly mangled): " << 
-						CBF_UNMANGLE(xml_instance)
+						"No factory found for type: " << CBF_UNMANGLE(xml_instance)
 					);
 	
 					return boost::shared_ptr<T>();
@@ -107,10 +105,8 @@ namespace CBF {
 		struct XMLDerivedFactory : public XMLDerivedFactoryBase {
 				XMLDerivedFactory() { 
 					CBF_DEBUG(
-						"registering (possibly mangled type name follows): " << 
-						CBF_UNMANGLE(T) << 
-						" with SchemaType: " << 
-						CBF_UNMANGLE(TType)
+						"registering: " << CBF_UNMANGLE(T) << 
+						" with SchemaType: " << CBF_UNMANGLE(TType)
 					);
 					XMLObjectFactory::instance()->m_DerivedFactories[std::string(typeid(TType).name())] = this; 
 				}
@@ -121,7 +117,7 @@ namespace CBF {
 					ObjectNamespacePtr object_namespace
 				) {
 
-					CBF_DEBUG("am i the one? possibly mangled name follows: " << CBF_UNMANGLE(this));
+					CBF_DEBUG("am i the one? : " << CBF_UNMANGLE(this));
 					const TType* r = dynamic_cast<const TType*>(&xml_instance);
 					if (r) {
 						CBF_DEBUG("yes, i am the one");
