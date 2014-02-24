@@ -27,6 +27,3 @@ set(CPACK_DEBIAN_PACKAGE_DEPENDS "libeigen2-dev | libeigen3-dev, libboost-dev, l
 set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "libeigen2-dev")
 set(CPACK_DEBIAN_PACKAGE_SUGGESTS "libeigen3-dev")
 
-# Configure meta package configuration files
-configure_file(cmake/metapackage.conf.in ${CMAKE_BINARY_DIR}/metapackage/DEBIAN/control @ONLY)
-configure_file(cmake/metapackage_build.sh.in ${CMAKE_BINARY_DIR}/metapackage_build.sh)
