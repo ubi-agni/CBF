@@ -19,6 +19,7 @@ set(CBF_SOURCES
   primitive_controller.cc 
   resource.cc 
   dummy_resource.cc 
+#  primitive_controller_resource.cc 
   effector_transform.cc 
   potential.cc 
   utilities.cc
@@ -66,6 +67,7 @@ set(CBF_HEADERS
   cbf/dummy_resource.h
   cbf/effector_transform.h
   cbf/exceptions.h
+  cbf/foreign_object.h
   cbf/functional.h
   cbf/generic_transform.h
   cbf/identity_transform.h
@@ -105,6 +107,7 @@ set(CBF_HEADERS
   cbf/xcf_resource.h
   cbf/xcf_vector_reference.h
   cbf/xml_factory.h
+  cbf/xml_object_factory.h
   cbf/xsd_error_handler.h
   )
 
@@ -125,7 +128,6 @@ if (CBF_HAVE_QKDLVIEW)
   set(CBF_LIBS ${CBF_LIBS} ${QKDLVIEW_LIB} ${QKDLVIEW_LIB})
   
   set(CBF_SOURCES ${CBF_SOURCES} kdl_chain_view_transforms.cc)
-  # set(CBF_HEADERS ${CBF_HEADERS} qkdl_chain_view_transforms.h)
 endif()
 
 if(CBF_HAVE_CPPAD)
@@ -199,6 +201,7 @@ endif()
 
 if (CBF_HAVE_SPACEMOUSE)
   set(CBF_SOURCES ${CBF_SOURCES} spacenavi_reference.cc)
+  set(CBF_LIBS ${CBF_LIBS} ${SPACEMOUSE_LIBS})
 else()
   message(STATUS "  excluding spacenavi_reference.cc because spacemouse was not found")
 endif()
@@ -248,7 +251,7 @@ include_directories(${CBF_INCLUDES})
 add_library(${CBF_LIBRARY_NAME} SHARED
     ${CBF_SOURCES})
 set_target_properties(${CBF_LIBRARY_NAME}
-  PROPERTIES PUBLIC_HEADER ${CBF_HEADERS})
+  PROPERTIES PUBLIC_HEADER "${CBF_HEADERS}")
 
 target_link_libraries(${CBF_LIBRARY_NAME} ${CBF_LIBS})
 
@@ -262,15 +265,11 @@ install(TARGETS ${CBF_LIBRARY_NAME}
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
-  PUBLIC_HEADER DESTINATION include/${CBF_PATH_PREFIX}
+  PUBLIC_HEADER DESTINATION include/${CBF_PATH_PREFIX}/cbf
   )
 
-install(
-  FILES ${CBF_HEADERS} 
-  DESTINATION include/${CBF_PATH_PREFIX}/cbf
-  )
-
+# generated files: config.h, schemas*
 install(
   DIRECTORY ${PROJECT_BINARY_DIR}/libcbf/cbf 
-  DESTINATION include/${CBF_PATH_PREFIX}/cbf
+  DESTINATION include/${CBF_PATH_PREFIX}
   )

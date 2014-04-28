@@ -69,7 +69,7 @@ namespace CBF {
 
 
 	/**
-		@brief Pseudo inverse based generic effector transform (non-damped, non-weighted)
+		@brief Pseudo inverse based generic effector transform (damped, non-weighted)
 	*/
 	struct DampedGenericEffectorTransform : public EffectorTransform {
 		DampedGenericEffectorTransform (const CBFSchema::DampedGenericEffectorTransform &xml_instnace, ObjectNamespacePtr object_namespace);
@@ -91,6 +91,14 @@ namespace CBF {
 			m_DampingConstant = damping_constant;
 		}	
 	
+		void setDampingConstant (Float damping_constant) {
+			m_DampingConstant = damping_constant;
+		}
+
+		Float getDampingConstant () const {
+			return m_DampingConstant;
+		}
+
 		protected:
 			Float m_DampingConstant;
 	};
@@ -184,7 +192,8 @@ namespace CBF {
 
 		void init(unsigned int task_dim, unsigned int resource_dim, FloatVector diagonal) {
 			CBF_DEBUG("Padded transform init");
-			if (task_dim != diagonal.size()) CBF_THROW_RUNTIME_ERROR("dimension mismatch");
+			if (task_dim != (unsigned int)diagonal.size()) 
+				CBF_THROW_RUNTIME_ERROR("dimension mismatch");
 
 			m_PaddedTaskJacobian = FloatMatrix::Zero(task_dim, resource_dim + task_dim);
 

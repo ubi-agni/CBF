@@ -474,15 +474,20 @@ boost::shared_ptr<KDL::Joint> create_joint(const CBFSchema::Joint &xml_instance,
 
 boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_instance, ObjectNamespacePtr object_namespace) {
 	CBF_DEBUG("adding chain");
-	boost::shared_ptr<KDL::Chain> chain(new KDL::Chain);
+	boost::shared_ptr<KDL::Chain> chain;
 
 	//! Check what kind of chain we have:
 
 	const CBFSchema::Chain *chain_instance  = dynamic_cast<const CBFSchema::Chain*>(&xml_instance);
 
-	if (chain_instance == 0)
-		throw std::runtime_error("Chain type not handled yet..");
+	if (chain_instance == 0) {
+		// this is a referenced chain
+		chain = XMLObjectFactory::instance()->create<ForeignObject<KDL::Chain> >(
+			xml_instance, object_namespace)->m_Object;
+		return chain;
+	}
 
+	chain.reset(new KDL::Chain);
 	for (
 		CBFSchema::Chain::Segment_const_iterator it =(*chain_instance).Segment().begin(); 
 		it != (*chain_instance).Segment().end();
@@ -494,8 +499,8 @@ boost::shared_ptr<KDL::Chain> create_chain(const CBFSchema::ChainBase &xml_insta
 		boost::shared_ptr<KDL::Segment> segment = XMLFactory<KDL::Segment>::instance()->create(*it, object_namespace);
 
 		chain->addSegment(*segment);
-		CBF_DEBUG("number of joints: " << chain->getNrOfJoints());
 	}
+	CBF_DEBUG("number of joints: " << chain->getNrOfJoints());
 	return chain;
 }
 

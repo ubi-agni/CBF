@@ -258,7 +258,7 @@ namespace CBF {
 	) : 
 		BaseKDLTreeSensorTransform(tree, segment_names)
 	{
-		m_TaskDim = 3;
+		m_TaskDim = 3*segment_names.size();
 		m_ResourceDim = tree->getNrOfJoints();
 
 		m_Result = FloatVector(3 * segment_names.size());
@@ -273,22 +273,17 @@ namespace CBF {
 	
 		unsigned int total_row = 0;
 		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i) {
+			//! Buffer forward kinematics, so we can return it when requested...
+			const KDL::Vector& axis = m_Frames[i]->M.GetRot();
+			for (unsigned int row = 0; row < 3; ++row) {
+				m_Result[total_row+row] = axis(row);
+			}
+			
+			//! Buffer task jacobian
 			for (unsigned int row = 0; row < 3; ++row, ++total_row) {
 				for (unsigned int col = 0; col < resource_dim(); ++col) {
 					m_TaskJacobian(total_row,col) = (*m_Jacobians[i])(row+3, col);
 				}
-			}
-			//! Buffer result, so we can return it when requested...
-			KDL::Vector vec;
-			float angle;
-			angle = (m_Frames[i]->M).GetRotAngle(vec, 0.0000000000001);
-	
-			// angle = fmod(angle + 2.0 * M_PI, 2.0 * M_PI);
-			if (angle > M_PI) angle -= 2.0 * M_PI;
-			if (angle <= -M_PI) angle += 2.0 * M_PI;
-	
-			for (unsigned int row = 0; row < 3; ++row) {
-				m_Result[total_row] = vec(row) * angle;
 			}
 		}
 
@@ -343,7 +338,6 @@ namespace CBF {
 
 			CBF_DEBUG("tree created");
 
-			init_solvers();
 		}
 		
 		KDLTreePositionSensorTransform::KDLTreePositionSensorTransform(const CBFSchema::KDLTreePositionSensorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
@@ -359,6 +353,8 @@ namespace CBF {
 				m_SegmentNames.push_back(*it);
 			}
 
+			init_solvers();
+
 			m_Result = FloatVector(3 *  m_SegmentNames.size());
 
 			m_TaskJacobian = FloatMatrix(
@@ -366,7 +362,6 @@ namespace CBF {
 					(int)  m_Tree->getNrOfJoints()
 					);
 
-			init_solvers();
 		}
 		
 		KDLTreeAxisAngleSensorTransform::KDLTreeAxisAngleSensorTransform(
@@ -374,6 +369,23 @@ namespace CBF {
 		) :
 			BaseKDLTreeSensorTransform(xml_instance.Tree(), xml_instance, object_namespace)
 		{
+			for (
+				CBFSchema::KDLTreeAxisAngleSensorTransform::SegmentName_const_iterator it = xml_instance.SegmentName().begin();
+				it != xml_instance.SegmentName().end();
+				++it
+			) 
+			{
+				m_SegmentNames.push_back(*it);
+			}
+
+			init_solvers();
+
+			m_Result = FloatVector(3 *  m_SegmentNames.size());
+
+			m_TaskJacobian = FloatMatrix(
+					(int) 3 * m_SegmentNames.size(),
+					(int)  m_Tree->getNrOfJoints()
+					);
 
 		}
 

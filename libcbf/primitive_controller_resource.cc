@@ -21,15 +21,17 @@
 #include <cbf/primitive_controller_resource.h>
 
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_object_factory.h>
 
 
 namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
-		PrimitiveControllerResource::PrimitiveControllerResource(const PrimitiveControllerResourceType &xml_instance)
+		PrimitiveControllerResource::PrimitiveControllerResource(
+			const CBFSchema::PrimitiveControllerResourceType &xml_instance,
+			ObjectNamespacePtr object_namespace) 
+			Resource(xml_instance, object_namespace)
 		{
-			CBF_DEBUG("Creation!!!")
 			ControllerPtr p = Controller::create(xml_instance.PrimitiveController());
 			m_PrimitiveController = boost::dynamic_pointer_cast<PrimitiveController>(p);
 		}	

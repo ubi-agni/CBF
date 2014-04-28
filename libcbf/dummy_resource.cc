@@ -35,8 +35,8 @@
 
 namespace CBF {
 	void DummyResource::add(const FloatVector &arg) {
-		set(m_Variables + arg);
-		CBF_DEBUG("current values" << m_Variables);
+		m_Variables += arg;
+		CBF_DEBUG("current values" << m_Variables.transpose());
 	}
 
 

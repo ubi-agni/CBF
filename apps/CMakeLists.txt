@@ -1,8 +1,8 @@
 message(STATUS "In subdirectory apps:")
 
+include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
 include_directories("${PROJECT_SOURCE_DIR}/apps/")
-include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 
 if(CBF_HAVE_XSD)
   include_directories(${XSD_INC})
@@ -17,61 +17,51 @@ if(CBF_HAVE_MEMORY)
 endif()
 
 
+set(exe cbf_run_controller)
 if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
-  message(STATUS "  adding executable: cbf_run_controller")
-
-  add_executable(cbf_run_controller 
-    cbf_run_controller_from_xml.cc
-    )
-  target_link_libraries(cbf_run_controller
+  message(STATUS "  adding executable: ${exe}")
+  add_executable(${exe} ${exe}_from_xml.cc)
+  target_link_libraries(${exe} 
     ${CBF_LIBRARY_NAME}
     ${Boost_LIBRARIES}
     )
-  set_target_properties(cbf_run_controller
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+  add_dependencies(${exe} ${CBF_LIBRARY_NAME})
 
-  install(TARGETS cbf_run_controller
+  install(TARGETS ${exe}
 	 RUNTIME DESTINATION bin
-	 LIBRARY DESTINATION lib
-	 ARCHIVE DESTINATION lib/static
-	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
+	 PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+	 GROUP_READ GROUP_WRITE GROUP_EXECUTE
+	 WORLD_READ WORLD_EXECUTE
 	 )
-
-
 else()
-  message(STATUS "  not adding executable cbf_run_controller because xsd or boost-program-options was not found")
+  message(STATUS "  not adding executable ${exe} because xsd or boost-program-options was not found")
 endif()
 
 
+set(exe cbf_xcf_memory_run_controller)
 if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY)
-  message(STATUS "  adding executable: cbf_xcf_memory_run_controller")
-
-  add_executable(cbf_xcf_memory_run_controller 
-    cbf_run_controller_from_xcf_memory.cc
+  message(STATUS "  adding executable: ${exe}")
+  add_executable(${exe} 
+	 cbf_run_controller_from_xcf_memory.cc
     cbf_run_controller.cc
     xcf_memory_run_controller.cc
     )
-  target_link_libraries(cbf_xcf_memory_run_controller
+  target_link_libraries(${exe}
     ${CBF_LIBRARY_NAME}
     ${Boost_LIBRARIES}
     ${MEMORY_LDFLAGS}
     )
-  set_target_properties(cbf_xcf_memory_run_controller
-    PROPERTIES VERSION ${CBF_VERSION_MAJOR}
-    SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-	 )
-  install(TARGETS cbf_xcf_memory_run_controller
-	 RUNTIME DESTINATION bin
-	 LIBRARY DESTINATION lib
-	 ARCHIVE DESTINATION lib/static
-	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
-	 )
+  add_dependencies(${exe} ${CBF_LIBRARY_NAME})
 
+  install(TARGETS ${exe}
+	 RUNTIME DESTINATION bin
+	 PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+	 GROUP_READ GROUP_WRITE GROUP_EXECUTE
+	 WORLD_READ WORLD_EXECUTE
+	 )
 else()
-  message(STATUS "  not adding executable ")
-  message(STATUS "  -cbf_xcf_memory_run_controller")
-  message(STATUS "   because xsd, boost-program-options or memory was not found")
+  message(STATUS "  not adding executable ${exe}")
+  message(STATUS "  because xsd, boost-program-options or memory was not found")
 endif()
 
 add_subdirectory(qcbf)

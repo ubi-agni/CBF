@@ -5,9 +5,17 @@ set(CBF_VERSION_MAJOR 0)
 set(CBF_VERSION_MINOR 1)
 set(CBF_VERSION_PATCH 1)
 set(CBF_VERSION "${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}")
+
+set(CBF_USE_PATH_PREFIX 1 CACHE BOOL "use path prefix for include")
 set(CBF_VERSIONED_NAME "${PROJECT_NAME}${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}")
-set(CBF_PATH_PREFIX "${CBF_VERSIONED_NAME}")
-set(CBF_LIBRARY_NAME "${CBF_VERSIONED_NAME}")
+if(CBF_USE_PATH_PREFIX)
+  set(CBF_PATH_PREFIX "${CBF_VERSIONED_NAME}")
+  set(CBF_PKGCFG_FILE "${CBF_VERSIONED_NAME}.pc")
+else()
+  set(CBF_PATH_PREFIX "")
+  set(CBF_PKGCFG_FILE "${PROJECT_NAME}.pc")
+endif()
+set(CBF_LIBRARY_NAME "${PROJECT_NAME}")
 
 # module path
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -21,14 +29,16 @@ include(ParseArguments)
 enable_testing()
 include(CTest) 
 
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREAD OFF)
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREAD ON)
 
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
-  set (CBF_DEBUG_COLOR 1)
-endif()
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DCBF_NDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DCBF_DEBUG_COLOR")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DCBF_NDEBUG")
 
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -DCBF_NDEBUG")
+# add the automatically determined parts of the RPATH
+# which point to directories outside the build tree to the install RPATH
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 message(STATUS "==============================================================")
 message(STATUS "Configuring CBF:")
@@ -90,7 +100,6 @@ if (MEMORY_FOUND)
   set(CBF_HAVE_MEMORY 1)
 endif()
 
-# find eigen2
 message(STATUS "Looking for EIGEN2")
 find_package(Eigen2 2.0 REQUIRED)
 if(EIGEN2_FOUND)
@@ -114,15 +123,21 @@ endif()
 message(STATUS "Looking for qkdlview")
 find_library(QKDLVIEW_LIB qkdlview)
 find_path(QKDLVIEW_INCLUDES qkdltreeview.h)
-if(
-	 NOT "${QKDLVIEW_LIB}" STREQUAL "QKDLVIEW_LIB-NOTFOUND" 
-	 AND 
-	 NOT "${QKDLVIEW_INCLUDES}" STREQUAL "QKDLVIEW_INCLUDES-NOTFOUND"
-	 )
+if(QKDLVIEW_LIB AND QKDLVIEW_INCLUDES)
   message(STATUS "  found qkdlview ${QKDLVIEW_LIB} ${QKDLVIEW_INCLUDES}")
   set(CBF_HAVE_QKDLVIEW 1)
-else()
-  message(STATUS "  qkdlview not found")
+endif()
+
+message(STATUS "Looking for spacemouse")
+find_library(SPACEMOUSE_LIBS spacenavi)
+find_path(SPACEMOUSE_INCLUDES spacenavi.h)
+if(
+	 NOT "${SPACEMOUSE_LIBS}" STREQUAL "SPACEMOUSE_LIBS-NOTFOUND" 
+	 AND 
+	 NOT "${SPACEMOUSE_INCLUDES}" STREQUAL "SPACEMOUSE_INCLUDES-NOTFOUND"
+	 )
+  message(STATUS "  found spacemouse ${SPACEMOUSE_LIBS} ${SPACEMOUSE_INCLUDES}")
+  set(CBF_HAVE_SPACEMOUSE 1)
 endif()
 
 message(STATUS "Looking for Xerces-C")
@@ -131,8 +146,6 @@ find_path(XERCESC_INC xercesc/dom/DOM.hpp)
 if(NOT "${XERCESC_LIB}" STREQUAL "XERCESC_LIB-NOTFOUND" AND NOT "${XERCESC_INC}" STREQUAL "XERCESC_INC-NOTFOUND")
   message(STATUS "  found Xerces-C ${XERCESC_LIB} ${XERCESC_INC}")
   set(CBF_HAVE_XERCESC 1)
-else()
-  message(STATUS "  Xerces-C not found")
 endif()
 
 message(STATUS "Looking for xmlstarlet")
@@ -146,8 +159,6 @@ if (NOT "${XSD_BIN}" STREQUAL "XSD_BIN-NOTFOUND" AND NOT "${XSD_INC}" STREQUAL "
   if(CBF_HAVE_XERCESC)
 	 set(CBF_HAVE_XSD 1)
   endif()
-else()
-  message(STATUS "  XSD CXX not found")
 endif()
 
 message(STATUS "Looking for pyxbgen")
@@ -155,17 +166,6 @@ find_program(PYXBGEN_BIN NAMES pyxbgen)
 if (NOT "${PYXBGEN_BIN}" STREQUAL "PYXBGEN_BIN-NOTFOUND")
   message(STATUS "  found pyxbgen: ${PYXBGEN_BIN}")
   set(CBF_HAVE_PYXBGEN 1)
-else()
-  message(STATUS "  pyxbgen not found")
-endif()
-
-message(STATUS "Looking for git")
-find_program(GIT_BIN NAMES git)
-if (NOT "${GIT_BIN}" STREQUAL "GIT_BIN-NOTFOUND")
-  message(STATUS "  found git: ${GIT_BIN}")
-  set(CBF_HAVE_GIT 1)
-else()
-  message(STATUS "  git not found!")
 endif()
 
 configure_file(
@@ -179,8 +179,11 @@ configure_file(
   ) 
 
 # --- pkgconfig file ---
-configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${CBF_PATH_PREFIX}.pc @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/${CBF_PATH_PREFIX}.pc DESTINATION lib/pkgconfig)
+configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)
+install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc 
+        DESTINATION lib/pkgconfig
+		  RENAME ${CBF_PKGCFG_FILE}
+		  )
 
 # --- cmake config file ---
 set(LIB_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -188,11 +191,11 @@ if(CMAKE_LINK_LIBRARY_SUFFIX)
     set(LIB_SUFFIX ${CMAKE_LINK_LIBRARY_SUFFIX})
 endif()
 configure_file(CBFConfig.cmake.in ${CMAKE_BINARY_DIR}/CBFConfig.cmake @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/CBFConfig.cmake DESTINATION
-              share/${CBF_PATH_PREFIX})
+install(FILES ${CMAKE_BINARY_DIR}/CBFConfig.cmake 
+        DESTINATION share/${CBF_PATH_PREFIX})
 configure_file(CBFConfigVersion.cmake.in ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake DESTINATION
-              share/${CBF_PATH_PREFIX})
+install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake 
+        DESTINATION share/${CBF_PATH_PREFIX})
 
 EXPORT(TARGETS ${LIB_NAME} FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
 INSTALL(EXPORT CBFDepends
