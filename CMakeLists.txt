@@ -70,6 +70,7 @@ pkg_check_modules(KDL orocos-kdl>=1.0)
 if (KDL_FOUND)
   message(STATUS "  found")
   set(CBF_HAVE_KDL 1)
+  link_directories(${KDL_LIBRARY_DIRS})
 endif()
 
 message(STATUS "Looking for XCF")
