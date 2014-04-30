@@ -167,7 +167,7 @@ endif()
 if(CBF_HAVE_XSD)
   link_directories("${PROJECT_BINARY_DIR}/schemas")
   set(CBF_INCLUDES ${CBF_INCLUDES} "${PROJECT_BIN_DIR}/libcbf" ${XSD_INC})
-  set(CBF_LIBS ${CBF_LIBS} cbf_schemas ${XERCESC_LIB})
+  set(CBF_LIBS ${CBF_LIBS} ${CBF_LIBRARY_NAME}_schemas ${XERCESC_LIB})
 endif()
 
 #=============================================================================#
@@ -273,3 +273,4 @@ install(
   DIRECTORY ${PROJECT_BINARY_DIR}/libcbf/cbf 
   DESTINATION include/${CBF_PATH_PREFIX}
   )
+

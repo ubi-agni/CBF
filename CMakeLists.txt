@@ -197,15 +197,15 @@ configure_file(CBFConfigVersion.cmake.in ${CMAKE_BINARY_DIR}/CBFConfigVersion.cm
 install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake 
         DESTINATION share/${CBF_PATH_PREFIX})
 
-EXPORT(TARGETS ${LIB_NAME} FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
-INSTALL(EXPORT CBFDepends
-        DESTINATION "share/${CBF_PATH_PREFIX}")
-
 add_subdirectory(schemas)
 add_subdirectory(libcbf)
 add_subdirectory(apps)
 add_subdirectory(tests)
 add_subdirectory(doc)
+
+EXPORT(TARGETS ${CBF_LIBRARY_NAME} ${CBF_LIBRARY_NAME}_schemas FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
+INSTALL(EXPORT CBFDepends
+        DESTINATION "share/${CBF_PATH_PREFIX}")
 
 # --- package ---
 set(CPACK_PACKAGE_VERSION_MAJOR ${CBF_VERSION_MAJOR})
@@ -215,3 +215,4 @@ set(CPACK_PACKAGE_VENDOR "CoR-Lab Bielefeld University")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING.txt")
 
 include(ProvideFlexibleCPack)
+

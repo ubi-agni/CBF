@@ -6,7 +6,8 @@ if(NOT CBF_CONFIG_PROCESSED)
     # Expose CBF library as an imported target (from the point of view
     # of the downstream project)
     include("${CONFIG_DIR}/CBFDepends.cmake")
-    set(CBF_LIBRARIES @LIB_NAME@)
+    set(CBF_LIBRARY_DIR "${CONFIG_DIR}/../../lib")
+    set(CBF_LIBRARIES "@CBF_LIBRARY_NAME@;@CBF_LIBRARY_NAME@_schemas")
     
     set(CBF_FOUND TRUE)
     set(CBF_INCLUDE_DIRS "${CONFIG_DIR}/../../include/@CBF_PATH_PREFIX@")
