@@ -40,7 +40,7 @@ namespace CBF {
 
 		m_TaskJacobian = FloatMatrix::Zero(total_task_dim, total_resource_dim);
 		CBF_DEBUG("task_dim " << task_dim());
-		m_Result = FloatVector(task_dim());
+		m_Result = FloatVector::Zero(task_dim());
 		CBF_DEBUG("m_Result " << m_Result);
 	}
 
