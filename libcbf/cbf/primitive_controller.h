@@ -83,7 +83,10 @@ namespace CBF {
 			/**
 				@brief: Check for convergence of the controller
 		
-				This should only be used after the result has been calculated
+				Default behaviour: controller converged (and flag m_Converged is set)
+				if any of the defined convergence criteria in m_ConvergenceCriteria 
+				is fullfilled. 
+				This should only be used after the result has been calculated.
 			*/ 
 			virtual bool check_convergence();
 
@@ -276,8 +279,6 @@ namespace CBF {
 	
 	
 		protected:
-			bool m_Converged;
-
 			/*** @brief Function for stuff common to all constructors */
 			void init(ResourcePtr resource);
 

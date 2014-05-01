@@ -45,8 +45,6 @@ namespace CBF {
 		//! @brief  This coefficient determines the rate of convergence. Choose between 0 and 1.
 		Float m_Coefficient;
 
-		bool m_Converged;
-	
 		AxisAnglePotential(Float coefficient = 0.1) :
 			m_Coefficient(coefficient)
 		{
@@ -60,10 +58,6 @@ namespace CBF {
 		);
 	
 		virtual unsigned int dim() const { return 3u; }
-
-		virtual bool converged() const {
-			return m_Converged;
-		}
 
 		virtual Float distance(const FloatVector &v1, const FloatVector &v2);
 

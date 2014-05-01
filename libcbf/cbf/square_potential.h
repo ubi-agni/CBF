@@ -45,18 +45,10 @@ struct SquarePotential : public Potential {
 
 	unsigned int m_Dim;
 
-	bool m_Converged;
-
 	SquarePotential(unsigned int dim = 1, Float coefficient = 1.0) :
 		m_Coefficient(coefficient),
-		m_Dim(dim),
-		m_Converged(false)
+		m_Dim(dim)
 	{
-
-	}
-
-	virtual bool converged() const {
-		return m_Converged;		
 	}
 
 	virtual Float norm(const FloatVector &v) {
