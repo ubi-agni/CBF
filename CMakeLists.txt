@@ -71,7 +71,22 @@ if (KDL_FOUND)
   message(STATUS "  found")
   set(CBF_HAVE_KDL 1)
   link_directories(${KDL_LIBRARY_DIRS})
-endif()
+
+  ## This gets a bit ugly now. In case that we found and use KDL, we need to
+  ## use the same eigen version as KDL. KDL doesn't seem to export its eigen
+  ## version nor changed its version, so we have to find out by ourselves.
+  ## See: https://github.com/norro/CBF/issues/2
+  if ("${KDL_INCLUDE_DIRS}" MATCHES ".*eigen2.*")
+    message(STATUS " uses Eigen2 ${KDL_INCLUDE_DIRS}")
+    set(KDL_USES_EIGEN2 1)
+    set(KDL_USES_EIGEN3 0)
+  else()
+    message(STATUS "  uses Eigen3 ${KDL_INCLUDE_DIRS}")
+    set(KDL_USES_EIGEN2 0)
+    set(KDL_USES_EIGEN3 1)
+  endif()  
+endif(KDL_FOUND)
+
 
 message(STATUS "Looking for XCF")
 pkg_check_modules(XCF xcf>=0.9)
@@ -101,16 +116,25 @@ if (MEMORY_FOUND)
   set(CBF_HAVE_MEMORY 1)
 endif()
 
-message(STATUS "Looking for EIGEN2")
-find_package(Eigen2 2.0 REQUIRED)
-if(EIGEN2_FOUND)
-    set(CBF_HAVE_EIGEN2 1)
-    message(STATUS "  ${EIGEN2_VERSION} found")
-    include_directories(SYSTEM ${EIGEN2_INCLUDE_DIR})
-    
-    # In case anything else includes eigen3 (e.g. kdl), we need eigen2 support
-    add_definitions("-DEIGEN2_SUPPORT")
-endif()
+
+if(CBF_HAVE_KDL AND KDL_USES_EIGEN3)
+    message(STATUS "KDL uses Eigen3, so looking for Eigen3 with Eigen2 support")
+    find_package(Eigen3 REQUIRED)
+    if(EIGEN3_FOUND)
+        set(CBF_HAVE_EIGEN 1)
+        message(STATUS "  ${EIGEN3_VERSION} found.")
+        include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+        add_definitions("-DEIGEN2_SUPPORT")
+    endif()
+else(CBF_HAVE_KDL AND KDL_USES_EIGEN3)
+    message(STATUS "Looking for Eigen2")
+    find_package(Eigen2 REQUIRED)
+    if(EIGEN2_FOUND)
+        set(CBF_HAVE_EIGEN 1)
+        message(STATUS "  ${EIGEN2_VERSION} found")
+        include_directories(SYSTEM ${EIGEN2_INCLUDE_DIR})
+    endif()
+endif(CBF_HAVE_KDL AND KDL_USES_EIGEN3)
 
 message(STATUS "Looking for QT4")
 pkg_check_modules(QT QtCore QtGui)
@@ -197,7 +221,7 @@ install(FILES ${CMAKE_BINARY_DIR}/CBFConfig.cmake
 configure_file(CBFConfigVersion.cmake.in ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake 
         DESTINATION share/${CBF_PATH_PREFIX})
-
+        
 add_subdirectory(schemas)
 add_subdirectory(libcbf)
 add_subdirectory(apps)

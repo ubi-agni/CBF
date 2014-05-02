@@ -24,7 +24,7 @@
 #include <cbf/xml_factory.h>
 #include <cbf/foreign_object.h>
 
-#ifndef CBF_HAVE_EIGEN2
+#ifndef CBF_HAVE_EIGEN
   #include <cbf/svd.h>
 #endif
 

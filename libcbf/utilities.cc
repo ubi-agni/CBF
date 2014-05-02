@@ -32,7 +32,7 @@
 	#include <kdl/joint.hpp>
 #endif
 
-#ifdef CBF_HAVE_EIGEN2
+#ifdef CBF_HAVE_EIGEN
 	#include <Eigen/Core>
 	#include <Eigen/Array>
 	#include <Eigen/SVD>
@@ -225,7 +225,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 
 
 
-#ifdef CBF_HAVE_EIGEN2
+#ifdef CBF_HAVE_EIGEN
 	static const double pseudo_inv_precision_threshold = 0.001;
 
 	Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {

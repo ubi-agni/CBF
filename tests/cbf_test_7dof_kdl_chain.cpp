@@ -5,11 +5,9 @@
  *      Author: cemmeric
  */
 
-
 #include <kdl/chain.hpp>
 #include <kdl/segment.hpp>
 #include <boost/shared_ptr.hpp>
-
 
 #include <cbf/composite_transform.h>
 #include <cbf/identity_transform.h>
@@ -30,8 +28,8 @@ Chain createKDLChain() {
 	chain.addSegment(base);
 
 	/// joint A1
-	Segment a1 =Segment(Joint(Joint::RotZ),
-				Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.192))); //20
+	Segment a1 = Segment(Joint(Joint::RotZ),
+			Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.192))); //20
 	chain.addSegment(a1);
 
 	/// joint A2
@@ -51,7 +49,7 @@ Chain createKDLChain() {
 
 	/// joint A4
 	Segment a4 = Segment(Joint(Joint::RotZ),
-			Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.182)));//19
+			Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.182))); //19
 	chain.addSegment(a4);
 
 	/// joint A5
@@ -61,8 +59,7 @@ Chain createKDLChain() {
 
 	/// joint A6
 	Segment a6 = Segment(Joint(Joint::RotZ),
-				Frame(Rotation::RotZ(-M_PI),
-						Vector(0.0, 0.0, 0.12)));
+			Frame(Rotation::RotZ(-M_PI), Vector(0.0, 0.0, 0.12)));
 	chain.addSegment(a6);
 
 	return chain;
@@ -74,35 +71,8 @@ int main() {
 
 	SensorTransformPtr kdlst(new KDLChainPositionSensorTransform(lwrchain));
 	cout << "kdlst->resourcedim=" << kdlst->resource_dim() << endl;
-
-	SensorTransformPtr kdstPtrcopy = kdlst;
-	cout << "kdstPtrcopy->resourcedim=" << kdlst->resource_dim() << endl;
-
-	std::vector<SensorTransformPtr> sensorTransforms;
-	sensorTransforms.push_back(kdlst);
-	cout << "sensorTransforms[0]->resourcedim=" << sensorTransforms[0]->resource_dim() << endl;
-
-	std::vector<SensorTransformPtr> sensorTransformsCopy;
-	sensorTransformsCopy =  sensorTransforms;
-	cout << "sensorTransformsCopy[0]->resourcedim=" << sensorTransformsCopy[0]->resource_dim() << endl;
-
-//	std::vector<SensorTransformPtr> sensorTransforms;
-//	sensorTransforms.push_back(
-//		   KDLChainPositionSensorTransformPtr(
-//				   new KDLChainPositionSensorTransform(lwrchain)));
-//	if (!only3DControl) {
-//	   sensorTransforms.push_back(
-//			   KDLChainAxisAngleSensorTransformPtr(
-//					   new KDLChainAxisAngleSensorTransform(lwrchain)));
-//	}
-	cout << sensorTransforms[0]->resource_dim() << endl;
-	CompositeSensorTransformPtr sensortransform(new CompositeSensorTransform(sensorTransforms));
-
-	cout << "EEEEEEEEEEEEEEEENNNNNNNNNNNNNNNNNNNNNNNNNNNDDDDDDDDDDDDDDDDDDDD" << endl;
-	return 0;
-
+	cout << "kdlst->taskdim=" << kdlst->task_dim() << endl;
 
 	return 0;
 }
-
 
