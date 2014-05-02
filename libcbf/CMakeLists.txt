@@ -1,7 +1,8 @@
 message(STATUS "In subdirectory libcbf:")
 
-include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
-include_directories("${PROJECT_BINARY_DIR}/libcbf/")
+# BEFORE shall ensure, that we always look into our source dirs first
+include_directories(BEFORE "${PROJECT_SOURCE_DIR}/libcbf/")
+include_directories(BEFORE "${PROJECT_BINARY_DIR}/libcbf/")
 
 set(CBF_SOURCES
   namespace.cc
@@ -125,7 +126,7 @@ set(CBF_LINKDIRS "")
 if (CBF_HAVE_QKDLVIEW)
   message(STATUS "adding qkdl_chain_view_transforms.cc " ${QKDLVIEW_LIB})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${QKDLVIEW_INCLUDES} ${QKDLTREEVIEW_INCLUDES})
-  set(CBF_LIBS ${CBF_LIBS} ${QKDLVIEW_LIB} ${QKDLVIEW_LIB})
+  set(CBF_LIBS ${CBF_LIBS} ${QKDLVIEW_LIB})
   
   set(CBF_SOURCES ${CBF_SOURCES} kdl_chain_view_transforms.cc)
 endif()
@@ -135,7 +136,7 @@ if(CBF_HAVE_CPPAD)
 endif()
 
 if(CBF_HAVE_KDL)
-  set(CBF_LIBS ${CBF_LIBS} ${KDL_LDFLAGS})
+  set(CBF_LIBS ${CBF_LIBS} ${KDL_LIBRARIES})
   set(CBF_INCLUDES ${CBF_INCLUDES} ${KDL_INCLUDE_DIRS})
 endif()
 
