@@ -20,7 +20,7 @@ set(CBF_SOURCES
   primitive_controller.cc 
   resource.cc 
   dummy_resource.cc 
-#  primitive_controller_resource.cc 
+  primitive_controller_resource.cc 
   effector_transform.cc 
   potential.cc 
   utilities.cc
@@ -85,7 +85,6 @@ set(CBF_HEADERS
   cbf/potential.h
   cbf/primitive_controller.h
   cbf/primitive_controller_resource.h
-  cbf/python_wrap.h
   cbf/qt_reference.h
   cbf/qt_sensor_transform.h
   cbf/quaternion.h
@@ -112,6 +111,11 @@ set(CBF_HEADERS
   cbf/xsd_error_handler.h
   )
 
+if(CBF_HAVE_PYTHON)
+  list(APPEND CBF_SOURCES python_wrap.cc)
+  list(APPEND CBF_HEADERS cbf/python_wrap.h)
+endif(CBF_HAVE_PYTHON)
+
 #add_definitions("-DCBF=CBF { } struct ERROR {NO_CONFIG_H_INCLUDED}\; namespace CBF")
  
 #==============================================================================#
@@ -133,6 +137,11 @@ endif()
 
 if(CBF_HAVE_CPPAD)
   set(CBF_INCLUDES ${CBF_INCLUDES} ${CPPAD_PATH})
+endif()
+
+if(CBF_HAVE_PYTHON)
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${PYTHON_INCLUDE_DIRS})
+  set(CBF_LIBS ${CBF_LIBS} ${Boost_PYTHON_LIBRARIES} ${PYTHON_LIBRARIES})
 endif()
 
 if(CBF_HAVE_KDL)

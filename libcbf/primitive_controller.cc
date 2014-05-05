@@ -158,10 +158,6 @@ namespace CBF {
 
 		m_References = m_Reference->get();
 
-		resource()->update();
-
-		// CBF_DEBUG("ref: " << m_References[0])
-
 		//! Fill vector with data from sensor transform
 		m_SensorTransform->update(resource()->get());
 		CBF_DEBUG("jacobian: " << m_SensorTransform->task_jacobian());

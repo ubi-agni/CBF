@@ -82,7 +82,8 @@ namespace CBF {
 		additional characters on the two comment lines.
 	*/
 	struct PythonPotential : public Potential {
-		PythonPotential(const CBFSchema::PythonPotential &xml_instance);
+		PythonPotential(const CBFSchema::PythonPotential &xml_instance,
+							 ObjectNamespacePtr object_namespace);
 
 		protected:
 			const PythonInterpreter &m_Interpreter;
@@ -139,38 +140,21 @@ namespace CBF {
 		\todo Implement m_InitScript and m_FiniScript support..
 	*/
 	struct PythonSensorTransform : public SensorTransform {
-		CBF_PLUGIN_DECL_METHODS(PythonSensorTransform)
-
 		protected:
 			const PythonInterpreter &m_Interpreter;
 		
-			unsigned int m_TaskDim;
-			unsigned int m_ResourceDim;
-	
-			//! Caching the jacobian here..
-			FloatMatrix m_Jacobian;
-	
-			//! Caching the result
-			FloatVector m_Result;
-	
 		public:
 			PythonSensorTransform(
 				unsigned int task_dim = 1,
 				unsigned int resource_dim = 1
 			);
-		
-			//! The read() function calls the m_ExecScript to update result and jacobian caches.
-			virtual void update();
-	
-			//! exec() basically does nothing but return cached results..
-			virtual void exec(FloatVector &result) { result = m_Result; }
+#ifdef CBF_HAVE_XSD
+			PythonSensorTransform(
+				const CBFSchema::PythonSensorTransform &xml_instance,
+				ObjectNamespacePtr object_namespace);
+#endif
 
-			virtual unsigned resource_dim() const { return m_ResourceDim; }
-
-			virtual unsigned int task_dim() const { return m_TaskDim; }
-	
-			//! Only return the cached results.
-			virtual const FloatMatrix& get_task_jacobian(FloatMatrix &result) const { return m_Jacobian; }
+			virtual void update(const FloatVector &resource_value);
 	
 			std::string m_InitScript;
 	

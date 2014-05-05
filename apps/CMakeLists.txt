@@ -23,7 +23,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS)
   add_executable(${exe} ${exe}_from_xml.cc)
   target_link_libraries(${exe} 
     ${CBF_LIBRARY_NAME}
-    ${Boost_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARIES}
     )
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})
 
@@ -48,7 +48,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY)
     )
   target_link_libraries(${exe}
     ${CBF_LIBRARY_NAME}
-    ${Boost_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARIES}
     ${MEMORY_LDFLAGS}
     )
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})

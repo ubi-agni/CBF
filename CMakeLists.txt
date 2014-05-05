@@ -56,15 +56,28 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DCBF_NDEB
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+# Python
+message(STATUS "Looking for python libs")
+find_package(PythonLibs)
+if(PYTHONLIBS_FOUND)
+  message(STATUS "  found: ${PYTHON_INCLUDE_DIRS} ${PYTHON_LIBRARIES}")
+else()
+  set(CBF_HAVE_PYTHON 0)
+endif()
+
 # Boost libs
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_COMPONENTS "program_options")
+if(PYTHONLIBS_FOUND)
+  list(APPEND Boost_COMPONENTS "python")
+endif()
 message(STATUS "Looking for boost components: ${Boost_COMPONENTS}")
 find_package(Boost 1.40.0 COMPONENTS ${Boost_COMPONENTS})
 
 set(CBF_HAVE_BOOST ${Boost_FOUND})
 set(CBF_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
+set(CBF_HAVE_PYTHON ${Boost_PYTHON_FOUND})
 
 # cppAD
 message(STATUS "Looking for CppAD automatic differentiation package")
@@ -73,14 +86,14 @@ if(NOT ${CPPAD_PATH} STREQUAL "CPPAD_PATH-NOTFOUND")
   message(STATUS "  found: ${CPPAD_PATH}")
   set(CBF_HAVE_CPPAD 1)
 else()
-set(CBF_HAVE_CPPAD 0)
+  set(CBF_HAVE_CPPAD 0)
 endif()
 
 # orocos KDL
 message(STATUS "Looking for KDL")
 pkg_check_modules(KDL orocos-kdl>=1.0)
 if(KDL_FOUND)
-  message(STATUS "  found")
+  message(STATUS "  found: ${KDL_INCLUDE_DIRS}")
   set(CBF_HAVE_KDL 1)
   link_directories(${KDL_LIBRARY_DIRS})
 endif(KDL_FOUND)
