@@ -18,7 +18,6 @@ if(CBF_HAVE_XSD)
 	 )
 
   include_directories("${XSD_INC}")
-  include_directories("${PROJECT_BINARY_DIR}/libcbf/cbf/")
 
   add_library(cbf_schemas SHARED
 	 "${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx"

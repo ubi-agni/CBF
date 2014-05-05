@@ -18,7 +18,7 @@
     Copyright 2011 Viktor Richter
 */
 
-#include <xcf_memory_run_controller.h>
+#include "xcf_memory_run_controller.h"
 #include <boost/bind.hpp>
 #include <cbf/xsd_error_handler.h>
 #include <cbf/xml_object_factory.h>

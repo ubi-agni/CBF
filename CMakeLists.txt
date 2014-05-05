@@ -56,6 +56,11 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DCBF_NDEB
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+
+# define include directories for here, to ensure that local files are found first
+include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
+include_directories("${PROJECT_BINARY_DIR}/libcbf/")
+
 # Python
 message(STATUS "Looking for python libs")
 find_package(PythonLibs)

@@ -1,7 +1,5 @@
 message(STATUS "In subdirectory tests:")
 
-include_directories(${PROJECT_SOURCE_DIR}/libcbf/ ${PROJECT_BINARY_DIR}/libcbf/)
-
 if(CBF_HAVE_CPPAD)
   include_directories(${CPPAD_PATH})
 endif()
@@ -16,7 +14,6 @@ endif()
 
 if(CBF_HAVE_QT)
   include_directories(${QT_INCLUDE_DIRS})
-  include_directories(${PROJECT_SOURCE_DIR}/tests)
 endif()
 
 if(CBF_HAVE_MEMORY)

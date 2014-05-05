@@ -19,7 +19,7 @@
 */
 
 
-#include <cbf_q_xcf_vector_reference_client.h>
+#include "cbf_q_xcf_vector_reference_client.h"
 
 #include <cbf/types.h>
 #include <xcf/RemoteServer.hpp>

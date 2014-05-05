@@ -1,9 +1,5 @@
 message(STATUS "In subdirectory libcbf:")
 
-# BEFORE shall ensure, that we always look into our source dirs first
-include_directories(BEFORE "${PROJECT_SOURCE_DIR}/libcbf/")
-include_directories(BEFORE "${PROJECT_BINARY_DIR}/libcbf/")
-
 set(CBF_SOURCES
   namespace.cc
   xml_factory.cc

@@ -1,9 +1,5 @@
 message(STATUS "In subdirectory apps:")
 
-include_directories("${PROJECT_BINARY_DIR}/libcbf/")
-include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
-include_directories("${PROJECT_SOURCE_DIR}/apps/")
-
 if(CBF_HAVE_XSD)
   include_directories(${XSD_INC})
 endif()

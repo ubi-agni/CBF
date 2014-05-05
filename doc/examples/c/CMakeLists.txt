@@ -2,7 +2,6 @@ message(STATUS "In subdirectory doc/examples/c:")
 
 set(exe cbf_test_c_bindings)
 if(CBF_HAVE_KDL AND CBF_HAVE_EIGEN AND CBF_HAVE_XSD)
-  include_directories("${PROJECT_SOURCE_DIR}/libcbf")
   message(STATUS "  adding executable ${exe}")
   add_executable(${exe} ${exe}.c)
   target_link_libraries(${exe} ${CBF_LIBRARY_NAME})

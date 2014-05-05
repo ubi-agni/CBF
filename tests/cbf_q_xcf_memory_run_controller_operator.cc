@@ -24,7 +24,7 @@
 #include <cbf/xsd_error_handler.h>
 #include <cbf/schemas.hxx>
 
-#include <cbf_q_xcf_memory_run_controller_operator.h> 
+#include "cbf_q_xcf_memory_run_controller_operator.h"
 
 #include <string>
 #include <stdexcept>

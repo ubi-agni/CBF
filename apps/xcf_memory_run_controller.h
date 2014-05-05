@@ -27,7 +27,7 @@
 #include <cbf/debug_macros.h>
 #include <cbf/schemas.hxx>
 
-#include <cbf_run_controller.h>
+#include "cbf_run_controller.h"
 
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>
