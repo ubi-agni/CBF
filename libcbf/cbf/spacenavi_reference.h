@@ -28,8 +28,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <boost/numeric/ublas/vector.hpp>
-
 #include <cbf/reference.h>
 #include <cbf/types.h>
 

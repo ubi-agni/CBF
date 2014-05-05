@@ -70,10 +70,11 @@ set(CBF_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
 message(STATUS "Looking for CppAD automatic differentiation package")
 find_path(CPPAD_PATH cppad/CppAD.h)
 if(NOT ${CPPAD_PATH} STREQUAL "CPPAD_PATH-NOTFOUND")
-  message("    found: ${CPPAD_PATH}")
+  message(STATUS "  found: ${CPPAD_PATH}")
   set(CBF_HAVE_CPPAD 1)
-endif()
+else()
 set(CBF_HAVE_CPPAD 0)
+endif()
 
 # orocos KDL
 message(STATUS "Looking for KDL")

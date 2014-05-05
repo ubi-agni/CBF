@@ -26,10 +26,6 @@
 #include <cbf/types.h>
 #include <cbf/namespace.h>
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/lu.hpp> 
 #include <boost/shared_ptr.hpp>
 
 #include <cmath>

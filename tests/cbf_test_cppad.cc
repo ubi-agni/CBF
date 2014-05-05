@@ -7,17 +7,15 @@
 #include <cbf/generic_transform.h>
 
 #include <iostream>
-#include <boost/numeric/ublas/io.hpp>
 
 int main() {
 	using CppAD::AD;
 
-	boost::numeric::ublas::vector<AD<double> > x(2);
-	x[0] = 0;
-	x[1] = 1;
+	std::vector<AD<double> > x(2);
+	x[0] = 0; x[1] = 1;
 	CppAD::Independent(x);
 
-	boost::numeric::ublas::vector<AD<double> > y(1);
+	std::vector<AD <double> > y(1);
 	y[0] = CppAD::cos(x[0]+1.2) + 5.0 * CppAD::sin(x[1]);
 
 	CppAD::ADFun<double> f(x,y);

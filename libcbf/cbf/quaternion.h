@@ -23,8 +23,6 @@
 
 #include <cbf/types.h>
 
-#include <boost/numeric/ublas/matrix.hpp>
-
 namespace CBF {
 
 
@@ -298,7 +296,6 @@ struct Quaternion {
 
 	/** Assignment operator from matrix type (3x3)*/
 	Quaternion &operator=(const FloatMatrix &m) {
-		//FloatMatrix m = ublas::trans(m_);
 		Float trace = m(0,0) + m(1,1) + m(2,2) + 1.0;
 
 		if( trace > 0.0001 )
@@ -350,14 +347,11 @@ struct Quaternion {
 	}
 
 	/**
-		Convert Quaternion to ublas::vector. This does not do any conversion. It just copies the values over.
+		Convert Quaternion to FloatVector. This does not do any conversion. It just copies the values over.
 	*/
 	operator FloatVector () {
 		FloatVector v(4);
-		v[0] = w;
-		v[1] = x;
-		v[2] = y;
-		v[3] = z;
+		v << w, x,y,z;
 		return v;
 	}
 

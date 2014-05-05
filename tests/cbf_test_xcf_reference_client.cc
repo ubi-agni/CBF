@@ -5,8 +5,6 @@
 #include <cbf/utilities.h>
 #include <cbf/xml_factory.h>
 
-#include <boost/numeric/ublas/io.hpp>
-
 #include <string>
 #include <iostream>
 #include <sstream>

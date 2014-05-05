@@ -28,8 +28,6 @@
 #include <cbf/exceptions.h>
 #include <cbf/namespace.h>
 
-#include <boost/numeric/ublas/vector.hpp>
-
 #include <stdexcept>
 
 namespace CBFSchema { class DummyReference; }

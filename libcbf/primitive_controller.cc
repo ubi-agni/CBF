@@ -27,9 +27,6 @@
 #include <cbf/xml_factory.h>
 #include <cbf/xml_object_factory.h>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
 #include <vector>
 #include <iostream>
 #include <cassert>

@@ -5,8 +5,6 @@
 
 #include <cbf/schemas.hxx>
 
-#include <boost/numeric/ublas/io.hpp>
-
 #include <string>
 #include <iostream>
 #include <sstream>

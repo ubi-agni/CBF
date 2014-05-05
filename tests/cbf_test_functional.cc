@@ -3,8 +3,6 @@
 #include <cbf/dummy_resource.h>
 
 #include <iostream>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/vector.hpp>
 #include <functional>
 
 int main() {

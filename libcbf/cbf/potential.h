@@ -28,6 +28,7 @@
 #include <cbf/object.h>
 #include <cbf/namespace.h>
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
 
 namespace CBFSchema { class Potential; }

@@ -66,8 +66,6 @@ namespace CBF {
 	void BaseKDLChainSensorTransform::update(const FloatVector &resource_value) {
 		KDL::JntArray jnt_array(resource_dim());
 	
-		//const ublas::vector<Float> &resource = m_Resource->get();
-	
 		CBF_DEBUG(resource_value);
 	
 		for (unsigned int i = 0; i < resource_dim(); ++i) {
@@ -191,8 +189,6 @@ namespace CBF {
 	
 	void BaseKDLTreeSensorTransform::update(const FloatVector &resource_value) {
 		KDL::JntArray jnt_array(resource_dim());
-	
-		//const ublas::vector<Float> &resource = m_Resource->get();
 	
 		CBF_DEBUG(resource_value);
 	

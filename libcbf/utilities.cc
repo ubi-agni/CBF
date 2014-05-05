@@ -42,11 +42,7 @@
 #ifdef CBF_HAVE_XSD
 	#include <cbf/xml_factory.h>
 	#include <sstream>
-	#include <boost/numeric/ublas/io.hpp>
 #endif
-
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
 
 namespace CBF {
 
