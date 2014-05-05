@@ -25,7 +25,6 @@
 
 #include <cbf/types.h>
 #include <cbf/namespace.h>
-#include <cbf/config.h>
 
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/vector.hpp>

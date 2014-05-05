@@ -6,32 +6,48 @@ set(CBF_VERSION_MINOR 2)
 set(CBF_VERSION_PATCH 0)
 set(CBF_VERSION "${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}")
 
-set(CBF_USE_PATH_PREFIX 1 CACHE BOOL "use path prefix for include")
+# use versioned install directories?
+set(CBF_VERSIONED_INSTALL 1 CACHE BOOL 
+  "use versioned install paths, e.g. include/cbfx.y")
 set(CBF_VERSIONED_NAME "${PROJECT_NAME}${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}")
-if(CBF_USE_PATH_PREFIX)
+if(CBF_VERSIONED_INSTALL)
   set(CBF_PATH_PREFIX "${CBF_VERSIONED_NAME}")
   set(CBF_PKGCFG_FILE "${CBF_VERSIONED_NAME}.pc")
-else()
+else(CBF_VERSIONED_INSTALL)
   set(CBF_PATH_PREFIX "")
   set(CBF_PKGCFG_FILE "${PROJECT_NAME}.pc")
-endif()
+endif(CBF_VERSIONED_INSTALL)
 set(CBF_LIBRARY_NAME "${PROJECT_NAME}")
 
-# module path
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "share/${CBF_PATH_PREFIX}")
+message(STATUS "==============================================================")
+message(STATUS "Configuring CBF:")
 
+# define default install prefix, if empty
+IF(NOT CMAKE_INSTALL_PREFIX)
+  SET(CMAKE_INSTALL_PREFIX "/usr/local/" CACHE PATH "Installation directory" FORCE)
+  MESSAGE(STATUS "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
+ENDIF(NOT CMAKE_INSTALL_PREFIX)
+
+# include cmake packages
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(CheckIncludeFileCXX)
 include(InstallFilesRecursive)
 include(FindPkgConfig)
+find_package(PkgConfig)
 include(ParseArguments)
 
 enable_testing()
 include(CTest) 
 
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREAD ON)
+# define build type
+IF (NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
+  MESSAGE(STATUS "Setting build type to '${CMAKE_BUILD_TYPE}'" )
+ELSE (NOT CMAKE_BUILD_TYPE)
+  MESSAGE(STATUS "Build type set to '${CMAKE_BUILD_TYPE}'" )
+ENDIF (NOT CMAKE_BUILD_TYPE)
 
+# and corresponding flags
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DCBF_NDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DCBF_DEBUG_COLOR")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DCBF_NDEBUG")
@@ -40,54 +56,35 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DCBF_NDEB
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-message(STATUS "==============================================================")
-message(STATUS "Configuring CBF:")
+# Boost libs
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREAD ON)
+set(Boost_COMPONENTS "program_options")
+message(STATUS "Looking for boost components: ${Boost_COMPONENTS}")
+find_package(Boost 1.40.0 COMPONENTS ${Boost_COMPONENTS})
 
-message(STATUS "Looking for Boost components: program_options")
-find_package(Boost 1.40.0 COMPONENTS program_options)
+set(CBF_HAVE_BOOST ${Boost_FOUND})
+set(CBF_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
 
-if(Boost_FOUND)
-  set(CBF_HAVE_BOOST 1)
-  set(CBF_HAVE_BOOST_PROGRAM_OPTIONS 1)
-endif()
-
+# cppAD
 message(STATUS "Looking for CppAD automatic differentiation package")
 find_path(CPPAD_PATH cppad/CppAD.h)
 if(NOT ${CPPAD_PATH} STREQUAL "CPPAD_PATH-NOTFOUND")
-  message(STATUS "  found")
+  message("    found: ${CPPAD_PATH}")
   set(CBF_HAVE_CPPAD 1)
 endif()
 set(CBF_HAVE_CPPAD 0)
 
-include(FindPackageHandleStandardArgs)
-
-find_package_handle_standard_args(PythonInterp "Found Python" python2)
-
-find_package(PkgConfig)
-
+# orocos KDL
 message(STATUS "Looking for KDL")
 pkg_check_modules(KDL orocos-kdl>=1.0)
-if (KDL_FOUND)
+if(KDL_FOUND)
   message(STATUS "  found")
   set(CBF_HAVE_KDL 1)
   link_directories(${KDL_LIBRARY_DIRS})
-
-  ## This gets a bit ugly now. In case that we found and use KDL, we need to
-  ## use the same eigen version as KDL. KDL doesn't seem to export its eigen
-  ## version nor changed its version, so we have to find out by ourselves.
-  ## See: https://github.com/norro/CBF/issues/2
-  if ("${KDL_INCLUDE_DIRS}" MATCHES ".*eigen2.*")
-    message(STATUS " uses Eigen2 ${KDL_INCLUDE_DIRS}")
-    set(KDL_USES_EIGEN2 1)
-    set(KDL_USES_EIGEN3 0)
-  else()
-    message(STATUS "  uses Eigen3 ${KDL_INCLUDE_DIRS}")
-    set(KDL_USES_EIGEN2 0)
-    set(KDL_USES_EIGEN3 1)
-  endif()  
 endif(KDL_FOUND)
 
-
+# XCF
 message(STATUS "Looking for XCF")
 pkg_check_modules(XCF xcf>=0.9)
 if (XCF_FOUND)
@@ -95,6 +92,7 @@ if (XCF_FOUND)
   set(CBF_HAVE_XCF 1)
 endif()
 
+# XRI
 message(STATUS "Looking for XRI")
 pkg_check_modules(XRI xri)
 if (XRI_FOUND)
@@ -102,6 +100,7 @@ if (XRI_FOUND)
   set(CBF_HAVE_XRI 1)
 endif()
 
+# xmltio
 message(STATUS "Looking for XMLTIO")
 pkg_check_modules(XMLTIO xmltio>=1.4)
 if (XMLTIO_FOUND)
@@ -109,33 +108,50 @@ if (XMLTIO_FOUND)
   set(CBF_HAVE_XMLTIO 1)
 endif()
 
-message(STATUS "Looking for MEMORY")
+# ActiveMemory
+message(STATUS "Looking for ActiveMemory")
 pkg_check_modules(MEMORY Memory>=0.21)
 if (MEMORY_FOUND)
   message(STATUS "  found")
   set(CBF_HAVE_MEMORY 1)
 endif()
 
-
-if(CBF_HAVE_KDL AND KDL_USES_EIGEN3)
-    message(STATUS "KDL uses Eigen3, so looking for Eigen3 with Eigen2 support")
-    find_package(Eigen3 REQUIRED)
-    if(EIGEN3_FOUND)
-        set(CBF_HAVE_EIGEN 1)
-        message(STATUS "  ${EIGEN3_VERSION} found.")
-        include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
-        add_definitions("-DEIGEN2_SUPPORT")
-    endif()
-else(CBF_HAVE_KDL AND KDL_USES_EIGEN3)
+# Eigen
+if(CBF_HAVE_KDL)
+  ## We need to ensure, that we use the same version of Eigen (2 vs. 3) as KDL.
+  ## See: https://github.com/norro/CBF/issues/2
+  if ("${KDL_INCLUDE_DIRS}" MATCHES ".*eigen3.*")
+	 set(CBF_EIGEN_VERSION 3)
+	 add_definitions("-DEIGEN2_SUPPORT")
+  else()
+	 set(CBF_EIGEN_VERSION 2)
+  endif()
+  set(CBF_HAVE_EIGEN 1)
+  include_directories(${KDL_INCLUDE_DIRS})
+  message(STATUS "Using Eigen${CBF_EIGEN_VERSION} from KDL: ${KDL_INCLUDE_DIRS}")
+else(CBF_HAVE_KDL)
+  ## If we don't have KDL, we are free to choose Eigen
+  message(STATUS "Looking for Eigen3")
+  find_package(Eigen3)
+  if(EIGEN3_FOUND)
+    message(STATUS "  ${EIGEN3_VERSION} found.")
+    set(CBF_HAVE_EIGEN 1)
+	 set(CBF_EIGEN_VERSION 3)
+	 add_definitions("-DEIGEN2_SUPPORT")
+    include_directories(${EIGEN3_INCLUDE_DIR})
+  else()
     message(STATUS "Looking for Eigen2")
-    find_package(Eigen2 REQUIRED)
+    find_package(Eigen2)
     if(EIGEN2_FOUND)
-        set(CBF_HAVE_EIGEN 1)
-        message(STATUS "  ${EIGEN2_VERSION} found")
-        include_directories(SYSTEM ${EIGEN2_INCLUDE_DIR})
+      set(CBF_HAVE_EIGEN 1)
+		set(CBF_EIGEN_VERSION 2)
+      message(STATUS "  ${EIGEN2_VERSION} found")
+      include_directories(${EIGEN2_INCLUDE_DIR})
     endif()
-endif(CBF_HAVE_KDL AND KDL_USES_EIGEN3)
+  endif()
+endif(CBF_HAVE_KDL)
 
+# Qt
 message(STATUS "Looking for QT4")
 pkg_check_modules(QT QtCore QtGui)
 if(QT_FOUND)
@@ -145,6 +161,7 @@ if(QT_FOUND)
   set(CBF_HAVE_QT 1)
 endif()
 
+# libqkdlview
 message(STATUS "Looking for qkdlview")
 find_library(QKDLVIEW_LIB qkdlview)
 find_path(QKDLVIEW_INCLUDES qkdltreeview.h)
@@ -153,6 +170,7 @@ if(QKDLVIEW_LIB AND QKDLVIEW_INCLUDES)
   set(CBF_HAVE_QKDLVIEW 1)
 endif()
 
+# spacemouse
 message(STATUS "Looking for spacemouse")
 find_library(SPACEMOUSE_LIBS spacenavi)
 find_path(SPACEMOUSE_INCLUDES spacenavi.h)
@@ -165,6 +183,7 @@ if(
   set(CBF_HAVE_SPACEMOUSE 1)
 endif()
 
+# xerces: required for header-only xsd
 message(STATUS "Looking for Xerces-C")
 find_library(XERCESC_LIB xerces-c)
 find_path(XERCESC_INC xercesc/dom/DOM.hpp)
@@ -211,10 +230,6 @@ install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc
 		  )
 
 # --- cmake config file ---
-set(LIB_SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX})
-if(CMAKE_LINK_LIBRARY_SUFFIX)
-    set(LIB_SUFFIX ${CMAKE_LINK_LIBRARY_SUFFIX})
-endif()
 configure_file(CBFConfig.cmake.in ${CMAKE_BINARY_DIR}/CBFConfig.cmake @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/CBFConfig.cmake 
         DESTINATION share/${CBF_PATH_PREFIX})
@@ -228,7 +243,8 @@ add_subdirectory(apps)
 add_subdirectory(tests)
 add_subdirectory(doc)
 
-EXPORT(TARGETS ${CBF_LIBRARY_NAME} ${CBF_LIBRARY_NAME}_schemas FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
+EXPORT(TARGETS ${CBF_LIBRARY_NAME} ${CBF_LIBRARY_NAME}_schemas 
+       FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
 INSTALL(EXPORT CBFDepends
         DESTINATION "share/${CBF_PATH_PREFIX}")
 

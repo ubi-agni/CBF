@@ -86,10 +86,6 @@ struct Potential : public Object {
 	/**
 		The gradient can be implemented analytically or 
 		numerically depending on taste and application
-
-		Calling the gradient has to have the side effect of 
-		determining whether the potential has converged
-		or not..
 	*/
 	virtual void gradient (
 		FloatVector &result, 

@@ -42,12 +42,10 @@ namespace CBF {
 	struct AxisPotential : public Potential {
 		AxisPotential(const CBFSchema::AxisPotential &xml_instance, ObjectNamespacePtr object_namespace);
 
-		bool m_Converged;
 		int m_Dimension;
 		Float m_Coefficient;
 
 		AxisPotential(int dimension = 3, Float coefficient = 0.1) :
-			m_Converged(false),
 			m_Dimension(dimension),
 			m_Coefficient(coefficient) 
 		{
@@ -89,10 +87,6 @@ namespace CBF {
 		}
 	
 		virtual unsigned int dim() const { return m_Dimension; }
-
-		virtual bool converged() const {
-			return m_Converged;
-		}
 
 		/** 
 			@brief This "distance" is the remaining angle between v1 and v2 
