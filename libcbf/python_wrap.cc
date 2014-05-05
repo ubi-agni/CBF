@@ -153,7 +153,7 @@ namespace CBF {
 		) : SensorTransform(),
 			 m_Interpreter(PythonInterpreter())
 	{
-		m_TaskJacobian = FloatMatrix(task_dim, resource_dim);
+		m_TaskJacobian = FloatMatrix((int)task_dim, (int)resource_dim);
 		m_Result = FloatVector(task_dim);
 		m_ResourceValue = FloatVector(resource_dim);
 	}
@@ -245,8 +245,8 @@ namespace CBF {
 			ObjectNamespacePtr object_namespace) :
 			m_Interpreter(PythonInterpreter()) 
 		{
-			unsigned int task_dim = xml_instance.TaskDimension();
-			unsigned int resource_dim = xml_instance.ResourceDimension();
+			int task_dim = xml_instance.TaskDimension();
+			int resource_dim = xml_instance.ResourceDimension();
 			m_TaskJacobian = FloatMatrix(task_dim, resource_dim);
 			m_Result = FloatVector(task_dim);
 			m_ResourceValue = FloatVector(resource_dim);
