@@ -41,14 +41,14 @@ namespace CBF {
 		if (first != std::string::npos) {
 			first = first +  std::string("#---\n").length();
 			str = str.substr(first, str.length() - first);
-			CBF_DEBUG("\n" << str)
+			CBF_DEBUG("\n" << str);
 		}
 	
 		size_t second = str.find("#---\n", first);
 	
 		if (second != std::string::npos) {
 			str = str.substr(0, second);
-			CBF_DEBUG("\n" << str)
+			CBF_DEBUG("\n" << str);
 		}
 	}
 	
@@ -56,7 +56,7 @@ namespace CBF {
 		bp::object m_MainModule;
 	
 		Helper() {
-			CBF_DEBUG("Py_Initialize")
+			CBF_DEBUG("Py_Initialize");
 			Py_InitializeEx(0);
 	
 			m_MainModule = bp::object((
@@ -67,7 +67,7 @@ namespace CBF {
 		}
 	
 		~Helper() {
-			CBF_DEBUG("Py_Finalize not called. See boost python doc")
+			CBF_DEBUG("Py_Finalize not called. See boost python doc");
 			//Py_Finalize();
 		}
 	};
@@ -99,7 +99,7 @@ namespace CBF {
 			bp::object main_namespace = m_Interpreter.m_Helper.m_MainModule.attr("__dict__");
 		
 			//! Setup references...
-			CBF_DEBUG("references[0]: " << references[0])
+			CBF_DEBUG("references[0]: " << references[0]);
 			bp::list refs;
 			for (unsigned int i = 0; i < references.size(); ++i) {
 				bp::list ref;
@@ -118,7 +118,7 @@ namespace CBF {
 			main_namespace["input"] = in;
 	
 			//! Call script...
-			//CBF_DEBUG(m_ExecScript)
+			//CBF_DEBUG(m_ExecScript);
 			bp::handle<> ignored((PyRun_String(
 				m_ExecScript.c_str(),
 				Py_file_input,
@@ -127,7 +127,7 @@ namespace CBF {
 			));
 	
 			//! Extract output...
-			CBF_DEBUG("Extracting result")
+			CBF_DEBUG("Extracting result");
 			bp::list res = bp::extract<bp::list>(main_namespace["result"]);
 		
 			result = CBF::FloatVector(input.size());
@@ -135,7 +135,7 @@ namespace CBF {
 			for (unsigned int j = 0; j < input.size(); ++j)
 				result[j] = bp::extract<float>(res[j]);
 		
-			CBF_DEBUG("Result: " << result)
+			CBF_DEBUG("Result: " << result);
 		}
 		catch(...) {
 			if (PyErr_Occurred())
@@ -165,7 +165,7 @@ namespace CBF {
 			bp::object main_namespace = m_Interpreter.m_Helper.m_MainModule.attr("__dict__");
 		
 			//! Setup references...
-			CBF_DEBUG("resource value: " << m_ResourceValue)
+			CBF_DEBUG("resource value: " << m_ResourceValue);
 			bp::list res;
 			for (unsigned int i = 0; i < m_ResourceValue.size(); ++i) {
 				res.append(m_ResourceValue[i]);
@@ -174,7 +174,7 @@ namespace CBF {
 			main_namespace["resource"] = res;
 		
 			//! Call script...
-			//CBF_DEBUG(m_ExecScript)
+			//CBF_DEBUG(m_ExecScript);
 			bp::handle<> ignored((PyRun_String(
 				m_ExecScript.c_str(),
 				Py_file_input,
@@ -183,14 +183,14 @@ namespace CBF {
 			));
 	
 			//! Extract output...
-			CBF_DEBUG("Extracting result")
+			CBF_DEBUG("Extracting result");
 			bp::list result = bp::extract<bp::list>(main_namespace["result"]);
 			assert(len(result) == task_dim());
 
 			for (unsigned int j = 0; j < task_dim(); ++j)
 				m_Result[j] = bp::extract<float>(result[j]);
 		
-			CBF_DEBUG("Extracting jacobian")
+			CBF_DEBUG("Extracting jacobian");
 			bp::list jacobian = bp::extract<bp::list>(main_namespace["jacobian"]);
 			assert(len(jacobian) == task_dim());
 			for (unsigned int i = 0; i < task_dim(); ++i) {
@@ -202,8 +202,8 @@ namespace CBF {
 				}
 			}
 	
-			CBF_DEBUG("m_Result: " << m_Result)
-			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian)
+			CBF_DEBUG("m_Result: " << m_Result);
+			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian);
 		}
 		catch(...) {
 			if (PyErr_Occurred())
@@ -227,17 +227,17 @@ namespace CBF {
 			m_ExecScript = xml_instance.ExecScript();
 		
 			sanitize_string(m_ExecScript);
-			CBF_DEBUG("ExecScript:\n" << m_ExecScript)
+			CBF_DEBUG("ExecScript:\n" << m_ExecScript);
 		
 			m_InitScript = xml_instance.InitScript();
 		
 			sanitize_string(m_InitScript);
-			CBF_DEBUG("InitScript:\n" << m_InitScript)
+			CBF_DEBUG("InitScript:\n" << m_InitScript);
 		
 			m_FiniScript = xml_instance.FiniScript();
 		
 			sanitize_string(m_FiniScript);
-			CBF_DEBUG("FiniScript:\n" << m_FiniScript)
+			CBF_DEBUG("FiniScript:\n" << m_FiniScript);
 		}
 		
 		PythonSensorTransform::PythonSensorTransform(
@@ -253,15 +253,15 @@ namespace CBF {
 
 			m_ExecScript = xml_instance.ExecScript();
 			sanitize_string(m_ExecScript);
-			CBF_DEBUG("ExecScript:\n" << m_ExecScript)
+			CBF_DEBUG("ExecScript:\n" << m_ExecScript);
 		
 			m_InitScript = xml_instance.InitScript();
 			sanitize_string(m_InitScript);
-			CBF_DEBUG("InitScript:\n" << m_InitScript)
+			CBF_DEBUG("InitScript:\n" << m_InitScript);
 		
 			m_FiniScript = xml_instance.FiniScript();
 			sanitize_string(m_FiniScript);
-			CBF_DEBUG("FiniScript:\n" << m_FiniScript)
+			CBF_DEBUG("FiniScript:\n" << m_FiniScript);
 		}
 		
 		static XMLDerivedFactory<PythonPotential, CBFSchema::PythonPotential> x;
