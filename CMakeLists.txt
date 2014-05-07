@@ -87,7 +87,9 @@ find_package(Boost 1.40.0 COMPONENTS ${Boost_COMPONENTS})
 
 set(CBF_HAVE_BOOST ${Boost_FOUND})
 set(CBF_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
-set(CBF_HAVE_PYTHON ${Boost_PYTHON_FOUND})
+if(PYTHONLIBS_FOUND AND Boost_PYTHON_FOUND) 
+  set(CBF_HAVE_PYTHON 1)
+endif()
 
 # cppAD
 message(STATUS "Looking for CppAD automatic differentiation package")
