@@ -63,7 +63,6 @@ namespace CBF {
 			set from the specified arguments
 		*/
 		SubordinateController(
-			SubordinateController *master,
 			Float coefficient,
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
@@ -93,7 +92,6 @@ namespace CBF {
 	
 			/*** @brief Function for stuff common to all constructors */
 			void init(
-				SubordinateController* master,
 				Float coefficient,
 				std::vector<ConvergenceCriterionPtr> convergence_criteria,
 				ReferencePtr reference,
