@@ -114,10 +114,10 @@ CBF::FloatVector getSpaceMouseReference (const CBF::FloatVector &cur) {
 		if (axes.squaredNorm() > 1000) return cur;
 
 		const double factor = 0.0001;
-		axes.start(3) *= 0.001;
-		axes.start(3) += cur.start(3);
+		axes.head(3) *= 0.001;
+		axes.head(3) += cur.head(3);
 
-		CBF::FloatVector current_rot_ref(cur.end(3));
+		CBF::FloatVector current_rot_ref(cur.tail(3));
 		CBF::Quaternion  current_rot_ref_q;
 		current_rot_ref_q.from_axis_angle3(current_rot_ref);
 	
@@ -140,7 +140,7 @@ CBF::FloatVector getSpaceMouseReference (const CBF::FloatVector &cur) {
 		current_rot_ref_q.normalize();
 		current_rot_ref_q.to_axis_angle3(current_rot_ref);
 	
-		axes.end(3) = current_rot_ref;
+		axes.tail(3) = current_rot_ref;
 		return axes;
 	} else return cur;
 }
@@ -148,7 +148,7 @@ CBF::FloatVector getSpaceMouseReference (const CBF::FloatVector &cur) {
 
 CBF::FloatVector getReference (const CBF::FloatVector &cur) {
 	CBF::FloatVector ref(cur.rows());
-	ref.start(3) = CBF::FloatVector::Constant(3, 0.11);
+	ref.head(3) = CBF::FloatVector::Constant(3, 0.11);
 	return ref;
 }
 

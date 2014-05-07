@@ -34,7 +34,6 @@
 
 #ifdef CBF_HAVE_EIGEN
 	#include <Eigen/Core>
-	#include <Eigen/Array>
 	#include <Eigen/SVD>
 	#include <Eigen/LU>
 #endif
@@ -222,88 +221,43 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 
 
 #ifdef CBF_HAVE_EIGEN
-	static const double pseudo_inv_precision_threshold = 0.001;
+	template<typename CustomUnaryOp>
+	Float generic_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
+										  const CustomUnaryOp& inverter) {
+		Eigen::JacobiSVD<FloatMatrix> svd = M.jacobiSvd();
+		FloatVector tmp = svd.singularValues();
+		CBF_DEBUG("singularValues: " << tmp);
+	
+		//! Invert singular vectors
+		Float det = tmp.head(svd.nonzeroSingularValues()).prod();
+		FloatVector si = tmp.unaryExpr(inverter);
 
-	Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
-		bool transpose = M.cols() > M.rows();
-	
-		//! rows and cols hold dimensions of input matrix
-		int rows = (int)M.rows();
-		int cols = (int)M.cols();
-
-		//! Placeholders for the singular value decomposition
-		FloatMatrix m = M;
-	
-		if (transpose) m.transposeInPlace();
-	
-		Eigen::SVD<FloatMatrix> svd = m.svd();
-	
-		const FloatMatrix& Sv = svd.singularValues();
-		CBF_DEBUG("singularValues: " << Sv);
-	
-		//! Prepare a diagonal matrix from the singularValues vector
-		FloatMatrix SvMatrix(Sv.rows(), Sv.rows());
-		SvMatrix.setZero();
-		Float det = 1.0;
-		for (int i = 0; i < Sv.rows(); ++i) {
-			det *= SvMatrix(i,i);
-			if (fabs(Sv(i,0)) > pseudo_inv_precision_threshold)
-				SvMatrix(i,i) = 1.0 / (Sv(i,0));
-			else {
-				CBF_DEBUG("SINGULAR");
-				SvMatrix(i,i) = 0.0;
-			}
-		}
 		CBF_DEBUG("deter:" << det);
-		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
+		CBF_DEBUG("svd: "<< std::endl << si);
 	
-		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
-	
-		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-
-		if (transpose) result.transposeInPlace();
-
+		result = (svd.matrixV() * si.asDiagonal()) * svd.matrixU().transpose();
 		return det;
 	}
 
+	Float simpleInverse(const Float s) {
+		static const double pseudo_inv_precision_threshold = 0.001;
+		if (fabs(s) > pseudo_inv_precision_threshold)
+			return 1.0 / s;
+		else
+			return 0.0;
+	}
+	Float pseudo_inverse(const FloatMatrix &M, FloatMatrix &result) {
+		return generic_pseudo_inverse(M, result, std::ptr_fun(simpleInverse));
+	}
+
+	template<typename Scalar>
+	struct dampedInverse {
+		dampedInverse(const Scalar& damping_constant) : m_damping(damping_constant) {}
+		const Scalar operator()(const Scalar& s) const { return s / (m_damping + s*s); }
+		Scalar m_damping;
+	};
 	Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, Float damping_constant) {
-		bool transpose = M.cols() > M.rows();
-
-		//! rows and cols hold dimensions of input matrix
-		int rows = (int)M.rows();
-		int cols = (int)M.cols();
-	
-		//! Placeholders for the singular value decomposition
-		FloatMatrix m = M;
-	
-		if (transpose) m.transposeInPlace();
-	
-		Eigen::SVD<FloatMatrix> svd = m.svd();
-	
-		const FloatMatrix& Sv = svd.singularValues();
-		CBF_DEBUG("singularValues: " << Sv);
-	
-		//! Prepare a diagonal matrix from the singularValues vector
-		FloatMatrix SvMatrix(Sv.rows(), Sv.rows());
-		SvMatrix.setZero();
-	
-		Float det = 1.0;
-		//! We use the ordinary reciprocal for testing purposes here
-		for (int i = 0; i < Sv.rows(); ++i) {
-			SvMatrix(i,i) = Sv(i,0) / (damping_constant + (Sv(i,0) * Sv(i,0)));
-			det *= SvMatrix(i,i);
-			// std::cout << Sv(i,0)  << std::endl;
-		}
-		CBF_DEBUG("deter:" << det);
-		//for (int i = 0; i < Sv.rows(); ++i) SvMatrix(i,i) = Sv(i,0) / (1.0 + Sv(i,0));
-	
-		CBF_DEBUG("svd: "<< std::endl << SvMatrix);
-	
-		result = (svd.matrixV() * SvMatrix) * svd.matrixU().transpose();
-
-		if (transpose) result.transposeInPlace();
-
-		return det;
+		return generic_pseudo_inverse(M, result, dampedInverse<Float>(damping_constant));
 	}
 #endif
 

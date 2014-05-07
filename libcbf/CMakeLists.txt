@@ -36,7 +36,6 @@ set(CBF_SOURCES
   norm_transform.cc
   transpose_transform.cc
   functional.cc
-  svd.cc
   convergence_criterion.cc
   generic_transform.cc
   object_list.cc
@@ -91,7 +90,6 @@ set(CBF_HEADERS
   cbf/sensor_transform_wrapper.h
   cbf/spacenavi_reference.h
   cbf/square_potential.h
-  cbf/svd.h
   cbf/task_space_plan.h
   cbf/transpose_transform.h
   cbf/types.h
