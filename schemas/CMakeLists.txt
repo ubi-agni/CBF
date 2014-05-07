@@ -23,7 +23,9 @@ if(CBF_HAVE_XSD)
 	 "${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx"
 	 "${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.cxx"
 	 )
-  SET_TARGET_PROPERTIES(cbf_schemas PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+  set_target_properties(cbf_schemas PROPERTIES 
+	 VERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+	 )
 
   install(TARGETS cbf_schemas
     EXPORT CBFDepends

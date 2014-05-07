@@ -205,6 +205,7 @@ endif()
 
 if (CBF_HAVE_SPACEMOUSE)
   set(CBF_SOURCES ${CBF_SOURCES} spacenavi_reference.cc)
+  set(CBF_INCLUDES ${CBF_INCLUDES} ${SPACEMOUSE_INCLUDES})
   set(CBF_LIBS ${CBF_LIBS} ${SPACEMOUSE_LIBS})
 else()
   message(STATUS "  excluding spacenavi_reference.cc because spacemouse was not found")
@@ -255,14 +256,12 @@ include_directories(${CBF_INCLUDES})
 add_library(${CBF_LIBRARY_NAME} SHARED
     ${CBF_SOURCES})
 set_target_properties(${CBF_LIBRARY_NAME}
-  PROPERTIES PUBLIC_HEADER "${CBF_HEADERS}")
+  PROPERTIES 
+  PUBLIC_HEADER "${CBF_HEADERS}"
+  VERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+  )
 
 target_link_libraries(${CBF_LIBRARY_NAME} ${CBF_LIBS})
-
-SET_TARGET_PROPERTIES(${CBF_LIBRARY_NAME}
-  PROPERTIES VERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-  SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-  )
 
 install(TARGETS ${CBF_LIBRARY_NAME}
   EXPORT CBFDepends

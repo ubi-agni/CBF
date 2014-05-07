@@ -224,7 +224,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	template<typename CustomUnaryOp>
 	Float generic_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result,
 										  const CustomUnaryOp& inverter) {
-		Eigen::JacobiSVD<FloatMatrix> svd = M.jacobiSvd();
+		Eigen::JacobiSVD<FloatMatrix> svd = M.jacobiSvd(Eigen::ComputeThinV | Eigen::ComputeThinU);
 		FloatVector tmp = svd.singularValues();
 		CBF_DEBUG("singularValues: " << tmp);
 	
