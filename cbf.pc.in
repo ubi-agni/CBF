@@ -7,4 +7,4 @@ Description: Hierarchical controller framework following the idea of the Control
 Version: @CBF_VERSION@
 Requires: 
 Libs: -L${libdir} -l@CBF_LIBRARY_NAME@
-Cflags: -I${includedir} @KDL_CFLAGS@
+Cflags: -I${includedir} @KDL_CFLAGS_SPACES@

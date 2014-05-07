@@ -106,6 +106,7 @@ if(KDL_FOUND)
   message(STATUS "  found: ${KDL_INCLUDE_DIRS}")
   set(CBF_HAVE_KDL 1)
   link_directories(${KDL_LIBRARY_DIRS})
+  string(REPLACE ";" " " KDL_CFLAGS_SPACES "${KDL_CFLAGS}")
 endif(KDL_FOUND)
 
 # XCF
