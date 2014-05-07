@@ -33,11 +33,16 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(CheckIncludeFileCXX)
 include(InstallFilesRecursive)
 include(FindPkgConfig)
-find_package(PkgConfig)
 include(ParseArguments)
 
 enable_testing()
 include(CTest) 
+
+# redefine pkg-config macro to enforce re-evaluation of PKG_CONFIG_PATH
+macro(pkg_check_modules _prefix)
+  _pkgconfig_parse_options(_pkg_modules _pkg_is_required _pkg_is_silent ${ARGN})
+  _pkg_check_modules_internal("${_pkg_is_required}" "${_pkg_is_silent}" "${_prefix}" ${_pkg_modules})
+endmacro(pkg_check_modules)
 
 # define build type
 IF (NOT CMAKE_BUILD_TYPE)
@@ -236,10 +241,24 @@ configure_file(
   "${PROJECT_BINARY_DIR}/libcbf/cbf/config.h"
   )
 
-configure_file(
-  "${PROJECT_SOURCE_DIR}/Doxyfile.in"
-  "${PROJECT_BINARY_DIR}/Doxyfile"
-  ) 
+message(STATUS "Looking for doxygen")
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  configure_file(
+	 "${PROJECT_SOURCE_DIR}/Doxyfile.in"
+	 "${PROJECT_BINARY_DIR}/Doxyfile"
+	 )
+  
+  set(DOXYGEN_INPUT  ${PROJECT_BINARY_DIR}/Doxyfile)
+  set(DOXYGEN_OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html)
+  add_custom_command(
+	 OUTPUT  ${DOXYGEN_OUTPUT}
+	 COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
+	 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	 DEPENDS ${DOXYGEN_INPUT}
+	 )
+  add_custom_target(doc ALL DEPENDS ${DOXYGEN_OUTPUT})
+endif(DOXYGEN_FOUND)
 
 # --- pkgconfig file ---
 configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)
