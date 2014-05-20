@@ -31,7 +31,7 @@ namespace CBFSchema { class PrimitiveControllerResource; }
 namespace CBF {
 	
 	/**
-		@brief This type represents a primitive controller as resource. 
+		@brief This type represents a primitive controller as a resource for a higher level controller.
 	
 		The current value of the resource is the controller's 
 		sensor-transformed own resource value. 
@@ -51,21 +51,26 @@ namespace CBF {
 	
 	*/
 	struct PrimitiveControllerResource : public Resource {
-		PrimitiveControllerResource (const CBFSchema::PrimitiveControllerResource &xml_instance);
-	
+#ifdef CBF_HAVE_XSD
+		PrimitiveControllerResource (
+			const CBFSchema::PrimitiveControllerResource &xml_instance,
+			ObjectNamespacePtr object_namespace);
+#endif
 		PrimitiveControllerPtr m_PrimitiveController;
 	
 		FloatVector m_Result;
 	
-		PrimitiveControllerResource(PrimitiveControllerPtr controller = PrimitiveControllerPtr()) :
-			m_PrimitiveController(controller),
+		PrimitiveControllerResource(PrimitiveControllerPtr controller) :
+			m_PrimitiveController(controller)
 		{
 		}
 	
 		public:
-			virtual void read() {
-				m_PrimitiveController->sensor_transform()->read();
-				m_PrimitiveController->sensor_transform()->exec(m_Result);
+			virtual void update() {
+				m_PrimitiveController->resource()->update();
+				m_PrimitiveController->sensor_transform()->update(
+					m_PrimitiveController->resource()->get());
+				m_Result = m_PrimitiveController->sensor_transform()->result();
 			}
 	
 			virtual const FloatVector &get() {
@@ -78,7 +83,8 @@ namespace CBF {
 	
 			virtual void set(const FloatVector &arg) {
 				//! Setup reference..
-				m_PrimitiveController->set_reference(arg);
+				std::vector<FloatVector>& refs = m_PrimitiveController->reference()->get();
+				refs.resize(1); refs[0] = arg;
 	
 				//! And run controller until convergence..
 				do {
@@ -87,7 +93,7 @@ namespace CBF {
 			}
 	
 			virtual unsigned int dim() {
-				return m_PrimitiveController->sensor_transform()->get_task_dim();
+				return m_PrimitiveController->sensor_transform()->task_dim();
 			}
 	};
 	

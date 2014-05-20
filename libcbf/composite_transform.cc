@@ -22,10 +22,6 @@
 #include <cbf/debug_macros.h>
 #include <cbf/xml_object_factory.h>
 
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
-
 namespace CBF {
 
 	void CompositeSensorTransform::set_transforms(std::vector<SensorTransformPtr> transforms) {

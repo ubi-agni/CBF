@@ -42,15 +42,13 @@ git clone git://github.com/fps/CBF.git cbf
 
 - Requirements
 
-  - A working python installation 
-
   - A C++ compiler that likes templates
 
-  - the BOOST libs including the BOOST Numeric UBLAS package
+  - Eigen Matrix Library: http://eigen.tuxfamily.org
 
 - Optional Requirements
 
-  - KDL, for KDL based inverse and forward kinematics
+  - KDL, for KDL-based inverse and forward kinematics
 
   - libpa10, for operating the pa10 robot arm
 

@@ -22,8 +22,6 @@
 #define CBF_KDL_TRANSFORMS_HH
 
 #include <boost/shared_ptr.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
 
 #include <sstream>
 #include <iostream>

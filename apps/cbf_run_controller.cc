@@ -18,7 +18,7 @@
     Copyright 2011 Viktor Richter
 */
 
-#include <cbf_run_controller.h>
+#include "cbf_run_controller.h"
 
 namespace CBF {
 

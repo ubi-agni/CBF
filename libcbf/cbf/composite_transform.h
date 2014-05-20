@@ -27,7 +27,6 @@
 #include <cbf/namespace.h>
 
 #include <vector>
-#include <boost/numeric/ublas/matrix.hpp>
 
 namespace CBFSchema { class CompositeSensorTransform; }
 

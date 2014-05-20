@@ -34,11 +34,8 @@ namespace CBF {
 		unsigned int current_index = 0;
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
 			CBF_DEBUG("[CompositePotential]: ----");
-			m_ref_buffers[i].start(m_Potentials[i]->dim())
-					= references[0].segment(current_index, m_Potentials[i]->dim());
-
-			m_in_buffers[i].start(m_Potentials[i]->dim())
-					= input.segment(current_index, m_Potentials[i]->dim());
+			m_ref_buffers[i] = references[0].segment(current_index, m_Potentials[i]->dim());
+			m_in_buffers[i] = input.segment(current_index, m_Potentials[i]->dim());
 			CBF_DEBUG("[CompositePotential]: in: " <<  m_in_buffers[i]);
 
 			std::vector<FloatVector > tmp_refs;

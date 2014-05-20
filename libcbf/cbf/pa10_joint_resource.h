@@ -25,7 +25,6 @@
 
 #include "pa10/pa.h"
 
-#include <boost/numeric/ublas/vector.hpp>
 #include <string>
 
 #include <iostream>

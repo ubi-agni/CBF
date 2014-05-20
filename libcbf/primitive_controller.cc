@@ -27,9 +27,6 @@
 #include <cbf/xml_factory.h>
 #include <cbf/xml_object_factory.h>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
 #include <vector>
 #include <iostream>
 #include <cassert>
@@ -37,7 +34,6 @@
 
 namespace CBF {
 	SubordinateController::SubordinateController(
-		SubordinateController *master,
 		Float alpha,
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
@@ -49,7 +45,6 @@ namespace CBF {
 	)
 	{
 		init(
-			master,
 			alpha,
 			convergence_criteria,
 			reference,
@@ -64,7 +59,6 @@ namespace CBF {
 	}
 
 	void SubordinateController::init(
-		SubordinateController* master,
 		Float coefficient,
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
@@ -74,7 +68,7 @@ namespace CBF {
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
 		CombinationStrategyPtr combination_strategy
 	) {
-		m_Master = master;
+		m_Master = NULL;
 		m_Coefficient = coefficient;
 		m_ConvergenceCriteria = convergence_criteria;
 		m_Reference = reference;
@@ -83,6 +77,12 @@ namespace CBF {
 		m_EffectorTransform = effector_transform;
 		m_SubordinateControllers = subordinate_controllers;
 		m_CombinationStrategy = combination_strategy;
+		for (std::vector<SubordinateControllerPtr>::iterator 
+				  it  = m_SubordinateControllers.begin(),
+				  end = m_SubordinateControllers.end(); 
+			  it != end; ++it) {
+			(*it)->m_Master = this;
+		}
 	}
 
 
@@ -107,7 +107,6 @@ namespace CBF {
 		ResourcePtr resource
 	)	:
 		SubordinateController(
-			this,
 			alpha,
 			convergence_criteria,
 			reference,
@@ -160,10 +159,6 @@ namespace CBF {
 		m_Reference->update();
 
 		m_References = m_Reference->get();
-
-		resource()->update();
-
-		// CBF_DEBUG("ref: " << m_References[0])
 
 		//! Fill vector with data from sensor transform
 		m_SensorTransform->update(resource()->get());
@@ -316,15 +311,11 @@ namespace CBF {
 				CBF_DEBUG("------------------------");
 				//! First we see whether we can construct a controller from the xml_document
 				SubordinateControllerPtr controller = XMLObjectFactory::instance()->create<SubordinateController>(*it, object_namespace);
-				controller->m_Master = this;
-				//controller->m_Resource = m_Resource;
  				subordinate_controllers.push_back(controller);
-
 				CBF_DEBUG("------------------------");
 			}
 
 			init(
-				0,
 				coefficient,
 				convergence_criteria,
 				reference,

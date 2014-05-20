@@ -20,7 +20,7 @@
 
 #include <cbf/python_wrap.h>
 #include <cbf/debug_macros.h>
-#include <cbf/xml_factories.h>
+#include <cbf/xml_object_factory.h>
 
 #include <string>
 
@@ -41,14 +41,14 @@ namespace CBF {
 		if (first != std::string::npos) {
 			first = first +  std::string("#---\n").length();
 			str = str.substr(first, str.length() - first);
-			CBF_DEBUG("\n" << str)
+			CBF_DEBUG("\n" << str);
 		}
 	
 		size_t second = str.find("#---\n", first);
 	
 		if (second != std::string::npos) {
 			str = str.substr(0, second);
-			CBF_DEBUG("\n" << str)
+			CBF_DEBUG("\n" << str);
 		}
 	}
 	
@@ -56,7 +56,7 @@ namespace CBF {
 		bp::object m_MainModule;
 	
 		Helper() {
-			CBF_DEBUG("Py_Initialize")
+			CBF_DEBUG("Py_Initialize");
 			Py_InitializeEx(0);
 	
 			m_MainModule = bp::object((
@@ -67,7 +67,7 @@ namespace CBF {
 		}
 	
 		~Helper() {
-			CBF_DEBUG("Py_Finalize not called. See boost python doc")
+			CBF_DEBUG("Py_Finalize not called. See boost python doc");
 			//Py_Finalize();
 		}
 	};
@@ -89,9 +89,9 @@ namespace CBF {
 	}
 	
 	void PythonPotential::gradient (
-		ublas::vector<Float> &result, 
-		const std::vector<ublas::vector<Float> > &references, 
-		const ublas::vector<Float> &input
+		FloatVector &result, 
+		const std::vector<FloatVector > &references, 
+		const FloatVector &input
 	) {
 		try {
 	
@@ -99,7 +99,7 @@ namespace CBF {
 			bp::object main_namespace = m_Interpreter.m_Helper.m_MainModule.attr("__dict__");
 		
 			//! Setup references...
-			CBF_DEBUG("references[0]: " << references[0])
+			CBF_DEBUG("references[0]: " << references[0]);
 			bp::list refs;
 			for (unsigned int i = 0; i < references.size(); ++i) {
 				bp::list ref;
@@ -118,7 +118,7 @@ namespace CBF {
 			main_namespace["input"] = in;
 	
 			//! Call script...
-			//CBF_DEBUG(m_ExecScript)
+			//CBF_DEBUG(m_ExecScript);
 			bp::handle<> ignored((PyRun_String(
 				m_ExecScript.c_str(),
 				Py_file_input,
@@ -127,15 +127,15 @@ namespace CBF {
 			));
 	
 			//! Extract output...
-			CBF_DEBUG("Extracting result")
+			CBF_DEBUG("Extracting result");
 			bp::list res = bp::extract<bp::list>(main_namespace["result"]);
 		
-			result = CBF::ublas::vector<Float>(input.size());
+			result = CBF::FloatVector(input.size());
 		
 			for (unsigned int j = 0; j < input.size(); ++j)
 				result[j] = bp::extract<float>(res[j]);
 		
-			CBF_DEBUG("Result: " << result)
+			CBF_DEBUG("Result: " << result);
 		}
 		catch(...) {
 			if (PyErr_Occurred())
@@ -150,20 +150,22 @@ namespace CBF {
 	PythonSensorTransform::PythonSensorTransform(
 		unsigned int task_dim,
 		unsigned int resource_dim
-	) :
-		m_Interpreter(PythonInterpreter())
+		) : SensorTransform(),
+			 m_Interpreter(PythonInterpreter())
 	{
-	
+		m_TaskJacobian = FloatMatrix((int)task_dim, (int)resource_dim);
+		m_Result = FloatVector(task_dim);
+		m_ResourceValue = FloatVector(resource_dim);
 	}
 	
-	void PythonSensorTransform::update() {
-		//SensorTransform::update();
+	void PythonSensorTransform::update(const FloatVector &resource_value) {
+		m_ResourceValue = resource_value;
 		try {
 			//! Get access to main context...
 			bp::object main_namespace = m_Interpreter.m_Helper.m_MainModule.attr("__dict__");
 		
 			//! Setup references...
-			CBF_DEBUG("resource value: " << m_ResourceValue)
+			CBF_DEBUG("resource value: " << m_ResourceValue);
 			bp::list res;
 			for (unsigned int i = 0; i < m_ResourceValue.size(); ++i) {
 				res.append(m_ResourceValue[i]);
@@ -172,7 +174,7 @@ namespace CBF {
 			main_namespace["resource"] = res;
 		
 			//! Call script...
-			//CBF_DEBUG(m_ExecScript)
+			//CBF_DEBUG(m_ExecScript);
 			bp::handle<> ignored((PyRun_String(
 				m_ExecScript.c_str(),
 				Py_file_input,
@@ -181,28 +183,27 @@ namespace CBF {
 			));
 	
 			//! Extract output...
-			CBF_DEBUG("Extracting result")
+			CBF_DEBUG("Extracting result");
 			bp::list result = bp::extract<bp::list>(main_namespace["result"]);
-		
-			m_Result = ublas::vector<Float>(m_TaskDim);
-		
-			for (unsigned int j = 0; j < m_TaskDim; ++j)
+			assert(len(result) == task_dim());
+
+			for (unsigned int j = 0; j < task_dim(); ++j)
 				m_Result[j] = bp::extract<float>(result[j]);
 		
-			CBF_DEBUG("Extracting jacobian")
-			m_Jacobian = FloatMatrix(m_TaskDim, m_ResourceDim);
-	
+			CBF_DEBUG("Extracting jacobian");
 			bp::list jacobian = bp::extract<bp::list>(main_namespace["jacobian"]);
-			for (unsigned int i = 0; i < m_TaskDim; ++i) {
+			assert(len(jacobian) == task_dim());
+			for (unsigned int i = 0; i < task_dim(); ++i) {
 				bp::list jac_row = bp::extract<bp::list>(jacobian[i]);
+				assert(len(jac_row) == resource_dim());
 	
-				for (unsigned int j = 0; j < m_ResourceDim; ++j) {
-					m_Jacobian(i,j) = bp::extract<float>(jac_row[j]);
+				for (unsigned int j = 0; j < resource_dim(); ++j) {
+					m_TaskJacobian(i,j) = bp::extract<float>(jac_row[j]);
 				}
 			}
 	
-			CBF_DEBUG("m_Result: " << m_Result)
-			CBF_DEBUG("m_Jacobian: " << m_Jacobian)
+			CBF_DEBUG("m_Result: " << m_Result);
+			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian);
 		}
 		catch(...) {
 			if (PyErr_Occurred())
@@ -216,7 +217,9 @@ namespace CBF {
 	}
 	
 	#ifdef CBF_HAVE_XSD
-		PythonPotential::PythonPotential(const PythonPotentialType &xml_instance) :
+	PythonPotential::PythonPotential(
+		const CBFSchema::PythonPotential &xml_instance,
+		ObjectNamespacePtr object_namespace) :
 			m_Interpreter(PythonInterpreter()) 
 		{
 			m_Dim = xml_instance.Dimension();
@@ -224,43 +227,45 @@ namespace CBF {
 			m_ExecScript = xml_instance.ExecScript();
 		
 			sanitize_string(m_ExecScript);
-			CBF_DEBUG("ExecScript:\n" << m_ExecScript)
+			CBF_DEBUG("ExecScript:\n" << m_ExecScript);
 		
 			m_InitScript = xml_instance.InitScript();
 		
 			sanitize_string(m_InitScript);
-			CBF_DEBUG("InitScript:\n" << m_InitScript)
+			CBF_DEBUG("InitScript:\n" << m_InitScript);
 		
 			m_FiniScript = xml_instance.FiniScript();
 		
 			sanitize_string(m_FiniScript);
-			CBF_DEBUG("FiniScript:\n" << m_FiniScript)
+			CBF_DEBUG("FiniScript:\n" << m_FiniScript);
 		}
 		
-		PythonSensorTransform::PythonSensorTransform(const PythonSensorTransformType &xml_instance) :
+		PythonSensorTransform::PythonSensorTransform(
+			const CBFSchema::PythonSensorTransform &xml_instance,
+			ObjectNamespacePtr object_namespace) :
 			m_Interpreter(PythonInterpreter()) 
 		{
-			m_TaskDim = xml_instance.TaskDimension();
-			m_ResourceDim = xml_instance.ResourceDimension();
-		
+			int task_dim = xml_instance.TaskDimension();
+			int resource_dim = xml_instance.ResourceDimension();
+			m_TaskJacobian = FloatMatrix(task_dim, resource_dim);
+			m_Result = FloatVector(task_dim);
+			m_ResourceValue = FloatVector(resource_dim);
+
 			m_ExecScript = xml_instance.ExecScript();
-		
 			sanitize_string(m_ExecScript);
-			CBF_DEBUG("ExecScript:\n" << m_ExecScript)
+			CBF_DEBUG("ExecScript:\n" << m_ExecScript);
 		
 			m_InitScript = xml_instance.InitScript();
-		
 			sanitize_string(m_InitScript);
-			CBF_DEBUG("InitScript:\n" << m_InitScript)
+			CBF_DEBUG("InitScript:\n" << m_InitScript);
 		
 			m_FiniScript = xml_instance.FiniScript();
-		
 			sanitize_string(m_FiniScript);
-			CBF_DEBUG("FiniScript:\n" << m_FiniScript)
+			CBF_DEBUG("FiniScript:\n" << m_FiniScript);
 		}
 		
-		static XMLDerivedFactory<PythonPotential, CBFSchema::PythonPotential, Potential, CBFSchema::Potential> x;
-		static XMLDerivedFactory<PythonSensorTransform, CBFSchema::PythonSensorTransform, SensorTransform, CBFSchema::SensorTransform> x;
+		static XMLDerivedFactory<PythonPotential, CBFSchema::PythonPotential> x;
+		static XMLDerivedFactory<PythonSensorTransform, CBFSchema::PythonSensorTransform> x2;
 
 	#endif
 } // namespace

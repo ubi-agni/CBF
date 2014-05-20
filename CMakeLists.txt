@@ -33,11 +33,16 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(CheckIncludeFileCXX)
 include(InstallFilesRecursive)
 include(FindPkgConfig)
-find_package(PkgConfig)
 include(ParseArguments)
 
 enable_testing()
 include(CTest) 
+
+# redefine pkg-config macro to enforce re-evaluation of PKG_CONFIG_PATH
+macro(pkg_check_modules _prefix)
+  _pkgconfig_parse_options(_pkg_modules _pkg_is_required _pkg_is_silent ${ARGN})
+  _pkg_check_modules_internal("${_pkg_is_required}" "${_pkg_is_silent}" "${_prefix}" ${_pkg_modules})
+endmacro(pkg_check_modules)
 
 # define build type
 IF (NOT CMAKE_BUILD_TYPE)
@@ -56,32 +61,54 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DCBF_NDEB
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+
+# define include directories for here, to ensure that local files are found first
+include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
+include_directories("${PROJECT_BINARY_DIR}/libcbf/")
+
+# Python
+message(STATUS "Looking for python libs")
+find_package(PythonLibs)
+if(PYTHONLIBS_FOUND)
+  message(STATUS "  found: ${PYTHON_INCLUDE_DIRS} ${PYTHON_LIBRARIES}")
+else()
+  set(CBF_HAVE_PYTHON 0)
+endif()
+
 # Boost libs
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_COMPONENTS "program_options")
+if(PYTHONLIBS_FOUND)
+  list(APPEND Boost_COMPONENTS "python")
+endif()
 message(STATUS "Looking for boost components: ${Boost_COMPONENTS}")
 find_package(Boost 1.40.0 COMPONENTS ${Boost_COMPONENTS})
 
 set(CBF_HAVE_BOOST ${Boost_FOUND})
 set(CBF_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
+if(PYTHONLIBS_FOUND AND Boost_PYTHON_FOUND) 
+  set(CBF_HAVE_PYTHON 1)
+endif()
 
 # cppAD
 message(STATUS "Looking for CppAD automatic differentiation package")
 find_path(CPPAD_PATH cppad/CppAD.h)
-if(NOT ${CPPAD_PATH} STREQUAL "CPPAD_PATH-NOTFOUND")
-  message("    found: ${CPPAD_PATH}")
+if(CPPAD_PATH)
+  message(STATUS "  found: ${CPPAD_PATH}")
   set(CBF_HAVE_CPPAD 1)
+else()
+  set(CBF_HAVE_CPPAD 0)
 endif()
-set(CBF_HAVE_CPPAD 0)
 
 # orocos KDL
 message(STATUS "Looking for KDL")
 pkg_check_modules(KDL orocos-kdl>=1.0)
 if(KDL_FOUND)
-  message(STATUS "  found")
+  message(STATUS "  found: ${KDL_INCLUDE_DIRS}")
   set(CBF_HAVE_KDL 1)
   link_directories(${KDL_LIBRARY_DIRS})
+  string(REPLACE ";" " " KDL_CFLAGS_SPACES "${KDL_CFLAGS}")
 endif(KDL_FOUND)
 
 # XCF
@@ -121,33 +148,19 @@ if(CBF_HAVE_KDL)
   ## We need to ensure, that we use the same version of Eigen (2 vs. 3) as KDL.
   ## See: https://github.com/norro/CBF/issues/2
   if ("${KDL_INCLUDE_DIRS}" MATCHES ".*eigen3.*")
-	 set(CBF_EIGEN_VERSION 3)
-	 add_definitions("-DEIGEN2_SUPPORT")
+	 set(CBF_HAVE_EIGEN 1)
+	 include_directories(${KDL_INCLUDE_DIRS})
   else()
-	 set(CBF_EIGEN_VERSION 2)
+	 message(SEND_ERROR "KDL doesn't use Eigen3")
   endif()
-  set(CBF_HAVE_EIGEN 1)
-  include_directories(${KDL_INCLUDE_DIRS})
-  message(STATUS "Using Eigen${CBF_EIGEN_VERSION} from KDL: ${KDL_INCLUDE_DIRS}")
 else(CBF_HAVE_KDL)
   ## If we don't have KDL, we are free to choose Eigen
   message(STATUS "Looking for Eigen3")
-  find_package(Eigen3)
+  find_package(Eigen3 REQUIRED)
   if(EIGEN3_FOUND)
     message(STATUS "  ${EIGEN3_VERSION} found.")
     set(CBF_HAVE_EIGEN 1)
-	 set(CBF_EIGEN_VERSION 3)
-	 add_definitions("-DEIGEN2_SUPPORT")
     include_directories(${EIGEN3_INCLUDE_DIR})
-  else()
-    message(STATUS "Looking for Eigen2")
-    find_package(Eigen2)
-    if(EIGEN2_FOUND)
-      set(CBF_HAVE_EIGEN 1)
-		set(CBF_EIGEN_VERSION 2)
-      message(STATUS "  ${EIGEN2_VERSION} found")
-      include_directories(${EIGEN2_INCLUDE_DIR})
-    endif()
   endif()
 endif(CBF_HAVE_KDL)
 
@@ -174,11 +187,7 @@ endif()
 message(STATUS "Looking for spacemouse")
 find_library(SPACEMOUSE_LIBS spacenavi)
 find_path(SPACEMOUSE_INCLUDES spacenavi.h)
-if(
-	 NOT "${SPACEMOUSE_LIBS}" STREQUAL "SPACEMOUSE_LIBS-NOTFOUND" 
-	 AND 
-	 NOT "${SPACEMOUSE_INCLUDES}" STREQUAL "SPACEMOUSE_INCLUDES-NOTFOUND"
-	 )
+if(SPACEMOUSE_LIBS AND SPACEMOUSE_INCLUDES)
   message(STATUS "  found spacemouse ${SPACEMOUSE_LIBS} ${SPACEMOUSE_INCLUDES}")
   set(CBF_HAVE_SPACEMOUSE 1)
 endif()
@@ -187,7 +196,7 @@ endif()
 message(STATUS "Looking for Xerces-C")
 find_library(XERCESC_LIB xerces-c)
 find_path(XERCESC_INC xercesc/dom/DOM.hpp)
-if(NOT "${XERCESC_LIB}" STREQUAL "XERCESC_LIB-NOTFOUND" AND NOT "${XERCESC_INC}" STREQUAL "XERCESC_INC-NOTFOUND")
+if(XERCESC_LIB AND XERCESC_INC)
   message(STATUS "  found Xerces-C ${XERCESC_LIB} ${XERCESC_INC}")
   set(CBF_HAVE_XERCESC 1)
 endif()
@@ -198,7 +207,7 @@ find_program(XMLSTARLET_BIN NAMES xmlstarlet)
 message(STATUS "Looking for XSD CXX")
 find_program(XSD_BIN NAMES xsdcxx xsd)
 find_path(XSD_INC xsd/cxx/config.hxx)
-if (NOT "${XSD_BIN}" STREQUAL "XSD_BIN-NOTFOUND" AND NOT "${XSD_INC}" STREQUAL "XSD_INC-NOTFOUND" )
+if (XSD_BIN AND XSD_INC)
   message(STATUS "  found XSD CXX: ${XSD_BIN} ${XSD_INC}")
   if(CBF_HAVE_XERCESC)
 	 set(CBF_HAVE_XSD 1)
@@ -207,9 +216,14 @@ endif()
 
 message(STATUS "Looking for pyxbgen")
 find_program(PYXBGEN_BIN NAMES pyxbgen)
-if (NOT "${PYXBGEN_BIN}" STREQUAL "PYXBGEN_BIN-NOTFOUND")
+if (PYXBGEN_BIN AND EXISTS ${PYXBGEN_BIN})
   message(STATUS "  found pyxbgen: ${PYXBGEN_BIN}")
-  set(CBF_HAVE_PYXBGEN 1)
+  get_filename_component(_pyxb_dir "${PYXBGEN_BIN}" PATH)
+  find_path(PYXBGEN_PATH pyxb "${_pyxb_dir}/../lib/python2.7/site-packages")
+  if(PYXBGEN_PATH)
+	 message(STATUS "  using PYTHONPATH=${PYXBGEN_PATH}")
+	 set(CBF_HAVE_PYXBGEN 1)
+  endif()
 endif()
 
 configure_file(
@@ -217,10 +231,24 @@ configure_file(
   "${PROJECT_BINARY_DIR}/libcbf/cbf/config.h"
   )
 
-configure_file(
-  "${PROJECT_SOURCE_DIR}/Doxyfile.in"
-  "${PROJECT_BINARY_DIR}/Doxyfile"
-  ) 
+message(STATUS "Looking for doxygen")
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  configure_file(
+	 "${PROJECT_SOURCE_DIR}/Doxyfile.in"
+	 "${PROJECT_BINARY_DIR}/Doxyfile"
+	 )
+  
+  set(DOXYGEN_INPUT  ${PROJECT_BINARY_DIR}/Doxyfile)
+  set(DOXYGEN_OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html)
+  add_custom_command(
+	 OUTPUT  ${DOXYGEN_OUTPUT}
+	 COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
+	 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	 DEPENDS ${DOXYGEN_INPUT}
+	 )
+  add_custom_target(doc ALL DEPENDS ${DOXYGEN_OUTPUT})
+endif(DOXYGEN_FOUND)
 
 # --- pkgconfig file ---
 configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)

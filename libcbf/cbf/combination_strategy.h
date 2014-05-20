@@ -28,7 +28,6 @@
 #include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/numeric/ublas/vector.hpp>
 
 #include <vector>
 #include <string>

@@ -24,8 +24,8 @@
 #include <cbf/debug_macros.h>
 #include <cbf/xsd_error_handler.h>
 
-#include <xcf_memory_run_controller.h>
-#include <cbf_run_controller.h>
+#include "xcf_memory_run_controller.h"
+#include "cbf_run_controller.h"
 
 #ifdef CBF_HAVE_QT
 	#include <QtGui/QApplication>

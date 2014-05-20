@@ -1,8 +1,5 @@
 message(STATUS "In subdirectory doc/examples/cpp:")
 
-include_directories("${PROJECT_SOURCE_DIR}/libcbf/")
-include_directories("${PROJECT_BINARY_DIR}/libcbf/")
-
 if(CBF_HAVE_XSD)
   include_directories(${XSD_INC})
 endif()

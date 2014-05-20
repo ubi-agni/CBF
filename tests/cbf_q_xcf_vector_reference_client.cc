@@ -19,7 +19,7 @@
 */
 
 
-#include <cbf_q_xcf_vector_reference_client.h>
+#include "cbf_q_xcf_vector_reference_client.h"
 
 #include <cbf/types.h>
 #include <xcf/RemoteServer.hpp>
@@ -28,8 +28,6 @@
 #include <cbf/utilities.h>
 #include <cbf/exceptions.h>
 #include <cbf/xml_factory.h>
-
-#include <boost/numeric/ublas/io.hpp>
 
 #include <string>
 #include <iostream>

@@ -18,13 +18,14 @@ if(CBF_HAVE_XSD)
 	 )
 
   include_directories("${XSD_INC}")
-  include_directories("${PROJECT_BINARY_DIR}/libcbf/cbf/")
 
   add_library(cbf_schemas SHARED
 	 "${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx"
 	 "${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.cxx"
 	 )
-  SET_TARGET_PROPERTIES(cbf_schemas PROPERTIES VERSION ${CBF_VERSION_MAJOR} SOVERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR})
+  set_target_properties(cbf_schemas PROPERTIES 
+	 VERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+	 )
 
   install(TARGETS cbf_schemas
     EXPORT CBFDepends

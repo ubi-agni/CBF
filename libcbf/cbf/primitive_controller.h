@@ -25,7 +25,6 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
 
 #include <vector>
 
@@ -64,7 +63,6 @@ namespace CBF {
 			set from the specified arguments
 		*/
 		SubordinateController(
-			SubordinateController *master,
 			Float coefficient,
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
@@ -94,7 +92,6 @@ namespace CBF {
 	
 			/*** @brief Function for stuff common to all constructors */
 			void init(
-				SubordinateController* master,
 				Float coefficient,
 				std::vector<ConvergenceCriterionPtr> convergence_criteria,
 				ReferencePtr reference,
@@ -193,7 +190,7 @@ namespace CBF {
 				@brief Returns the result of the calculationss done on update().
 
 				The update() function is supposed to update all sensor transforms, potentials
-				etc. The last step of a control cycly is applying the result (the resource
+				etc. The last step of a control cycle is applying the result (the resource
 				space gradient step) of these	calculations to the resource.
 			*/
 			virtual FloatVector &result() { return m_Result; }

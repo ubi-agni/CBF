@@ -8,9 +8,6 @@
 #include <cbf/debug_macros.h>
 #include <cbf/namespace.h>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-
 namespace CBFSchema { class NormSensorTransform; }
 
 namespace CBF {

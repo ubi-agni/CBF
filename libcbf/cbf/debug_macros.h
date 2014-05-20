@@ -25,7 +25,7 @@
 
 #include <iostream>
 #include <iomanip>
-#include <boost/numeric/ublas/io.hpp>
+#include <stdlib.h>
 
 #ifdef CBF_NDEBUG
 	#define CBF_DEBUG(arg) ;

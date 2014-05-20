@@ -30,9 +30,6 @@
 #include <cmath>
 #include <deque>
 
-#include <boost/numeric/ublas/io.hpp>
-
-
 namespace CBF {
 	void DummyResource::add(const FloatVector &arg) {
 		m_Variables += arg;

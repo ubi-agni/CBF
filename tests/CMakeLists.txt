@@ -1,7 +1,5 @@
 message(STATUS "In subdirectory tests:")
 
-include_directories(${PROJECT_SOURCE_DIR}/libcbf/ ${PROJECT_BINARY_DIR}/libcbf/)
-
 if(CBF_HAVE_CPPAD)
   include_directories(${CPPAD_PATH})
 endif()
@@ -16,7 +14,6 @@ endif()
 
 if(CBF_HAVE_QT)
   include_directories(${QT_INCLUDE_DIRS})
-  include_directories(${PROJECT_SOURCE_DIR}/tests)
 endif()
 
 if(CBF_HAVE_MEMORY)
@@ -81,7 +78,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY AND CBF_H
   target_link_libraries(${exe} 
 	 ${CBF_LIBRARY_NAME} 
 	 ${QT_LIBRARIES} 
-	 ${Boost_LIBRARIES}
+	 ${Boost_PROGRAM_OPTIONS_LIBRARIES}
     ${QT_LIBRARIES}
 	 )
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})
@@ -97,7 +94,7 @@ if(CBF_HAVE_KDL)
   add_executable(${exe} ${exe}.cpp)
   target_link_libraries(${exe} 
 	${CBF_LIBRARY_NAME}
-    ${Boost_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARIES}
     ${KDL_LDFLAGS}
 	 )
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})

@@ -1,18 +1,17 @@
 #ifndef CBF_CPPAD_ST_HH
 #define CBF_CPPAD_ST_HH
 
+// for some reason, the include order is important
+#include <cppad/example/cppad_eigen.hpp>
+
 #include <cbf/sensor_transform.h>
 #include <cbf/types.h>
-
-#include <cppad/CppAD.h>
-#include <cppad/check_simple_vector.hpp> 
 
 #include <boost/shared_ptr.hpp>
 
 namespace CBF {
 
-using CppAD::AD;
-
+typedef Eigen::Matrix< CppAD::AD<Float>, Eigen::Dynamic, 1> ADFloatVector;
 
 /**
 	@brief A SensorTransform that is parametrized with an AppAD::ADFun<Float> which enables automatic calculation of the task jacobian (CppAD is an automatic differentiation package)
@@ -20,28 +19,23 @@ using CppAD::AD;
 struct CppADSensorTransform : public SensorTransform {
 	CppAD::ADFun<Float> m_Func;
 
-	CppADSensorTransform(const CppAD::ADFun<Float> &fun, unsigned int task_dim, unsigned int resource_dim) {
+	CppADSensorTransform(const CppAD::ADFun<Float> &fun, 
+								unsigned int task_dim, 
+								unsigned int resource_dim) {
+		assert(fun.Domain() == resource_dim);
+		assert(fun.Range()  == task_dim);
 		m_Func = fun;
-		CppAD::CheckSimpleVector<Float, FloatVector>();
 		m_Result = FloatVector(task_dim);
 		m_TaskJacobian = FloatMatrix((int)task_dim, (int)resource_dim);
-		m_Tmp = FloatVector(task_dim * resource_dim);
 	}
 
 	virtual void update(const FloatVector &resource_value) {
-		FloatVector m_Tmp = m_Func.Jacobian<FloatVector>(resource_value);
-
-		unsigned int cols = m_TaskJacobian.cols();
-		for (unsigned int row = 0, mrow = m_TaskJacobian.rows(); row < mrow; ++row) {
-			for (unsigned int col = 0, mcol = m_TaskJacobian.cols(); col < mcol; ++col) {
-				m_TaskJacobian(row, col) = m_Tmp[cols * row + col];
-			}
-		}
-		m_Result = m_Func.Forward<FloatVector>(0, resource_value);
+		m_Result = m_Func.Forward(0, resource_value);
+		// this creates a task_dim * resource_dim vector
+		m_TaskJacobian = m_Func.Jacobian(resource_value);
+		// correctly reshape matrix:
+		m_TaskJacobian.conservativeResize(m_Func.Range(), m_Func.Domain());
 	}
-
-	protected:
-		FloatVector m_Tmp;
 };
 
 typedef boost::shared_ptr<CppADSensorTransform> CppADSensorTransformPtr;

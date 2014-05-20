@@ -28,16 +28,17 @@ namespace CBF {
 	
 	#ifdef CBF_HAVE_XSD
 		PrimitiveControllerResource::PrimitiveControllerResource(
-			const CBFSchema::PrimitiveControllerResourceType &xml_instance,
-			ObjectNamespacePtr object_namespace) 
+			const CBFSchema::PrimitiveControllerResource &xml_instance,
+			ObjectNamespacePtr object_namespace) :
 			Resource(xml_instance, object_namespace)
 		{
-			ControllerPtr p = Controller::create(xml_instance.PrimitiveController());
-			m_PrimitiveController = boost::dynamic_pointer_cast<PrimitiveController>(p);
+			m_PrimitiveController = XMLObjectFactory::instance()->create<PrimitiveController>
+				(xml_instance.PrimitiveController(), object_namespace);
 		}	
 	#endif
 	
-	static XMLDerivedFactory<PrimitiveControllerResource, CBFSchema::PrimitiveControllerResource, Resource, CBFSchema::Resource> x;
+	static XMLDerivedFactory<PrimitiveControllerResource, 
+									 CBFSchema::PrimitiveControllerResource> x;
 
 
 } // namespace
