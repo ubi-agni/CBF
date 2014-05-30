@@ -28,7 +28,7 @@
 #include <cbf/namespace.h>
 
 #ifdef CBF_HAVE_QT
-	#include <QtGui/QApplication>
+	#include <QApplication>
 #endif
 
 #include <IceUtil/Monitor.h> 

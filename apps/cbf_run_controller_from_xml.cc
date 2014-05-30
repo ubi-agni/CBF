@@ -28,7 +28,7 @@
 #include <cbf/xml_object_factory.h>
 
 #ifdef CBF_HAVE_QT
-	#include <QtGui/QApplication>
+	#include <QApplication>
 #endif
 
 #include <string>

@@ -1,6 +1,6 @@
 message(STATUS "In subdirectory doc/examples/xml:")
 
-if(NOT "${XMLSTARLET_BIN}" STREQUAL "XMLSTARLET_BIN-NOTFOUND")
+if(XMLSTARLET_BIN)
 
   set(XML_SOURCES
 	 composite_potential.xml

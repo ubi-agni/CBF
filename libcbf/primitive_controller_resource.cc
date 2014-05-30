@@ -35,10 +35,10 @@ namespace CBF {
 			m_PrimitiveController = XMLObjectFactory::instance()->create<PrimitiveController>
 				(xml_instance.PrimitiveController(), object_namespace);
 		}	
-	#endif
 	
 	static XMLDerivedFactory<PrimitiveControllerResource, 
 									 CBFSchema::PrimitiveControllerResource> x;
+	#endif
 
 
 } // namespace

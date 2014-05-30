@@ -165,14 +165,11 @@ else(CBF_HAVE_KDL)
 endif(CBF_HAVE_KDL)
 
 # Qt
-message(STATUS "Looking for QT4")
-pkg_check_modules(QT QtCore QtGui)
+message(STATUS "Looking for Qt5 or Qt4")
+find_package(Qt54 COMPONENTS Core Gui)
 if(QT_FOUND)
-  message(STATUS "  found")
-  find_package(Qt4)
-  include(FindQt4)
   set(CBF_HAVE_QT 1)
-endif()
+endif(QT_FOUND)
 
 # libqkdlview
 message(STATUS "Looking for qkdlview")
@@ -271,7 +268,12 @@ add_subdirectory(apps)
 add_subdirectory(tests)
 add_subdirectory(doc)
 
-EXPORT(TARGETS ${CBF_LIBRARY_NAME} ${CBF_LIBRARY_NAME}_schemas 
+set(CBF_EXPORTS ${CBF_LIBRARY_NAME})
+if(CBF_HAVE_XSD)
+  set(CBF_EXPORTS ${CBF_EXPORTS} ${CBF_LIBRARY_NAME}_schemas)
+endif()
+
+EXPORT(TARGETS ${CBF_EXPORTS} 
        FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
 INSTALL(EXPORT CBFDepends
         DESTINATION "share/${CBF_PATH_PREFIX}")

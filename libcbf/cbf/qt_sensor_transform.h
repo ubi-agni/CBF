@@ -1,10 +1,10 @@
 #ifndef CBF_QT_SENSOR_TRANSFORM_HH
 #define CBF_QT_SENSOR_TRANSFORM_HH
 
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QWidget>
-#include <QtGui/QCheckBox>
+#include <QGridLayout>
+#include <QLabel>
+#include <QWidget>
+#include <QCheckBox>
 
 #include <vector>
 

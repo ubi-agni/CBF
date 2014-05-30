@@ -24,16 +24,16 @@
 
 #include <xcf/RemoteServer.hpp>
 
-#include <QtCore/QObject>
-#include <QtCore/QTimer>
-#include <QtGui/QWidget>
-#include <QtGui/QTabWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QCheckBox>
-#include <QtGui/QComboBox>
+#include <QObject>
+#include <QTimer>
+#include <QWidget>
+#include <QTabWidget>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDoubleSpinBox>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QComboBox>
 
 #include <cbf/types.h>
 
