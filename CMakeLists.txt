@@ -177,6 +177,7 @@ find_library(QKDLVIEW_LIB qkdlview)
 find_path(QKDLVIEW_INCLUDES qkdltreeview.h)
 if(QKDLVIEW_LIB AND QKDLVIEW_INCLUDES)
   message(STATUS "  found qkdlview ${QKDLVIEW_LIB} ${QKDLVIEW_INCLUDES}")
+  find_package(Qt54 COMPONENTS OpenGL)
   set(CBF_HAVE_QKDLVIEW 1)
 endif()
 
