@@ -110,6 +110,10 @@ if(QT5_BUILD)
   endmacro()
 
 else(QT5_BUILD)
+  foreach(_module ${_components})
+    string(TOUPPER ${_module} _module_upper)
+    list(APPEND QT_LIBRARIES ${QT_${_module_upper}_LIBRARIES})
+  endforeach()
 
   macro(qt_wrap_ui)
 	 qt4_wrap_ui(${ARGN})
@@ -140,3 +144,4 @@ else(QT5_BUILD)
   endmacro()
 
 endif(QT5_BUILD)
+
