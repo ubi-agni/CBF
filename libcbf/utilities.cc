@@ -18,6 +18,8 @@
     Copyright 2009, 2010 Florian Paul Schmidt, Viktor Richter
 */
 
+#include <vector>
+
 #include <cbf/utilities.h>
 #include <cbf/debug_macros.h>
 #include <cbf/exceptions.h>

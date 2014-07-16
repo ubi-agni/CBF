@@ -38,12 +38,12 @@
 #include <boost/program_options.hpp>
 #include <boost/bind.hpp>
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QInputDialog>
-#include <QtGui/QLabel>
-#include <QtGui/QScrollArea>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QRadioButton>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QLabel>
+#include <QScrollArea>
+#include <QButtonGroup>
+#include <QRadioButton>
 #include <QMessageBox>
 
 
@@ -254,7 +254,7 @@ void XcfMemoryRunControllerOperator::create_namespace(){
 	// getting the names of the controllers to load.
 	bool ok;
 	XcfMemoryRunControllerDocumentDialog tmp(m_AttachmentNames, this);
-	std::vector<std::string> ids = tmp.exec();
+	std::vector<std::string> ids = tmp.execGetList();
 	if (!ids.empty()){
 		// creating the XCFMemoryRunControllerLoadControllers document.
 		CBFSchema::XCFMemoryRunControllerLoadNamespace v(m_RunControllerName);
@@ -386,7 +386,7 @@ void XcfMemoryRunControllerDocumentDialog::init(std::map<std::string, std::strin
 	this -> setLayout(windowLayout);
 }
 
-std::vector<std::string> XcfMemoryRunControllerDocumentDialog::exec(){
+std::vector<std::string> XcfMemoryRunControllerDocumentDialog::execGetList(){
 	CBF_DEBUG("running the dialog");
 	int i = QDialog::exec();
 	std::vector<std::string> ret;
@@ -435,7 +435,7 @@ void XcfMemoryRunControllerNameDialog::init(std::set<std::string> controller_set
 	this -> setLayout(windowLayout);
 }
 
-std::string XcfMemoryRunControllerNameDialog::exec(){
+std::string XcfMemoryRunControllerNameDialog::execGetName(){
 	CBF_DEBUG("running the dialog");
 	int i = QDialog::exec();
 	std::vector<std::string> ret;

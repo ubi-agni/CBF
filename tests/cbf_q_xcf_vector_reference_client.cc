@@ -35,15 +35,15 @@
 #include <unistd.h>
 #include <memory>
 
-#include <QtGui/QScrollArea>
-#include <QtGui/QApplication>
-#include <QtGui/QGridLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QDialog>
+#include <QScrollArea>
+#include <QApplication>
+#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QDialog>
 
-#include<QtGui/QTableWidget>
+#include<QTableWidget>
 
 /** 
 	@file cbf_q_xcf_vector_reference_client.cc

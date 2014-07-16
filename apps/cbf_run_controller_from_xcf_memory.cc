@@ -28,7 +28,7 @@
 #include "cbf_run_controller.h"
 
 #ifdef CBF_HAVE_QT
-	#include <QtGui/QApplication>
+	#include <QApplication>
 	#include <QWaitCondition>
 	#include <QMutex>
 #endif

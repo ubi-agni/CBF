@@ -11,13 +11,13 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <QtGui/QWidget>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QApplication>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QLabel>
-#include <QtGui/QCheckBox>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QApplication>
+#include <QDoubleSpinBox>
+#include <QLabel>
+#include <QCheckBox>
 
 namespace CBFSchema {
 	class QtReference;

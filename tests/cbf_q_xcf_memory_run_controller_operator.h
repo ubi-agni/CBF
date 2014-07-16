@@ -26,14 +26,14 @@
 #include <Memory/Subscription.hpp>
 #include <Memory/Event.hpp>
 
-#include <QtGui/QApplication>
-#include <QtGui/QWidget>
-#include <QtGui/QPushButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QErrorMessage>
-#include <QtGui/QCheckBox>
-#include <QtGui/QButtonGroup>
+#include <QApplication>
+#include <QWidget>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QErrorMessage>
+#include <QCheckBox>
+#include <QButtonGroup>
 
 #include <IceUtil/Monitor.h>
 #include <IceUtil/RecMutex.h>
@@ -212,7 +212,7 @@ class XcfMemoryRunControllerDocumentDialog : public QDialog {
 	/**
 		@brief executes this dialog (modal)
 	*/
-	std::vector<std::string> exec();
+	std::vector<std::string> execGetList();
 
 };
 
@@ -257,7 +257,7 @@ class XcfMemoryRunControllerNameDialog : public QDialog {
 	/**
 		@brief executes this dialog (modal)
 	*/
-	std::string exec();
+	std::string execGetName();
 
 };
 } // namespace
