@@ -13,7 +13,7 @@ if(CBF_HAVE_XSD)
 endif()
 
 if(CBF_HAVE_QT)
-  include_directories(${QT_INCLUDE_DIRS})
+  include_directories(${QT_INCLUDES})
 endif()
 
 if(CBF_HAVE_MEMORY)
