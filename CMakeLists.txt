@@ -68,12 +68,8 @@ include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 
 # Python
 message(STATUS "Looking for python libs")
-find_package(PythonLibs)
-if(PYTHONLIBS_FOUND)
-  message(STATUS "  found: ${PYTHON_INCLUDE_DIRS} ${PYTHON_LIBRARIES}")
-else()
-  set(CBF_HAVE_PYTHON 0)
-endif()
+find_package(PythonInterp)
+find_package(PythonLibs ${PYTHON_VERSION_STRING})
 
 # Boost libs
 set(Boost_USE_STATIC_LIBS OFF)
@@ -89,6 +85,8 @@ set(CBF_HAVE_BOOST ${Boost_FOUND})
 set(CBF_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS_FOUND})
 if(PYTHONLIBS_FOUND AND Boost_PYTHON_FOUND) 
   set(CBF_HAVE_PYTHON 1)
+else()
+  set(CBF_HAVE_PYTHON 0)
 endif()
 
 # cppAD
