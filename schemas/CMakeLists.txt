@@ -26,6 +26,7 @@ if(CBF_HAVE_XSD)
   set_target_properties(cbf_schemas PROPERTIES 
 	 VERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
 	 )
+  target_link_libraries(cbf_schemas ${XERCESC_LIB})
 
   install(TARGETS cbf_schemas
     EXPORT CBFDepends
