@@ -1,3 +1,5 @@
+# http://www.kdab.com/using-cmake-with-qt-5
+
 set(_all_components
   Core
   Gui
@@ -26,6 +28,7 @@ set(_all_components
 find_package(Qt5Core QUIET)
 
 if (Qt5Core_FOUND)
+  message(STATUS "found Qt5: ${Qt5Core_DIR}")
   if (NOT Qt54_FIND_COMPONENTS)
     foreach(_component ${_all_components})
       find_package(Qt5${_component})
@@ -33,7 +36,6 @@ if (Qt5Core_FOUND)
       list(APPEND QT_LIBRARIES ${Qt5${_component}_LIBRARIES})
     endforeach()
   else()
-    set(_components ${Qt54_FIND_COMPONENTS})
     foreach(_component ${Qt54_FIND_COMPONENTS})
       find_package(Qt5${_component} REQUIRED)
       if ("${_component}" STREQUAL "WebKit")
@@ -51,6 +53,7 @@ if (Qt5Core_FOUND)
     endforeach()
   endif()
 
+  LIST(APPEND QT_DEFINITIONS "-fPIC")
   set(QT_FOUND TRUE)
   set(QT5_BUILD TRUE)
 
