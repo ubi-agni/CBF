@@ -15,4 +15,12 @@ if(NOT CBF_CONFIG_PROCESSED)
     set(CBF_VERSION "@CBF_VERSION@")
     set(CBF_DEFINITIONS "@CBF_DEFINITIONS@")
 
+    # In order to resolve Qt5 link targets (Qt5::Concurrent) we need to import Qt
+    if (@Qt5Core_FOUND@)
+      find_package(Qt5Core)
+      find_package(Qt5Concurrent)
+      find_package(Qt5Gui)
+      find_package(Qt5Widgets)
+      find_package(Qt5OpenGL)
+    endif()
 endif()
