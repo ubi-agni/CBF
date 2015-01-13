@@ -1,20 +1,18 @@
 if(NOT CBF_CONFIG_PROCESSED)
     set(CBF_CONFIG_PROCESSED TRUE)
 
-    get_filename_component(CONFIG_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+    get_filename_component(CBF_CONFIG_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
     
     # Expose CBF library as an imported target (from the point of view
     # of the downstream project)
-    include("${CONFIG_DIR}/CBFDepends.cmake")
-    set(CBF_LIBRARY_DIR "${CONFIG_DIR}/../../lib")
+    include("${CBF_CONFIG_DIR}/CBFDepends.cmake")
+    set(CBF_LIBRARY_DIR "${CBF_CONFIG_DIR}/../../lib")
     set(CBF_LIBRARIES "@CBF_LIBRARY_NAME@;@CBF_LIBRARY_NAME@_schemas")
     
     set(CBF_FOUND TRUE)
-    set(CBF_INCLUDE_DIRS "${CONFIG_DIR}/../../include/@CBF_PATH_PREFIX@")
-    set(CBF_RUNTIME_LIBRARY_DIRS "${CONFIG_DIR}/../../bin")
+    set(CBF_INCLUDE_DIRS "${CBF_CONFIG_DIR}/../../include/@CBF_PATH_PREFIX@")
+    set(CBF_RUNTIME_LIBRARY_DIRS "${CBF_CONFIG_DIR}/../../bin")
     set(CBF_VERSION "@CBF_VERSION@")
     set(CBF_DEFINITIONS "@CBF_DEFINITIONS@")
-    set(CBF_CMAKE_MODULE_PATH "${CONFIG_DIR}/../../@CBF_CMAKE_MODULE_PATH@")
 
-    set(CBF_EIGEN_VERSION @CBF_EIGEN_VERSION@)
 endif()
