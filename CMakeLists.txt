@@ -146,10 +146,10 @@ if(CBF_HAVE_KDL)
   ## We need to ensure, that we use the same version of Eigen (2 vs. 3) as KDL.
   ## See: https://github.com/norro/CBF/issues/2
   if ("${KDL_INCLUDE_DIRS}" MATCHES ".*eigen3.*")
-	 set(CBF_HAVE_EIGEN 1)
-	 include_directories(${KDL_INCLUDE_DIRS})
+    set(CBF_HAVE_EIGEN 1)
+    include_directories(${KDL_INCLUDE_DIRS})
   else()
-	 message(SEND_ERROR "KDL doesn't use Eigen3")
+    message(SEND_ERROR "KDL doesn't use Eigen3")
   endif()
 else(CBF_HAVE_KDL)
   ## If we don't have KDL, we are free to choose Eigen
@@ -206,7 +206,7 @@ find_path(XSD_INC xsd/cxx/config.hxx)
 if (XSD_BIN AND XSD_INC)
   message(STATUS "  found XSD CXX: ${XSD_BIN} ${XSD_INC}")
   if(CBF_HAVE_XERCESC)
-	 set(CBF_HAVE_XSD 1)
+    set(CBF_HAVE_XSD 1)
   endif()
 endif()
 
@@ -217,8 +217,8 @@ if (PYXBGEN_BIN AND EXISTS ${PYXBGEN_BIN})
   get_filename_component(_pyxb_dir "${PYXBGEN_BIN}" PATH)
   find_path(PYXBGEN_PATH pyxb "${_pyxb_dir}/../lib/python2.7/site-packages")
   if(PYXBGEN_PATH)
-	 message(STATUS "  using PYTHONPATH=${PYXBGEN_PATH}")
-	 set(CBF_HAVE_PYXBGEN 1)
+    message(STATUS "  using PYTHONPATH=${PYXBGEN_PATH}")
+    set(CBF_HAVE_PYXBGEN 1)
   endif()
 endif()
 
@@ -231,27 +231,33 @@ message(STATUS "Looking for doxygen")
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   configure_file(
-	 "${PROJECT_SOURCE_DIR}/Doxyfile.in"
-	 "${PROJECT_BINARY_DIR}/Doxyfile"
-	 )
+    "${PROJECT_SOURCE_DIR}/Doxyfile.in"
+    "${PROJECT_BINARY_DIR}/Doxyfile"
+    )
   
   set(DOXYGEN_INPUT  ${PROJECT_BINARY_DIR}/Doxyfile)
   set(DOXYGEN_OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html)
   add_custom_command(
-	 OUTPUT  ${DOXYGEN_OUTPUT}
-	 COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
-	 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	 DEPENDS ${DOXYGEN_INPUT}
-	 )
+    OUTPUT  ${DOXYGEN_OUTPUT}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS ${DOXYGEN_INPUT}
+    )
   add_custom_target(doc ALL DEPENDS ${DOXYGEN_OUTPUT})
 endif(DOXYGEN_FOUND)
+        
+add_subdirectory(schemas)
+add_subdirectory(libcbf)
+add_subdirectory(apps)
+add_subdirectory(tests)
+add_subdirectory(doc)
 
 # --- pkgconfig file ---
 configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc 
         DESTINATION lib/pkgconfig
-		  RENAME ${CBF_PKGCFG_FILE}
-		  )
+        RENAME ${CBF_PKGCFG_FILE}
+        )
 
 # --- cmake config file ---
 configure_file(CBFConfig.cmake.in ${CMAKE_BINARY_DIR}/CBFConfig.cmake @ONLY)
@@ -260,12 +266,6 @@ install(FILES ${CMAKE_BINARY_DIR}/CBFConfig.cmake
 configure_file(CBFConfigVersion.cmake.in ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake 
         DESTINATION share/${CBF_PATH_PREFIX})
-        
-add_subdirectory(schemas)
-add_subdirectory(libcbf)
-add_subdirectory(apps)
-add_subdirectory(tests)
-add_subdirectory(doc)
 
 set(CBF_EXPORTS ${CBF_LIBRARY_NAME})
 if(CBF_HAVE_XSD)
@@ -285,4 +285,3 @@ set(CPACK_PACKAGE_VENDOR "CoR-Lab Bielefeld University")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING.txt")
 
 include(ProvideFlexibleCPack)
-
