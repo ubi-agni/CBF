@@ -49,7 +49,7 @@ if(CBF_HAVE_MEMORY AND CBF_HAVE_XCF AND CBF_HAVE_XMLTIO AND CBF_HAVE_XSD)
 		cbf_test_xcf_memory_resource_adder)
 	 message(STATUS "  adding executable: ${exe}")
 	 add_executable(${exe} ${exe}.cc)
-	 target_link_libraries(${exe} ${CBF_LIBRARY_NAME})
+	 target_link_libraries(${exe} ${CBF_LIBRARY_NAME} -lIceUtil)
 	 add_dependencies(${exe} ${CBF_LIBRARY_NAME})
   endforeach(exe)
 else()
@@ -63,7 +63,7 @@ if(CBF_HAVE_XCF AND CBF_HAVE_XSD AND CBF_HAVE_QT)
   message(STATUS "  adding executable: ${exe}")
   QT_WRAP_CPP(MOC_${exe} ${exe}.h)
   add_executable(${exe} ${exe}.cc ${MOC_${exe}})
-  target_link_libraries(${exe} ${CBF_LIBRARY_NAME} ${QT_LIBRARIES})
+  target_link_libraries(${exe} ${CBF_LIBRARY_NAME} ${QT_LIBRARIES} -lIceUtil)
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})
 else()
     message(STATUS "  not adding executable: ${exe}")
@@ -80,6 +80,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY AND CBF_H
 	 ${QT_LIBRARIES} 
 	 ${Boost_PROGRAM_OPTIONS_LIBRARIES}
     ${QT_LIBRARIES}
+	 -lIceUtil
 	 )
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})
 else()
