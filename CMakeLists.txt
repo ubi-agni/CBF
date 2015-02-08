@@ -70,6 +70,18 @@ include_directories("${PROJECT_BINARY_DIR}/libcbf/")
 message(STATUS "Looking for python libs")
 find_package(PythonInterp)
 find_package(PythonLibs ${PYTHON_VERSION_STRING})
+# check whether we can compile python
+if(PYTHONLIBS_FOUND)
+  include(CheckCSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES ${PYTHON_LIBRARIES})
+  set(CMAKE_REQUIRED_FLAGS ${CMAKE_C_CFLAGS})
+  set(CMAKE_REQUIRED_INCLUDES ${PYTHON_INCLUDE_DIRS})
+  check_c_source_compiles("
+#include <Python.h>
+main() {Py_Initialize();}
+" PYTHON_COMPILES)
+  set(PYTHONLIBS_FOUND ${PYTHON_COMPILES})
+endif()
 
 # Boost libs
 set(Boost_USE_STATIC_LIBS OFF)
