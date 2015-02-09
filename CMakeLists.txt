@@ -178,6 +178,18 @@ endif(CBF_HAVE_KDL)
 message(STATUS "Looking for Qt5 or Qt4")
 find_package(Qt54 COMPONENTS Core Gui)
 if(QT_FOUND)
+  # check whether we can compile+link against Qt
+  include(CheckCXXSourceCompiles)
+  set(CMAKE_REQUIRED_LIBRARIES ${QT_LIBRARIES})
+  set(CMAKE_REQUIRED_FLAGS ${CMAKE_CXX_CFLAGS})
+  set(CMAKE_REQUIRED_INCLUDES ${QT_INCLUDES})
+  check_cxx_source_compiles("
+#include <QApplication>
+main(int argc, char **argv) {QApplication app(argc, argv); return app.exec();}
+" QT_COMPILES)
+  set(QT_FOUND ${QT_COMPILES})
+endif()
+if(QT_FOUND)
   set(CBF_HAVE_QT 1)
 endif(QT_FOUND)
 
