@@ -39,6 +39,8 @@ set(CBF_SOURCES
   convergence_criterion.cc
   generic_transform.cc
   object_list.cc
+  kdl_chain_direction_sensor_transform.cc
+  line_potential.cc
   )
 
 set(CBF_HEADERS
@@ -102,6 +104,8 @@ set(CBF_HEADERS
   cbf/xml_factory.h
   cbf/xml_object_factory.h
   cbf/xsd_error_handler.h
+  cbf/kdl_chain_direction_sensor_transform.h
+  cbf/line_potential.h
   )
 
 if(CBF_HAVE_PYTHON)
