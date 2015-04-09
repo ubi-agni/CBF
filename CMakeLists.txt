@@ -251,6 +251,13 @@ configure_file(
   "${PROJECT_BINARY_DIR}/libcbf/cbf/config.h"
   )
 
+add_subdirectory(schemas)
+add_subdirectory(libcbf)
+add_subdirectory(apps)
+add_subdirectory(tests)
+add_subdirectory(doc)
+
+# --- doxygen: process after schemas subdir, because DOXYGEN_XSD_INPUTS is set there ---
 message(STATUS "Looking for doxygen")
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
@@ -258,23 +265,18 @@ if(DOXYGEN_FOUND)
     "${PROJECT_SOURCE_DIR}/Doxyfile.in"
     "${PROJECT_BINARY_DIR}/Doxyfile"
     )
-  
+
   set(DOXYGEN_INPUT  ${PROJECT_BINARY_DIR}/Doxyfile)
   set(DOXYGEN_OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html)
+  file(GLOB_RECURSE DOXYGEN_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS libcbf/*.[hc]* doc/* apps/*)
   add_custom_command(
     OUTPUT  ${DOXYGEN_OUTPUT}
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DEPENDS ${DOXYGEN_INPUT}
+    DEPENDS ${DOXYGEN_DEPENDS} ${DOXYGEN_INPUT}
     )
   add_custom_target(doc ALL DEPENDS ${DOXYGEN_OUTPUT})
 endif(DOXYGEN_FOUND)
-        
-add_subdirectory(schemas)
-add_subdirectory(libcbf)
-add_subdirectory(apps)
-add_subdirectory(tests)
-add_subdirectory(doc)
 
 # --- pkgconfig file ---
 configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)

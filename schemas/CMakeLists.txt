@@ -35,6 +35,10 @@ if(CBF_HAVE_XSD)
 	 ARCHIVE DESTINATION lib/static
 	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
 	 )
+
+  set(DOXYGEN_XSD_INPUTS 
+		"${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.hxx ${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.hxx"
+		PARENT_SCOPE)
 else()
   message(STATUS "  schemas.hxx and schemas.cxx will not be created, because XSD was not found")
 endif()

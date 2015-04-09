@@ -745,10 +745,10 @@ WARN_LOGFILE           =
 
 INPUT                  = ${PROJECT_SOURCE_DIR}/libcbf/ \
                          ${PROJECT_SOURCE_DIR}/tests/ \
-                         ${PROJECT_SOURCE_DIR}/doc/examples/cpp/ \
-                         ${PROJECT_SOURCE_DIR}/doc/examples/c/ \
+                         ${PROJECT_SOURCE_DIR}/doc/ \
                          ${PROJECT_SOURCE_DIR}/apps/ \
-                         ${PROJECT_SOURCE_DIR}/schemas/ \
+                         ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd \
+                         @DOXYGEN_XSD_INPUTS@ \
                          ${PROJECT_SOURCE_DIR}/doc/examples/xml/
 
 # This tag can be used to specify the character encoding of the source files
