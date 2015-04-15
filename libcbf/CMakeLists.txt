@@ -69,7 +69,6 @@ set(CBF_HEADERS
   cbf/identity_transform.h
   cbf/kdl_transforms.h
   cbf/linear_transform.h
-  cbf/mainpage.h
   cbf/masking_resource.h
   cbf/memory_resource.h
   cbf/namespace.h
