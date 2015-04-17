@@ -33,14 +33,15 @@ namespace CBF {
 	/**
 		@brief A resource that does nothing but hold the current value
 	*/
-	struct DummyResource : public Resource {
+  struct DummyResource : public Resource {
 		DummyResource(const CBFSchema::DummyResource &xml_instance, ObjectNamespacePtr object_namespace);
 
-		FloatVector m_Variables;
+    DummyResource(const FloatVector &values)
+    {
+      m_ResourceValue = FloatVector(values.size());
+      m_ResourceValueStep = FloatVector(values.size());
 
-		DummyResource(const FloatVector &values) :
-			m_Variables(values) {
-
+      m_ResourceValue = values;
 		}
 
 		/**
@@ -51,12 +52,14 @@ namespace CBF {
 			TODO: implement variance. Right now a fixed range of [-1:1] is 
 			used when variance != 0
 		*/
-		DummyResource(unsigned int variables = 1, Float variance = 0) :
-			m_Variables(variables)
-		{
+    DummyResource(unsigned int variables = 1, Float variance = 0)
+    {
+      m_ResourceValue = FloatVector(variables);
+      m_ResourceValueStep = FloatVector(variables);
+
 			if (variance != 0) {
 				for (unsigned int i = 0; i < variables; ++i)
-					m_Variables[i] = 2 * M_PI * ((Float)rand()-(RAND_MAX/2.0))/(Float)RAND_MAX;
+          m_ResourceValue[i] = 2 * M_PI * ((Float)rand()-(RAND_MAX/2.0))/(Float)RAND_MAX;
 			}
 		}
 	
@@ -64,18 +67,14 @@ namespace CBF {
 		~DummyResource() {
 		}
 	
-		virtual const FloatVector &get() {
-			return m_Variables;
+    const FloatVector &get() {
+      return m_ResourceValue;
 		}
-	
-		virtual void set(const FloatVector &arg) {
-			m_Variables = arg;
-		}
-	
+
 		virtual void add(const FloatVector &arg);
 	
-		virtual unsigned int dim() {
-			return m_Variables.size();
+    unsigned int dim() {
+      return m_ResourceValue.size();
 		}
 	};
 	

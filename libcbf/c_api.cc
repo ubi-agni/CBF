@@ -181,9 +181,11 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
 		}
 
 		//! Copy data over into the resource (assuming it's a dummy resource)..
-		std::copy(in, in+res->dim(), res -> m_Variables.data());
+    CBF::FloatVector lin;
+    std::copy(in, in+res->dim(), lin.data());
+    res->set(lin);
 
-		CBF_DEBUG(res->m_Variables);
+    CBF_DEBUG(res->get());
 
 		//! A place to store the result...
 		CBF::FloatVector result;

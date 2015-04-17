@@ -61,13 +61,41 @@ namespace CBF {
 	
 		}
 	
+    /**
+      This function needs to be called once per cycle.
+      This function set the current resource value and computs resource step (velocity) as well.
+      It needs to be implemented by subclasses.
+    */
+    void update(const FloatVector &arg) {
+      update();
+
+      m_ResourceValueStep = (arg - m_ResourceValue);
+      m_ResourceValue = arg;
+    }
+
+    void update(const FloatVector &pos, const FloatVector &step) {
+      update();
+
+      m_ResourceValue = pos;
+      m_ResourceValueStep = step;
+    }
+
+    void set(const FloatVector &pos) {
+      m_ResourceValue = pos;
+    }
+
+    const FloatVector &get_resource_step() {
+      return m_ResourceValueStep;
+    }
+
+
 		/**
 			This function returns the numeric representation of the resource.
 			It needs to be implemented by subclasses.. See e.g. the PA10JointResource
 			for an example.
 		*/
 		virtual const FloatVector &get() = 0;
-	
+
 		/**
 			This function sets the resource from the numerical representation
 			as vector (think joint angles of a robot, etc..).. It needs
@@ -81,7 +109,16 @@ namespace CBF {
 			The resource's representation is a vector from R^n. This function
 			returns the n.
 		*/
-		virtual unsigned int dim() = 0;
+    virtual unsigned int dim() = 0;
+
+    protected:
+
+      /**
+        The resource values
+      */
+      FloatVector m_ResourceValue;
+      FloatVector m_ResourceValueStep;
+
 	};
 
 	typedef boost::shared_ptr<Resource> ResourcePtr;

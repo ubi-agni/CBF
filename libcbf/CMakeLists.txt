@@ -177,6 +177,11 @@ if(CBF_HAVE_XSD)
   set(CBF_LIBS ${CBF_LIBS} ${CBF_LIBRARY_NAME}_schemas)
 endif()
 
+if(CBF_HAVE_CDDYN)
+  set(CBF_LIBS ${CBF_LIBS} ${cd_dynamics_LIBRARIES})
+  set(CBF_INCLUDES ${cd_dynamics_INCLUDE_DIRS} ${CBF_INCLUDES})
+endif()
+
 #=============================================================================#
 #                            Handling CBF- Sources                            #
 #=============================================================================#
