@@ -31,6 +31,7 @@
 #include <cbf/controller.h>
 #include <cbf/convergence_criterion.h>
 #include <cbf/potential.h>
+#include <cbf/task_space_planner.h>
 #include <cbf/resource.h>
 #include <cbf/effector_transform.h>
 #include <cbf/reference.h>
@@ -67,6 +68,7 @@ namespace CBF {
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
 			PotentialPtr potential,
+      TaskSpacePlannerPtr planner,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
 			std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -96,6 +98,7 @@ namespace CBF {
 				std::vector<ConvergenceCriterionPtr> convergence_criteria,
 				ReferencePtr reference,
 				PotentialPtr potential,
+        TaskSpacePlannerPtr planner,
 				SensorTransformPtr sensor_transform,
 				EffectorTransformPtr effector_transform,
 				std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -132,6 +135,11 @@ namespace CBF {
 				The potential is the "heart" of the controller. 
 			*/
 			PotentialPtr m_Potential;
+
+      /**
+        Task space trajectory planner
+      */
+      TaskSpacePlannerPtr m_TaskSpacePlanner;
 	
 			/**
 				The effector transform is responsible for mapping the 
@@ -169,7 +177,10 @@ namespace CBF {
 			PotentialPtr potential() 
 				{ return m_Potential; }
 	
-			EffectorTransformPtr effector_transform() 
+      TaskSpacePlannerPtr planner()
+        { return m_TaskSpacePlanner; }
+
+      EffectorTransformPtr effector_transform()
 				{ return m_EffectorTransform; }
 	
 			CombinationStrategyPtr combination_strategy() 
@@ -247,6 +258,7 @@ namespace CBF {
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
 			PotentialPtr potential,
+      TaskSpacePlannerPtr planner,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
 			std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -254,6 +266,13 @@ namespace CBF {
 			ResourcePtr resource
 		);
 	
+    /**
+      The reset() function reset the controller so as to generate the velocity continous task-space trajectory
+      Before call the function, the user must make sure that the resource value and resource velocity values are set properly
+    */
+    void reset(void);
+
+    void reset(const FloatVector resource_value, const FloatVector resource_step);
 	
 		protected:
 			/*** @brief Function for stuff common to all constructors */

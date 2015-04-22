@@ -40,6 +40,7 @@ namespace CBF {
 		}
 
 
+<<<<<<< HEAD
 		void AxisAnglePotential::gradient (
 			FloatVector &result,
 			const std::vector<FloatVector > &references,
@@ -50,6 +51,26 @@ namespace CBF {
 			Quaternion in; in.from_axis_angle3(input);
 			Quaternion ref; ref.from_axis_angle3(references[0]);
 			if (in.dot(ref) < 0) ref *= -1.;
+=======
+    void AxisAnglePotential::gradient (
+      FloatVector &result,
+      const std::vector<FloatVector > &references,
+      const FloatVector &input)
+    {
+
+			CBF_DEBUG("[AxisAnglePotential]: input: " << input);
+			CBF_DEBUG("[AxisAnglePotential]: ref: " << references[0]);
+			Quaternion in;
+			in.from_axis_angle3(input);
+			CBF_DEBUG("q_in: " << in);
+
+			Quaternion ref;
+			ref.from_axis_angle3(references[0]);
+			CBF_DEBUG("q_ref: " << ref);
+
+      Quaternion step = qslerp(in, ref, 1.0);
+			CBF_DEBUG("step: " << step);
+>>>>>>> 8315659... added task_space_planner
 
 			Quaternion step = ref * in.conjugate();
 			CBF_DEBUG("q_step: " << step);
@@ -59,21 +80,32 @@ namespace CBF {
 			result *= m_Coefficient;
 			Float result_norm = result.norm();
 
+<<<<<<< HEAD
 			// Normalize gradient step so it's not bigger than m_MaxGradientStep
 			if (result_norm >= m_MaxGradientStepNorm)
 				result *= m_MaxGradientStepNorm/result_norm;
+=======
+//			if(norm(result) > m_MaxGradientStepNorm)
+//				result *= m_MaxGradientStepNorm/norm(result);
+>>>>>>> 8315659... added task_space_planner
 
 			CBF_DEBUG("result: " << result.transpose());
 		}
 
-
+    void AxisAnglePotential::integration (
+        FloatVector &nextpos,
+        const FloatVector &currentpos,
+        const FloatVector &currentvel,
+        const Float timestep)
+    {
+      nextpos = currentpos+ 0.5*currentvel*timestep;
+    }
 
 	#ifdef CBF_HAVE_XSD
 		AxisAnglePotential::AxisAnglePotential(const CBFSchema::AxisAnglePotential &xml_instance, ObjectNamespacePtr object_namespace) :
 			Potential(xml_instance, object_namespace) {
 			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!");
 			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient());
-			m_Coefficient = xml_instance.Coefficient();
 		}
 
 		static XMLDerivedFactory<AxisAnglePotential, CBFSchema::AxisAnglePotential> x;

@@ -1,4 +1,24 @@
 /*
+    This file is part of CBF.
+
+    CBF is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 2 of the License, or
+    (at your option) any later version.
+
+    CBF is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CBF.  If not, see <http://www.gnu.org/licenses/>.
+
+
+    Copyright 2009, 2010 Florian Paul Schmidt
+*/
+
+/*
  * line_potential.h
  *
  * It controls the position of the end-effector to be on a line that is consisted
@@ -23,27 +43,17 @@
 namespace CBF {
 
 struct LinePotential : public Potential {
-  LinePotential(const LinePotential &xml_instance, ObjectNamespacePtr object_namespace);
-
-  Float m_Coefficient;
-
-  unsigned int m_Dim;
   FloatVector m_LineDirection;
 
-  LinePotential(unsigned int dim = 3, Float coefficient = 1.0) :
-    m_Coefficient(coefficient),
-    m_Dim(dim)
-  {
-    m_LineDirection = FloatVector(3);
-    m_LineDirection(1) = 1.0;
-  }
+  LinePotential(const LinePotential &xml_instance, ObjectNamespacePtr object_namespace);
+  LinePotential();
 
   virtual Float norm(const FloatVector &v);
   virtual Float distance(const FloatVector &v1, const FloatVector &v2);
 
-  virtual unsigned int dim() const {
-    return m_Dim;
-  }
+  virtual unsigned int dim() const { return 3u;}
+
+  virtual unsigned int dim_grad() const { return 3u; }
 
   virtual void gradient (
     FloatVector &result,
@@ -51,7 +61,15 @@ struct LinePotential : public Potential {
     const FloatVector &input
   );
 
+  virtual void integration (
+      FloatVector &nextpos,
+      const FloatVector &currentpos,
+      const FloatVector &currentvel,
+      const Float timestep
+  );
+
   void setLineDirection(const FloatVector &v);
+  void setInputVelocity(const FloatVector &Velocity);
 };
 
 typedef boost::shared_ptr<LinePotential> LinePotentialPtr;

@@ -55,9 +55,11 @@ struct Potential : public Object {
 		Object("Potential"),
 		m_MaxGradientStepNorm(max_gradient_step_norm)
 	{
+
 	}
 
 	virtual ~Potential() {
+
 	}
 
 	virtual void set_max_gradient_step_norm(Float gradient_norm) {
@@ -90,7 +92,25 @@ struct Potential : public Object {
 		const FloatVector &input
 	) = 0;
 
+	/**
+		The integration function
+	*/
+	virtual void integration (
+		FloatVector &nextpos,
+		const FloatVector &currentpos,
+		const FloatVector &currentgradient,
+		const Float timestep
+	) = 0;
+
+	/**
+		Dimension
+	*/
 	virtual unsigned int dim() const = 0;
+
+	/**
+		Dimension in gradient level
+	*/
+	virtual unsigned int dim_grad() const = 0;
 };
 
 typedef boost::shared_ptr<Potential> PotentialPtr;

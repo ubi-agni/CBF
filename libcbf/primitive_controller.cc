@@ -33,22 +33,22 @@
 
 
 namespace CBF {
-	SubordinateController::SubordinateController(
-		Float alpha,
+	SubordinateController::SubordinateController(Float alpha,
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
+		TaskSpacePlannerPtr planner,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
-		CombinationStrategyPtr combination_strategy
-	)
+		CombinationStrategyPtr combination_strategy )
 	{
 		init(
 			alpha,
 			convergence_criteria,
 			reference,
 			potential,
+			planner,
 			sensor_transform,
 			effector_transform,
 			subordinate_controllers,
@@ -63,6 +63,7 @@ namespace CBF {
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
+		TaskSpacePlannerPtr planner,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -73,6 +74,7 @@ namespace CBF {
 		m_ConvergenceCriteria = convergence_criteria;
 		m_Reference = reference;
 		m_Potential = potential;
+		m_TaskSpacePlanner = planner,
 		m_SensorTransform = sensor_transform;
 		m_EffectorTransform = effector_transform;
 		m_SubordinateControllers = subordinate_controllers;
@@ -85,21 +87,35 @@ namespace CBF {
 		}
 	}
 
+	void PrimitiveController::reset(void)
+	{
+		m_SensorTransform->update(m_Resource->get());
 
+		m_TaskSpacePlanner->reset(m_SensorTransform->result(),
+		                          m_SensorTransform->task_jacobian()*m_Resource->get_resource_step());
+
+	}
+
+	void PrimitiveController::reset(const FloatVector resource_value, const FloatVector resource_step)
+	{
+		m_Resource->update(resource_value, resource_step);
+		reset();
+	}
 
 	void PrimitiveController::init(
 			ResourcePtr resource
 	) {
 		m_Resource = resource;
 
+		reset();
 		check_dimensions();
 	}
 
-	PrimitiveController::PrimitiveController(
-		Float alpha,
+	PrimitiveController::PrimitiveController(Float alpha,
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
+		TaskSpacePlannerPtr planner,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -111,6 +127,7 @@ namespace CBF {
 			convergence_criteria,
 			reference,
 			potential,
+			planner,
 			sensor_transform,
 			effector_transform,
 			subordinate_controllers,
@@ -123,7 +140,7 @@ namespace CBF {
 	}
 	
 
-	void SubordinateController::check_dimensions() const {
+	void SubordinateController::check_dimensions() {
 		if (m_Reference->dim() != m_Potential->dim())
 			CBF_THROW_RUNTIME_ERROR(m_Name << ": Reference and Potential dimensions mismatch: " << m_Reference->dim() << " is not equal to " << m_Potential->dim());
 
@@ -135,11 +152,6 @@ namespace CBF {
 
 		if (m_SensorTransform->task_dim() != m_EffectorTransform->task_dim())
 			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Effector transform task dimension mismatch: " << m_SensorTransform->task_dim() << " is not equal to " << m_EffectorTransform->task_dim());
-
-		for(std::vector<SubordinateControllerPtr>::const_iterator it = m_SubordinateControllers.begin(),
-		    end = m_SubordinateControllers.end(); it != end; ++it) {
-			(*it)->check_dimensions();
-		}
 	}	
 
 	ResourcePtr SubordinateController::resource() { 
@@ -157,6 +169,7 @@ namespace CBF {
 		assert(m_SensorTransform.get() != 0);
 		assert(m_EffectorTransform.get() != 0);
 		assert(m_Potential.get() != 0);
+		assert(m_TaskSpacePlanner.get() != 0);
 		assert(m_CombinationStrategy.get() != 0);
 
 		assert(m_Reference->dim() == m_Potential->dim());
@@ -178,9 +191,12 @@ namespace CBF {
 		if (m_References.size() != 0) {	
 			CBF_DEBUG("have reference!");
 			//! then we do the gradient step
-			m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition);
-			CBF_DEBUG("gradientStep: " << m_GradientStep.transpose());
- 
+		//m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition, 1.0);
+
+		m_TaskSpacePlanner->update(m_References);
+		m_TaskSpacePlanner->get_task_step(m_GradientStep, m_CurrentTaskPosition);
+			CBF_DEBUG("gradientStep: " << m_GradientStep);
+
 			//! Map gradient step into resource step via exec:
 			CBF_DEBUG("calling m_EffectorTransform->exec(): Type is: " << CBF_UNMANGLE(*m_EffectorTransform.get()));
 			m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
@@ -192,16 +208,17 @@ namespace CBF {
 
 		//! then we recursively call subordinate controllers.. and gather their
 		//! effector transformed gradient steps.
-		m_SubordinateResourceSteps.resize(m_SubordinateControllers.size());
+		m_SubordinateGradientSteps.resize(m_SubordinateControllers.size());
 	
 		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) {
 			m_SubordinateControllers[i]->update();
-			m_SubordinateResourceSteps[i] = m_SubordinateControllers[i]->result();
+			m_SubordinateGradientSteps[i] = m_SubordinateControllers[i]->result();
+			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i]);
 		}
 	
 		m_CombinedResults = FloatVector::Zero(resource()->dim());
 	
-		m_CombinationStrategy->exec(m_CombinedResults, m_SubordinateResourceSteps);
+		m_CombinationStrategy->exec(m_CombinedResults, m_SubordinateGradientSteps);
 	
 		//! finally the results of all subordinate controllers are projected
 		//! into our nullspace.For this we need the task jacobian and its inverse. 
@@ -211,18 +228,13 @@ namespace CBF {
 	
 		//! The projector is (1 - J# J), so this is result = result - (J# J result)
 		//! which can be expressed as result -= ...
-		m_CombinedResults -= m_InvJacobianTimesJacobian * m_CombinedResults;
-		CBF_DEBUG("resourceStep(NS): " << m_CombinedResults.transpose());
+		m_CombinedResults -= m_InvJacobianTimesJacobian
+			* m_CombinedResults;
+		CBF_DEBUG("combined_results * beta: " << m_CombinedResults);
 	
 		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
 	}
 	
-	bool PrimitiveController::step() {
-		update();
-		action();
-		return finished();
-	}
-
 	void PrimitiveController::action() {
 		m_Resource->add(m_Result);
 		m_Converged = check_convergence();
@@ -242,6 +254,7 @@ namespace CBF {
 	}
 	
 	bool SubordinateController::finished() {
+		// check whether we have approached one of the references to within a small error
 		return m_Converged;
 	}
 	bool SubordinateController::stalled() {
@@ -294,6 +307,12 @@ namespace CBF {
 			PotentialPtr potential = 
 				XMLObjectFactory::instance()->create<Potential>(xml_instance.Potential(), object_namespace);
 
+      //! Instantiate the taskspace planner
+      CBF_DEBUG("Creating task space planner...");
+      TaskSpacePlannerPtr planner;
+      //TaskSpacePlannerPtr planner =
+      //  XMLObjectFactory::instance()->create<TaskSpacePlanner>(xml_instance.TaskSpacePlanner(), object_namespace);
+
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating sensor transform...");
 			SensorTransformPtr sensor_transform = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.SensorTransform(), object_namespace);
@@ -330,6 +349,7 @@ namespace CBF {
 				convergence_criteria,
 				reference,
 				potential,
+        planner,
 				sensor_transform,
 				effector_transform,
 				subordinate_controllers,

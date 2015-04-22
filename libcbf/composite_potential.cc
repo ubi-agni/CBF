@@ -25,10 +25,11 @@
 namespace CBF {
 
 	void CompositePotential::gradient (
-		FloatVector &result, 
-		const std::vector<FloatVector > &references, 
-		const FloatVector &input
-	) {
+		FloatVector &result,
+		const std::vector<FloatVector > &references,
+		const FloatVector &input)
+	{
+
 		result = FloatVector::Zero(input.size());
 
 		unsigned int current_index = 0;
@@ -39,14 +40,38 @@ namespace CBF {
 			std::vector<FloatVector > tmp_refs;
 			tmp_refs.push_back(m_ref_buffers[i]);
 
-			m_Potentials[i]->gradient(m_out_buffers[i], tmp_refs, m_in_buffers[i]);
-			result.segment(current_index, m_out_buffers[i].size())
-					= m_out_buffers[i];
+			m_Potentials[i]->gradient(m_grad_buffers[i], tmp_refs, m_in_buffers[i]);
+			result.segment(current_index, m_grad_buffers[i].size())
+				= m_grad_buffers[i];
 
 			current_index += m_Potentials[i]->dim();
 		}
 		CBF_DEBUG("result " << result.transpose());
 	}
+
+	void CompositePotential::integration (
+		FloatVector &nextpos,
+		const FloatVector &currentpos,
+		const FloatVector &currentvel,
+		const Float timestep)
+	{
+		unsigned int pos_index = 0;
+		unsigned int grad_index = 0;
+
+		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
+
+		m_Potentials[i]->integration(m_pos_buffers[i],
+		                             currentpos.segment(pos_index , m_Potentials[i]->dim()),
+		                             currentvel.segment(grad_index, m_Potentials[i]->dim_grad()),
+		                             timestep);
+
+		nextpos.segment(pos_index , m_Potentials[i]->dim()) = m_pos_buffers[i];
+
+		pos_index  += m_Potentials[i]->dim();
+		grad_index += m_Potentials[i]->dim_grad();
+	}
+
+  }
 
 #ifdef CBF_HAVE_XSD
 	CompositePotential::CompositePotential(const CBFSchema::CompositePotential &xml_instance, ObjectNamespacePtr object_namespace) :

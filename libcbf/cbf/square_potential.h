@@ -41,13 +41,13 @@ namespace CBF {
 struct SquarePotential : public Potential {
 	SquarePotential(const CBFSchema::SquarePotential &xml_instance, ObjectNamespacePtr object_namespace);
 
-	Float m_Coefficient;
-
 	unsigned int m_Dim;
 
-	SquarePotential(unsigned int dim = 1, Float coefficient = 1.) :
-		m_Coefficient(coefficient),
-		m_Dim(dim)
+	unsigned int m_Dim_Gradient;
+
+	SquarePotential(unsigned int dim = 1, unsigned int dim_grad = 1) :
+		m_Dim(dim),
+		m_Dim_Gradient(dim_grad)
 	{
 	}
 
@@ -59,15 +59,23 @@ struct SquarePotential : public Potential {
 		return (norm(v1 - v2));
 	}
 
-	virtual unsigned int dim() const {
-		return m_Dim;
-	}
+	virtual unsigned int dim() const { return m_Dim; }
+
+	virtual unsigned int dim_grad() const { return m_Dim_Gradient; }
 
 	virtual void gradient (
 		FloatVector &result,
 		const std::vector<FloatVector > &references,
 		const FloatVector &input
 	);
+
+	virtual void integration (
+		FloatVector &nextpos,
+		const FloatVector &currentpos,
+		const FloatVector &currentvel,
+		const Float timestep
+	);
+
 };
 
 typedef boost::shared_ptr<SquarePotential> SquarePotentialPtr;

@@ -78,21 +78,25 @@ namespace CBF {
 	
 	Helper PythonInterpreter::m_Helper = Helper();
 	
-	PythonPotential::PythonPotential(unsigned int dim) :
-		m_Interpreter(PythonInterpreter()),
-		m_Dim(dim)
-	{
-	}
+  PythonPotential::PythonPotential(unsigned int dim, unsigned int dim_grad) :
+    m_Interpreter(PythonInterpreter()),
+    m_Dim(dim),
+    m_Dim_Gradient(dim_grad)
+  {
+
+  }
 	
 	unsigned int PythonPotential::dim() const {
 		return m_Dim;
 	}
 	
-	void PythonPotential::gradient (
-		FloatVector &result, 
-		const std::vector<FloatVector > &references, 
-		const FloatVector &input
-	) {
+  unsigned int PythonPotential::dim_grad() const {
+    return m_Dim_Gradient;
+  }
+
+  void PythonPotential::gradient (FloatVector &result,
+    const std::vector<FloatVector > &references,
+    const FloatVector &input) {
 		try {
 	
 			//! Get access to main context...
@@ -147,6 +151,15 @@ namespace CBF {
 		}
 	}
 	
+  void PythonPotential::integration (
+      FloatVector &nextpos,
+      const FloatVector &currentpos,
+      const FloatVector &currentvel,
+      const Float timestep)
+  {
+
+  }
+
 	PythonSensorTransform::PythonSensorTransform(
 		unsigned int task_dim,
 		unsigned int resource_dim

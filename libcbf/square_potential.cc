@@ -27,8 +27,7 @@ namespace CBF {
 	void SquarePotential::gradient (
 		FloatVector &result,
 		const std::vector<FloatVector > &references,
-		const FloatVector &input
-	) {
+		const FloatVector &input) {
 		// First we find the closest reference vector
 		Float min_dist = std::numeric_limits<Float>::max();
 		unsigned int min_index = 0;
@@ -50,6 +49,14 @@ namespace CBF {
 			result *= m_MaxGradientStepNorm/result_norm;
 	}
 
+  void SquarePotential::integration (
+      FloatVector &nextpos,
+      const FloatVector &currentpos,
+      const FloatVector &currentvel,
+      const Float timestep)
+  {
+    nextpos = currentpos + 0.5*currentvel*timestep;
+  }
 
 
 #ifdef CBF_HAVE_XSD

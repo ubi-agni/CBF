@@ -30,6 +30,7 @@
 #endif
 
 #include <cbf/cbf.h>
+#include <cbf/pid_task_space_planner.h>
 #include <kdl/chain.hpp>
 #include <boost/assign/list_of.hpp>
 #include <iostream>
@@ -69,8 +70,8 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
 
 	//! potential composed from square (for position) + axis angle
 	std::vector<CBF::PotentialPtr> potentials = boost::assign::list_of
-		(CBF::PotentialPtr(new CBF::SquarePotential(3,0.01)))
-		(CBF::PotentialPtr(new CBF::AxisAnglePotential(0.1)));
+    (CBF::PotentialPtr(new CBF::SquarePotential(3)))
+    (CBF::PotentialPtr(new CBF::AxisAnglePotential()));
 	CBF::PotentialPtr potential (new CBF::CompositePotential(potentials));
 
 	unsigned int nJoints = chain->getNrOfJoints();
@@ -79,6 +80,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
 			std::vector<CBF::ConvergenceCriterionPtr>(),
 			reference,
 			potential,
+      CBF::PIDTaskSpacePlannerPtr(new CBF::PIDTaskSpacePlanner(1./100., potential)),
 			sensorTrafo,
 			CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(6, nJoints)),
 			std::vector<CBF::SubordinateControllerPtr>(),

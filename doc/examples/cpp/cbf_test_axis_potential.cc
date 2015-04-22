@@ -20,6 +20,7 @@
 
 #include <cbf/primitive_controller.h>
 #include <cbf/axis_potential.h>
+#include <cbf/pid_task_space_planner.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
 #include <cbf/difference_sensor_transform.h>
@@ -89,8 +90,8 @@ int main() {
 	);
 	// CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(st));
 
-	//! An AxisPotential for R^3
-	CBF::AxisPotentialPtr p(new CBF::AxisPotential(3, 0.01));
+  //! An AxisPotential
+  CBF::AxisPotentialPtr p(new CBF::AxisPotential());
 
 	//! Initialize Reference with a vector that points along
 	//! The X-Direction..
@@ -101,15 +102,18 @@ int main() {
 	std::copy(ref, ref+3, vref.data());
 	dref->set_reference(vref);
 
-	CBF::DummyResourcePtr dres(new CBF::DummyResource(NUM_OF_JOINT_TRIPLES * 3, 1));
+  CBF::DummyResourcePtr dres(new CBF::DummyResource(NUM_OF_JOINT_TRIPLES * 3, 1));
+
+  CBF::PIDTaskSpacePlannerPtr planner(new CBF::PIDTaskSpacePlanner(1./100., p));
 
 	//! Create our primitive controller
 	CBF::PrimitiveControllerPtr pc(
 		new CBF::PrimitiveController(
-			0.1,
+      1.0,
 			std::vector<CBF::ConvergenceCriterionPtr>(),
 			dref,
 			p,
+      planner,
 			st,
 			et,
 			std::vector<CBF::SubordinateControllerPtr>(),
@@ -118,7 +122,7 @@ int main() {
 		)
 	);
 
-	do {
-		pc->step();	
+  do {
+    pc->step();
 	} while(pc->finished() == false);
 }

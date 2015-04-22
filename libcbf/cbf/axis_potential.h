@@ -39,15 +39,12 @@ namespace CBF {
 		@brief A potential that only cares about the direction of an axis
 		and does n-dimensional SLERP to calculate an update step..
 	*/
-	struct AxisPotential : public Potential {
-		AxisPotential(const CBFSchema::AxisPotential &xml_instance, ObjectNamespacePtr object_namespace);
+  struct AxisPotential : public Potential {
+    AxisPotential(const CBFSchema::AxisPotential &xml_instance, ObjectNamespacePtr object_namespace);
 
-		int m_Dimension;
-		Float m_Coefficient;
 
-		AxisPotential(int dimension = 3, Float coefficient = 0.1) :
-			m_Dimension(dimension),
-			m_Coefficient(coefficient) 
+    AxisPotential() :
+      Potential()
 		{
 
 		}
@@ -55,38 +52,47 @@ namespace CBF {
 		virtual void gradient (
 			FloatVector &result, 
 			const std::vector<FloatVector > &references, 
-			const FloatVector &input
-		) {
-			assert(references.size() > 0);
+      const FloatVector &input
+    ) {
+      assert(references.size() > 0);
 
-			//! Find the closest reference
-			Float min_distance = distance(references[0], input);
-			unsigned int min_index = 0;
+      //! Find the closest reference
+      Float min_distance = distance(references[0], input);
+      unsigned int min_index = 0;
 
-			for (unsigned int i = 1; i < references.size(); ++i) {
-				Float cur_distance = distance(references[i], input);
-				if (cur_distance < min_distance) {
-					min_index = i;
-					min_distance = cur_distance;
-				}
-			}
+      for (unsigned int i = 1; i < references.size(); ++i) {
+        Float cur_distance = distance(references[i], input);
+        if (cur_distance < min_distance) {
+          min_index = i;
+          min_distance = cur_distance;
+        }
+      }
 
-			//! Now that we have the reference closest to our input, calculate 
-			//! SLERP step into that direction
+      //! Now that we have the reference closest to our input, calculate
+      //! SLERP step into that direction
 
-			FloatVector ref = (1.0/(references[min_index]).norm())
-				* references[min_index];
+      FloatVector ref = (1.0/(references[min_index]).norm())
+        * references[min_index];
 
-			FloatVector in = (1.0/input.norm())
-				* input;
+      FloatVector in = (1.0/input.norm())
+        * input;
 
-			FloatVector s(m_Dimension);
-			slerp(in, ref, m_Coefficient, s);
+      FloatVector s(dim());
+      slerp(in, ref, 1.0, s);
 
-			result = s - in;
-		}
+      result = s - in;
+    }
 	
-		virtual unsigned int dim() const { return m_Dimension; }
+    virtual void integration (
+        FloatVector &nextpos,
+        const FloatVector &currentpos,
+        const FloatVector &currentvel,
+        const Float timestep
+    );
+
+    virtual unsigned int dim() const { return 3u; }
+
+    virtual unsigned int dim_grad() const { return 3u; }
 
 		/** 
 			@brief This "distance" is the remaining angle between v1 and v2 
@@ -101,7 +107,7 @@ namespace CBF {
 		}
 	};
 
-	typedef boost::shared_ptr<AxisPotential> AxisPotentialPtr;
+  typedef boost::shared_ptr<AxisPotential> AxisPotentialPtr;
 
 } // namespace
 

@@ -42,6 +42,10 @@ namespace CBF {
 	struct AxisAnglePotential : public Potential {
 		AxisAnglePotential(const CBFSchema::AxisAnglePotential &xml_instance, ObjectNamespacePtr object_namespace);
 
+		AxisAnglePotential() : Potential()
+		{
+
+		}
 		//! @brief  This coefficient determines the rate of convergence. Choose between 0 and 1.
 		Float m_Coefficient;
 
@@ -57,7 +61,16 @@ namespace CBF {
 			const FloatVector &input
 		);
 	
+		virtual void integration (
+			FloatVector &nextpos,
+			const FloatVector &currentpos,
+			const FloatVector &currentvel,
+			const Float timestep
+		);
+
 		virtual unsigned int dim() const { return 3u; }
+
+		virtual unsigned int dim_grad() const { return 3u; }
 
 		virtual Float distance(const FloatVector &v1, const FloatVector &v2);
 

@@ -22,13 +22,23 @@
 #include <cbf/xml_object_factory.h>
 
 namespace CBF {
+
+  void AxisPotential::integration (
+      FloatVector &nextpos,
+      const FloatVector &currentpos,
+      const FloatVector &currentvel,
+      const Float timestep)
+  {
+    nextpos = currentpos + 0.5*currentvel*timestep;
+    nextpos = nextpos/nextpos.norm();
+  }
+
 	#ifdef CBF_HAVE_XSD
 
 		AxisPotential::AxisPotential(const CBFSchema::AxisPotential &xml_instance, ObjectNamespacePtr object_namespace) :
 			Potential(xml_instance, object_namespace) {
 			CBF_DEBUG("[AxisAnglePotential(const AxisAnglePotentialType &xml_instance)]: yay!");
-			CBF_DEBUG("Coefficient: " << xml_instance.Coefficient());
-			m_Coefficient = xml_instance.Coefficient();
+
 		}
 
 		static XMLDerivedFactory<

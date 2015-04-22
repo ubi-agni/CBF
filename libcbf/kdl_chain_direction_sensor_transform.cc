@@ -18,8 +18,8 @@ KDLChainDirectionSensorTransform::KDLChainDirectionSensorTransform(boost::shared
 {
   m_TaskDim = 3;
   m_ResourceDim = chain->getNrOfJoints();
-  m_Result = FloatVector(3);
-  m_TaskJacobian = FloatMatrix(3, m_ResourceDim);
+
+  this->resize_variables(m_TaskDim, m_ResourceDim);
 
   mLocalControlDirection(0) = 0.0;
   mLocalControlDirection(1) = 0.0;
@@ -38,7 +38,7 @@ void KDLChainDirectionSensorTransform::update(const FloatVector &resource_value)
   KDL::Vector lVJointAxis;
 
   mCurrentControlDirection = m_Frame->M * mLocalControlDirection;
-  mCurrentControlDirection.Normalize(0.00001);
+  mCurrentControlDirection.Normalize();
 
   if(resource_value.rows()!=m_Chain->getNrOfJoints())
   {
@@ -55,7 +55,7 @@ void KDLChainDirectionSensorTransform::update(const FloatVector &resource_value)
         //lFrameSeg = m_Chain->getSegment(idxSeg).getJoint().pose(resource_value(idxJoint));
         //lVJointAxis = lFrameAll * lFrameSeg * m_Chain->getSegment(idxSeg).getJoint().JointAxis();
         lVJointAxis = lFrameAll.M * m_Chain->getSegment(idxSeg).getJoint().JointAxis();
-        lVJointAxis.Normalize(0.00001);
+        lVJointAxis.Normalize();
 
         lVJointAxis = lVJointAxis*mCurrentControlDirection;
 

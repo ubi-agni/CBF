@@ -20,6 +20,7 @@
 
 #include <cbf/primitive_controller.h>
 #include <cbf/axis_potential.h>
+#include <cbf/pid_task_space_planner.h>
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
 #include <cbf/weighted_sum_transforms.h>
@@ -94,7 +95,7 @@ int main() {
 	CBF::GenericEffectorTransformPtr et(new CBF::GenericEffectorTransform(3, NUM_OF_JOINT_TRIPLES * 3));
 
 	//! An AxisPotential for R^3
-	CBF::AxisPotentialPtr p(new CBF::AxisPotential(3, 0.01));
+  CBF::AxisPotentialPtr p(new CBF::AxisPotential());
 
 	//! Initialize Reference with a vector that points along
 	//! The X-Direction..
@@ -112,7 +113,11 @@ int main() {
 		new CBF::PrimitiveController(
 			1.0, 
 			std::vector<CBF::ConvergenceCriterionPtr>(),
-			dref,	p,	st, et, 
+      dref,
+      p,
+      CBF::PIDTaskSpacePlannerPtr(new CBF::PIDTaskSpacePlanner(1./100., p)),
+      st,
+      et,
 			std::vector<CBF::SubordinateControllerPtr>(),
 			CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
 			dres

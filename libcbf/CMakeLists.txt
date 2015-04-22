@@ -40,7 +40,12 @@ set(CBF_SOURCES
   generic_transform.cc
   object_list.cc
   kdl_chain_direction_sensor_transform.cc
+  quaternion_potential.cc
   line_potential.cc
+  direction_potential.cc
+  task_space_planner.cc
+  pid_task_space_planner.cc
+  cddyn_task_space_planner.cc
   )
 
 set(CBF_HEADERS
@@ -105,7 +110,12 @@ set(CBF_HEADERS
   cbf/xml_object_factory.h
   cbf/xsd_error_handler.h
   cbf/kdl_chain_direction_sensor_transform.h
+  cbf/quaternion_potential.h
   cbf/line_potential.h
+  cbf/direction_potential.h
+  cbf/task_space_planner.h
+  cbf/pid_task_space_planner.h
+  cbf/cddyn_task_space_planner.h
   )
 
 if(CBF_HAVE_PYTHON)

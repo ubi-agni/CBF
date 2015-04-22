@@ -60,14 +60,19 @@ namespace CBF {
 		std::vector<FloatVector > m_in_buffers;
 	
 		//! @brief Buffers which are instance variables for efficiency reasons
-		std::vector<FloatVector > m_out_buffers;
+    std::vector<FloatVector > m_grad_buffers;
 	
 		//! @brief Buffers which are instance variables for efficiency reasons
 		std::vector<FloatVector > m_ref_buffers;
+
+    //! @brief Buffers which are instance variables for efficiency reasons
+    std::vector<FloatVector > m_pos_buffers;
 	
-		unsigned int m_Dim;
-	
-		CompositePotential(std::vector<PotentialPtr> potentials = std::vector<PotentialPtr>()) {
+    unsigned int m_Dim;
+
+    unsigned int m_Dim_Gradient;
+
+    CompositePotential(std::vector<PotentialPtr> potentials = std::vector<PotentialPtr>()) {
 			set_potentials(potentials);
 		}
 	
@@ -86,15 +91,21 @@ namespace CBF {
 		{
 			m_Potentials = potentials;
 			m_in_buffers.resize(potentials.size());
-			m_out_buffers.resize(potentials.size());
+      m_grad_buffers.resize(potentials.size());
 			m_ref_buffers.resize(potentials.size());
+      m_pos_buffers.resize(potentials.size());
+
 			m_Dim = 0;
+      m_Dim_Gradient = 0;
 	
 			for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
 				m_Dim += m_Potentials[i]->dim();
-				m_in_buffers[i] = FloatVector::Zero(m_Potentials[i]->dim());
-				m_out_buffers[i] = FloatVector::Zero(m_Potentials[i]->dim());
-				m_ref_buffers[i] = FloatVector::Zero(m_Potentials[i]->dim());
+        m_Dim_Gradient += m_Potentials[i]->dim_grad();
+
+        m_in_buffers[i]   = FloatVector::Zero(m_Potentials[i]->dim());
+        m_grad_buffers[i] = FloatVector::Zero(m_Potentials[i]->dim_grad());
+        m_ref_buffers[i]  = FloatVector::Zero(m_Potentials[i]->dim());
+        m_pos_buffers[i]  = FloatVector::Zero(m_Potentials[i]->dim());
 			}
 		}
 
@@ -102,11 +113,18 @@ namespace CBF {
 			return m_Potentials;
 		}
 	
-		virtual void gradient (
-			FloatVector &result, 
-			const std::vector<FloatVector > &references, 
-			const FloatVector &input
-		);
+    virtual void gradient (
+      FloatVector &result,
+      const std::vector<FloatVector > &references,
+      const FloatVector &input
+    );
+
+    virtual void integration (
+        FloatVector &nextpos,
+        const FloatVector &currentpos,
+        const FloatVector &currentvel,
+        const Float timestep
+    );
 	
 		/**
 			We don't know how to combine the norms of the different potentials
@@ -136,10 +154,10 @@ namespace CBF {
 		}
 	#endif
 	
-		virtual unsigned int dim() const {
-			return m_Dim;
-		}
+    virtual unsigned int dim() const { return m_Dim; }
 	
+    virtual unsigned int dim_grad() const { return m_Dim_Gradient; }
+
 	};
 	
 	typedef boost::shared_ptr<CompositePotential> CompositePotentialPtr;

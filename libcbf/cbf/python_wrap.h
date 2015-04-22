@@ -88,9 +88,10 @@ namespace CBF {
 		protected:
 			const PythonInterpreter &m_Interpreter;
 			unsigned int m_Dim;
+      unsigned int m_Dim_Gradient;
 	
 		public:
-			PythonPotential(unsigned int dim = 1);
+      PythonPotential(unsigned int dim = 1, unsigned int dim_grad = 1);
 	
 			virtual Float norm(const FloatVector &v) { return 0; }
 
@@ -99,13 +100,18 @@ namespace CBF {
 			/** TODO: implement!! */
 			virtual bool converged() const { return false; }
 
-			virtual void gradient (
-				FloatVector &result, 
-				const std::vector<FloatVector > &references, 
-				const FloatVector &input
-			);
+      virtual void gradient (FloatVector &result,
+        const std::vector<FloatVector > &references,
+        const FloatVector &input);
+
+      virtual void integration (FloatVector &nextpos,
+          const FloatVector &currentpos,
+          const FloatVector &currentvel,
+          const Float timestep);
 		
 			virtual unsigned int dim() const;
+
+      virtual unsigned int dim_grad() const;
 	
 			std::string m_InitScript;
 	
