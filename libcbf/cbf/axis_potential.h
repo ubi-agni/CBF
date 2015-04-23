@@ -77,7 +77,7 @@ namespace CBF {
       FloatVector in = (1.0/input.norm())
         * input;
 
-      FloatVector s(dim());
+      FloatVector s(sensor_dim());
       slerp(in, ref, 1.0, s);
 
       result = s - in;
@@ -90,9 +90,9 @@ namespace CBF {
         const Float timestep
     );
 
-    virtual unsigned int dim() const { return 3u; }
+    virtual unsigned int sensor_dim() const { return 3u; }
 
-    virtual unsigned int dim_grad() const { return 3u; }
+    virtual unsigned int task_dim() const { return 3u; }
 
 		/** 
 			@brief This "distance" is the remaining angle between v1 and v2 

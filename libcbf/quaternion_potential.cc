@@ -59,19 +59,25 @@ namespace CBF {
         const Float timestep)
   {
     Quaternion res;
+    FloatVector res_axis(3);
+
     Float lwnorm = currentvel.norm();
 
     // 0.00000001 : angular velocity threshold
-    if (lwnorm < 0.00000001) {
+    if (lwnorm < 0.000000001) {
       nextpos = currentpos;
     }
     else {
       res.w = cos(lwnorm*timestep/2.0);
+      res_axis =  sin(lwnorm*timestep/2.0)*currentvel/lwnorm;
 
-      //sin(lwnorm*timestep/2.0)*currentvel/lwnorm;
+      res.x = res_axis(0);
+      res.y = res_axis(1);
+      res.z = res_axis(2);
+
+      nextpos = res*Quaternion(currentpos);
     }
 
-    nextpos = res*Quaternion(currentpos);
   }
 
 

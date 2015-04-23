@@ -85,6 +85,9 @@ namespace CBF {
 			  it != end; ++it) {
 			(*it)->m_Master = this;
 		}
+
+		m_GradientStep = FloatVector(m_Potential->task_dim());
+
 	}
 
 	void PrimitiveController::reset(void)
@@ -141,11 +144,11 @@ namespace CBF {
 	
 
 	void SubordinateController::check_dimensions() {
-		if (m_Reference->dim() != m_Potential->dim())
-			CBF_THROW_RUNTIME_ERROR(m_Name << ": Reference and Potential dimensions mismatch: " << m_Reference->dim() << " is not equal to " << m_Potential->dim());
+		if (m_Reference->dim() != m_Potential->sensor_dim())
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Reference and Potential dimensions mismatch: " << m_Reference->dim() << " is not equal to " << m_Potential->sensor_dim());
 
-		if (m_SensorTransform->task_dim() != m_Potential->dim())
-			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Potential dimension mismatch: " << m_SensorTransform->task_dim() << " is not equal to " << m_Potential->dim());
+		if (m_SensorTransform->task_dim() != m_Potential->task_dim())
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Potential dimension mismatch: " << m_SensorTransform->task_dim() << " is not equal to " << m_Potential->task_dim());
 
 		if (m_SensorTransform->resource_dim() != m_EffectorTransform->resource_dim())
 			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Effector transform resource dimension mismatch: " << m_SensorTransform->resource_dim() << " is not equal to " << m_EffectorTransform->resource_dim());
@@ -191,10 +194,10 @@ namespace CBF {
 		if (m_References.size() != 0) {	
 			CBF_DEBUG("have reference!");
 			//! then we do the gradient step
-		//m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition, 1.0);
+			//m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition, 1.0);
 
-		m_TaskSpacePlanner->update(m_References);
-		m_TaskSpacePlanner->get_task_step(m_GradientStep, m_CurrentTaskPosition);
+			m_TaskSpacePlanner->update(m_References);
+			m_TaskSpacePlanner->get_task_step(m_GradientStep, m_CurrentTaskPosition);
 			CBF_DEBUG("gradientStep: " << m_GradientStep);
 
 			//! Map gradient step into resource step via exec:

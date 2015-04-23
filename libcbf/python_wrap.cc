@@ -78,20 +78,20 @@ namespace CBF {
 	
 	Helper PythonInterpreter::m_Helper = Helper();
 	
-  PythonPotential::PythonPotential(unsigned int dim, unsigned int dim_grad) :
+  PythonPotential::PythonPotential(unsigned int sensor_dim, unsigned int task_dim) :
     m_Interpreter(PythonInterpreter()),
-    m_Dim(dim),
-    m_Dim_Gradient(dim_grad)
+    m_SensorDim(sensor_dim),
+    m_TaskDim(task_dim)
   {
 
   }
 	
-	unsigned int PythonPotential::dim() const {
-		return m_Dim;
+  unsigned int PythonPotential::sensor_dim() const {
+    return m_SensorDim;
 	}
 	
-  unsigned int PythonPotential::dim_grad() const {
-    return m_Dim_Gradient;
+  unsigned int PythonPotential::task_dim() const {
+    return m_TaskDim;
   }
 
   void PythonPotential::gradient (FloatVector &result,
@@ -235,7 +235,7 @@ namespace CBF {
 		ObjectNamespacePtr object_namespace) :
 			m_Interpreter(PythonInterpreter()) 
 		{
-			m_Dim = xml_instance.Dimension();
+      //m_SensorDim = xml_instance.Dimension();
 		
 			m_ExecScript = xml_instance.ExecScript();
 		

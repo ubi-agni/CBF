@@ -26,8 +26,8 @@ namespace CBF {
 
 void PIDTaskSpacePlanner::reset(const FloatVector &pos, const FloatVector &step)
 {
-  m_TaskPos = pos;
-  m_TaskVel = step/m_TimeStep;
+  m_Pos = pos;
+  m_TaskStep = step;
 
   set_gain(1.0, 0.0, 0.0);
 }
@@ -36,19 +36,22 @@ void PIDTaskSpacePlanner::update(const std::vector<FloatVector> &ref)
 {
   FloatVector lNextPos(dim());
 
+  m_Potential->gradient(m_ErrorInTaskSpace, ref, m_Pos);
+
   // P control
-  m_Potential->gradient(m_Error, ref, m_TaskPos);
+  m_TaskStep = m_ErrorInTaskSpace*m_GainP;
 
-  m_Potential->integration(lNextPos, m_TaskPos, m_Error*m_GainP, m_TimeStep);
+  // Integration
+  m_Potential->integration(lNextPos, m_Pos, m_TaskStep, m_TimeStep);
 
-  m_TaskPos = lNextPos;
-  m_TaskVel = m_Error*m_GainP / m_TimeStep;
+  m_Pos = lNextPos;
+
 }
 
 void PIDTaskSpacePlanner::get_task_step(FloatVector &result, const FloatVector &current_pos)
 {
   std::vector<FloatVector > ref;
-  ref.push_back(m_TaskPos);
+  ref.push_back(m_Pos);
 
   m_Potential->gradient(result, ref, current_pos);
 }
@@ -68,7 +71,6 @@ void PIDTaskSpacePlanner::set_gain(const Float gain_p, const Float gain_i, const
   {
     CBF_DEBUG("[PIDTaskSpacePlanner(const PIDTaskSpacePlannerType &xml_instance)]: yay!");
     CBF_DEBUG("Coefficient: " << xml_instance.Coefficient());
-    //m_Coefficient = xml_instance.Coefficient();
   }
 
   static XMLDerivedFactory<

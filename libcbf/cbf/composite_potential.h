@@ -68,9 +68,9 @@ namespace CBF {
     //! @brief Buffers which are instance variables for efficiency reasons
     std::vector<FloatVector > m_pos_buffers;
 	
-    unsigned int m_Dim;
+    unsigned int m_SensorDim;
 
-    unsigned int m_Dim_Gradient;
+    unsigned int m_TaskDim;
 
     CompositePotential(std::vector<PotentialPtr> potentials = std::vector<PotentialPtr>()) {
 			set_potentials(potentials);
@@ -95,17 +95,17 @@ namespace CBF {
 			m_ref_buffers.resize(potentials.size());
       m_pos_buffers.resize(potentials.size());
 
-			m_Dim = 0;
-      m_Dim_Gradient = 0;
+      m_SensorDim = 0;
+      m_TaskDim = 0;
 	
 			for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-				m_Dim += m_Potentials[i]->dim();
-        m_Dim_Gradient += m_Potentials[i]->dim_grad();
+        m_SensorDim += m_Potentials[i]->sensor_dim();
+        m_TaskDim   += m_Potentials[i]->task_dim();
 
-        m_in_buffers[i]   = FloatVector::Zero(m_Potentials[i]->dim());
-        m_grad_buffers[i] = FloatVector::Zero(m_Potentials[i]->dim_grad());
-        m_ref_buffers[i]  = FloatVector::Zero(m_Potentials[i]->dim());
-        m_pos_buffers[i]  = FloatVector::Zero(m_Potentials[i]->dim());
+        m_in_buffers[i]   = FloatVector::Zero(m_Potentials[i]->sensor_dim());
+        m_grad_buffers[i] = FloatVector::Zero(m_Potentials[i]->task_dim());
+        m_ref_buffers[i]  = FloatVector::Zero(m_Potentials[i]->sensor_dim());
+        m_pos_buffers[i]  = FloatVector::Zero(m_Potentials[i]->sensor_dim());
 			}
 		}
 
@@ -154,9 +154,9 @@ namespace CBF {
 		}
 	#endif
 	
-    virtual unsigned int dim() const { return m_Dim; }
+    virtual unsigned int sensor_dim() const { return m_SensorDim; }
 	
-    virtual unsigned int dim_grad() const { return m_Dim_Gradient; }
+    virtual unsigned int task_dim() const { return m_TaskDim; }
 
 	};
 	

@@ -34,8 +34,9 @@ namespace CBF {
 
 		unsigned int current_index = 0;
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-			m_ref_buffers[i] = references[0].segment(current_index, m_Potentials[i]->dim());
-			m_in_buffers[i] = input.segment(current_index, m_Potentials[i]->dim());
+	    	m_ref_buffers[i] = references[0].segment(current_index, m_Potentials[i]->sensor_dim());
+    		m_in_buffers[i] = input.segment(current_index, m_Potentials[i]->sensor_dim());
+
 
 			std::vector<FloatVector > tmp_refs;
 			tmp_refs.push_back(m_ref_buffers[i]);
@@ -44,7 +45,7 @@ namespace CBF {
 			result.segment(current_index, m_grad_buffers[i].size())
 				= m_grad_buffers[i];
 
-			current_index += m_Potentials[i]->dim();
+			current_index += m_Potentials[i]->sensor_dim();
 		}
 		CBF_DEBUG("result " << result.transpose());
 	}
@@ -61,15 +62,16 @@ namespace CBF {
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
 
 		m_Potentials[i]->integration(m_pos_buffers[i],
-		                             currentpos.segment(pos_index , m_Potentials[i]->dim()),
-		                             currentvel.segment(grad_index, m_Potentials[i]->dim_grad()),
-		                             timestep);
+		                            currentpos.segment(pos_index , m_Potentials[i]->sensor_dim()),
+		                            currentvel.segment(grad_index, m_Potentials[i]->task_dim()),
+		                            timestep);
 
-		nextpos.segment(pos_index , m_Potentials[i]->dim()) = m_pos_buffers[i];
+      nextpos.segment(pos_index , m_Potentials[i]->sensor_dim()) = m_pos_buffers[i];
 
-		pos_index  += m_Potentials[i]->dim();
-		grad_index += m_Potentials[i]->dim_grad();
-	}
+      pos_index  += m_Potentials[i]->sensor_dim();
+      grad_index += m_Potentials[i]->task_dim();
+    }
+
 
   }
 

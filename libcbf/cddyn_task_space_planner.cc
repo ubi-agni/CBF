@@ -34,31 +34,31 @@ namespace CBF {
 
 void CDDynTaskSpacePlanner::reset(const FloatVector &pos, const FloatVector &step)
 {
-  m_TaskPos = pos;
-  m_TaskVel = step/m_TimeStep;
+  m_Pos = pos;
+  m_TaskStep = step;
 
   m_Planner->SetStateTarget(pos, pos);
-  m_Planner->SetStateVel(m_TaskVel);
+  m_Planner->SetStateVel(m_TaskStep/m_TimeStep);
 }
 
 void CDDynTaskSpacePlanner::update(const std::vector<FloatVector> &ref)
 {
-  FloatVector m_Target(m_TaskPos.size());
+  FloatVector m_Target(m_Pos.size());
 
-  m_Potential->gradient(m_UnitVelocity, ref, m_TaskPos);
+  m_Potential->gradient(m_UnitVelocity, ref, m_Pos);
 
-  m_Potential->integration(m_Target, m_TaskPos, m_UnitVelocity, 1.0);
+  m_Potential->integration(m_Target, m_Pos, m_UnitVelocity, 1.0);
 
   m_Planner->SetTarget(m_Target);
   m_Planner->Update();
-  m_Planner->GetState(m_TaskPos, m_TaskVel);
+  m_Planner->GetState(m_Pos);
 
 }
 
 void CDDynTaskSpacePlanner::get_task_step(FloatVector &result, const FloatVector &current_pos)
 {
   std::vector<FloatVector> ref = std::vector<FloatVector>(1, FloatVector(current_pos.size()));
-  ref[0] = m_TaskPos;
+  ref[0] = m_Pos;
 
   m_Potential->gradient(result, ref, current_pos);
 }

@@ -20,7 +20,7 @@ namespace CBF {
       PIDTaskSpacePlanner(Float timestep, PotentialPtr potential) :
         TaskSpacePlanner(timestep, potential)
       {
-        m_Error = FloatVector(potential->dim_grad());
+        m_ErrorInTaskSpace = FloatVector(potential->task_dim());
       }
 
       void reset(const FloatVector &pos, const FloatVector &step);
@@ -33,7 +33,7 @@ namespace CBF {
 
     private:
       Float m_GainP, m_GainI, m_GainD;
-      FloatVector m_Error;
+      FloatVector m_ErrorInTaskSpace;
   };
 
   typedef boost::shared_ptr<PIDTaskSpacePlanner> PIDTaskSpacePlannerPtr;

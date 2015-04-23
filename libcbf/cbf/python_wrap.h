@@ -87,8 +87,8 @@ namespace CBF {
 
 		protected:
 			const PythonInterpreter &m_Interpreter;
-			unsigned int m_Dim;
-      unsigned int m_Dim_Gradient;
+      unsigned int m_SensorDim;
+      unsigned int m_TaskDim;
 	
 		public:
       PythonPotential(unsigned int dim = 1, unsigned int dim_grad = 1);
@@ -109,9 +109,9 @@ namespace CBF {
           const FloatVector &currentvel,
           const Float timestep);
 		
-			virtual unsigned int dim() const;
+      virtual unsigned int sensor_dim() const;
 
-      virtual unsigned int dim_grad() const;
+      virtual unsigned int task_dim() const;
 	
 			std::string m_InitScript;
 	

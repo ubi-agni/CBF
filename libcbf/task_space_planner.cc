@@ -45,14 +45,14 @@ namespace CBF {
   }
 
 
-  void TaskSpacePlanner::resize_variables(unsigned int dim, unsigned int dim_grad)
+  void TaskSpacePlanner::resize_variables(unsigned int sensor_dim, unsigned int task_dim)
   {
-    m_TaskPos    = FloatVector::Zero(dim);
+    m_Pos        = FloatVector::Zero(sensor_dim);
 
-    m_TaskVel    = FloatVector::Zero(dim_grad);
-    m_TaskAccel  = FloatVector::Zero(dim_grad);
+    m_TaskStep   = FloatVector::Zero(task_dim);
+    m_TaskAccel  = FloatVector::Zero(task_dim);
 
-    m_MaxTaskVel = FloatVector::Zero(dim_grad);
+    m_MaxTaskVel = FloatVector::Zero(task_dim);
   }
 
 #ifdef CBF_HAVE_XSD

@@ -51,9 +51,9 @@ namespace CBF {
       CDDynTaskSpacePlanner(Float timestep, PotentialPtr potential, const Float wn=1.0) :
         TaskSpacePlanner(timestep, potential)
       {
-        m_Planner = new CDDynamics(potential->dim(), timestep, wn);
+        m_Planner = new CDDynamics(potential->sensor_dim(), timestep, wn);
 
-        m_UnitVelocity.resize(potential->dim_grad());
+        m_UnitVelocity.resize(potential->task_dim());
         set_pontial(potential);
 
       }

@@ -56,7 +56,7 @@ struct TaskSpacePlanner : public Object {
 
     m_ClampTaskVel = false;
 
-    resize_variables(m_Potential->dim(), m_Potential->dim_grad());
+    resize_variables(m_Potential->sensor_dim(), m_Potential->task_dim());
   }
 
   virtual ~TaskSpacePlanner() { }
@@ -67,11 +67,11 @@ struct TaskSpacePlanner : public Object {
 
   virtual void get_task_step(FloatVector &result, const FloatVector &current_pos) = 0;
 
-  unsigned int dim() { return m_TaskPos.size(); }
+  unsigned int dim() { return m_Pos.size(); }
 
-  FloatVector &get_task_pos() { return m_TaskPos; }
+  FloatVector &get_pos() { return m_Pos; }
 
-  FloatVector &get_task_vel() { return m_TaskVel; }
+  //FloatVector &get_task_vel() { return m_TaskStep/m_TimeStep; }
 
   void set_pontial(PotentialPtr potential) { m_Potential = potential; }
 
@@ -86,8 +86,8 @@ struct TaskSpacePlanner : public Object {
   protected:
     Float m_TimeStep;
 
-    FloatVector m_TaskPos;
-    FloatVector m_TaskVel;
+    FloatVector m_Pos;
+    FloatVector m_TaskStep;
     FloatVector m_TaskAccel;
 
     bool m_ClampTaskVel;

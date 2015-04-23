@@ -95,6 +95,10 @@ namespace CBF {
 			return m_TaskJacobian.rows();
 		}
 
+    virtual unsigned int sensor_dim() const {
+      return m_Result.size();
+    }
+
 		/**
 			@brief The resource space dimensionality 
 
@@ -171,6 +175,12 @@ namespace CBF {
 			std::vector<std::string> m_ComponentNames;
 
 			std::string m_DefaultComponentName;
+
+      void resize_variables(unsigned int sensor_dim, unsigned int task_dim, unsigned int resource_dim) {
+        m_Result = FloatVector(sensor_dim);
+        m_TaskJacobian = FloatMatrix::Zero(task_dim, resource_dim);
+        m_ResourceValue = FloatVector(resource_dim);
+      }
 	};
 
 	typedef boost::shared_ptr<SensorTransform> SensorTransformPtr;

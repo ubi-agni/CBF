@@ -64,9 +64,9 @@ namespace CBF {
         const Float timestep
     );
 
-    virtual unsigned int dim() const { return 3u; }
+    virtual unsigned int sensor_dim() const { return 3u; }
 
-    virtual unsigned int dim_grad() const { return 3u; }
+    virtual unsigned int task_dim() const { return 3u; }
 
     virtual Float distance(const FloatVector &v1, const FloatVector &v2);
 

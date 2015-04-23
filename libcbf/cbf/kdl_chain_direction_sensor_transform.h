@@ -39,8 +39,6 @@ class KDLChainDirectionSensorTransform : public BaseKDLChainSensorTransform
       boost::shared_ptr<KDL::Chain> chain
     );
 
-    virtual unsigned int task_dim() const { return 3u; }
-
     virtual void update(const FloatVector &resource_value);
 
     void setLocalControlDirection(const KDL::Vector &control_dir);
@@ -50,9 +48,9 @@ class KDLChainDirectionSensorTransform : public BaseKDLChainSensorTransform
 
     KDL::Vector mCurrentControlDirection;
 
-    void resize_variables(const unsigned int task_dim, const unsigned int resource_dim) {
+    void resize_variables(const unsigned int sensor_dim, const unsigned int task_dim, const unsigned int resource_dim) {
       m_ResourceValue.resize(resource_dim);
-      m_Result.resize(task_dim);
+      m_Result.resize(sensor_dim);
 
       m_TaskJacobian.resize(task_dim, resource_dim);
     }

@@ -36,7 +36,8 @@ endif()
 set(exe_list 
   cbf_test_kdl_transforms 
   cbf_test_axis_potential
-  cbf_test_axis_potential2)
+  cbf_test_axis_potential2
+  cbf_test_quaternion_potential)
 if(CBF_HAVE_KDL)
   foreach(exe ${exe_list})
 	 message(STATUS "  adding executable ${exe}")

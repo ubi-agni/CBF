@@ -41,13 +41,13 @@ namespace CBF {
 struct SquarePotential : public Potential {
 	SquarePotential(const CBFSchema::SquarePotential &xml_instance, ObjectNamespacePtr object_namespace);
 
-	unsigned int m_Dim;
+	unsigned int m_SensorDim;
 
-	unsigned int m_Dim_Gradient;
+	unsigned int m_TaskDim;
 
-	SquarePotential(unsigned int dim = 1, unsigned int dim_grad = 1) :
-		m_Dim(dim),
-		m_Dim_Gradient(dim_grad)
+	SquarePotential(unsigned int sensordim = 1, unsigned int taskdim = 1) :
+		m_SensorDim(sensordim),
+		m_TaskDim(taskdim) 
 	{
 	}
 
@@ -59,9 +59,9 @@ struct SquarePotential : public Potential {
 		return (norm(v1 - v2));
 	}
 
-	virtual unsigned int dim() const { return m_Dim; }
+  virtual unsigned int sensor_dim() const { return m_SensorDim; }
 
-	virtual unsigned int dim_grad() const { return m_Dim_Gradient; }
+  virtual unsigned int task_dim() const { return m_TaskDim; }
 
 	virtual void gradient (
 		FloatVector &result,

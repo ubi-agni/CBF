@@ -46,31 +46,23 @@ namespace CBF {
 		{
 
 		}
-		//! @brief  This coefficient determines the rate of convergence. Choose between 0 and 1.
-		Float m_Coefficient;
 
-		AxisAnglePotential(Float coefficient = 1.) :
-		   Potential(5. / 180. * M_PI),
-			m_Coefficient(coefficient)
-		{
-		}
-	
 		virtual void gradient (
-			FloatVector &result, 
-			const std::vector<FloatVector > &references, 
+			FloatVector &result,
+			const std::vector<FloatVector > &references,
 			const FloatVector &input
 		);
-	
+
 		virtual void integration (
 			FloatVector &nextpos,
 			const FloatVector &currentpos,
 			const FloatVector &currentvel,
 			const Float timestep
 		);
+	
+		virtual unsigned int sensor_dim() const { return 3u; }
 
-		virtual unsigned int dim() const { return 3u; }
-
-		virtual unsigned int dim_grad() const { return 3u; }
+		virtual unsigned int task_dim() const { return 3u; }
 
 		virtual Float distance(const FloatVector &v1, const FloatVector &v2);
 
