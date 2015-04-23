@@ -92,13 +92,12 @@ namespace CBF {
 			CBF_DEBUG("result: " << result.transpose());
 		}
 
-    void AxisAnglePotential::integration (
-        FloatVector &nextpos,
+    void AxisAnglePotential::integration (FloatVector &nextpos,
         const FloatVector &currentpos,
-        const FloatVector &currentvel,
+        const FloatVector &taskvel,
         const Float timestep)
     {
-      nextpos = currentpos+ 0.5*currentvel*timestep;
+      nextpos = currentpos+ 0.5*taskvel*timestep;
     }
 
 	#ifdef CBF_HAVE_XSD

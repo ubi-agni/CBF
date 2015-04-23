@@ -55,21 +55,20 @@ namespace CBF {
   void QuaternionPotential::integration (
         FloatVector &nextpos,
         const FloatVector &currentpos,
-        const FloatVector &currentvel,
+        const FloatVector &taskvel,
         const Float timestep)
   {
     Quaternion res;
     FloatVector res_axis(3);
 
-    Float lwnorm = currentvel.norm();
+    Float lwnorm = taskvel.norm();
 
-    // 0.00000001 : angular velocity threshold
-    if (lwnorm < 0.000000001) {
+    if (lwnorm < CBF_QUAT_AXIS_THRESH) {
       nextpos = currentpos;
     }
     else {
       res.w = cos(lwnorm*timestep/2.0);
-      res_axis =  sin(lwnorm*timestep/2.0)*currentvel/lwnorm;
+      res_axis =  sin(lwnorm*timestep/2.0)*taskvel/lwnorm;
 
       res.x = res_axis(0);
       res.y = res_axis(1);

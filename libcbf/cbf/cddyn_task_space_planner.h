@@ -37,8 +37,6 @@
 #include <cbf/exceptions.h>
 #include <cbf/namespace.h>
 
-#include <cd_dynamics/CDDynamics.hpp>
-
 #include <boost/shared_ptr.hpp>
 
 namespace CBFSchema { class CDDynTaskSpacePlanner; }
@@ -51,11 +49,9 @@ namespace CBF {
       CDDynTaskSpacePlanner(Float timestep, PotentialPtr potential, const Float wn=1.0) :
         TaskSpacePlanner(timestep, potential)
       {
-        m_Planner = new CDDynamics(potential->sensor_dim(), timestep, wn);
+        m_ErrorInTaskSpace.resize(potential->task_dim());
 
-        m_UnitVelocity.resize(potential->task_dim());
-        set_pontial(potential);
-
+        m_WN = wn;
       }
 
       void reset(const FloatVector &pos, const FloatVector &step);
@@ -68,9 +64,8 @@ namespace CBF {
 
     private:
       Float m_WN;
-      CDDynamics *m_Planner;
 
-      FloatVector m_UnitVelocity;
+      FloatVector m_ErrorInTaskSpace;
   };
 
   typedef boost::shared_ptr<CDDynTaskSpacePlanner> CDDynTaskSpacePlannerPtr;

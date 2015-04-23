@@ -154,7 +154,7 @@ namespace CBF {
   void PythonPotential::integration (
       FloatVector &nextpos,
       const FloatVector &currentpos,
-      const FloatVector &currentvel,
+      const FloatVector &currentgradient,
       const Float timestep)
   {
 

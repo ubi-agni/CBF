@@ -279,18 +279,6 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
         
 
-# cd_dynamics
-message(STATUS "Looking for cd_dynamics")
-find_package(cd_dynamics)
-if(cd_dynamics_FOUND)
-  set(CMAKE_REQUIRED_LIBRARIES ${cd_dynamics_LIBRARIES})
-  set(CMAKE_REQUIRED_INCLUDES ${cd_dynamics_INCLUDE_DIRS})
-  message(STATUS "  found cd_dynamics: ${cd_dynamics_DIR}")
-endif()
-if(cd_dynamics_FOUND)
-  set(CBF_HAVE_CDDYN 1)
-endif(cd_dynamics_FOUND)
-
 
 # --- pkgconfig file ---
 configure_file(cbf.pc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)

@@ -47,18 +47,18 @@ namespace CBF {
 
 		}
 
-		virtual void gradient (
-			FloatVector &result,
-			const std::vector<FloatVector > &references,
-			const FloatVector &input
-		);
+	    virtual void gradient (
+    	  FloatVector &result,
+	      const std::vector<FloatVector > &references,
+    	  const FloatVector &input
+	    );
 
-		virtual void integration (
-			FloatVector &nextpos,
-			const FloatVector &currentpos,
-			const FloatVector &currentvel,
-			const Float timestep
-		);
+    	virtual void integration (
+        	FloatVector &nextpos,
+	        const FloatVector &currentpos,
+    	    const FloatVector &currentvel,
+        	const Float timestep
+	    );
 	
 		virtual unsigned int sensor_dim() const { return 3u; }
 

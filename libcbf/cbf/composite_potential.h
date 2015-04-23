@@ -122,7 +122,7 @@ namespace CBF {
     virtual void integration (
         FloatVector &nextpos,
         const FloatVector &currentpos,
-        const FloatVector &currentvel,
+        const FloatVector &taskvel,
         const Float timestep
     );
 	

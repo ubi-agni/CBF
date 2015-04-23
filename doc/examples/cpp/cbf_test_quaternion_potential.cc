@@ -92,8 +92,9 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
 
   CBF::QuaternionPotentialPtr potential = CBF::QuaternionPotentialPtr(new CBF::QuaternionPotential());
 
-  CBF::PIDTaskSpacePlannerPtr planner = CBF::PIDTaskSpacePlannerPtr(new CBF::PIDTaskSpacePlanner(1./100., potential));
-  planner->set_gain(0.1, 0.0, 0.0);
+  //CBF::PIDTaskSpacePlannerPtr planner = CBF::PIDTaskSpacePlannerPtr(new CBF::PIDTaskSpacePlanner(1./100., potential));
+  //planner->set_gain(1.0, 0.0, 0.0);
+  CBF::CDDynTaskSpacePlannerPtr planner = CBF::CDDynTaskSpacePlannerPtr(new CBF::CDDynTaskSpacePlanner(1./100., potential, 1.0));
 
   // controller
   CBF::PrimitiveControllerPtr controller (
@@ -150,7 +151,6 @@ int main() {
   mController->planner()->update(mTargetReference->get());
 
   FloatVector lEndPosture(4);
-  FloatVector lTaskPos(4);
 
   int cnt=0;
   do {
@@ -164,7 +164,7 @@ int main() {
                << lEndPosture[3] << " "
                << std::endl;
 
-    usleep(100000);
+    usleep(10000);
   } while(mController->finished() == false);
 }
 

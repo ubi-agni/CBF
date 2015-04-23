@@ -21,7 +21,7 @@
 /*
  * cddyn_task_space_planner.cc
  *
- * This planner generates velocity continous task space trajectory based on cd dynamics
+ * This planner generates velocity continous task space trajectory based on cd_dynamics
  *
  *  Created on Mar. 12, 2015
  *          by Seungsu Kim (skim@techfak.uni-bielefeld.de)
@@ -37,22 +37,22 @@ void CDDynTaskSpacePlanner::reset(const FloatVector &pos, const FloatVector &ste
   m_Pos = pos;
   m_TaskStep = step;
 
-  m_Planner->SetStateTarget(pos, pos);
-  m_Planner->SetStateVel(m_TaskStep/m_TimeStep);
 }
 
 void CDDynTaskSpacePlanner::update(const std::vector<FloatVector> &ref)
 {
-  FloatVector m_Target(m_Pos.size());
+  FloatVector lNextPos(m_Pos.size());
 
-  m_Potential->gradient(m_UnitVelocity, ref, m_Pos);
+  m_Potential->gradient(m_ErrorInTaskSpace, ref, m_Pos);
 
-  m_Potential->integration(m_Target, m_Pos, m_UnitVelocity, 1.0);
+  // critical damped dynamics computation
+  m_TaskAccel  = m_ErrorInTaskSpace*(m_WN*m_WN) - (m_TaskStep/m_TimeStep *(2.0*m_WN));
 
-  m_Planner->SetTarget(m_Target);
-  m_Planner->Update();
-  m_Planner->GetState(m_Pos);
+  m_TaskStep  += (0.5*m_TaskAccel*m_TimeStep*m_TimeStep);
 
+  m_Potential->integration(lNextPos, m_Pos, m_TaskStep/m_TimeStep, m_TimeStep);
+
+  m_Pos = lNextPos;
 }
 
 void CDDynTaskSpacePlanner::get_task_step(FloatVector &result, const FloatVector &current_pos)
@@ -65,7 +65,7 @@ void CDDynTaskSpacePlanner::get_task_step(FloatVector &result, const FloatVector
 
 void CDDynTaskSpacePlanner::set_wn(const Float frequency)
 {
-  m_Planner->SetWn(frequency);
+  m_WN = frequency;
 }
 
   #ifdef CBF_HAVE_XSD

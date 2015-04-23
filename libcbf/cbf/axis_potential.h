@@ -83,10 +83,9 @@ namespace CBF {
       result = s - in;
     }
 	
-    virtual void integration (
-        FloatVector &nextpos,
+    virtual void integration (FloatVector &nextpos,
         const FloatVector &currentpos,
-        const FloatVector &currentvel,
+        const FloatVector &taskvel,
         const Float timestep
     );
 

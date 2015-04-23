@@ -69,12 +69,12 @@ struct SquarePotential : public Potential {
 		const FloatVector &input
 	);
 
-	virtual void integration (
-		FloatVector &nextpos,
-		const FloatVector &currentpos,
-		const FloatVector &currentvel,
-		const Float timestep
-	);
+  virtual void integration (
+      FloatVector &nextpos,
+      const FloatVector &currentpos,
+      const FloatVector &currentvel,
+      const Float timestep
+  );
 
 };
 

@@ -106,7 +106,7 @@ namespace CBF {
 
       virtual void integration (FloatVector &nextpos,
           const FloatVector &currentpos,
-          const FloatVector &currentvel,
+          const FloatVector &currentgradient,
           const Float timestep);
 		
       virtual unsigned int sensor_dim() const;
