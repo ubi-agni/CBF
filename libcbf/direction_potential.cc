@@ -62,7 +62,7 @@ namespace CBF {
       const FloatVector &taskvel,
       const Float timestep)
   {
-    nextpos = currentpos + 0.5*taskvel*timestep;
+    nextpos = currentpos + taskvel*timestep;
     nextpos = nextpos/nextpos.norm();
   }
 

@@ -49,14 +49,14 @@ namespace CBF {
 			result *= m_MaxGradientStepNorm/result_norm;
 	}
 
-  void SquarePotential::integration (
-      FloatVector &nextpos,
-      const FloatVector &currentpos,
-      const FloatVector &taskvel,
-      const Float timestep)
-  {
-    nextpos = currentpos + 0.5*taskvel*timestep;
-  }
+	void SquarePotential::integration (
+		FloatVector &nextpos,
+		const FloatVector &currentpos,
+		const FloatVector &currentvel,
+		const Float timestep)
+	{
+		nextpos = currentpos + currentvel*timestep;
+	}
 
 
 #ifdef CBF_HAVE_XSD

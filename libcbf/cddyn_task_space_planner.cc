@@ -48,7 +48,7 @@ void CDDynTaskSpacePlanner::update(const std::vector<FloatVector> &ref)
   // critical damped dynamics computation
   m_TaskAccel  = m_ErrorInTaskSpace*(m_WN*m_WN) - (m_TaskStep/m_TimeStep *(2.0*m_WN));
 
-  m_TaskStep  += (0.5*m_TaskAccel*m_TimeStep*m_TimeStep);
+  m_TaskStep  += (m_TaskAccel*m_TimeStep*m_TimeStep);
 
   m_Potential->integration(lNextPos, m_Pos, m_TaskStep/m_TimeStep, m_TimeStep);
 

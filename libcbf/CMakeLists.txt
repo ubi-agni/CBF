@@ -46,6 +46,7 @@ set(CBF_SOURCES
   task_space_planner.cc
   pid_task_space_planner.cc
   cddyn_task_space_planner.cc
+  dmp_task_space_planner.cc
   )
 
 set(CBF_HEADERS
@@ -116,6 +117,7 @@ set(CBF_HEADERS
   cbf/task_space_planner.h
   cbf/pid_task_space_planner.h
   cbf/cddyn_task_space_planner.h
+  cbf/dmp_task_space_planner.h
   )
 
 if(CBF_HAVE_PYTHON)

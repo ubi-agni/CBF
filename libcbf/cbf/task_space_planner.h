@@ -71,7 +71,7 @@ struct TaskSpacePlanner : public Object {
 
   FloatVector &get_pos() { return m_Pos; }
 
-  //FloatVector &get_task_vel() { return m_TaskStep/m_TimeStep; }
+  FloatVector &get_current_task_step() { return m_TaskStep; }
 
   void set_pontial(PotentialPtr potential) { m_Potential = potential; }
 

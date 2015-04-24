@@ -87,7 +87,7 @@ void LinePotential::gradient (
 
   lReference = references[min_index]+lProjectionVec;
 
-  result  = (lReference - input)*2.0;
+  result  = (lReference - input);
 }
 
 void LinePotential::integration (
@@ -96,7 +96,7 @@ void LinePotential::integration (
     const FloatVector &taskvel,
     const Float timestep)
 {
-  nextpos = currentpos + 0.5*taskvel*timestep;
+  nextpos = currentpos + taskvel*timestep;
 }
 
 
