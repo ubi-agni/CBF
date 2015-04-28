@@ -29,19 +29,20 @@
  *          by Seungsu Kim (skim@techfak.uni-bielefeld.de)
  */
 
-#include <cbf/dmp_task_space_planner.h>
+#include <cbf/dmp_filter.h>
 #include <cbf/xml_object_factory.h>
 
 namespace CBF {
 
-DMPTaskSpacePlanner::DMPTaskSpacePlanner(Float timestep,
-                                         PotentialPtr potential,
-                                         const std::vector<FloatVector> &basis_weights,
-                                         const Float tau,
-                                         const Float alpha_movement,
-                                         const Float beta_movement,
-                                         const Float alpha_phase) :
-  TaskSpacePlanner(timestep, potential)
+DMPFilter::DMPFilter(const Float default_timestep,
+                     const unsigned int state_dim,
+                     const unsigned int state_vel_dim,
+                     const std::vector<FloatVector> &basis_weights,
+                     const Float tau,
+                     const Float alpha_movement,
+                     const Float beta_movement,
+                     const Float alpha_phase) :
+  Filter(default_timestep, state_dim, state_vel_dim)
 {
   m_N = basis_weights.size();
   if (m_N <= 1) {
@@ -50,14 +51,13 @@ DMPTaskSpacePlanner::DMPTaskSpacePlanner(Float timestep,
   if (alpha_phase <= 0.0) {
     CBF_THROW_RUNTIME_ERROR(m_Name + ": DMP pahse decay parameter is wrong");
   }
-  if (basis_weights[0].size() != potential->task_dim()) {
-    CBF_THROW_RUNTIME_ERROR(m_Name + ": DMP basis function dimension and potential dimension mismatch: " << basis_weights[0].size() << " is not equal to " << potential->task_dim());
+  if (basis_weights[0].size() != state_vel_dim) {
+    CBF_THROW_RUNTIME_ERROR(m_Name + ": DMP basis function dimension and potential dimension mismatch: " << basis_weights[0].size() << " is not equal to " << state_vel_dim);
   }
 
-  m_ErrorInTaskSpace.setZero(potential->task_dim());
-  m_IntialAmplitude.setZero(potential->task_dim());
-  m_ScaledMovementVelocity.setZero(potential->task_dim());
-  m_Fx.setZero(potential->task_dim());
+  m_IntialAmplitude.setZero(state_vel_dim);
+  m_ScaledMovementVelocity.setZero(state_vel_dim);
+  m_Fx.setZero(state_vel_dim);
 
   // set the dmp basis weights
   for (unsigned int i = 0; i < m_N; ++i) {
@@ -76,57 +76,53 @@ DMPTaskSpacePlanner::DMPTaskSpacePlanner(Float timestep,
 }
 
 
-void DMPTaskSpacePlanner::reset(const FloatVector &pos, const FloatVector &step)
+void DMPFilter::reset(const FloatVector &state, const FloatVector &state_vel)
 {
-  m_Pos = pos;
-  m_TaskStep = step;
+  m_TargetState = state;
+  m_TargetStateVel = state_vel;
+
+  m_FilteredState = state;
+  m_FilteredStateVel = state_vel;
+
+  m_ScaledMovementVelocity = m_FilteredStateVel*m_Tau;
 
   m_Phase = 1.0;
 }
 
-void DMPTaskSpacePlanner::update(const std::vector<FloatVector> &ref)
-{
-  FloatVector lNextPos(m_Pos.size());
+void DMPFilter::update_filtered_velocity(const FloatVector &state_error,
+                                         const FloatVector &target_state,
+                                         const FloatVector &target_state_vel,
+                                         const Float timestep) {
+
+  m_TargetState = target_state;
+  m_TargetStateVel = target_state_vel;
 
   // compute initial amplitude
   if( m_Phase == 1.0)
   {
-    m_Potential->gradient(m_IntialAmplitude, ref, m_Pos);
+    m_IntialAmplitude = state_error;
   }
 
   // tau*x_dot = -alpah_x *x
-  m_Phase += (-m_Alpha_Phase/m_Tau*m_Phase)*m_TimeStep;
+  m_Phase += (-m_Alpha_Phase/m_Tau*m_Phase)*timestep;
   if (m_Phase<0.0) m_Phase = 0.0;
 
   // f(x)
   forcingterm(m_Fx, m_Phase);
 
-  // (g-y)
-  m_Potential->gradient(m_ErrorInTaskSpace, ref, m_Pos);
+  m_StateAccel = (m_Alpha_Movement*(m_Beta_Movement*state_error -m_ScaledMovementVelocity)+m_Fx )/(m_Tau*m_Tau);
+  m_ScaledMovementVelocity += m_StateAccel*m_Tau*timestep;
 
-  m_TaskAccel = (m_Alpha_Movement*(m_Beta_Movement*m_ErrorInTaskSpace -m_ScaledMovementVelocity)+m_Fx );
-  m_TaskStep  = (m_ScaledMovementVelocity/m_Tau*m_TimeStep);
-
-  m_ScaledMovementVelocity += m_TaskAccel*m_Tau*m_TimeStep;
-  m_Potential->integration(lNextPos, m_Pos, m_TaskStep/m_TimeStep, m_TimeStep);
-
-  m_Pos = lNextPos;
+  m_FilteredStateVel = (m_ScaledMovementVelocity/m_Tau);
 }
 
-void DMPTaskSpacePlanner::get_task_step(FloatVector &result, const FloatVector &current_pos)
-{
-  std::vector<FloatVector> ref = std::vector<FloatVector>(1, FloatVector(current_pos.size()));
-  ref[0] = m_Pos;
 
-  m_Potential->gradient(result, ref, current_pos);
-}
-
-void DMPTaskSpacePlanner::set_basis_function(const std::vector<FloatVector > &weights)
+void DMPFilter::set_basis_function(const std::vector<FloatVector > &weights)
 {
   weights.size();
 }
 
-void DMPTaskSpacePlanner::init_phase_parameters()
+void DMPFilter::init_phase_parameters()
 {
   m_C.resize(m_N);
   m_H.resize(m_N);
@@ -143,7 +139,7 @@ void DMPTaskSpacePlanner::init_phase_parameters()
 }
 
 
-Float DMPTaskSpacePlanner::compute_psi(const Float phase)
+Float DMPFilter::compute_psi(const Float phase)
 {
   Float sum_psi=0.0;
   for (unsigned int i = 0; i < m_N; ++i) {
@@ -153,12 +149,12 @@ Float DMPTaskSpacePlanner::compute_psi(const Float phase)
   return sum_psi;
 }
 
-void DMPTaskSpacePlanner::forcingterm(FloatVector fx, const Float phase)
+void DMPFilter::forcingterm(FloatVector fx, const Float phase)
 {
   Float lsum_psi;
   lsum_psi = compute_psi(phase);
 
-  fx.setZero(m_TaskStep.size());
+  fx.setZero(m_FilteredStateVel.size());
   for(unsigned int i=0; i<m_N; i++) {
     fx += m_BasisWeights[i]*m_Psi(i);
   }

@@ -20,7 +20,7 @@
 
 #include <cbf/primitive_controller.h>
 #include <cbf/square_potential.h>
-#include <cbf/pid_task_space_planner.h>
+#include <cbf/pid_filter.h>
 #include <cbf/identity_transform.h>
 #include <cbf/generic_transform.h>
 #include <cbf/dummy_resource.h>
@@ -33,17 +33,20 @@
 using namespace CBF;
 
 int main() {
+
+  Float dt = 1./100.;
+
 	DummyReferencePtr reference(new DummyReference(1,3));
   PotentialPtr potential(new SquarePotential(3));
 
 	//! Create a PrimitiveController...
  	PrimitiveControllerPtr c(
 		new PrimitiveController(
-			1.0,
+      dt,
 			std::vector<ConvergenceCriterionPtr>(), 
 			reference,
       potential,
-      TaskSpacePlannerPtr(new PIDTaskSpacePlanner(1./100., potential)),
+      PIDFilterPtr(new PIDFilter(dt, 3, 3)),
 			SensorTransformPtr(new IdentitySensorTransform(3)),
 			EffectorTransformPtr(new GenericEffectorTransform(3,3)),
 			std::vector<SubordinateControllerPtr>(),

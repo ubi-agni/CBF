@@ -27,50 +27,46 @@
  *          by Seungsu Kim (skim@techfak.uni-bielefeld.de)
  */
 
-#ifndef CDDYN_TASK_SPACE_PLANNER_H
-#define CDDYN_TASK_SPACE_PLANNER_H
+#ifndef CDDYN_FILTER_H
+#define CDDYN_FILTER_H
 
 #include <cbf/config.h>
 #include <cbf/types.h>
 #include <cbf/utilities.h>
-#include <cbf/task_space_planner.h>
+#include <cbf/filter.h>
 #include <cbf/exceptions.h>
 #include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
 
-namespace CBFSchema { class CDDynTaskSpacePlanner; }
+namespace CBFSchema { class CDDynFilter; }
 
 namespace CBF {
 
-  struct CDDynTaskSpacePlanner : public TaskSpacePlanner {
-      CDDynTaskSpacePlanner(const CBFSchema::CDDynTaskSpacePlanner &xml_instance, ObjectNamespacePtr object_namespace);
+  struct CDDynFilter : public Filter {
+      CDDynFilter(const CBFSchema::CDDynFilter &xml_instance, ObjectNamespacePtr object_namespace);
 
-      CDDynTaskSpacePlanner(Float timestep, PotentialPtr potential, const Float wn=1.0) :
-        TaskSpacePlanner(timestep, potential)
-      {
-        m_ErrorInTaskSpace.resize(potential->task_dim());
+      CDDynFilter(const Float default_timestep,
+                  const unsigned int state_dim,
+                  const unsigned int state_vel_dim,
+                  const Float wn=1.0);
 
-        m_WN = wn;
-      }
+      void reset(const FloatVector &state, const FloatVector &state_vel);
 
-      void reset(const FloatVector &pos, const FloatVector &step);
-
-      void update(const std::vector<FloatVector > &ref);
-
-      void get_task_step(FloatVector &result, const FloatVector &current_pos);
+      void update_filtered_velocity(const FloatVector &state_error,
+                                    const FloatVector &target_state,
+                                    const FloatVector &target_state_vel,
+                                    const Float timestep);
 
       void set_wn(const Float frequency);
 
     private:
       Float m_WN;
-
-      FloatVector m_ErrorInTaskSpace;
   };
 
-  typedef boost::shared_ptr<CDDynTaskSpacePlanner> CDDynTaskSpacePlannerPtr;
+  typedef boost::shared_ptr<CDDynFilter> CDDynFilterPtr;
 
 } // namespace
 
 
-#endif // CDDYN_TASK_SPACE_PLANNER_H
+#endif // CDDYN_FILTER_H

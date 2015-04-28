@@ -40,22 +40,18 @@ namespace CBF {
 			}
 		}
 
-		// The gradient of a square function is just reference - input
-		result = m_Coefficient * (references[min_index] - input);
-		Float result_norm = norm(result);
+		m_CurrentReference = references[min_index];
 
-		// Normalize gradient step so it's not bigger than m_MaxGradientStep
-		if (result_norm >= m_MaxGradientStepNorm)
-			result *= m_MaxGradientStepNorm/result_norm;
+		result = (m_CurrentReference - input);
 	}
 
 	void SquarePotential::integration (
 		FloatVector &nextpos,
 		const FloatVector &currentpos,
-		const FloatVector &currentvel,
+		const FloatVector &taskvel,
 		const Float timestep)
 	{
-		nextpos = currentpos + currentvel*timestep;
+		nextpos = currentpos + taskvel*timestep;
 	}
 
 

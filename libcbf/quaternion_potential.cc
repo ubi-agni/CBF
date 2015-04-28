@@ -62,8 +62,10 @@ namespace CBF {
       }
     }
 
+    m_CurrentReference = references[min_index];
+
     Quaternion res;
-    res = Quaternion(references[min_index])  * Quaternion(input).conjugate();
+    res = Quaternion(m_CurrentReference)  * Quaternion(input).conjugate();
 
     result(0) = res.x;
     result(1) = res.y;
@@ -90,14 +92,14 @@ namespace CBF {
     Quaternion res;
     FloatVector res_axis(3);
 
-    Float lwnorm = taskvel.norm();
+    Float lwnorm = taskvel.norm()*timestep/2.0;
 
     if (lwnorm < CBF_QUAT_AXIS_THRESH) {
       nextpos = currentpos;
     }
     else {
-      res.w = cos(lwnorm*timestep/2.0);
-      res_axis =  sin(lwnorm*timestep/2.0)*taskvel/lwnorm;
+      res.w = cos(lwnorm);
+      res_axis =  sin(lwnorm)*taskvel*timestep/2.0/lwnorm;
 
       res.x = res_axis(0);
       res.y = res_axis(1);

@@ -31,10 +31,26 @@
 #include <deque>
 
 namespace CBF {
-	void DummyResource::add(const FloatVector &arg) {
-		m_ResourceValue += arg;
-		m_ResourceValueStep = arg;
-		CBF_DEBUG("current values" << m_Variables.transpose());
+
+	void DummyResource::update() {
+
+	}
+
+	void DummyResource::add(const FloatVector &resource_velocity, const Float timestep) {
+		m_ResourceValueVelocity = resource_velocity;
+		m_ResourceValue += resource_velocity*timestep;
+	}
+
+	void DummyResource::set(const FloatVector &pos) {
+		m_ResourceValue = pos;
+	}
+
+	const FloatVector &DummyResource::get_resource_vel() {
+		return m_ResourceValueVelocity;
+	}
+
+	const FloatVector &DummyResource::get() {
+		return m_ResourceValue;
 	}
 
 

@@ -1,7 +1,8 @@
 
 #include <cbf/primitive_controller.h>
 #include <cbf/quaternion_potential.h>
-#include <cbf/cddyn_task_space_planner.h>
+#include <cbf/cddyn_filter.h>
+#include <cbf/dmp_filter.h>
 
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
@@ -12,10 +13,8 @@
 #include <cbf/combination_strategy.h>
 
 #include <cbf/square_potential.h>
-#include <cbf/dmp_task_space_planner.h>
 
 #include <boost/assign/list_of.hpp>
-
 
 #include <boost/shared_ptr.hpp>
 #include <kdl/chain.hpp>
@@ -100,23 +99,24 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
   dmp_basis_weights[3] <<   46.6573,  475.2182,  -28.5828;
   dmp_basis_weights[4] <<    6.8930,   71.8078,    0.5606;
 
-  CBF::DMPTaskSpacePlannerPtr planner = CBF::DMPTaskSpacePlannerPtr(new CBF::DMPTaskSpacePlanner(timestep,
-                                                                                                 potential,
-                                                                                                 dmp_basis_weights,
-                                                                                                 1.5873, //tau
-                                                                                                 20.0,   //alpha_movement,
-                                                                                                 5.0,    //beta_movement,
-                                                                                                 1.5     //alpha_phase
-                                                                                                 ));
+  CBF::DMPFilterPtr task_filter = CBF::DMPFilterPtr(new CBF::DMPFilter(timestep,
+                                                                       3,
+                                                                       3,
+                                                                       dmp_basis_weights,
+                                                                       1.5873, //tau
+                                                                       20.0,   //alpha_movement,
+                                                                       5.0,    //beta_movement,
+                                                                       1.5     //alpha_phase
+                                                                       ));
 
   // controller
   CBF::PrimitiveControllerPtr controller (
       new CBF::PrimitiveController(
-        1.0,
+        timestep,
         std::vector<CBF::ConvergenceCriterionPtr>(),
         mTargetReference,
         potential,
-        planner,
+        task_filter,
         CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
         CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(3, nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
@@ -158,8 +158,6 @@ int main() {
 
   mController->reset();
 
-  mController->planner()->update(mTargetReference->get());
-
   FloatVector lEndPosture(3);
 
   int cnt=0;
@@ -167,7 +165,7 @@ int main() {
     mController->step();
     lEndPosture = mController->sensor_transform()->result();
 
-    lEndPosture = mController->planner()->get_pos();
+    //lEndPosture = mController->task_filter()->get_filtered_state();
     std::cout << "step " << cnt++ << ": "
                << lEndPosture[0] << " "
                << lEndPosture[1] << " "

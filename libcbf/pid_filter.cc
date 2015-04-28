@@ -18,45 +18,34 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-#include <cbf/pid_task_space_planner.h>
+#include <cbf/pid_filter.h>
 #include <cbf/xml_object_factory.h>
 
 namespace CBF {
 
-
-void PIDTaskSpacePlanner::reset(const FloatVector &pos, const FloatVector &step)
+void PIDFilter::reset(const FloatVector &state, const FloatVector &state_vel)
 {
-  m_Pos = pos;
-  m_TaskStep = step;
+  m_TargetState = state;
+  m_FilteredState = state;
 
-  set_gain(1.0, 0.0, 0.0);
+  m_TargetStateVel = state_vel;
+  m_FilteredStateVel = state_vel;
 }
 
-void PIDTaskSpacePlanner::update(const std::vector<FloatVector> &ref)
-{
-  FloatVector lNextPos(dim());
+void PIDFilter::update_filtered_velocity(const FloatVector &state_error,
+                                         const FloatVector &target_state,
+                                         const FloatVector &target_state_vel,
+                                         const Float timestep) {
 
-  m_Potential->gradient(m_ErrorInTaskSpace, ref, m_Pos);
+  m_TargetState    = target_state;
+  m_TargetStateVel = target_state_vel;
 
-  // P control
-  m_TaskStep = m_ErrorInTaskSpace*m_GainP;
+  m_StateAccel = state_error*m_GainP +(target_state_vel-m_FilteredStateVel)*m_GainD;
 
-  // Integration
-  m_Potential->integration(lNextPos, m_Pos, m_TaskStep, m_TimeStep);
-
-  m_Pos = lNextPos;
-
+  m_FilteredStateVel += m_StateAccel*timestep;
 }
 
-void PIDTaskSpacePlanner::get_task_step(FloatVector &result, const FloatVector &current_pos)
-{
-  std::vector<FloatVector > ref;
-  ref.push_back(m_Pos);
-
-  m_Potential->gradient(result, ref, current_pos);
-}
-
-void PIDTaskSpacePlanner::set_gain(const Float gain_p, const Float gain_i, const Float gain_d)
+void PIDFilter::set_gain(const Float gain_p, const Float gain_i, const Float gain_d)
 {
   m_GainP = gain_p;
   m_GainI = gain_i;

@@ -188,15 +188,15 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
     CBF_DEBUG(res->get());
 
 		//! A place to store the result...
-		CBF::FloatVector result;
+    CBF::FloatVector result_resource_velocity;
 
 		//! Update the controller state
-		(*p)->update();
+    (*p)->update();
 
-		result = (*p)->result();
+    result_resource_velocity = (*p)->result_resource_velocity();
 
 		//! Copy result over into out array...
-		std::copy(result.data(), result.data() + result.size(), out);
+    std::copy(result_resource_velocity.data(), result_resource_velocity.data() + result_resource_velocity.size(), out);
 	}
 	catch (...)
 	{

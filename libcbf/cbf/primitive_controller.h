@@ -31,7 +31,7 @@
 #include <cbf/controller.h>
 #include <cbf/convergence_criterion.h>
 #include <cbf/potential.h>
-#include <cbf/task_space_planner.h>
+#include <cbf/filter.h>
 #include <cbf/resource.h>
 #include <cbf/effector_transform.h>
 #include <cbf/reference.h>
@@ -64,11 +64,11 @@ namespace CBF {
 			set from the specified arguments
 		*/
 		SubordinateController(
-			Float coefficient,
+			Float timestep,
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
 			PotentialPtr potential,
-      TaskSpacePlannerPtr planner,
+			FilterPtr task_filter,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
 			std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -92,13 +92,15 @@ namespace CBF {
 			virtual bool check_convergence();
 			virtual bool step() {}
 
+			std::vector<ConvergenceCriterionPtr> m_ConvergenceCriteria;
+	
 			/*** @brief Function for stuff common to all constructors */
 			void init(
-				Float coefficient,
+				Float timestep,
 				std::vector<ConvergenceCriterionPtr> convergence_criteria,
 				ReferencePtr reference,
 				PotentialPtr potential,
-        TaskSpacePlannerPtr planner,
+				FilterPtr task_filter,
 				SensorTransformPtr sensor_transform,
 				EffectorTransformPtr effector_transform,
 				std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -136,10 +138,10 @@ namespace CBF {
 			*/
 			PotentialPtr m_Potential;
 
-      /**
-        Task space trajectory planner
-      */
-      TaskSpacePlannerPtr m_TaskSpacePlanner;
+			/**
+				Task space trajectory planner
+			*/
+			FilterPtr m_TaskFilter;
 	
 			/**
 				The effector transform is responsible for mapping the 
@@ -177,27 +179,37 @@ namespace CBF {
 			PotentialPtr potential() 
 				{ return m_Potential; }
 	
-      TaskSpacePlannerPtr planner()
-        { return m_TaskSpacePlanner; }
+			FilterPtr task_filter()
+				{ return m_TaskFilter; }
 
-      EffectorTransformPtr effector_transform()
+			EffectorTransformPtr effector_transform()
 				{ return m_EffectorTransform; }
 	
 			CombinationStrategyPtr combination_strategy() 
 				{ return m_CombinationStrategy; }
-	
-			Float coefficient();
-	
 		
 			/** Compute a resource update step.
 
 				Update references, sensor transforms, effector transforms,
 				compute a gradient step, and finally the resource step
 			*/
-			virtual void update();
+			virtual void update(Float timestep);
 
-			/** Returns the resource update step computed by update() */
-			virtual FloatVector &result() { return m_Result; }
+			virtual void action(Float timestep) { }
+
+			void update() {update(m_TimeStep);}
+
+			void action() {action(m_TimeStep);}
+
+
+			/**
+				@brief Returns the result of the calculationss done on update().
+
+				The update() function is supposed to update all sensor transforms, potentials
+				etc. The last step of a control cycle is applying the result (the resource
+				space gradient step) of these	calculations to the resource.
+			*/
+			virtual FloatVector &result_resource_velocity() { return m_CombinedResourceVlocity; }
 
 			virtual ResourcePtr resource();
 
@@ -206,6 +218,7 @@ namespace CBF {
 				after calling step() at least once.
 			*/
 			virtual bool finished();
+
 			virtual bool stalled();
 
 			virtual void check_dimensions() const;
@@ -220,11 +233,16 @@ namespace CBF {
 	
 			FloatVector m_CurrentTaskPosition;
 			FloatVector m_GradientStep;
-			//! resource update from this controller
-			FloatVector m_ResourceStep;
 	
-			FloatVector m_CombinedResults;
-			std::vector<FloatVector> m_SubordinateResourceSteps;
+
+			FloatVector m_TaskStateError;
+			FloatVector m_TaskVelocity;
+			FloatVector m_ResourceVelocity;
+			FloatVector m_CombinedResourceVlocity;
+			
+			FloatVector m_NullSpaceResourceVlocity;
+			std::vector<FloatVector> m_NullSpaceMotion;
+
 			std::vector<FloatVector> m_References;
 	};
 
@@ -254,11 +272,11 @@ namespace CBF {
 			set from the specified arguments
 		*/
 		PrimitiveController(
-			Float coefficient,
+			Float timestep,
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
 			PotentialPtr potential,
-      TaskSpacePlannerPtr planner,
+			FilterPtr task_filter,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
 			std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -266,13 +284,13 @@ namespace CBF {
 			ResourcePtr resource
 		);
 	
-    /**
-      The reset() function reset the controller so as to generate the velocity continous task-space trajectory
-      Before call the function, the user must make sure that the resource value and resource velocity values are set properly
-    */
-    void reset(void);
+		/**
+			The reset() function reset the controller so as to generate the velocity continous task-space trajectory
+			Before call the function, the user must make sure that the resource value and resource velocity values are set properly
+		*/
+		void reset(void);
 
-    void reset(const FloatVector resource_value, const FloatVector resource_step);
+		void reset(const FloatVector resource_value, const FloatVector resource_velocity);
 	
 		protected:
 			/*** @brief Function for stuff common to all constructors */
@@ -296,9 +314,13 @@ namespace CBF {
 
 			virtual ResourcePtr resource() { return m_Resource; }
 
-			virtual void update();
-			virtual void action();
-			virtual bool step();
+			virtual void update(Float timestep);
+
+			virtual void action(Float timestep);
+
+			void update() {update(m_TimeStep);}
+
+			void action() {action(m_TimeStep);}
 	};
 
 } // namespace

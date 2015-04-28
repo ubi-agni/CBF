@@ -33,22 +33,22 @@
 
 
 namespace CBF {
-	SubordinateController::SubordinateController(Float alpha,
+	SubordinateController::SubordinateController(Float timestep,
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
-		TaskSpacePlannerPtr planner,
+		FilterPtr task_filter,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
 		CombinationStrategyPtr combination_strategy )
 	{
 		init(
-			alpha,
+			timestep,
 			convergence_criteria,
 			reference,
 			potential,
-			planner,
+			task_filter,
 			sensor_transform,
 			effector_transform,
 			subordinate_controllers,
@@ -59,49 +59,47 @@ namespace CBF {
 	}
 
 	void SubordinateController::init(
-		Float coefficient,
+		Float timestep,
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
-		TaskSpacePlannerPtr planner,
+		FilterPtr task_filter,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
 		CombinationStrategyPtr combination_strategy
 	) {
 		m_Master = NULL;
-		m_Coefficient = coefficient;
+		m_TimeStep = timestep;
 		m_ConvergenceCriteria = convergence_criteria;
 		m_Reference = reference;
 		m_Potential = potential;
-		m_TaskSpacePlanner = planner,
+		m_TaskFilter = task_filter,
 		m_SensorTransform = sensor_transform;
 		m_EffectorTransform = effector_transform;
 		m_SubordinateControllers = subordinate_controllers;
 		m_CombinationStrategy = combination_strategy;
+
 		for (std::vector<SubordinateControllerPtr>::iterator 
 				  it  = m_SubordinateControllers.begin(),
 				  end = m_SubordinateControllers.end(); 
 			  it != end; ++it) {
 			(*it)->m_Master = this;
 		}
-
-		m_GradientStep = FloatVector(m_Potential->task_dim());
-
 	}
 
 	void PrimitiveController::reset(void)
 	{
 		m_SensorTransform->update(m_Resource->get());
 
-		m_TaskSpacePlanner->reset(m_SensorTransform->result(),
-		                          m_SensorTransform->task_jacobian()*m_Resource->get_resource_step());
+		m_TaskFilter->reset(m_SensorTransform->result(),
+		                    m_SensorTransform->task_jacobian()*m_Resource->get_resource_vel());
 
 	}
 
-	void PrimitiveController::reset(const FloatVector resource_value, const FloatVector resource_step)
+	void PrimitiveController::reset(const FloatVector resource_value, const FloatVector resource_velocity)
 	{
-		m_Resource->update(resource_value, resource_step);
+		m_Resource->update(resource_value, resource_velocity);
 		reset();
 	}
 
@@ -112,13 +110,22 @@ namespace CBF {
 
 		reset();
 		check_dimensions();
+
+		// resize variables
+		m_CurrentTaskPosition = FloatVector(m_SensorTransform->sensor_dim());
+		m_TaskStateError = FloatVector(m_SensorTransform->task_dim());
+		m_TaskVelocity = FloatVector(m_SensorTransform->task_dim());
+		m_ResourceVelocity = FloatVector(m_Resource->dim());
+
+		m_NullSpaceResourceVlocity = FloatVector(m_Resource->dim());
 	}
 
-	PrimitiveController::PrimitiveController(Float alpha,
+	PrimitiveController::PrimitiveController(
+		Float timestep,
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
-		TaskSpacePlannerPtr planner,
+		FilterPtr task_filter,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -126,11 +133,11 @@ namespace CBF {
 		ResourcePtr resource
 	)	:
 		SubordinateController(
-			alpha,
+			timestep,
 			convergence_criteria,
 			reference,
 			potential,
-			planner,
+			task_filter,
 			sensor_transform,
 			effector_transform,
 			subordinate_controllers,
@@ -161,21 +168,25 @@ namespace CBF {
 		return m_Master->resource(); 
 	}	
 
-	void PrimitiveController::update() {
+  	void PrimitiveController::update(Float timestep) {
 		m_Resource->update();
-		SubordinateController::update();
+		SubordinateController::update(timestep);
 	}	
 	
-	void SubordinateController::update() 
+  	void SubordinateController::update(Float timestep)
 	{
 		assert(m_Reference.get() != 0);
 		assert(m_SensorTransform.get() != 0);
 		assert(m_EffectorTransform.get() != 0);
 		assert(m_Potential.get() != 0);
-		assert(m_TaskSpacePlanner.get() != 0);
+    	assert(m_TaskFilter.get() != 0);
 		assert(m_CombinationStrategy.get() != 0);
 
 		assert(m_Reference->dim() == m_Potential->dim());
+
+ 		if(timestep < m_TimeStep*0.1) {
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": controller update timestep (" << timestep << ") is too small to compare to the average time step (" << m_TimeStep << ")!!");
+		}
 
 		m_Reference->update();
 
@@ -194,52 +205,79 @@ namespace CBF {
 		if (m_References.size() != 0) {	
 			CBF_DEBUG("have reference!");
 			//! then we do the gradient step
-			//m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition, 1.0);
+      		//m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition, 1.0);
 
-			m_TaskSpacePlanner->update(m_References);
-			m_TaskSpacePlanner->get_task_step(m_GradientStep, m_CurrentTaskPosition);
-			CBF_DEBUG("gradientStep: " << m_GradientStep);
+			// reference filtering
+			m_Potential->gradient(m_TaskStateError,
+			                      m_References,
+                                  m_TaskFilter->get_filtered_state());
 
-			//! Map gradient step into resource step via exec:
+			m_TaskFilter->update_filtered_velocity(m_TaskStateError,
+			                                       m_Potential->reference(),
+			                                       FloatVector::Zero(m_Potential->task_dim()),
+			                                       timestep);
+
+			m_Potential->integration(m_TaskFilter->get_filtered_state(),
+			                         m_TaskFilter->get_filtered_state_vel(),
+			                         timestep );
+
+			// task space control
+			m_Potential->gradient(m_TaskStateError,
+			                      m_TaskFilter->get_filtered_state(),
+			                      m_CurrentTaskPosition);
+
+			m_TaskVelocity = m_TaskStateError/timestep;
+
+			//! Map task velocity into resource velocity via exec:
 			CBF_DEBUG("calling m_EffectorTransform->exec(): Type is: " << CBF_UNMANGLE(*m_EffectorTransform.get()));
-			m_EffectorTransform->exec(m_GradientStep, m_ResourceStep);
+			m_EffectorTransform->exec(m_TaskVelocity, m_ResourceVelocity);
 		} else {
-			m_ResourceStep = FloatVector::Zero(resource()->dim());
+			m_ResourceVelocity.setZero();
 		}
 	
-		CBF_DEBUG("resourceStep: " << m_ResourceStep.transpose());
+		CBF_DEBUG("resourceStep: " << m_ResourceStep);
 
-		//! then we recursively call subordinate controllers.. and gather their
-		//! effector transformed gradient steps.
-		m_SubordinateGradientSteps.resize(m_SubordinateControllers.size());
-	
-		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) {
-			m_SubordinateControllers[i]->update();
-			m_SubordinateGradientSteps[i] = m_SubordinateControllers[i]->result();
-			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i]);
+		if (m_SubordinateControllers.size()>0) {
+			// then we recursively call subordinate controllers.. and gather their
+			// effector transformed gradient steps.
+			m_NullSpaceMotion.resize(m_SubordinateControllers.size());
+
+			for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) {
+				m_SubordinateControllers[i]->update(timestep);
+				m_NullSpaceMotion[i] = m_SubordinateControllers[i]->result_resource_velocity();
+				CBF_DEBUG("NullSpace motion : " << m_NullSpaceMotion[i]);
+			}
+
+			m_CombinationStrategy->exec(m_NullSpaceResourceVlocity, m_NullSpaceMotion);
+
+			// finally the results of all subordinate controllers are projected
+			// into our nullspace.For this we need the task jacobian and its inverse.
+			// We get these from the effector transforms.
+			m_InvJacobianTimesJacobian = m_EffectorTransform->inverse_task_jacobian()
+		                               * m_SensorTransform->task_jacobian();
+
+			// The projector is (1 - J# J), so this is result = result - (J# J result)
+			// which can be expressed as result -= ...
+			m_NullSpaceResourceVlocity -= m_InvJacobianTimesJacobian
+                                        * m_NullSpaceResourceVlocity;
+
+			CBF_DEBUG("combined_results * beta: " << m_NullSpaceResourceVlocity);
+		}
+		else {
+			m_NullSpaceResourceVlocity.setZero();
 		}
 	
-		m_CombinedResults = FloatVector::Zero(resource()->dim());
-	
-		m_CombinationStrategy->exec(m_CombinedResults, m_SubordinateGradientSteps);
-	
-		//! finally the results of all subordinate controllers are projected
-		//! into our nullspace.For this we need the task jacobian and its inverse. 
-		//! We get these from the effector transforms.
-		m_InvJacobianTimesJacobian = m_EffectorTransform->inverse_task_jacobian()
-				* m_SensorTransform->task_jacobian();
-	
-		//! The projector is (1 - J# J), so this is result = result - (J# J result)
-		//! which can be expressed as result -= ...
-		m_CombinedResults -= m_InvJacobianTimesJacobian
-			* m_CombinedResults;
-		CBF_DEBUG("combined_results * beta: " << m_CombinedResults);
-	
-		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
+    m_CombinedResourceVlocity = m_ResourceVelocity + m_NullSpaceResourceVlocity;
 	}
 	
-	void PrimitiveController::action() {
-		m_Resource->add(m_Result);
+	void PrimitiveController::action(Float timestep) {
+
+		if(timestep < m_TimeStep*0.1) {
+			CBF_THROW_RUNTIME_ERROR(m_Name << ": controller update timestep (" << timestep << ") is too small to compare to the average time step (" << m_TimeStep << ")!!");
+		}
+
+		m_Resource->add(m_CombinedResourceVlocity, timestep);
+
 		m_Converged = check_convergence();
 	}
 	
@@ -310,11 +348,11 @@ namespace CBF {
 			PotentialPtr potential = 
 				XMLObjectFactory::instance()->create<Potential>(xml_instance.Potential(), object_namespace);
 
-      //! Instantiate the taskspace planner
-      CBF_DEBUG("Creating task space planner...");
-      TaskSpacePlannerPtr planner;
-      //TaskSpacePlannerPtr planner =
-      //  XMLObjectFactory::instance()->create<TaskSpacePlanner>(xml_instance.TaskSpacePlanner(), object_namespace);
+      		//! Instantiate the taskspace planner
+			CBF_DEBUG("Creating task space planner...");
+			FilterPtr task_filter;
+			//TaskSpacePlannerPtr planner =
+			//  XMLObjectFactory::instance()->create<TaskSpacePlanner>(xml_instance.TaskSpacePlanner(), object_namespace);
 
 			//! Instantiate the Effector transform
 			CBF_DEBUG("Creating sensor transform...");
@@ -348,11 +386,11 @@ namespace CBF {
 			}
 
 			init(
-				coefficient,
+				timestep,
 				convergence_criteria,
 				reference,
 				potential,
-        planner,
+				task_filter,
 				sensor_transform,
 				effector_transform,
 				subordinate_controllers,

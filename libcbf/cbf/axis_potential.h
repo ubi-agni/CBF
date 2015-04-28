@@ -53,35 +53,7 @@ namespace CBF {
 			FloatVector &result, 
 			const std::vector<FloatVector > &references, 
       const FloatVector &input
-    ) {
-      assert(references.size() > 0);
-
-      //! Find the closest reference
-      Float min_distance = distance(references[0], input);
-      unsigned int min_index = 0;
-
-      for (unsigned int i = 1; i < references.size(); ++i) {
-        Float cur_distance = distance(references[i], input);
-        if (cur_distance < min_distance) {
-          min_index = i;
-          min_distance = cur_distance;
-        }
-      }
-
-      //! Now that we have the reference closest to our input, calculate
-      //! SLERP step into that direction
-
-      FloatVector ref = (1.0/(references[min_index]).norm())
-        * references[min_index];
-
-      FloatVector in = (1.0/input.norm())
-        * input;
-
-      FloatVector s(sensor_dim());
-      slerp(in, ref, 1.0, s);
-
-      result = s - in;
-    }
+    ) ;
 	
     virtual void integration (FloatVector &nextpos,
         const FloatVector &currentpos,

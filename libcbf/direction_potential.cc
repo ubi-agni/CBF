@@ -46,11 +46,13 @@ namespace CBF {
       }
     }
 
+    m_CurrentReference = references[min_index];
+
     if( min_distance < CBF_DIRECTION_DIFFERENCE_THRESHOLD) {
       result.setZero();
     }
     else {
-      result = Eigen::Vector3d(input).cross(Eigen::Vector3d(references[min_index])).cross(Eigen::Vector3d(input));
+      result = Eigen::Vector3d(input).cross(Eigen::Vector3d(m_CurrentReference)).cross(Eigen::Vector3d(input));
       result = result/result.norm()*min_distance;
     }
 

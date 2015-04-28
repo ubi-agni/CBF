@@ -23,6 +23,71 @@
 
 namespace CBF {
 
+
+  CompositeResource::CompositeResource(std::vector<ResourcePtr> resources) {
+    set_resources(resources);
+  }
+
+  void CompositeResource::set_resources(std::vector<ResourcePtr> resources) {
+    m_Resources = resources;
+    unsigned int dim = 0;
+
+    for (unsigned int i = 0, len = m_Resources.size(); i < len; i++) {
+      dim += m_Resources[i]->dim();
+    }
+
+    m_ResourceValue = FloatVector(dim);
+    m_ResourceValueVelocity = FloatVector(dim);
+  }
+
+  const std::vector<ResourcePtr> &CompositeResource::resources() {
+    return m_Resources;
+  }
+
+  void CompositeResource::update() {
+    unsigned int current_start_index = 0;
+
+    for (unsigned int i = 0, len = m_Resources.size(); i < len; i++) {
+      m_Resources[i]->update();
+
+      m_ResourceValue.segment(current_start_index, m_Resources[i]->get().size()) = m_Resources[i]->get();
+      m_ResourceValueVelocity.segment(current_start_index, m_Resources[i]->get().size()) = m_Resources[i]->get_resource_vel();
+
+      current_start_index += m_Resources[i]->dim();
+    }
+  }
+
+
+  void CompositeResource::add(const FloatVector &resource_velocity, const Float timestep) {
+    unsigned int current_start_index = 0;
+
+    for (unsigned int i = 0, len = m_Resources.size(); i < len; i++){
+      m_Resources[i]->add(resource_velocity.segment(current_start_index, m_Resources[i]->dim()), timestep);
+
+      current_start_index += m_Resources[i]->dim();
+    }
+  }
+
+  void CompositeResource::set(const FloatVector &pos) {
+    unsigned int current_start_index = 0;
+
+    for (unsigned int i = 0, len = m_Resources.size(); i < len; i++){
+      m_Resources[i]->set(pos.segment(current_start_index, m_Resources[i]->dim()));
+
+      current_start_index += m_Resources[i]->dim();
+    }
+  }
+
+  const FloatVector &CompositeResource::get_resource_vel() {
+    return m_ResourceValueVelocity;
+  }
+
+  const FloatVector &CompositeResource::get() {
+    return m_ResourceValue;
+  }
+
+
+
 #ifdef CBF_HAVE_XSD
 	CompositeResource::CompositeResource(const CBFSchema::CompositeResource &xml_instance, ObjectNamespacePtr object_namespace) :
 		Resource(xml_instance, object_namespace)

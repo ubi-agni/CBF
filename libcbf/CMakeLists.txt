@@ -43,10 +43,10 @@ set(CBF_SOURCES
   quaternion_potential.cc
   line_potential.cc
   direction_potential.cc
-  task_space_planner.cc
-  pid_task_space_planner.cc
-  cddyn_task_space_planner.cc
-  dmp_task_space_planner.cc
+  filter.cc
+  pid_filter.cc
+  cddyn_filter.cc
+  dmp_filter.cc
   )
 
 set(CBF_HEADERS
@@ -114,10 +114,10 @@ set(CBF_HEADERS
   cbf/quaternion_potential.h
   cbf/line_potential.h
   cbf/direction_potential.h
-  cbf/task_space_planner.h
-  cbf/pid_task_space_planner.h
-  cbf/cddyn_task_space_planner.h
-  cbf/dmp_task_space_planner.h
+  cbf/filter.h
+  cbf/pid_filter.h
+  cbf/cddyn_filter.h
+  cbf/dmp_filter.h
   )
 
 if(CBF_HAVE_PYTHON)

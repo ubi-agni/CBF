@@ -25,6 +25,22 @@
 
 namespace CBF {
 
+
+  void Resource::update(const FloatVector &pos, const Float timestep) {
+    update();
+
+    m_ResourceValueVelocity = (pos - m_ResourceValue)/timestep;
+    m_ResourceValue = pos;
+  }
+
+  void Resource::update(const FloatVector &pos, const FloatVector &vel) {
+    update();
+
+    m_ResourceValue = pos;
+    m_ResourceValueVelocity = vel;
+  }
+
+
 #ifdef CBF_HAVE_XSD
 		Resource::Resource(const CBFSchema::Resource &xml_instance, ObjectNamespacePtr object_namespace) :
 			Object(xml_instance, object_namespace) {

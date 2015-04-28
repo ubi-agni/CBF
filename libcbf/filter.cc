@@ -18,23 +18,43 @@
     Copyright 2009, 2010 Florian Paul Schmidt
 */
 
-#include <cbf/potential.h>
+/*
+ * filter.cc
+ *
+ * Abstract filter
+ *
+ *  Created on April. 27, 2015
+ *          by Seungsu Kim (skim@techfak.uni-bielefeld.de)
+ */
+
+#include <cbf/filter.h>
 #include <cbf/xml_object_factory.h>
 #include <cbf/xml_factory.h>
 
 namespace CBF {
 
-#ifdef CBF_HAVE_XSD
+  void Filter::resize_variables(unsigned int state_dim, unsigned int state_vel_dim)
+  {
+    m_TargetState   = FloatVector::Zero(state_dim);
+    m_FilteredState = FloatVector::Zero(state_dim);
 
-	Potential::Potential(const CBFSchema::Potential &xml_instance, ObjectNamespacePtr object_namespace) :
-		Object(xml_instance, object_namespace)
-	{
-    CBF_DEBUG("Constructor");
+    m_TargetStateVel   = FloatVector::Zero(state_vel_dim);
+    m_FilteredStateVel = FloatVector::Zero(state_vel_dim);
+    m_StateAccel       = FloatVector::Zero(state_vel_dim);
   }
 
-	template <> XMLFactory<Potential> 
-		*XMLFactory<Potential>::m_Instance = 0;
+#ifdef CBF_HAVE_XSD
+/*
+  Filter::Filter(const CBFSchema::Filter &xml_instance, ObjectNamespacePtr object_namespace) :
+    Object(xml_instance, object_namespace)
+  {
+    CBF_DEBUG("Constructor Filter");
 
+  }
+
+  template <> XMLFactory<Filter>
+    *XMLFactory<Filter>::m_Instance = 0;
+*/
 #endif
 
 } // namespace

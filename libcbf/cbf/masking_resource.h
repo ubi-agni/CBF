@@ -22,47 +22,26 @@ namespace CBF {
 struct MaskingResource : public Resource {
 	MaskingResource(const CBFSchema::MaskingResource &xml_instance, ObjectNamespacePtr object_namespace);
 
-	MaskingResource(ResourcePtr masked_resource, std::vector<unsigned int> indexes)
-	{
-		set_resource_and_indexes(masked_resource, indexes);
-	}
+  MaskingResource(ResourcePtr resource, std::vector<unsigned int> indexes);
 
-	virtual void set_resource_and_indexes(ResourcePtr masked_resource, std::vector<unsigned int> indexes) {
-		for (unsigned int i = 0; i < m_Indexes.size(); ++i)
-			if (m_Indexes[i] > m_Resource->dim()) 
-				throw std::runtime_error("Index out of bounds");
+  void update();
 
-		m_Result = FloatVector(m_Indexes.size());
-	}
-	
-	virtual void update() {
-		m_Resource->update();
+  void add(const FloatVector &resource_step, const Float timestep);
 
-		for (unsigned int i = 0, len = m_Indexes.size(); i < len; ++i)
-			m_Result[i] = m_Resource->get()[m_Indexes[i]];
-	}
+  void set(const FloatVector &pos);
 
-	virtual void set(const FloatVector &arg) { }
+  const FloatVector &get_resource_vel();
 
-	virtual const FloatVector &get() { 
-		return m_Result; 
-	}
-
-	virtual void add(const FloatVector &arg) { 
-		FloatVector tmp = FloatVector::Zero(m_Resource->get().size());
-
-		for (unsigned int i = 0, len = m_Indexes.size(); i < len; ++i)
-			tmp[m_Indexes[i]] = arg[i];
-
-		m_Resource->add(tmp);
-	}
-
-	virtual unsigned int dim() { return m_Indexes.size(); }
+  const FloatVector &get();
 
 	protected:
-		ResourcePtr m_Resource;
-		FloatVector m_Result;
-		std::vector<unsigned int> m_Indexes;
+    ResourcePtr m_Resource;
+    std::vector<unsigned int> m_Indexes;
+
+    FloatVector m_IndexResourceValue;
+    FloatVector m_IndexResourceValueVelocity;
+
+    void set_resource_and_indexes(ResourcePtr masked_resource, std::vector<unsigned int> indexes);
 };
 
 } // namespace

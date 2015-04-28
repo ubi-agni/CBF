@@ -39,7 +39,7 @@ namespace CBF {
     DummyResource(const FloatVector &values)
     {
       m_ResourceValue = FloatVector(values.size());
-      m_ResourceValueStep = FloatVector(values.size());
+      m_ResourceValueVelocity = FloatVector(values.size());
 
       m_ResourceValue = values;
 		}
@@ -55,7 +55,7 @@ namespace CBF {
     DummyResource(unsigned int variables = 1, Float variance = 0)
     {
       m_ResourceValue = FloatVector(variables);
-      m_ResourceValueStep = FloatVector(variables);
+      m_ResourceValueVelocity = FloatVector(variables);
 
 			if (variance != 0) {
 				for (unsigned int i = 0; i < variables; ++i)
@@ -67,15 +67,15 @@ namespace CBF {
 		~DummyResource() {
 		}
 	
-    const FloatVector &get() {
-      return m_ResourceValue;
-		}
+    void update();
 
-		virtual void add(const FloatVector &arg);
-	
-    unsigned int dim() {
-      return m_ResourceValue.size();
-		}
+    void add(const FloatVector &resource_velocity, const Float timestep);
+
+    void set(const FloatVector &pos);
+
+    const FloatVector &get_resource_vel();
+
+    const FloatVector &get();
 	};
 	
 	typedef boost::shared_ptr<DummyResource> DummyResourcePtr;

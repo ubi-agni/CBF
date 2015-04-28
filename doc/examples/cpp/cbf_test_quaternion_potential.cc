@@ -1,8 +1,8 @@
 
 #include <cbf/primitive_controller.h>
 #include <cbf/quaternion_potential.h>
-#include <cbf/cddyn_task_space_planner.h>
-#include <cbf/pid_task_space_planner.h>
+#include <cbf/cddyn_filter.h>
+#include <cbf/pid_filter.h>
 
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
@@ -87,23 +87,24 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
 {
   unsigned int nJoints = chain->getNrOfJoints();
   unsigned int nRef = 4;
+  Float dt = 1./100.;
 
   mTargetReference = CBF::DummyReferencePtr(new CBF::DummyReference(1,nRef));
 
   CBF::QuaternionPotentialPtr potential = CBF::QuaternionPotentialPtr(new CBF::QuaternionPotential());
 
-  //CBF::PIDTaskSpacePlannerPtr planner = CBF::PIDTaskSpacePlannerPtr(new CBF::PIDTaskSpacePlanner(1./100., potential));
-  //planner->set_gain(1.0, 0.0, 0.0);
-  CBF::CDDynTaskSpacePlannerPtr planner = CBF::CDDynTaskSpacePlannerPtr(new CBF::CDDynTaskSpacePlanner(1./100., potential, 1.0));
+  //CBF::PIDFilterPtr task_filter = CBF::PIDFilterPtr(new CBF::PIDFilter(dt, 3, 3));
+  //task_filter->set_gain(1.0, 0.0, 1.5);
+  CBF::CDDynFilterPtr task_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(dt, 3, 3, 2.0));
 
   // controller
   CBF::PrimitiveControllerPtr controller (
       new CBF::PrimitiveController(
-        1.0,
+        dt,
         std::vector<CBF::ConvergenceCriterionPtr>(),
         mTargetReference,
         potential,
-        planner,
+        task_filter,
         CBF::SensorTransformPtr(new CBF::KDLChainQuaternionSensorTransform(chain)),
         CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(3, nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
@@ -147,7 +148,7 @@ int main() {
 
   mController->reset();
 
-  mController->planner()->update(mTargetReference->get());
+  //mController->planner()->update(mTargetReference->get());
 
   FloatVector lEndPosture(4);
 
@@ -155,6 +156,7 @@ int main() {
   do {
     mController->step();
     lEndPosture = mController->sensor_transform()->result();
+    //lEndPosture = mController->task_filter()->get_filtered_state();
 
     std::cout << "step " << cnt++ << ": "
                << lEndPosture[0] << " "

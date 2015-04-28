@@ -19,51 +19,52 @@
 */
 
 /*
- * cddyn_task_space_planner.cc
+ * cddyn_filter.cc
  *
- * This planner generates velocity continous task space trajectory based on cd_dynamics
+ * This filter based on cd_dynamics
  *
  *  Created on Mar. 12, 2015
  *          by Seungsu Kim (skim@techfak.uni-bielefeld.de)
  */
 
-#include <cbf/cddyn_task_space_planner.h>
+#include <cbf/cddyn_filter.h>
 #include <cbf/xml_object_factory.h>
 
 namespace CBF {
 
-void CDDynTaskSpacePlanner::reset(const FloatVector &pos, const FloatVector &step)
+CDDynFilter::CDDynFilter(const Float default_timestep,
+                         const unsigned int state_dim,
+                         const unsigned int state_vel_dim,
+                         const Float wn) :
+  Filter(default_timestep, state_dim, state_vel_dim)
 {
-  m_Pos = pos;
-  m_TaskStep = step;
-
+  m_WN = wn;
 }
 
-void CDDynTaskSpacePlanner::update(const std::vector<FloatVector> &ref)
+void CDDynFilter::reset(const FloatVector &state, const FloatVector &state_vel)
 {
-  FloatVector lNextPos(m_Pos.size());
+  m_TargetState = state;
+  m_TargetStateVel = state_vel;
 
-  m_Potential->gradient(m_ErrorInTaskSpace, ref, m_Pos);
+  m_FilteredState = state;
+  m_FilteredStateVel = state_vel;
+}
+
+void CDDynFilter::update_filtered_velocity(const FloatVector &state_error,
+                                           const FloatVector &target_state,
+                                           const FloatVector &target_state_vel,
+                                           const Float timestep)
+{
+  m_TargetState = target_state;
+  m_TargetStateVel = target_state_vel;
 
   // critical damped dynamics computation
-  m_TaskAccel  = m_ErrorInTaskSpace*(m_WN*m_WN) - (m_TaskStep/m_TimeStep *(2.0*m_WN));
+  m_StateAccel = state_error*(m_WN*m_WN) + (target_state_vel-m_FilteredStateVel)*(2.0*m_WN);
 
-  m_TaskStep  += (m_TaskAccel*m_TimeStep*m_TimeStep);
-
-  m_Potential->integration(lNextPos, m_Pos, m_TaskStep/m_TimeStep, m_TimeStep);
-
-  m_Pos = lNextPos;
+  m_FilteredStateVel += m_StateAccel*timestep;
 }
 
-void CDDynTaskSpacePlanner::get_task_step(FloatVector &result, const FloatVector &current_pos)
-{
-  std::vector<FloatVector> ref = std::vector<FloatVector>(1, FloatVector(current_pos.size()));
-  ref[0] = m_Pos;
-
-  m_Potential->gradient(result, ref, current_pos);
-}
-
-void CDDynTaskSpacePlanner::set_wn(const Float frequency)
+void CDDynFilter::set_wn(const Float frequency)
 {
   m_WN = frequency;
 }

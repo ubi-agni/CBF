@@ -58,8 +58,6 @@ namespace CBF {
 #endif
 		PrimitiveControllerPtr m_PrimitiveController;
 	
-		FloatVector m_Result;
-	
 		PrimitiveControllerResource(PrimitiveControllerPtr controller) :
 			m_PrimitiveController(controller)
 		{
@@ -68,23 +66,27 @@ namespace CBF {
 		public:
 			virtual void update() {
 				m_PrimitiveController->resource()->update();
-				m_PrimitiveController->sensor_transform()->update(
-					m_PrimitiveController->resource()->get());
-				m_Result = m_PrimitiveController->sensor_transform()->result();
+        m_PrimitiveController->sensor_transform()->update(m_PrimitiveController->resource()->get());
+
+        m_ResourceValue = m_PrimitiveController->sensor_transform()->result();
+			}
+
+      virtual const FloatVector &get_resource_vel() {
+        return m_ResourceValueVelocity;
+      }
+
+      virtual const FloatVector &get() {
+        return m_ResourceValue;
 			}
 	
-			virtual const FloatVector &get() {
-				return m_Result;
+      virtual void add(const FloatVector &resource_velocity, const Float timestep) {
+        set(m_ResourceValue + resource_velocity*timestep);
 			}
 	
-			virtual void add(const FloatVector &arg) {
-				set(m_Result + arg);
-			}
-	
-			virtual void set(const FloatVector &arg) {
+      virtual void set(const FloatVector &pos) {
 				//! Setup reference..
 				std::vector<FloatVector>& refs = m_PrimitiveController->reference()->get();
-				refs.resize(1); refs[0] = arg;
+        refs.resize(1); refs[0] = pos;
 	
 				//! And run controller until convergence..
 				do {

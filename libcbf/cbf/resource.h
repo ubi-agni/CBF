@@ -54,62 +54,23 @@ namespace CBF {
 	
 		/**
 			This function needs to be called once per cycle. Especially before any
-			SensorTransforms using this resource. The default implementation does
-			just nothing.
+      SensorTransforms using this resource.
 		*/
-		virtual void update() {
+    virtual void update() = 0;
 	
-		}
-	
-    /**
-      This function needs to be called once per cycle.
-      This function set the current resource value and computs resource step (velocity) as well.
-      It needs to be implemented by subclasses.
-    */
-    void update(const FloatVector &arg) {
-      update();
+    void update(const FloatVector &pos, const Float timestep);
 
-      m_ResourceValueStep = (arg - m_ResourceValue);
-      m_ResourceValue = arg;
-    }
+    void update(const FloatVector &pos, const FloatVector &vel);
 
-    void update(const FloatVector &pos, const FloatVector &step) {
-      update();
+    virtual void add(const FloatVector &resource_velocity, const Float timestep) = 0;
 
-      m_ResourceValue = pos;
-      m_ResourceValueStep = step;
-    }
+    virtual void set(const FloatVector &pos) = 0;
 
-    void set(const FloatVector &pos) {
-      m_ResourceValue = pos;
-    }
+    virtual const FloatVector &get_resource_vel() = 0;
 
-    const FloatVector &get_resource_step() {
-      return m_ResourceValueStep;
-    }
+    virtual const FloatVector &get() = 0;
 
-
-		/**
-			This function returns the numeric representation of the resource.
-			It needs to be implemented by subclasses.. See e.g. the PA10JointResource
-			for an example.
-		*/
-		virtual const FloatVector &get() = 0;
-
-		/**
-			This function sets the resource from the numerical representation
-			as vector (think joint angles of a robot, etc..).. It needs
-			to be implemented by subclasses.. See e.g. the PA10JointResource
-			for an example.. Note that the resource isn't set to the arg value,
-			but rather arg is added to the current value.
-		*/
-		virtual void add(const FloatVector &arg) = 0;
-	
-		/**
-			The resource's representation is a vector from R^n. This function
-			returns the n.
-		*/
-    virtual unsigned int dim() = 0;
+    unsigned int dim() {return m_ResourceValue.size(); }
 
     protected:
 
@@ -117,7 +78,7 @@ namespace CBF {
         The resource values
       */
       FloatVector m_ResourceValue;
-      FloatVector m_ResourceValueStep;
+      FloatVector m_ResourceValueVelocity;
 
 	};
 

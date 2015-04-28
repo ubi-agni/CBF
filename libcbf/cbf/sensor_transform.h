@@ -125,8 +125,9 @@ namespace CBF {
 			@brief Return a reference to the result calculated in the 
 			update() function.
 		*/
-		virtual const FloatVector &result() const { return m_Result; }
+    virtual const FloatVector &result() const { return m_Result; }
 
+    virtual const FloatVector &get_task_velocity() const { return m_TaskVel; }
 	
 		/**
 			@brief returns the current task jacobian
@@ -137,7 +138,7 @@ namespace CBF {
 			May only be called after a call to update() to update the internal
 			matrices.
 		*/
-		virtual const FloatMatrix &task_jacobian() const { return m_TaskJacobian; }
+    virtual const FloatMatrix &task_jacobian() const { return m_TaskJacobian; }
 	
 
 		/**
@@ -167,6 +168,8 @@ namespace CBF {
 			*/
 			FloatMatrix m_TaskJacobian;
 
+      FloatVector m_TaskVel;
+
 			/**
 				@brief Strings giving names to the components
 
@@ -178,6 +181,7 @@ namespace CBF {
 
       void resize_variables(unsigned int sensor_dim, unsigned int task_dim, unsigned int resource_dim) {
         m_Result = FloatVector(sensor_dim);
+        m_TaskVel = FloatVector(task_dim);
         m_TaskJacobian = FloatMatrix::Zero(task_dim, resource_dim);
         m_ResourceValue = FloatVector(resource_dim);
       }

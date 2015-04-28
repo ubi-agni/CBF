@@ -1,0 +1,100 @@
+/*
+    This file is part of CBF.
+
+    CBF is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 2 of the License, or
+    (at your option) any later version.
+
+    CBF is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with CBF.  If not, see <http://www.gnu.org/licenses/>.
+
+
+    Copyright 2009, 2010 Florian Paul Schmidt
+*/
+
+/*
+ * filter.h
+ *
+ * Abstract filter
+ *
+ *  Created on April. 27, 2015
+ *          by Seungsu Kim (skim@techfak.uni-bielefeld.de)
+ */
+
+#ifndef FILTER_H
+#define FILTER_H
+
+#include <cbf/config.h>
+#include <cbf/types.h>
+#include <cbf/utilities.h>
+#include <cbf/debug_macros.h>
+#include <cbf/object.h>
+#include <cbf/namespace.h>
+
+#include <boost/shared_ptr.hpp>
+
+namespace CBFSchema { class Filter; }
+
+namespace CBF {
+
+struct Filter : public Object {
+  Filter(const CBFSchema::Filter &xml_instance, ObjectNamespacePtr object_namespace);
+
+  Filter(const Float default_timestep, const unsigned int state_dim, const unsigned int state_vel_dim) :
+    Object("Filter")
+  {
+    m_TimeStep = default_timestep;
+
+    resize_variables(state_dim, state_vel_dim);
+  }
+
+  virtual ~Filter() { }
+
+  virtual void reset(const FloatVector &state, const FloatVector &state_vel) = 0;
+
+  virtual void update_filtered_velocity(const FloatVector &state_error,
+                                        const FloatVector &target_state,
+                                        const FloatVector &target_state_vel,
+                                        const Float timestep) = 0;
+
+  void update_filtered_state(const FloatVector &filtered_state) { m_FilteredState = filtered_state; }
+
+  FloatVector &get_filtered_state() { return m_FilteredState; }
+
+  FloatVector &get_filtered_state_vel() { return m_FilteredStateVel; }
+
+  unsigned int dim() { return m_FilteredState.size(); }
+
+  void set_time_step(const Float timestep) { m_TimeStep = timestep; }
+
+  Float get_time_step() { return m_TimeStep; }
+
+  protected:
+    Float m_TimeStep;
+
+    FloatVector m_TargetState;
+    FloatVector m_TargetStateVel;
+
+    FloatVector m_FilteredState;
+    FloatVector m_FilteredStateVel;
+
+    FloatVector m_StateAccel;
+
+  private :
+    void resize_variables(unsigned int state_dim, unsigned int state_vel_dim);
+
+
+};
+
+typedef boost::shared_ptr<Filter> FilterPtr;
+
+
+} // namespace
+
+#endif // FILTER_H
