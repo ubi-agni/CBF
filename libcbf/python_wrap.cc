@@ -94,11 +94,22 @@ namespace CBF {
     return m_TaskDim;
   }
 
-  void PythonPotential::gradient (FloatVector &result,
-    const std::vector<FloatVector > &references,
-    const FloatVector &input) {
+  FloatVector &PythonPotential::select_reference(
+      const std::vector<FloatVector > &references,
+      const FloatVector &input)
+  {
+    CBF_THROW_RUNTIME_ERROR("PythonPotential::select_reference() is not implemented yet.");
+  }
+
+  void PythonPotential::gradient (
+      FloatVector &result,
+      const FloatVector &reference,
+      const FloatVector &input)
+  {
+    CBF_THROW_RUNTIME_ERROR("PythonPotential::gradient() is not implemented yet.");
+    /*
 		try {
-	
+
 			//! Get access to main context...
 			bp::object main_namespace = m_Interpreter.m_Helper.m_MainModule.attr("__dict__");
 		
@@ -149,6 +160,7 @@ namespace CBF {
 			}
 			throw;
 		}
+    */
 	}
 	
   void PythonPotential::integration (

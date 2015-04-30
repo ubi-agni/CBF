@@ -89,18 +89,21 @@ void DMPFilter::reset(const FloatVector &state, const FloatVector &state_vel)
   m_Phase = 1.0;
 }
 
-void DMPFilter::update_filtered_velocity(const FloatVector &state_error,
-                                         const FloatVector &target_state,
-                                         const FloatVector &target_state_vel,
-                                         const Float timestep) {
+void DMPFilter::update(
+    const FloatVector &state,
+    const FloatVector &state_vel,
+    const Float timestep)
+{
 
-  m_TargetState = target_state;
-  m_TargetStateVel = target_state_vel;
+  m_TargetState = state;
+  m_TargetStateVel = state_vel;
+
+  diff(m_StateDiff, m_TargetState, m_FilteredState);
 
   // compute initial amplitude
   if( m_Phase == 1.0)
   {
-    m_IntialAmplitude = state_error;
+    m_IntialAmplitude = m_StateDiff;
   }
 
   // tau*x_dot = -alpah_x *x
@@ -110,10 +113,12 @@ void DMPFilter::update_filtered_velocity(const FloatVector &state_error,
   // f(x)
   forcingterm(m_Fx, m_Phase);
 
-  m_StateAccel = (m_Alpha_Movement*(m_Beta_Movement*state_error -m_ScaledMovementVelocity)+m_Fx )/(m_Tau*m_Tau);
+  m_StateAccel = (m_Alpha_Movement*(m_Beta_Movement*m_StateDiff -m_ScaledMovementVelocity)+m_Fx )/(m_Tau*m_Tau);
   m_ScaledMovementVelocity += m_StateAccel*m_Tau*timestep;
 
   m_FilteredStateVel = (m_ScaledMovementVelocity/m_Tau);
+
+  integration(m_FilteredState, m_FilteredState, m_FilteredStateVel, timestep);
 }
 
 

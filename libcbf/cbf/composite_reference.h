@@ -52,7 +52,7 @@ struct CompositeReference : public Reference
 		CompositeReference(const CBFSchema::CompositeReference &xml_instance, ObjectNamespacePtr object_namespace);
 
 		CompositeReference(std::vector<ReferencePtr> references = std::vector<ReferencePtr>()) {
-			set_references(references);
+      set_references(references);
 		}
 
 		virtual void set_references(std::vector<ReferencePtr> references) {

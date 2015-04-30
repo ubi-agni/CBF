@@ -33,14 +33,38 @@
 
 namespace CBF {
 
+  Filter::Filter(const Float default_timestep, const unsigned int state_dim, const unsigned int state_vel_dim) :
+    Object("Filter")
+  {
+    resize_variables(state_dim, state_vel_dim);
+
+    m_TimeStep = default_timestep;
+
+    set_function_integration( &Filter::euler_integration );
+    set_function_diff( &Filter::euler_diff );
+  }
+
   void Filter::resize_variables(unsigned int state_dim, unsigned int state_vel_dim)
   {
-    m_TargetState   = FloatVector::Zero(state_dim);
-    m_FilteredState = FloatVector::Zero(state_dim);
+    m_TargetState      = FloatVector::Zero(state_dim);
+    m_FilteredState    = FloatVector::Zero(state_dim);
 
     m_TargetStateVel   = FloatVector::Zero(state_vel_dim);
     m_FilteredStateVel = FloatVector::Zero(state_vel_dim);
+
+    m_StateDiff        = FloatVector::Zero(state_vel_dim);
+
     m_StateAccel       = FloatVector::Zero(state_vel_dim);
+  }
+
+  void Filter::set_function_diff(const type_function_diff *f)
+  {
+    diff = boost::bind(f, _1, _2, _3);
+  }
+
+  void Filter::set_function_integration(const type_function_integration *f)
+  {
+    integration = boost::bind(f, _1, _2, _3, _4);
   }
 
 #ifdef CBF_HAVE_XSD

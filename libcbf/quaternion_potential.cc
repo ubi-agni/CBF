@@ -43,13 +43,12 @@ namespace CBF {
     return fabs(angle);
   }
 
-  // result : angular velocity, in R^3
-  // input  : quaternion , in R^4 (w, x, y, z)
-  void QuaternionPotential::gradient (
-    FloatVector &result,
-    const std::vector<FloatVector > &references,
-    const FloatVector &input)
+  FloatVector &QuaternionPotential::select_reference(
+      const std::vector<FloatVector > &references,
+      const FloatVector &input)
   {
+    assert(references.size() > 0);
+
     //! Find the closest reference
     Float min_distance = distance(references[0], input);
     unsigned int min_index = 0;
@@ -62,10 +61,20 @@ namespace CBF {
       }
     }
 
-    m_CurrentReference = references[min_index];
+    m_CurrentReference = references[min_distance];
 
+    return m_CurrentReference;
+  }
+
+  // result : angular velocity, in R^3
+  // input, reference  : quaternion , in R^4 (w, x, y, z)
+  void QuaternionPotential::gradient (
+      FloatVector &result,
+      const FloatVector &reference,
+      const FloatVector &input)
+  {
     Quaternion res;
-    res = Quaternion(m_CurrentReference)  * Quaternion(input).conjugate();
+    res = Quaternion(reference)  * Quaternion(input).conjugate();
 
     result(0) = res.x;
     result(1) = res.y;

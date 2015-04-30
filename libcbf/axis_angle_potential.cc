@@ -39,72 +39,55 @@ namespace CBF {
 			return angle;
 		}
 
+		FloatVector &AxisAnglePotential::select_reference(
+			const std::vector<FloatVector > &references,
+			const FloatVector &input)
+		{
+			assert(references.size() > 0);
 
-<<<<<<< HEAD
+			//! Find the closest reference
+			Float min_distance = distance(references[0], input);
+			unsigned int min_index = 0;
+
+			for (unsigned int i = 1; i < references.size(); ++i) {
+				Float cur_distance = distance(references[i], input);
+				
+				if (cur_distance < min_distance) {
+					min_index = i;
+					min_distance = cur_distance;
+				}
+			}
+
+			m_CurrentReference = references[min_distance];
+
+			return m_CurrentReference;
+		}
+
 		void AxisAnglePotential::gradient (
 			FloatVector &result,
-			const std::vector<FloatVector > &references,
-			const FloatVector &input
-		) {
-			CBF_DEBUG("[AxisAnglePotential]: input: " << input.transpose());
-			CBF_DEBUG("[AxisAnglePotential]: ref: " << references[0].transpose());
-			Quaternion in; in.from_axis_angle3(input);
-			Quaternion ref; ref.from_axis_angle3(references[0]);
-			if (in.dot(ref) < 0) ref *= -1.;
-=======
-    void AxisAnglePotential::gradient (
-      FloatVector &result,
-      const std::vector<FloatVector > &references,
-      const FloatVector &input)
-    {
-      assert(references.size() > 0);
-
-      //! Find the closest reference
-      Float min_distance = distance(references[0], input);
-      unsigned int min_index = 0;
-
-      for (unsigned int i = 1; i < references.size(); ++i) {
-        Float cur_distance = distance(references[i], input);
-        if (cur_distance < min_distance) {
-          min_index = i;
-          min_distance = cur_distance;
-        }
-      }
-
-      m_CurrentReference = references[min_distance];
+			const FloatVector &reference,
+			const FloatVector &input)
+		{
 
 			CBF_DEBUG("[AxisAnglePotential]: input: " << input);
-      CBF_DEBUG("[AxisAnglePotential]: ref: " << m_CurrentReference);
+			CBF_DEBUG("[AxisAnglePotential]: ref: " << m_CurrentReference);
 			Quaternion in;
 			in.from_axis_angle3(input);
 			CBF_DEBUG("q_in: " << in);
 
 			Quaternion ref;
-      ref.from_axis_angle3(m_CurrentReference);
+			ref.from_axis_angle3(m_CurrentReference);
 			CBF_DEBUG("q_ref: " << ref);
 
-      Quaternion step = qslerp(in, ref, 1.0);
+			Quaternion step = qslerp(in, ref, 1.0);
 			CBF_DEBUG("step: " << step);
->>>>>>> 8315659... added task_space_planner
 
-			Quaternion step = ref * in.conjugate();
-			CBF_DEBUG("q_step: " << step);
+			Quaternion res = step  * in.conjugate();
+			CBF_DEBUG("res: " << res);
 
 			result.resize(3);
-			step.to_axis_angle3(result);
-			result *= m_Coefficient;
-			Float result_norm = result.norm();
-
-<<<<<<< HEAD
-			// Normalize gradient step so it's not bigger than m_MaxGradientStep
-			if (result_norm >= m_MaxGradientStepNorm)
-				result *= m_MaxGradientStepNorm/result_norm;
-=======
-//			if(norm(result) > m_MaxGradientStepNorm)
-//				result *= m_MaxGradientStepNorm/norm(result);
->>>>>>> 8315659... added task_space_planner
-
-			CBF_DEBUG("result: " << result.transpose());
+			res.to_axis_angle3(result);
+			CBF_DEBUG("result: " << result);
 		}
 
     void AxisAnglePotential::integration (

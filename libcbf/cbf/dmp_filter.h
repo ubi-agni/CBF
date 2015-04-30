@@ -61,10 +61,10 @@ namespace CBF {
 
       void reset(const FloatVector &state, const FloatVector &state_vel);
 
-      void update_filtered_velocity(const FloatVector &state_error,
-                                    const FloatVector &target_state,
-                                    const FloatVector &target_state_vel,
-                                    const Float timestep);
+      void update(
+          const FloatVector &state,
+          const FloatVector &state_vel,
+          const Float timestep);
 
       void set_basis_function(const std::vector<FloatVector > &weights);
 

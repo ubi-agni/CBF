@@ -49,6 +49,7 @@ struct SquarePotential : public Potential {
 		m_SensorDim(sensordim),
 		m_TaskDim(taskdim) 
 	{
+		m_CurrentReference = FloatVector::Zero(sensor_dim());
 	}
 
 	virtual Float norm(const FloatVector &v) {
@@ -59,17 +60,22 @@ struct SquarePotential : public Potential {
 		return (norm(v1 - v2));
 	}
 
-  virtual unsigned int sensor_dim() const { return m_SensorDim; }
+	virtual unsigned int sensor_dim() const { return m_SensorDim; }
 
-  virtual unsigned int task_dim() const { return m_TaskDim; }
+	virtual unsigned int task_dim() const { return m_TaskDim; }
 
-	virtual void gradient (
-		FloatVector &result,
+	virtual FloatVector &select_reference(
 		const std::vector<FloatVector > &references,
 		const FloatVector &input
 	);
 
-  virtual void integration (
+  void gradient (
+      FloatVector &result,
+      const FloatVector &reference,
+      const FloatVector &input
+  );
+
+  void integration (
       FloatVector &nextpos,
       const FloatVector &currentpos,
       const FloatVector &currentvel,

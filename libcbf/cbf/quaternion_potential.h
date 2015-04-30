@@ -48,29 +48,34 @@ namespace CBF {
     QuaternionPotential() :
       Potential()
     {
-
+      m_CurrentReference = FloatVector(sensor_dim());
     }
 
-    virtual void gradient (
-      FloatVector &result,
-      const std::vector<FloatVector > &references,
-      const FloatVector &input
+    FloatVector &select_reference(
+        const std::vector<FloatVector > &references,
+        const FloatVector &input
     );
 
-    virtual void integration (
+    void gradient (
+        FloatVector &result,
+        const FloatVector &reference,
+        const FloatVector &input
+    );
+
+    void integration (
         FloatVector &nextpos,
         const FloatVector &currentpos,
         const FloatVector &taskvel,
         const Float timestep
     );
 
-    virtual unsigned int sensor_dim() const { return 4u; }
+    unsigned int sensor_dim() const { return 4u; }
 
-    virtual unsigned int task_dim() const { return 3u; }
+    unsigned int task_dim() const { return 3u; }
 
-		virtual Float distance(const FloatVector &v1, const FloatVector &v2);
+    Float distance(const FloatVector &v1, const FloatVector &v2);
 
-    virtual Float norm(const FloatVector &v) { return v.norm(); }
+    Float norm(const FloatVector &v) { return v.norm(); }
 	};
 
   typedef boost::shared_ptr<QuaternionPotential> QuaternionPotentialPtr;

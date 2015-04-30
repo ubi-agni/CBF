@@ -50,18 +50,23 @@ void CDDynFilter::reset(const FloatVector &state, const FloatVector &state_vel)
   m_FilteredStateVel = state_vel;
 }
 
-void CDDynFilter::update_filtered_velocity(const FloatVector &state_error,
-                                           const FloatVector &target_state,
-                                           const FloatVector &target_state_vel,
-                                           const Float timestep)
+void CDDynFilter::update(
+    const FloatVector &state,
+    const FloatVector &state_vel,
+    const Float timestep)
 {
-  m_TargetState = target_state;
-  m_TargetStateVel = target_state_vel;
+  m_TargetState = state;
+  m_TargetStateVel = state_vel;
 
   // critical damped dynamics computation
-  m_StateAccel = state_error*(m_WN*m_WN) + (target_state_vel-m_FilteredStateVel)*(2.0*m_WN);
+  diff(m_StateDiff, m_TargetState, m_FilteredState);
 
+  m_StateAccel = m_StateDiff*(m_WN*m_WN) + (m_TargetStateVel-m_FilteredStateVel)*(2.0*m_WN);
+
+  // update
   m_FilteredStateVel += m_StateAccel*timestep;
+
+  integration(m_FilteredState, m_FilteredState, m_FilteredStateVel, timestep);
 }
 
 void CDDynFilter::set_wn(const Float frequency)

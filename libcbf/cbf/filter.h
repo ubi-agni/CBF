@@ -38,32 +38,42 @@
 #include <cbf/namespace.h>
 
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 
 namespace CBFSchema { class Filter; }
 
 namespace CBF {
 
+typedef void (type_function_diff) (
+        FloatVector&,
+        const FloatVector&,
+        const FloatVector&);
+
+typedef void (type_function_integration) (
+        FloatVector&,
+        const FloatVector&,
+        const FloatVector&,
+        const Float);
+
 struct Filter : public Object {
+
+  boost::function<type_function_diff > diff;
+
+  boost::function<type_function_integration > integration;
+
   Filter(const CBFSchema::Filter &xml_instance, ObjectNamespacePtr object_namespace);
 
-  Filter(const Float default_timestep, const unsigned int state_dim, const unsigned int state_vel_dim) :
-    Object("Filter")
-  {
-    m_TimeStep = default_timestep;
-
-    resize_variables(state_dim, state_vel_dim);
-  }
+  Filter(const Float default_timestep, const unsigned int state_dim, const unsigned int state_vel_dim);
 
   virtual ~Filter() { }
 
   virtual void reset(const FloatVector &state, const FloatVector &state_vel) = 0;
 
-  virtual void update_filtered_velocity(const FloatVector &state_error,
-                                        const FloatVector &target_state,
-                                        const FloatVector &target_state_vel,
-                                        const Float timestep) = 0;
-
-  void update_filtered_state(const FloatVector &filtered_state) { m_FilteredState = filtered_state; }
+  virtual void update(
+      const FloatVector &state,
+      const FloatVector &state_vel,
+      const Float timestep) = 0;
 
   FloatVector &get_filtered_state() { return m_FilteredState; }
 
@@ -75,6 +85,10 @@ struct Filter : public Object {
 
   Float get_time_step() { return m_TimeStep; }
 
+  void set_function_diff(const type_function_diff *f);
+
+  void set_function_integration(const type_function_integration *f);
+
   protected:
     Float m_TimeStep;
 
@@ -84,11 +98,23 @@ struct Filter : public Object {
     FloatVector m_FilteredState;
     FloatVector m_FilteredStateVel;
 
+    FloatVector m_StateDiff;
+
     FloatVector m_StateAccel;
+
+    static void euler_integration (
+        FloatVector &nextpos,
+        const FloatVector &currentpos,
+        const FloatVector &taskvel,
+        const Float timestep) { nextpos = currentpos+(taskvel*timestep); }
+
+    static void euler_diff(
+        FloatVector &result,
+        const FloatVector &front,
+        const FloatVector &tail) { result = front-tail; }
 
   private :
     void resize_variables(unsigned int state_dim, unsigned int state_vel_dim);
-
 
 };
 

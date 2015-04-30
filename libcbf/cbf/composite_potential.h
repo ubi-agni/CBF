@@ -87,36 +87,21 @@ namespace CBF {
 		/**
 			@brief Set the potentials to combine..
 		*/
-		void set_potentials(std::vector<PotentialPtr> &potentials) 
-		{
-			m_Potentials = potentials;
-			m_in_buffers.resize(potentials.size());
-      m_grad_buffers.resize(potentials.size());
-			m_ref_buffers.resize(potentials.size());
-      m_pos_buffers.resize(potentials.size());
-
-      m_SensorDim = 0;
-      m_TaskDim = 0;
-	
-			for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-        m_SensorDim += m_Potentials[i]->sensor_dim();
-        m_TaskDim   += m_Potentials[i]->task_dim();
-
-        m_in_buffers[i]   = FloatVector::Zero(m_Potentials[i]->sensor_dim());
-        m_grad_buffers[i] = FloatVector::Zero(m_Potentials[i]->task_dim());
-        m_ref_buffers[i]  = FloatVector::Zero(m_Potentials[i]->sensor_dim());
-        m_pos_buffers[i]  = FloatVector::Zero(m_Potentials[i]->sensor_dim());
-			}
-		}
+    void set_potentials(std::vector<PotentialPtr> &potentials);
 
 		virtual const std::vector<PotentialPtr> &potentials() {
 			return m_Potentials;
 		}
 	
+    virtual FloatVector &select_reference(
+        const std::vector<FloatVector > &references,
+        const FloatVector &input
+    );
+
     virtual void gradient (
-      FloatVector &result,
-      const std::vector<FloatVector > &references,
-      const FloatVector &input
+        FloatVector &result,
+        const FloatVector &reference,
+        const FloatVector &input
     );
 
     virtual void integration (

@@ -24,25 +24,35 @@
 
 namespace CBF {
 
-	void SquarePotential::gradient (
-		FloatVector &result,
+	FloatVector &SquarePotential::select_reference(
 		const std::vector<FloatVector > &references,
-		const FloatVector &input) {
-		// First we find the closest reference vector
-		Float min_dist = std::numeric_limits<Float>::max();
+		const FloatVector &input)
+	{
+		assert(references.size() > 0);
+
+		// Find the closest reference
+		Float min_distance = distance(references[0], input);
 		unsigned int min_index = 0;
 
-		for (unsigned int i = 0; i < references.size(); ++i) {
-			Float dist = distance(input, references[i]);
-			if (dist < min_dist) {
+		for (unsigned int i = 1; i < references.size(); ++i) {
+			Float cur_distance = distance(references[i], input);
+			if (cur_distance < min_distance) {
 				min_index = i;
-				min_dist = dist;
+				min_distance = cur_distance;
 			}
 		}
 
-		m_CurrentReference = references[min_index];
+		m_CurrentReference = references[min_distance];
 
-		result = (m_CurrentReference - input);
+		return m_CurrentReference;
+	}
+
+	void SquarePotential::gradient (
+		FloatVector &result,
+		const FloatVector &reference,
+		const FloatVector &input)
+	{
+		result = (reference - input);
 	}
 
 	void SquarePotential::integration (
@@ -61,10 +71,8 @@ namespace CBF {
 	{
 		CBF_DEBUG("[SquarePotential(const SquaredPotentialType &xml_instance)]: yay!");
 		CBF_DEBUG("Coefficient: " << xml_instance.Coefficient());
-		m_Coefficient = xml_instance.Coefficient();
 
-		m_SensorDim = xml_instance.Dimension();
-
+    	// m_SensorDim = xml_instance.Dimension();
 		// m_DistanceThreshold = xml_instance.DistanceThreshold();
 	}
 

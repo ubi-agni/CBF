@@ -46,17 +46,18 @@ namespace CBF {
   struct CDDynFilter : public Filter {
       CDDynFilter(const CBFSchema::CDDynFilter &xml_instance, ObjectNamespacePtr object_namespace);
 
-      CDDynFilter(const Float default_timestep,
-                  const unsigned int state_dim,
-                  const unsigned int state_vel_dim,
-                  const Float wn=1.0);
+      CDDynFilter(
+          const Float default_timestep,
+          const unsigned int state_dim,
+          const unsigned int state_vel_dim,
+          const Float wn=1.0);
 
       void reset(const FloatVector &state, const FloatVector &state_vel);
 
-      void update_filtered_velocity(const FloatVector &state_error,
-                                    const FloatVector &target_state,
-                                    const FloatVector &target_state_vel,
-                                    const Float timestep);
+      virtual void update(
+          const FloatVector &state,
+          const FloatVector &state_vel,
+          const Float timestep);
 
       void set_wn(const Float frequency);
 

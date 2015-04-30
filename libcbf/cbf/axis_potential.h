@@ -42,20 +42,24 @@ namespace CBF {
   struct AxisPotential : public Potential {
     AxisPotential(const CBFSchema::AxisPotential &xml_instance, ObjectNamespacePtr object_namespace);
 
-
     AxisPotential() :
       Potential()
 		{
-
+      m_CurrentReference = FloatVector(sensor_dim());
 		}
 
-		virtual void gradient (
-			FloatVector &result, 
-			const std::vector<FloatVector > &references, 
-      const FloatVector &input
-    ) ;
+    virtual FloatVector &select_reference(
+        const std::vector<FloatVector > &references,
+        const FloatVector &input
+    );
+
+    void gradient (
+        FloatVector &result,
+        const FloatVector &reference,
+        const FloatVector &input
+    );
 	
-    virtual void integration (FloatVector &nextpos,
+    void integration (FloatVector &nextpos,
         const FloatVector &currentpos,
         const FloatVector &taskvel,
         const Float timestep

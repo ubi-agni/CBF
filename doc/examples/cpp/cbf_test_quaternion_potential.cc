@@ -93,9 +93,9 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
 
   CBF::QuaternionPotentialPtr potential = CBF::QuaternionPotentialPtr(new CBF::QuaternionPotential());
 
-  //CBF::PIDFilterPtr task_filter = CBF::PIDFilterPtr(new CBF::PIDFilter(dt, 3, 3));
-  //task_filter->set_gain(1.0, 0.0, 1.5);
-  CBF::CDDynFilterPtr task_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(dt, 3, 3, 2.0));
+  //CBF::PIDFilterPtr reference_filter = CBF::PIDFilterPtr(new CBF::PIDFilter(dt, 3, 3));
+  //reference_filter->set_gain(1.0, 0.0, 1.5);
+  CBF::CDDynFilterPtr reference_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(dt, 3, 3, 2.0));
 
   // controller
   CBF::PrimitiveControllerPtr controller (
@@ -104,7 +104,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         std::vector<CBF::ConvergenceCriterionPtr>(),
         mTargetReference,
         potential,
-        task_filter,
+        reference_filter,
         CBF::SensorTransformPtr(new CBF::KDLChainQuaternionSensorTransform(chain)),
         CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(3, nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
@@ -155,8 +155,8 @@ int main() {
   int cnt=0;
   do {
     mController->step();
-    lEndPosture = mController->sensor_transform()->result();
-    //lEndPosture = mController->task_filter()->get_filtered_state();
+    //lEndPosture = mController->sensor_transform()->result();
+    lEndPosture = mController->reference_filter()->get_filtered_state();
 
     std::cout << "step " << cnt++ << ": "
                << lEndPosture[0] << " "

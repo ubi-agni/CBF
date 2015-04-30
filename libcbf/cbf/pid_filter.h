@@ -25,10 +25,10 @@ namespace CBF {
 
       virtual void reset(const FloatVector &state, const FloatVector &state_vel);
 
-      virtual void update_filtered_velocity(const FloatVector &state_error,
-                                            const FloatVector &target_state,
-                                            const FloatVector &target_state_vel,
-                                            const Float timestep);
+      virtual void update(
+          const FloatVector &state,
+          const FloatVector &state_vel,
+          const Float timestep);
 
       void set_gain(const Float gain_p, const Float gain_i=0.0, const Float gain_d=0.0);
 

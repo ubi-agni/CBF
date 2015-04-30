@@ -32,17 +32,21 @@ void PIDFilter::reset(const FloatVector &state, const FloatVector &state_vel)
   m_FilteredStateVel = state_vel;
 }
 
-void PIDFilter::update_filtered_velocity(const FloatVector &state_error,
-                                         const FloatVector &target_state,
-                                         const FloatVector &target_state_vel,
-                                         const Float timestep) {
+void PIDFilter::update(
+    const FloatVector &state,
+    const FloatVector &state_vel,
+    const Float timestep)
+{
+  m_TargetState    = state;
+  m_TargetStateVel = state_vel;
 
-  m_TargetState    = target_state;
-  m_TargetStateVel = target_state_vel;
+  diff(m_StateDiff, state, m_FilteredState);
 
-  m_StateAccel = state_error*m_GainP +(target_state_vel-m_FilteredStateVel)*m_GainD;
+  m_StateAccel = m_StateDiff*m_GainP +(m_TargetStateVel-m_FilteredStateVel)*m_GainD;
 
   m_FilteredStateVel += m_StateAccel*timestep;
+
+  integration(m_FilteredState, m_FilteredState, m_FilteredStateVel, timestep);
 }
 
 void PIDFilter::set_gain(const Float gain_p, const Float gain_i, const Float gain_d)

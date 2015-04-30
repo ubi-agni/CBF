@@ -27,6 +27,8 @@
 #include <cbf/xml_factory.h>
 #include <cbf/xml_object_factory.h>
 
+#include <boost/bind.hpp>
+
 #include <vector>
 #include <iostream>
 #include <cassert>
@@ -37,18 +39,18 @@ namespace CBF {
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
-		FilterPtr task_filter,
+		FilterPtr reference_filter,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
-		CombinationStrategyPtr combination_strategy )
+		CombinationStrategyPtr combination_strategy)
 	{
 		init(
 			timestep,
 			convergence_criteria,
 			reference,
 			potential,
-			task_filter,
+			reference_filter,
 			sensor_transform,
 			effector_transform,
 			subordinate_controllers,
@@ -63,7 +65,7 @@ namespace CBF {
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
-		FilterPtr task_filter,
+		FilterPtr reference_filter,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -74,7 +76,7 @@ namespace CBF {
 		m_ConvergenceCriteria = convergence_criteria;
 		m_Reference = reference;
 		m_Potential = potential;
-		m_TaskFilter = task_filter,
+		m_ReferenceFilter = reference_filter,
 		m_SensorTransform = sensor_transform;
 		m_EffectorTransform = effector_transform;
 		m_SubordinateControllers = subordinate_controllers;
@@ -86,14 +88,18 @@ namespace CBF {
 			  it != end; ++it) {
 			(*it)->m_Master = this;
 		}
+
+		// reference filter uses the potential's gradient() and integration() functions
+		m_ReferenceFilter->diff = boost::bind(&Potential::gradient, m_Potential, _1, _2, _3);
+		m_ReferenceFilter->integration = boost::bind(&Potential::integration, m_Potential, _1, _2, _3, _4);
 	}
 
 	void PrimitiveController::reset(void)
 	{
 		m_SensorTransform->update(m_Resource->get());
 
-		m_TaskFilter->reset(m_SensorTransform->result(),
-		                    m_SensorTransform->task_jacobian()*m_Resource->get_resource_vel());
+		m_ReferenceFilter->reset(m_SensorTransform->result(),
+		                         m_SensorTransform->task_jacobian()*m_Resource->get_resource_vel());
 
 	}
 
@@ -120,12 +126,11 @@ namespace CBF {
 		m_NullSpaceResourceVlocity = FloatVector(m_Resource->dim());
 	}
 
-	PrimitiveController::PrimitiveController(
-		Float timestep,
+	PrimitiveController::PrimitiveController(Float timestep,
 		std::vector<ConvergenceCriterionPtr> convergence_criteria,
 		ReferencePtr reference,
 		PotentialPtr potential,
-		FilterPtr task_filter,
+		FilterPtr reference_filter,
 		SensorTransformPtr sensor_transform,
 		EffectorTransformPtr effector_transform,
 		std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -137,7 +142,7 @@ namespace CBF {
 			convergence_criteria,
 			reference,
 			potential,
-			task_filter,
+			reference_filter,
 			sensor_transform,
 			effector_transform,
 			subordinate_controllers,
@@ -179,7 +184,7 @@ namespace CBF {
 		assert(m_SensorTransform.get() != 0);
 		assert(m_EffectorTransform.get() != 0);
 		assert(m_Potential.get() != 0);
-    	assert(m_TaskFilter.get() != 0);
+		assert(m_ReferenceFilter.get() != 0);
 		assert(m_CombinationStrategy.get() != 0);
 
 		assert(m_Reference->dim() == m_Potential->dim());
@@ -203,28 +208,17 @@ namespace CBF {
 		CBF_DEBUG("currentTaskPosition: " << m_CurrentTaskPosition.transpose());
 	
 		if (m_References.size() != 0) {	
-			CBF_DEBUG("have reference!");
-			//! then we do the gradient step
-      		//m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition, 1.0);
 
-			// reference filtering
-			m_Potential->gradient(m_TaskStateError,
-			                      m_References,
-                                  m_TaskFilter->get_filtered_state());
+		// reference filtering
+		m_ReferenceFilter->update(
+			m_Potential->select_reference(m_References, m_ReferenceFilter->get_filtered_state()),
+			FloatVector::Zero(m_Potential->task_dim()),
+			timestep);
 
-			m_TaskFilter->update_filtered_velocity(m_TaskStateError,
-			                                       m_Potential->reference(),
-			                                       FloatVector::Zero(m_Potential->task_dim()),
-			                                       timestep);
-
-			m_Potential->integration(m_TaskFilter->get_filtered_state(),
-			                         m_TaskFilter->get_filtered_state_vel(),
-			                         timestep );
-
-			// task space control
-			m_Potential->gradient(m_TaskStateError,
-			                      m_TaskFilter->get_filtered_state(),
-			                      m_CurrentTaskPosition);
+		// task space control
+		m_Potential->gradient(m_TaskStateError,
+	                          m_ReferenceFilter->get_filtered_state(),
+		                      m_CurrentTaskPosition);
 
 			m_TaskVelocity = m_TaskStateError/timestep;
 
@@ -350,7 +344,7 @@ namespace CBF {
 
       		//! Instantiate the taskspace planner
 			CBF_DEBUG("Creating task space planner...");
-			FilterPtr task_filter;
+			FilterPtr reference_filter;
 			//TaskSpacePlannerPtr planner =
 			//  XMLObjectFactory::instance()->create<TaskSpacePlanner>(xml_instance.TaskSpacePlanner(), object_namespace);
 
@@ -390,7 +384,7 @@ namespace CBF {
 				convergence_criteria,
 				reference,
 				potential,
-				task_filter,
+				reference_filter,
 				sensor_transform,
 				effector_transform,
 				subordinate_controllers,

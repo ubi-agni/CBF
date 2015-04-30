@@ -44,22 +44,27 @@ namespace CBF {
 
 		AxisAnglePotential() : Potential()
 		{
-
+			m_CurrentReference = FloatVector(sensor_dim());
 		}
 
-	    virtual void gradient (
-    	  FloatVector &result,
-	      const std::vector<FloatVector > &references,
-    	  const FloatVector &input
-	    );
+		virtual FloatVector &select_reference(
+			const std::vector<FloatVector > &references,
+			const FloatVector &input
+		);
 
-    	virtual void integration (
-        	FloatVector &nextpos,
-	        const FloatVector &currentpos,
-    	    const FloatVector &currentvel,
-        	const Float timestep
-	    );
-	
+		void gradient (
+			FloatVector &result,
+			const FloatVector &reference,
+			const FloatVector &input
+		);
+
+		virtual void integration (
+			FloatVector &nextpos,
+			const FloatVector &currentpos,
+			const FloatVector &currentvel,
+			const Float timestep
+		);
+
 		virtual unsigned int sensor_dim() const { return 3u; }
 
 		virtual unsigned int task_dim() const { return 3u; }

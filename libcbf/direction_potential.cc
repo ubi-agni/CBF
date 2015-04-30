@@ -26,11 +26,9 @@
 
 namespace CBF {
 
-
-  void DirectionPotential::gradient (
-    FloatVector &result,
-    const std::vector<FloatVector > &references,
-    const FloatVector &input)
+  FloatVector &DirectionPotential::select_reference(
+      const std::vector<FloatVector > &references,
+      const FloatVector &input)
   {
     assert(references.size() > 0);
 
@@ -46,16 +44,23 @@ namespace CBF {
       }
     }
 
-    m_CurrentReference = references[min_index];
+    m_CurrentReference = references[min_distance];
 
-    if( min_distance < CBF_DIRECTION_DIFFERENCE_THRESHOLD) {
+    return m_CurrentReference;
+  }
+
+  void DirectionPotential::gradient (
+      FloatVector &result,
+      const FloatVector &reference,
+      const FloatVector &input)
+  {
+    if( distance(reference, input) < CBF_DIRECTION_DIFFERENCE_THRESHOLD) {
       result.setZero();
     }
     else {
-      result = Eigen::Vector3d(input).cross(Eigen::Vector3d(m_CurrentReference)).cross(Eigen::Vector3d(input));
-      result = result/result.norm()*min_distance;
+      result = Eigen::Vector3d(input).cross(Eigen::Vector3d(reference)).cross(Eigen::Vector3d(input));
+      result = result/result.norm()*distance(reference, input);
     }
-
   }
 
   void DirectionPotential::integration (

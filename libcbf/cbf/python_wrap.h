@@ -100,9 +100,14 @@ namespace CBF {
 			/** TODO: implement!! */
 			virtual bool converged() const { return false; }
 
-      virtual void gradient (FloatVector &result,
-        const std::vector<FloatVector > &references,
-        const FloatVector &input);
+      virtual FloatVector &select_reference(
+          const std::vector<FloatVector > &references,
+          const FloatVector &input);
+
+      virtual void gradient (
+          FloatVector &result,
+          const FloatVector &reference,
+          const FloatVector &input);
 
       virtual void integration (FloatVector &nextpos,
           const FloatVector &currentpos,

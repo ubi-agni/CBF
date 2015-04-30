@@ -83,14 +83,22 @@ struct Potential : public Object {
 	virtual Float distance(const FloatVector &v1, const FloatVector &v2) = 0;
 
 	/**
-		The gradient can be implemented analytically or 
+		Select primiry reference from the std::vector<FloatVector > &references
+	*/
+	virtual FloatVector &select_reference(
+		const std::vector<FloatVector > &references,
+		const FloatVector &input) = 0;
+
+	/**
+		The gradient can be implemented analytically or
 		numerically depending on taste and application
 	*/
 	virtual void gradient (
-		FloatVector &result, 
-		const std::vector<FloatVector > &references, 
+		FloatVector &result,
+		const FloatVector &reference,
 		const FloatVector &input
 	) = 0;
+
 
 	/**
 		The integration function
@@ -102,7 +110,17 @@ struct Potential : public Object {
 		const Float timestep
 	) = 0;
 
- 	/**
+	virtual void integration (
+		FloatVector &updatepos,
+		const FloatVector &taskvel,
+		const Float timestep )
+	{
+		FloatVector nextpos = FloatVector(updatepos.size());
+		integration(nextpos, updatepos, taskvel, timestep);
+		updatepos = nextpos;
+	}
+
+	/**
 		Dimension in sensor level (position dimension)
 	*/
 	virtual unsigned int sensor_dim() const = 0;
@@ -111,6 +129,11 @@ struct Potential : public Object {
 		Dimension in task level (gradient dimension)
 	*/
 	virtual unsigned int task_dim() const = 0;
+
+	virtual FloatVector &reference() { return m_CurrentReference; }
+
+	protected:
+		FloatVector m_CurrentReference;
 };
 
 typedef boost::shared_ptr<Potential> PotentialPtr;

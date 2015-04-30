@@ -23,11 +23,10 @@
 
 namespace CBF {
 
-  void AxisPotential::gradient (
-    FloatVector &result,
-    const std::vector<FloatVector > &references,
-    const FloatVector &input
-  ) {
+  FloatVector &AxisPotential::select_reference(
+      const std::vector<FloatVector > &references,
+      const FloatVector &input)
+  {
     assert(references.size() > 0);
 
     //! Find the closest reference
@@ -42,13 +41,20 @@ namespace CBF {
       }
     }
 
-    m_CurrentReference = references[min_index];
+    m_CurrentReference = references[min_distance];
 
+    return m_CurrentReference;
+  }
+
+  void AxisPotential::gradient (
+      FloatVector &result,
+      const FloatVector &reference,
+      const FloatVector &input)
+  {
     //! Now that we have the reference closest to our input, calculate
     //! SLERP step into that direction
 
-    FloatVector ref = (1.0/(references[min_index]).norm())
-      * references[min_index];
+    FloatVector ref = (1.0/(reference).norm()) * reference;
 
     FloatVector in = (1.0/input.norm())
       * input;

@@ -41,6 +41,8 @@ LinePotential::LinePotential()
 {
   m_LineDirection = FloatVector(3);
   m_LineDirection(1) = 1.0;
+
+  m_CurrentReference = FloatVector::Zero(sensor_dim());
 }
 
 Float LinePotential::norm(const FloatVector &v)
@@ -62,30 +64,42 @@ Float LinePotential::distance(const FloatVector &v1, const FloatVector &v2)
   return ((x0-x1).cross(x0-x2)).norm()/(x2-x1).norm();
 }
 
-void LinePotential::gradient (
-  FloatVector &result,
-  const std::vector<FloatVector > &references,
-  const FloatVector &input) {
+FloatVector &LinePotential::select_reference(
+    const std::vector<FloatVector > &references,
+    const FloatVector &input)
+{
+  assert(references.size() > 0);
 
-  Float min_dist = std::numeric_limits<Float>::max();
+  //! Find the closest reference
+  Float min_distance = distance(references[0], input);
   unsigned int min_index = 0;
 
-  for (unsigned int i = 0; i < references.size(); ++i) {
-    Float dist = distance(input, references[i]);
-    if (dist < min_dist) {
+  for (unsigned int i = 1; i < references.size(); ++i) {
+    Float cur_distance = distance(references[i], input);
+    if (cur_distance < min_distance) {
       min_index = i;
-      min_dist = dist;
+      min_distance = cur_distance;
     }
   }
 
+  m_CurrentReference = references[min_distance];
+
+  return m_CurrentReference;
+}
+
+void LinePotential::gradient (
+    FloatVector &result,
+    const FloatVector &reference,
+    const FloatVector &input)
+{
   // find a normal vector from the input vector to the line
   FloatVector lProjectionVec(3);
   FloatVector lReference(3);
 
-  lProjectionVec = input- references[min_index];
+  lProjectionVec = input- reference;
   lProjectionVec = m_LineDirection* m_LineDirection.dot(lProjectionVec);
 
-  lReference = references[min_index]+lProjectionVec;
+  lReference = reference + lProjectionVec;
 
   result  = (lReference - input);
 }

@@ -55,10 +55,15 @@ struct LinePotential : public Potential {
 
   virtual unsigned int task_dim() const { return 3u; }
 
+  virtual FloatVector &select_reference(
+      const std::vector<FloatVector > &references,
+      const FloatVector &input
+  );
+
   virtual void gradient (
-    FloatVector &result,
-    const std::vector<FloatVector > &references,
-    const FloatVector &input
+      FloatVector &result,
+      const FloatVector &reference,
+      const FloatVector &input
   );
 
   virtual void integration (
