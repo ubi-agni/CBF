@@ -37,16 +37,16 @@ namespace CBF {
 	/**
 		@brief Trivial transform that passes the input through unchanged
 	*/
-	struct IdentityEffectorTransform : public EffectorTransform {
+  struct IdentityEffectorTransform : public EffectorTransform {
 		IdentityEffectorTransform(const CBFSchema::IdentityEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 
-		IdentityEffectorTransform(unsigned int dim = 1)
+    IdentityEffectorTransform(unsigned int dim)
 		{
-			init(dim);
+      init(dim);
 		}
 
-		void init(unsigned int dim) {
-			m_InverseTaskJacobian = FloatMatrix::Identity(dim, dim);
+    void init(unsigned int dim) {
+      m_InverseTaskJacobian = FloatMatrix::Identity(dim, dim);
 		}
 
 		/**
@@ -59,7 +59,7 @@ namespace CBF {
 	
 		virtual void exec(const CBF::FloatVector& in, CBF::FloatVector& result)
 		{
-			result = in;
+      result = in;
 		}
 	};
 
@@ -72,11 +72,11 @@ namespace CBF {
 	struct IdentitySensorTransform : public SensorTransform {
 		IdentitySensorTransform(const CBFSchema::IdentitySensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
 	
-		IdentitySensorTransform(unsigned int dim = 1)
+    IdentitySensorTransform(unsigned int dim)
 		{
 			init(dim);
-			// Setup the (constant) jacobian which is just the identity matrix.. [TODO: erm, check this]
-		}
+      // Setup the (constant) jacobian which is just the identity matrix.. [TODO: erm, check this]
+    }
 
 		virtual void update(const FloatVector &resource_value) {
 			//! nothing to do as the jacobian is constant and computed during construction time

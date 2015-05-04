@@ -49,7 +49,6 @@ class KDLChainDirectionSensorTransform : public BaseKDLChainSensorTransform
     KDL::Vector mCurrentControlDirection;
 
     void resize_variables(const unsigned int sensor_dim, const unsigned int task_dim, const unsigned int resource_dim) {
-      m_ResourceValue.resize(resource_dim);
       m_Result.resize(sensor_dim);
 
       m_TaskJacobian.resize(task_dim, resource_dim);

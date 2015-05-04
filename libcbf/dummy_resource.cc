@@ -67,7 +67,7 @@ namespace CBF {
 				)
 			;
 
-			CBF_DEBUG("current values: " << m_Variables);
+      //CBF_DEBUG("current values: " << m_Variables);
 		
 		}
 

@@ -31,33 +31,40 @@ namespace CBF {
 		unsigned int total_resource_dim = m_SensorTransforms[0]->resource_dim();
 
 		unsigned int total_task_dim = 0;
+		unsigned int total_sensor_dim = 0;
 		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i)
+		{
+			total_sensor_dim += m_SensorTransforms[i]->sensor_dim();
 			total_task_dim += m_SensorTransforms[i]->task_dim();
+		}
 
 		m_TaskJacobian = FloatMatrix::Zero(total_task_dim, total_resource_dim);
+		m_Result = FloatVector::Zero(total_sensor_dim);
+
 		CBF_DEBUG("task_dim " << task_dim());
-		m_Result = FloatVector::Zero(task_dim());
-		CBF_DEBUG("m_Result " << m_Result);
+		CBF_DEBUG("sensor_dim " << sensor_dim());
 	}
 
 	void CompositeSensorTransform::update(const FloatVector &resource_value) {
+
 		unsigned int current_task_pos = 0;
+		unsigned int current_sensor_pos = 0;
 		for (unsigned int i = 0; i < m_SensorTransforms.size(); ++i) {
-			//! Make all subordinate transforms update their state..
+
 			m_SensorTransforms[i]->update(resource_value);
-	
-			//! Assemble total jacobian..
-			CBF_DEBUG("range: " << current_task_pos << " "
-					<< current_task_pos + m_SensorTransforms[i]->task_jacobian().rows());
 
 			m_TaskJacobian.block(current_task_pos, 0,
 					m_SensorTransforms[i] -> task_jacobian().rows(), resource_dim())
 					= m_SensorTransforms[i] -> task_jacobian();
 
-			m_Result.segment(current_task_pos,
-					m_SensorTransforms[i]->task_jacobian().rows()) = m_SensorTransforms[i]->result();
+			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian);	
+			CBF_DEBUG(" current_task_pos: " << current_task_pos <<
+			          " task_dim: " << m_SensorTransforms[i]->task_jacobian().rows());
+
+			m_Result.segment(current_sensor_pos, m_SensorTransforms[i]->sensor_dim()) = m_SensorTransforms[i]->result();
 	
-			current_task_pos += m_SensorTransforms[i]->task_jacobian().rows();
+			current_task_pos  += m_SensorTransforms[i]->task_dim();
+			current_sensor_pos+= m_SensorTransforms[i]->sensor_dim();
 		}
 	
 	}

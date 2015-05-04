@@ -82,7 +82,7 @@ FloatVector &LinePotential::select_reference(
     }
   }
 
-  m_CurrentReference = references[min_distance];
+  m_CurrentReference = references[min_index];
 
   return m_CurrentReference;
 }

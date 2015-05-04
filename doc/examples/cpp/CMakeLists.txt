@@ -38,7 +38,9 @@ set(exe_list
   #cbf_test_axis_potential
   #cbf_test_axis_potential2
   cbf_test_quaternion_potential
-  cbf_test_dmp_task_space_planner)
+  cbf_test_dmp_task_space_planner
+  cbf_test_nullspace_motion
+  cbf_test_6d_control)
 if(CBF_HAVE_KDL)
   foreach(exe ${exe_list})
 	 message(STATUS "  adding executable ${exe}")

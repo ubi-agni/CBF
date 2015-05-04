@@ -47,6 +47,7 @@ set(CBF_SOURCES
   pid_filter.cc
   cddyn_filter.cc
   dmp_filter.cc
+  bypass_filter.cc
   )
 
 set(CBF_HEADERS
@@ -118,6 +119,7 @@ set(CBF_HEADERS
   cbf/pid_filter.h
   cbf/cddyn_filter.h
   cbf/dmp_filter.h
+  cbf/bypass_filter.h
   )
 
 if(CBF_HAVE_PYTHON)

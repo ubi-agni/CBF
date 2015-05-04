@@ -180,20 +180,20 @@ namespace CBF {
 	{
 		m_TaskJacobian = FloatMatrix((int)task_dim, (int)resource_dim);
 		m_Result = FloatVector(task_dim);
-		m_ResourceValue = FloatVector(resource_dim);
-	}
+
+  }
 	
 	void PythonSensorTransform::update(const FloatVector &resource_value) {
-		m_ResourceValue = resource_value;
-		try {
+
+    try {
 			//! Get access to main context...
 			bp::object main_namespace = m_Interpreter.m_Helper.m_MainModule.attr("__dict__");
 		
 			//! Setup references...
-			CBF_DEBUG("resource value: " << m_ResourceValue);
+      CBF_DEBUG("resource value: " << resource_value);
 			bp::list res;
-			for (unsigned int i = 0; i < m_ResourceValue.size(); ++i) {
-				res.append(m_ResourceValue[i]);
+      for (unsigned int i = 0; i < resource_value.size(); ++i) {
+        res.append(resource_value[i]);
 			}
 		
 			main_namespace["resource"] = res;
@@ -274,7 +274,6 @@ namespace CBF {
 			int resource_dim = xml_instance.ResourceDimension();
 			m_TaskJacobian = FloatMatrix(task_dim, resource_dim);
 			m_Result = FloatVector(task_dim);
-			m_ResourceValue = FloatVector(resource_dim);
 
 			m_ExecScript = xml_instance.ExecScript();
 			sanitize_string(m_ExecScript);

@@ -127,7 +127,7 @@ namespace CBF {
 		*/
     virtual const FloatVector &result() const { return m_Result; }
 
-    virtual const FloatVector &get_task_velocity() const { return m_TaskVel; }
+    virtual const FloatVector &get_task_velocity(const FloatVector resource_velocity) const { return m_TaskJacobian*resource_velocity; }
 	
 		/**
 			@brief returns the current task jacobian
@@ -154,11 +154,6 @@ namespace CBF {
 
 		protected:
 			/**
-				This variable is used to cache the resourcevalue..
-			*/
-			FloatVector m_ResourceValue;
-
-			/**
 				Should be calculated by update() and returned by result()
 			*/
 			FloatVector m_Result;
@@ -183,7 +178,6 @@ namespace CBF {
         m_Result = FloatVector(sensor_dim);
         m_TaskVel = FloatVector(task_dim);
         m_TaskJacobian = FloatMatrix::Zero(task_dim, resource_dim);
-        m_ResourceValue = FloatVector(resource_dim);
       }
 	};
 

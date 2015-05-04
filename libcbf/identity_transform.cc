@@ -31,7 +31,7 @@ namespace CBF {
 		) :
 			EffectorTransform(xml_instance, object_namespace)
 		{
-			init(xml_instance.Dimension());
+      //init(xml_instance.Dimension());
 			CBF_DEBUG("[IdentityEffectorTransform(const IdentityEffectorTransformType &xml_instance)]: yay!!!");
 		}
 

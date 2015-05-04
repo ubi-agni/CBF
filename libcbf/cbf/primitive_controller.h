@@ -67,6 +67,7 @@ namespace CBF {
 			Float timestep,
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
+			FilterPtr reference_filter,
 			PotentialPtr potential,
 			FilterPtr task_filter,
 			SensorTransformPtr sensor_transform,
@@ -75,11 +76,9 @@ namespace CBF {
 			CombinationStrategyPtr combination_strategy
 		);
 	
-
 		protected:
 			SubordinateController* m_Master;
-			bool m_Converged, m_Stalled;
-			std::vector<ConvergenceCriterionPtr> m_ConvergenceCriteria;
+			bool m_Converged;
 
 			/**
 				@brief: Check for convergence of the controller
@@ -90,7 +89,6 @@ namespace CBF {
 				This should only be used after the result has been calculated.
 			*/ 
 			virtual bool check_convergence();
-			virtual bool step() {}
 
 			std::vector<ConvergenceCriterionPtr> m_ConvergenceCriteria;
 	
@@ -99,6 +97,7 @@ namespace CBF {
 				Float timestep,
 				std::vector<ConvergenceCriterionPtr> convergence_criteria,
 				ReferencePtr reference,
+				FilterPtr reference_filter,
 				PotentialPtr potential,
 				FilterPtr task_filter,
 				SensorTransformPtr sensor_transform,
@@ -152,6 +151,8 @@ namespace CBF {
 			*/
 			EffectorTransformPtr m_EffectorTransform;
 	
+			FilterPtr m_TaskFilter;
+
 			CombinationStrategyPtr m_CombinationStrategy;
 
 			/**
@@ -169,7 +170,10 @@ namespace CBF {
 
 			ReferencePtr reference() 
 				{ return m_Reference; }
-	
+
+			FilterPtr reference_filter()
+				{ return m_ReferenceFilter; }
+
 			std::vector<SubordinateControllerPtr> &subordinate_controllers() 
 				{ return m_SubordinateControllers; }
 	
@@ -179,19 +183,19 @@ namespace CBF {
 			PotentialPtr potential() 
 				{ return m_Potential; }
 	
-			FilterPtr reference_filter()
-				{ return m_ReferenceFilter; }
-
 			EffectorTransformPtr effector_transform()
 				{ return m_EffectorTransform; }
+
+			FilterPtr task_filter()
+				{ return m_TaskFilter; }
 	
 			CombinationStrategyPtr combination_strategy() 
 				{ return m_CombinationStrategy; }
-		
-			/** Compute a resource update step.
 
-				Update references, sensor transforms, effector transforms,
-				compute a gradient step, and finally the resource step
+		
+			/**
+				This reimplementation of the base class' method assumes that we are not a subordinate
+				controller, because subordinate controllers are always called via the do_step() method
 			*/
 			virtual void update(Float timestep);
 
@@ -201,6 +205,7 @@ namespace CBF {
 
 			void action() {action(m_TimeStep);}
 
+			virtual void reset(const FloatVector resource_value, const FloatVector resource_velocity);
 
 			/**
 				@brief Returns the result of the calculationss done on update().
@@ -212,6 +217,8 @@ namespace CBF {
 			virtual FloatVector &result_resource_velocity() { return m_CombinedResourceVlocity; }
 
 			virtual ResourcePtr resource();
+
+			virtual FilterPtr resource_filter();
 
 			/**
 				Check if controller is converged. Call this function only
@@ -275,22 +282,26 @@ namespace CBF {
 			Float timestep,
 			std::vector<ConvergenceCriterionPtr> convergence_criteria,
 			ReferencePtr reference,
-			PotentialPtr potential,
 			FilterPtr reference_filter,
+			PotentialPtr potential,
+			FilterPtr task_filter,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
 			std::vector<SubordinateControllerPtr> subordinate_controllers,
 			CombinationStrategyPtr combination_strategy,
-			ResourcePtr resource
+			ResourcePtr resource,
+			FilterPtr resource_filter
 		);
 	
+		 void primitive_init(ResourcePtr resource, FilterPtr resource_filter);
+
 		/**
 			The reset() function reset the controller so as to generate the velocity continous task-space trajectory
 			Before call the function, the user must make sure that the resource value and resource velocity values are set properly
 		*/
-		void reset(void);
+    	void reset(void);
 
-		void reset(const FloatVector resource_value, const FloatVector resource_velocity);
+    	void reset(const FloatVector resource_value, const FloatVector resource_velocity);
 	
 		protected:
 			/*** @brief Function for stuff common to all constructors */
@@ -302,25 +313,27 @@ namespace CBF {
 			*/
 			std::vector<PrimitiveControllerPtr> m_SubordinateControllers;
 	
-
 			/**
 				The resource this controller acts upon
 			*/
 			ResourcePtr m_Resource;
+			FilterPtr m_ResourceFilter;
 
 			virtual void check_dimensions() const;
 
 		public:
 
-			virtual ResourcePtr resource() { return m_Resource; }
+		ResourcePtr resource() { return m_Resource; }
 
-			virtual void update(Float timestep);
+		FilterPtr resource_filter() { return m_ResourceFilter; }
 
-			virtual void action(Float timestep);
+		virtual void update(Float timestep);
 
-			void update() {update(m_TimeStep);}
+		virtual void action(Float timestep);
 
-			void action() {action(m_TimeStep);}
+		void update() {update(m_TimeStep);}
+
+		void action() {action(m_TimeStep);}
 	};
 
 } // namespace

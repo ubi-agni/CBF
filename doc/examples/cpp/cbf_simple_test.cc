@@ -20,7 +20,8 @@
 
 #include <cbf/primitive_controller.h>
 #include <cbf/square_potential.h>
-#include <cbf/pid_filter.h>
+#include <cbf/cddyn_filter.h>
+#include <cbf/bypass_filter.h>
 #include <cbf/identity_transform.h>
 #include <cbf/generic_transform.h>
 #include <cbf/dummy_resource.h>
@@ -30,28 +31,32 @@
 
 #include <vector>
 
+#define N_REF 3
+#define N_DT (1./100.)
+
 using namespace CBF;
 
 int main() {
+  unsigned int nJoints = 3;
 
-  Float dt = 1./100.;
-
-	DummyReferencePtr reference(new DummyReference(1,3));
-  PotentialPtr potential(new SquarePotential(3));
+  DummyReferencePtr reference(new DummyReference(1, N_REF));
+  PotentialPtr potential(new SquarePotential(nJoints, nJoints));
 
 	//! Create a PrimitiveController...
  	PrimitiveControllerPtr c(
 		new PrimitiveController(
-      dt,
+      N_DT,
 			std::vector<ConvergenceCriterionPtr>(), 
 			reference,
+      CDDynFilterPtr(new CDDynFilter(N_DT, potential->sensor_dim(), potential->task_dim(), 1.0)),
       potential,
-      PIDFilterPtr(new PIDFilter(dt, 3, 3)),
-			SensorTransformPtr(new IdentitySensorTransform(3)),
-			EffectorTransformPtr(new GenericEffectorTransform(3,3)),
+      BypassFilterPtr(new BypassFilter(N_DT, potential->sensor_dim(), potential->task_dim())),
+      SensorTransformPtr(new IdentitySensorTransform(potential->sensor_dim())),
+      EffectorTransformPtr(new GenericEffectorTransform(potential->task_dim(), nJoints)),
 			std::vector<SubordinateControllerPtr>(),
 			CombinationStrategyPtr(new AddingStrategy),
-			ResourcePtr(new DummyResource(3))
+      ResourcePtr(new DummyResource(nJoints)),
+      BypassFilterPtr(new BypassFilter(N_DT, nJoints, nJoints))
 		)
 	);
 

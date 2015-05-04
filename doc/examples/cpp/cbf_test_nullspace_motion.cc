@@ -9,7 +9,7 @@
 #include <cbf/dummy_reference.h>
 #include <cbf/kdl_transforms.h>
 #include <cbf/generic_transform.h>
-#include <cbf/transpose_transform.h>
+#include <cbf/identity_transform.h>
 #include <cbf/convergence_criterion.h>
 #include <cbf/combination_strategy.h>
 
@@ -30,12 +30,14 @@ using namespace std;
 using namespace boost;
 using namespace CBF;
 
-#define N_REF 4
+#define N_REF 3
 #define N_DT (1./100.)
 
 CBF::DummyReferencePtr mTargetReference;
 CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chain);
+
 boost::shared_ptr<KDL::Chain> createChain (int iNumJointTriples);
+
 
 Chain createKDLChain() {
   Chain chain;
@@ -80,15 +82,50 @@ Chain createKDLChain() {
 }
 
 
+
 CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chain)
 {
   unsigned int nJoints = chain->getNrOfJoints();
 
+  CBF::DummyReferencePtr null_reference = CBF::DummyReferencePtr(new CBF::DummyReference(1, nJoints));
+  CBF::SquarePotentialPtr null_potential = CBF::SquarePotentialPtr(new CBF::SquarePotential(nJoints, nJoints));
+  CBF::CDDynFilterPtr null_reference_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(N_DT, nJoints, nJoints, 5.0));
+
+  FloatVector lRef(nJoints);
+  lRef.setOnes(nJoints);
+  lRef = lRef*0.3;
+  null_reference->set_reference(lRef);
+  std::cout << "Null space Reference" << std::endl;
+  std::cout << lRef << std::endl;
+
+  // null space controller
+  CBF::SubordinateControllerPtr null_ontroller (
+      new CBF::SubordinateController(
+        N_DT,
+        std::vector<CBF::ConvergenceCriterionPtr>(),
+        null_reference,
+        null_reference_filter,
+        null_potential,
+        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, null_potential->sensor_dim(), null_potential->task_dim())),
+        CBF::SensorTransformPtr(new CBF::IdentitySensorTransform(nJoints)),
+        CBF::EffectorTransformPtr(new CBF::IdentityEffectorTransform(nJoints)),
+        std::vector<CBF::SubordinateControllerPtr>(),
+        CBF::CombinationStrategyPtr(new CBF::AddingStrategy)
+      )
+  );
+
+  std::vector<CBF::SubordinateControllerPtr > null_controllers;
+  null_controllers.push_back(null_ontroller);
+
+
+  // main primitive controller
   mTargetReference = CBF::DummyReferencePtr(new CBF::DummyReference(1, N_REF));
 
-  CBF::QuaternionPotentialPtr potential = CBF::QuaternionPotentialPtr(new CBF::QuaternionPotential());
+  CBF::SquarePotentialPtr potential = CBF::SquarePotentialPtr(new CBF::SquarePotential(N_REF, N_REF));
 
   CBF::CDDynFilterPtr reference_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(N_DT, potential->sensor_dim(), potential->task_dim(), 2.0));
+
+  CBF::SensorTransformPtr sensor_transform = CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain));
 
   // controller
   CBF::PrimitiveControllerPtr controller (
@@ -99,9 +136,9 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         reference_filter,
         potential,
         CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, potential->sensor_dim(), potential->task_dim())),
-        CBF::SensorTransformPtr(new CBF::KDLChainQuaternionSensorTransform(chain)),
-        CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(potential->task_dim(), nJoints)),
-        std::vector<CBF::SubordinateControllerPtr>(),
+        sensor_transform,
+        CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(potential->task_dim(), nJoints)),
+        null_controllers,
         CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
         CBF::DummyResourcePtr(new CBF::DummyResource(nJoints)),
         CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, nJoints, nJoints))
@@ -125,18 +162,18 @@ int main() {
   lJoint.setOnes();
   mController->resource()->update(lJoint*0.2, lJoint*0.0);
   mController->sensor_transform()->update(mController->resource()->get());
+  std::cout << "Initial resource" << std::endl;
+  std::cout << mController->resource()->get() << std::endl;
 
   lRef = mController->sensor_transform()->result();
-  std::cout << "Initial Quaternion" << std::endl;
+  std::cout << "Initial Reference" << std::endl;
   std::cout << lRef << std::endl;
 
   lRef(0) += 0.2;
   lRef(1) += 0.2;
   lRef(2) -= 0.2;
-  lRef(3) -= 0.2;
-  lRef = lRef/lRef.norm();
 
-  std::cout << "Target Quaternion" << std::endl;
+  std::cout << "Target Reference" << std::endl;
   std::cout << lRef << std::endl;
 
   mTargetReference->set_reference(lRef);
@@ -144,20 +181,9 @@ int main() {
   mController->reset();
 
   FloatVector lEndPosture(4);
-
   int cnt=0;
   do {
-    // get resource from the robot
-    mController->resource()->update(
-      mController->resource()->get(),
-      mController->result_resource_velocity());
-
-    // control
     mController->step();
-
-    // send result resource to the robot
-
-    // check
     lEndPosture = mController->sensor_transform()->result();
     //lEndPosture = mController->reference_filter()->get_filtered_state();
 
@@ -165,9 +191,32 @@ int main() {
                << lEndPosture[0] << " "
                << lEndPosture[1] << " "
                << lEndPosture[2] << " "
-               << lEndPosture[3] << " "
                << std::endl;
+/*
+    std::cout << "Task Reference velocity" << std::endl;
+    std::cout << mController->reference_filter()->get_filtered_state_vel() << std::endl;
 
+    std::cout << "Task Jacobian" << std::endl;
+    std::cout << mController->sensor_transform()->task_jacobian() << std::endl;
+
+    std::cout << "Inverse Jacobian" << std::endl;
+    std::cout << mController->effector_transform()->inverse_task_jacobian() << std::endl;
+
+    std::cout << mController->result_resource_velocity() << std::endl;
+    std::cout << mController->effector_transform()->inverse_task_jacobian() *  mController->reference_filter()->get_filtered_state_vel() << std::endl;
+
+    std::cout << "Null space sensor" << std::endl;
+    std::cout << mController->subordinate_controllers()[0]->sensor_transform()->result() << std::endl;
+
+    std::cout << "Null space reference" << std::endl;
+    std::cout << mController->subordinate_controllers()[0]->reference_filter()->get_filtered_state() << std::endl;
+
+    std::cout << "Resource" << std::endl;
+    std::cout << mController->resource()->get() << std::endl;
+
+    std::cout << "mController->result_resource_velocity()" << std::endl;
+    std::cout << mController->result_resource_velocity() << std::endl;
+*/
     usleep(10000);
   } while(mController->finished() == false);
 }
