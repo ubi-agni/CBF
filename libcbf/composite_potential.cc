@@ -73,16 +73,15 @@ namespace CBF {
 
 	void CompositePotential::gradient (
 		FloatVector &result,
-		const std::vector<FloatVector > &references,
+		const FloatVector &reference,
 		const FloatVector &input)
 	{
-		result = FloatVector::Zero(input.size());
+		result.setZero();
 
 		unsigned int current_index = 0;
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-			m_ref_buffers[i] = references[0].segment(current_index, m_Potentials[i]->sensor_dim());
+			m_ref_buffers[i] = reference.segment(current_index, m_Potentials[i]->sensor_dim());
 			m_in_buffers[i] = input.segment(current_index, m_Potentials[i]->sensor_dim());
-
 
 			std::vector<FloatVector > tmp_refs;
 			tmp_refs.push_back(m_ref_buffers[i]);

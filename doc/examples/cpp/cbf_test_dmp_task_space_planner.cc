@@ -4,6 +4,7 @@
 #include <cbf/cddyn_filter.h>
 #include <cbf/dmp_filter.h>
 #include <cbf/bypass_filter.h>
+#include <cbf/error_controllers.h>
 
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
@@ -114,7 +115,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         mTargetReference,
         task_filter,
         potential,
-        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, potential->sensor_dim(), potential->task_dim())),
+        PDPositionControlPtr(new PDPositionControl(N_DT, potential->task_dim())),
         CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)),
         CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(potential->task_dim(), nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
@@ -139,8 +140,7 @@ int main() {
   FloatVector lJoint(mChain->getNrOfJoints());
 
   lJoint.setOnes();
-  mController->resource()->update(lJoint*0.2, lJoint*0.0);
-  mController->sensor_transform()->update(mController->resource()->get());
+  mController->reset(lJoint*0.2, lJoint*0.0);
 
   lRef = mController->sensor_transform()->result();
   std::cout << "Initial position" << std::endl;
@@ -154,8 +154,6 @@ int main() {
   std::cout << lRef << std::endl;
 
   mTargetReference->set_reference(lRef);
-
-  mController->reset();
 
   FloatVector lEndPosture(3);
 

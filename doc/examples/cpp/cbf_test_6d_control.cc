@@ -2,8 +2,8 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/quaternion_potential.h>
 #include <cbf/cddyn_filter.h>
-#include <cbf/pid_filter.h>
 #include <cbf/bypass_filter.h>
+#include <cbf/error_controllers.h>
 
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
@@ -92,7 +92,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
 
   mTargetReference = CBF::DummyReferencePtr(new CBF::DummyReference(1, N_REF));
 
-  CBF::CDDynFilterPtr reference_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(N_DT, potential->sensor_dim(), potential->task_dim(), 5.0));
+  CBF::CDDynFilterPtr reference_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(N_DT, potential->sensor_dim(), potential->task_dim(), 1.0));
 
   std::vector<CBF::SensorTransformPtr> sensor_transforms = boost::assign::list_of
     (CBF::SensorTransformPtr(new CBF::KDLChainPositionSensorTransform(chain)))
@@ -108,9 +108,9 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         mTargetReference,
         reference_filter,
         potential,
-        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, potential->sensor_dim(), potential->task_dim())),
+        PDPositionControlPtr(new PDPositionControl(N_DT, potential->task_dim())),
         sensor_transform,
-        CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(potential->task_dim(), nJoints)),
+        CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(potential->task_dim(), nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
         CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
         CBF::DummyResourcePtr(new CBF::DummyResource(nJoints)),
@@ -135,8 +135,7 @@ int main() {
   FloatVector lEndPosture(N_REF);
 
   lJoint.setOnes();
-  mController->resource()->update(lJoint*0.2, lJoint*0.0);
-  mController->sensor_transform()->update(mController->resource()->get());
+  mController->reset(lJoint*0.2, lJoint*0.01);
 
   std::cout << "Initial resource" << std::endl;
   std::cout << mController->resource()->get() << std::endl;
@@ -144,6 +143,11 @@ int main() {
   lRef = mController->sensor_transform()->result();
   std::cout << "Initial reference" << std::endl;
   std::cout << lRef << std::endl;
+
+  std::cout << "Initial sensor dim" << std::endl;
+  std::cout << mController->sensor_transform()->sensor_dim() << std::endl;
+  std::cout << mController->sensor_transform()->task_dim() << std::endl;
+
 
   // set arbitrary reference
   lRef(0) += 0.1;
@@ -187,6 +191,9 @@ int main() {
       std::cout << lEndPosture[i] << " ";
     }
     std::cout << std::endl;
+
+    //std::cout << "result_resource_velocity " << std::endl;
+    //std::cout << mController->result_resource_velocity() << std::endl;
 
     usleep(10000);
   } while(mController->finished() == false);

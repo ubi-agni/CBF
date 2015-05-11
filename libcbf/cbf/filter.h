@@ -73,7 +73,13 @@ struct Filter : public Object {
   virtual void update(
       const FloatVector &state,
       const FloatVector &state_vel,
-      const Float timestep) = 0;
+      const Float timestep) = 0;  
+
+  virtual void update(
+      const FloatVector &state,
+      const FloatVector &state_vel) { update(state, state_vel, m_TimeStep); }
+
+  virtual void update() { update(m_TargetState, m_TargetStateVel, m_TimeStep); }
 
   FloatVector &get_filtered_state() { return m_FilteredState; }
 

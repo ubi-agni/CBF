@@ -48,6 +48,8 @@ set(CBF_SOURCES
   cddyn_filter.cc
   dmp_filter.cc
   bypass_filter.cc
+  error_control.cc
+  error_controllers.cc
   )
 
 set(CBF_HEADERS
@@ -120,6 +122,8 @@ set(CBF_HEADERS
   cbf/cddyn_filter.h
   cbf/dmp_filter.h
   cbf/bypass_filter.h
+  cbf/error_control.h
+  cbf/error_controllers.h
   )
 
 if(CBF_HAVE_PYTHON)

@@ -22,6 +22,7 @@
 #include <cbf/square_potential.h>
 #include <cbf/cddyn_filter.h>
 #include <cbf/bypass_filter.h>
+#include <cbf/error_controllers.h>
 #include <cbf/identity_transform.h>
 #include <cbf/generic_transform.h>
 #include <cbf/dummy_resource.h>
@@ -50,7 +51,7 @@ int main() {
 			reference,
       CDDynFilterPtr(new CDDynFilter(N_DT, potential->sensor_dim(), potential->task_dim(), 1.0)),
       potential,
-      BypassFilterPtr(new BypassFilter(N_DT, potential->sensor_dim(), potential->task_dim())),
+      PDPositionControlPtr(new PDPositionControl(N_DT, potential->task_dim())),
       SensorTransformPtr(new IdentitySensorTransform(potential->sensor_dim())),
       EffectorTransformPtr(new GenericEffectorTransform(potential->task_dim(), nJoints)),
 			std::vector<SubordinateControllerPtr>(),

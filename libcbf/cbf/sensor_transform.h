@@ -120,12 +120,20 @@ namespace CBF {
 			on the current resource value.
 		*/
 		virtual void update(const FloatVector &resource_value) = 0;
+
+    virtual void update(const FloatVector &resource_value, const FloatVector &resource_value_velocity) {
+      update(resource_value);
+      m_TaskVel = m_TaskJacobian*resource_value_velocity;
+    }
+
 	
 		/**
 			@brief Return a reference to the result calculated in the 
 			update() function.
 		*/
     virtual const FloatVector &result() const { return m_Result; }
+
+    virtual const FloatVector &get_task_velocity() const { return m_TaskVel; }
 
     virtual const FloatVector &get_task_velocity(const FloatVector resource_velocity) const { return m_TaskJacobian*resource_velocity; }
 	

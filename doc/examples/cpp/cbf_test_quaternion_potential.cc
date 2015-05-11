@@ -2,8 +2,8 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/quaternion_potential.h>
 #include <cbf/cddyn_filter.h>
-#include <cbf/pid_filter.h>
 #include <cbf/bypass_filter.h>
+#include <cbf/error_controllers.h>
 
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
@@ -98,9 +98,9 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         mTargetReference,
         reference_filter,
         potential,
-        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, potential->sensor_dim(), potential->task_dim())),
+        PDPositionControlPtr(new PDPositionControl(N_DT, potential->task_dim())),
         CBF::SensorTransformPtr(new CBF::KDLChainQuaternionSensorTransform(chain)),
-        CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(potential->task_dim(), nJoints)),
+        CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(potential->task_dim(), nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
         CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
         CBF::DummyResourcePtr(new CBF::DummyResource(nJoints)),
@@ -123,8 +123,7 @@ int main() {
   FloatVector lJoint(mChain->getNrOfJoints());
 
   lJoint.setOnes();
-  mController->resource()->update(lJoint*0.2, lJoint*0.0);
-  mController->sensor_transform()->update(mController->resource()->get());
+  mController->reset(lJoint*0.2, lJoint*0.0);
 
   lRef = mController->sensor_transform()->result();
   std::cout << "Initial Quaternion" << std::endl;
@@ -141,16 +140,16 @@ int main() {
 
   mTargetReference->set_reference(lRef);
 
-  mController->reset();
-
   FloatVector lEndPosture(4);
 
   int cnt=0;
   do {
     // get resource from the robot
+    /*
     mController->resource()->update(
       mController->resource()->get(),
       mController->result_resource_velocity());
+    */
 
     // control
     mController->step();
@@ -161,12 +160,19 @@ int main() {
     lEndPosture = mController->sensor_transform()->result();
     //lEndPosture = mController->reference_filter()->get_filtered_state();
 
+    lJoint = mController->result_resource_velocity();
+
     std::cout << "step " << cnt++ << ": "
                << lEndPosture[0] << " "
                << lEndPosture[1] << " "
                << lEndPosture[2] << " "
-               << lEndPosture[3] << " "
-               << std::endl;
+               << lEndPosture[3] << ", ";
+
+    for(int i=0; i<mChain->getNrOfJoints(); i++)
+    {
+      std::cout << lJoint(i) << " ";
+    }
+    std::cout << std::endl;
 
     usleep(10000);
   } while(mController->finished() == false);

@@ -157,6 +157,9 @@ namespace CBF {
 	};
 	typedef boost::shared_ptr<KDLChainPositionSensorTransform> KDLChainPositionSensorTransformPtr;
 	
+	typedef boost::shared_ptr<
+		KDLChainPositionSensorTransform
+	> KDLChainPositionSensorTransformPtr;
 	
 	
 	//! SensorTransform of a KDL chain, representing end-effector orientation as angular velocity vector

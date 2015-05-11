@@ -2,8 +2,8 @@
 #include <cbf/primitive_controller.h>
 #include <cbf/quaternion_potential.h>
 #include <cbf/cddyn_filter.h>
-#include <cbf/pid_filter.h>
 #include <cbf/bypass_filter.h>
+#include <cbf/error_controllers.h>
 
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
@@ -106,7 +106,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         null_reference,
         null_reference_filter,
         null_potential,
-        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, null_potential->sensor_dim(), null_potential->task_dim())),
+        PDPositionControlPtr(new PDPositionControl(N_DT, null_potential->task_dim())),
         CBF::SensorTransformPtr(new CBF::IdentitySensorTransform(nJoints)),
         CBF::EffectorTransformPtr(new CBF::IdentityEffectorTransform(nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
@@ -135,7 +135,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         mTargetReference,
         reference_filter,
         potential,
-        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, potential->sensor_dim(), potential->task_dim())),
+        PDPositionControlPtr(new PDPositionControl(N_DT, potential->task_dim())),
         sensor_transform,
         CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(potential->task_dim(), nJoints)),
         null_controllers,
@@ -160,8 +160,8 @@ int main() {
   FloatVector lJoint(mChain->getNrOfJoints());
 
   lJoint.setOnes();
-  mController->resource()->update(lJoint*0.2, lJoint*0.0);
-  mController->sensor_transform()->update(mController->resource()->get());
+  mController->reset(lJoint*0.2, lJoint*0.0);
+
   std::cout << "Initial resource" << std::endl;
   std::cout << mController->resource()->get() << std::endl;
 
@@ -177,8 +177,6 @@ int main() {
   std::cout << lRef << std::endl;
 
   mTargetReference->set_reference(lRef);
-
-  mController->reset();
 
   FloatVector lEndPosture(4);
   int cnt=0;

@@ -69,7 +69,7 @@ namespace CBF {
 			ReferencePtr reference,
 			FilterPtr reference_filter,
 			PotentialPtr potential,
-			FilterPtr task_filter,
+			ErrorControlPtr error_control,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
 			std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -99,7 +99,7 @@ namespace CBF {
 				ReferencePtr reference,
 				FilterPtr reference_filter,
 				PotentialPtr potential,
-				FilterPtr task_filter,
+				ErrorControlPtr error_control,
 				SensorTransformPtr sensor_transform,
 				EffectorTransformPtr effector_transform,
 				std::vector<SubordinateControllerPtr> subordinate_controllers,
@@ -151,7 +151,7 @@ namespace CBF {
 			*/
 			EffectorTransformPtr m_EffectorTransform;
 	
-			FilterPtr m_TaskFilter;
+			ErrorControlPtr m_ErrorControl;
 
 			CombinationStrategyPtr m_CombinationStrategy;
 
@@ -232,7 +232,6 @@ namespace CBF {
 
 		protected:
 			//! overall resource update, including those from subordinates
-			FloatVector m_Result;
 
 			FloatMatrix m_TaskJacobian;
 			FloatMatrix m_InverseTaskJacobian;
@@ -304,9 +303,6 @@ namespace CBF {
     	void reset(const FloatVector resource_value, const FloatVector resource_velocity);
 	
 		protected:
-			/*** @brief Function for stuff common to all constructors */
-			void init(ResourcePtr resource);
-
 			/**
 				A controller can have subordinate controllers whose control signal
 				get projected into the nullspace of the task jacobian

@@ -61,6 +61,10 @@ namespace CBF {
 		*/
 		virtual std::vector<FloatVector> &get() { return m_References; }
 	
+    virtual void set_references(const std::vector<FloatVector> &refs);
+
+    virtual void set_reference(const FloatVector &ref, const unsigned int ref_index=0);
+
 		virtual ~Reference() { }
 
 		protected:
