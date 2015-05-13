@@ -13,6 +13,7 @@
 #include <cbf/transpose_transform.h>
 #include <cbf/convergence_criterion.h>
 #include <cbf/combination_strategy.h>
+#include <cbf/generic_limiters.h>
 
 #include <cbf/square_potential.h>
 
@@ -121,7 +122,8 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         std::vector<CBF::SubordinateControllerPtr>(),
         CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
         CBF::DummyResourcePtr(new CBF::DummyResource(nJoints)),
-        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, nJoints, nJoints))
+        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, nJoints, nJoints)),
+        CBF::NullLimiterPtr(new CBF::NullLimiter(N_DT, nJoints))
       )
   );
 

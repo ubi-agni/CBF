@@ -32,11 +32,13 @@
 #include <cbf/convergence_criterion.h>
 #include <cbf/potential.h>
 #include <cbf/filter.h>
+#include <cbf/error_control.h>
 #include <cbf/resource.h>
 #include <cbf/effector_transform.h>
 #include <cbf/reference.h>
 #include <cbf/sensor_transform.h>
 #include <cbf/combination_strategy.h>
+#include <cbf/limiter.h>
 #include <cbf/namespace.h>
 
 namespace CBFSchema { 
@@ -186,8 +188,8 @@ namespace CBF {
 			EffectorTransformPtr effector_transform()
 				{ return m_EffectorTransform; }
 
-			FilterPtr task_filter()
-				{ return m_TaskFilter; }
+			ErrorControlPtr error_control()
+				{ return m_ErrorControl; }
 	
 			CombinationStrategyPtr combination_strategy() 
 				{ return m_CombinationStrategy; }
@@ -283,16 +285,17 @@ namespace CBF {
 			ReferencePtr reference,
 			FilterPtr reference_filter,
 			PotentialPtr potential,
-			FilterPtr task_filter,
+			ErrorControlPtr error_control,
 			SensorTransformPtr sensor_transform,
 			EffectorTransformPtr effector_transform,
 			std::vector<SubordinateControllerPtr> subordinate_controllers,
 			CombinationStrategyPtr combination_strategy,
 			ResourcePtr resource,
-			FilterPtr resource_filter
+			FilterPtr resource_filter,
+			LimiterPtr limiter
 		);
 	
-		 void primitive_init(ResourcePtr resource, FilterPtr resource_filter);
+		void primitive_init(ResourcePtr resource, FilterPtr resource_filter);
 
 		/**
 			The reset() function reset the controller so as to generate the velocity continous task-space trajectory
@@ -314,6 +317,7 @@ namespace CBF {
 			*/
 			ResourcePtr m_Resource;
 			FilterPtr m_ResourceFilter;
+			LimiterPtr m_ResourceLimiter;
 
 			virtual void check_dimensions() const;
 
@@ -322,6 +326,8 @@ namespace CBF {
 		ResourcePtr resource() { return m_Resource; }
 
 		FilterPtr resource_filter() { return m_ResourceFilter; }
+
+		LimiterPtr resource_limiter() { return m_ResourceLimiter; }
 
 		virtual void update(Float timestep);
 

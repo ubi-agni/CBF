@@ -67,7 +67,7 @@ namespace CBF {
       const FloatVector &velocity_error,
       const Float timestep)
   {
-    m_ErrorDerivative = (position_error-m_Error);
+    m_ErrorDerivative = (position_error-m_Error)/timestep;
     m_Error = position_error;
 
     m_VelocityErrorDerivative = (velocity_error-m_VelocityError)/timestep;

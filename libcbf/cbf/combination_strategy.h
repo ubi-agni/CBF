@@ -73,15 +73,19 @@ struct AddingStrategy : public CombinationStrategy {
 		ObjectNamespacePtr object_namespace
 	);
 
-	AddingStrategy() { }
+  AddingStrategy(Float weight=1.0) : CombinationStrategy() { m_Weight = weight; }
 
 	virtual void exec(
 		FloatVector &result, 
 		const std::vector<FloatVector > &inputs
 	) {
-		for (unsigned int i = 0; i < inputs.size(); ++i)
+    for (unsigned int i = 0; i < inputs.size(); ++i) {
 			result += inputs[i];
+    }
+    result *= m_Weight;
 	}
+  protected:
+    Float m_Weight;
 };
 
 typedef boost::shared_ptr<AddingStrategy> AddingStrategyPtr;

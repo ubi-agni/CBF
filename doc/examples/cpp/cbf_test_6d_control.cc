@@ -12,6 +12,7 @@
 #include <cbf/transpose_transform.h>
 #include <cbf/convergence_criterion.h>
 #include <cbf/combination_strategy.h>
+#include <cbf/generic_limiters.h>
 
 #include <cbf/square_potential.h>
 #include <cbf/composite_potential.h>
@@ -114,7 +115,8 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         std::vector<CBF::SubordinateControllerPtr>(),
         CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
         CBF::DummyResourcePtr(new CBF::DummyResource(nJoints)),
-        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, nJoints, nJoints))
+        CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, nJoints, nJoints)),
+        CBF::NullLimiterPtr(new CBF::NullLimiter(N_DT, nJoints))
       )
   );
 
@@ -172,17 +174,19 @@ int main() {
 
   int cnt=0;
   do {
-    // get resource from the robot
-    mController->resource()->update(
-      mController->resource()->get(),
-      mController->result_resource_velocity());
+    // get resource from the real robot
+    // as this example does not include real robot,
+    // we assume that the resource_filter is same as the real robot's resource value
+    //mController->resource()->update(
+    //  mController->resource_filter()->get_filtered_state(),
+    //  mController->resource_filter()->get_filtered_state_vel());
 
     // control
     mController->step();
 
-    // send result resource to the robot
+    // send result resource to a real robot
 
-    // check
+    // display
     lEndPosture = mController->sensor_transform()->result();
 
     std::cout << "step " << cnt++ << ": ";

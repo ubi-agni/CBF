@@ -16,7 +16,7 @@ namespace CBF {
 KDLChainDirectionSensorTransform::KDLChainDirectionSensorTransform(boost::shared_ptr<KDL::Chain> chain) :
   BaseKDLChainSensorTransform(chain)
 {
-  m_SensorDim = 4;
+  m_SensorDim = 3;
   m_TaskDim = 3;
   m_ResourceDim = chain->getNrOfJoints();
 

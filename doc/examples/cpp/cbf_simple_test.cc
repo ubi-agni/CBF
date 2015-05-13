@@ -28,6 +28,7 @@
 #include <cbf/dummy_resource.h>
 #include <cbf/dummy_reference.h>
 #include <cbf/convergence_criterion.h>
+#include <cbf/generic_limiters.h>
 #include <cbf/xml_factory.h>
 
 #include <vector>
@@ -57,7 +58,8 @@ int main() {
 			std::vector<SubordinateControllerPtr>(),
 			CombinationStrategyPtr(new AddingStrategy),
       ResourcePtr(new DummyResource(nJoints)),
-      BypassFilterPtr(new BypassFilter(N_DT, nJoints, nJoints))
+      BypassFilterPtr(new BypassFilter(N_DT, nJoints, nJoints)),
+      NullLimiterPtr(new NullLimiter(N_DT, nJoints))
 		)
 	);
 
