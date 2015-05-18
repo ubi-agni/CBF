@@ -54,7 +54,7 @@ namespace CBF {
 			reference,
       		reference_filter,
       		potential,
-      		error_filter,
+      		error_control,
 			sensor_transform,
 			effector_transform,
 			subordinate_controllers,
@@ -113,14 +113,37 @@ namespace CBF {
 
 	void SubordinateController::reset(const FloatVector resource_value, const FloatVector resource_velocity)
 	{
-		FloatVector lTaskError = FloatVector(m_SensorTransform->task_dim());
-		FloatVector lRef  = FloatVector(m_SensorTransform->sensor_dim());
-
 		// reset sensor transform
 		m_SensorTransform->update(resource_value, resource_velocity);
 
 		// reset error controller
 		m_ErrorControl->reset();
+
+		// reset reference
+		std::vector<FloatVector> lRef = std::vector<FloatVector>(1, m_SensorTransform->result());
+		lRef[0] = m_SensorTransform->result();
+		m_Reference->set_references(lRef);
+
+		// reset reference filter
+		m_ReferenceFilter->reset(m_SensorTransform->result(),
+		                         m_SensorTransform->get_task_velocity());
+
+		// reset null motions
+		for (std::vector<SubordinateControllerPtr>::iterator
+			it  = m_SubordinateControllers.begin(),
+			end = m_SubordinateControllers.end();
+			it != end; ++it) {
+			
+			//(*it)->reset(resource_value, FloatVector::Zero(resource_value.size()));
+			(*it)->reset(resource_value, resource_velocity);
+		}
+	}
+
+	void SubordinateController::reset_sensor()
+	{
+		// reset sensor transform
+		m_SensorTransform->update(resource_filter()->get_filtered_state(),
+		                          resource_filter()->get_filtered_state_vel());
 
 		// reset reference filter
 		m_ReferenceFilter->reset(m_SensorTransform->result(),
@@ -132,8 +155,7 @@ namespace CBF {
 			end = m_SubordinateControllers.end();
 			it != end; ++it) {
 
-			//(*it)->reset(resource_value, FloatVector::Zero(resource_value.size()));
-			(*it)->reset(resource_value, resource_velocity);
+			(*it)->reset_sensor();
 		}
 	}
 
@@ -150,7 +172,7 @@ namespace CBF {
 
 	void PrimitiveController::reset()
 	{
-		reset(m_ResourceFilter->get_filtered_state(), m_ResourceFilter->get_filtered_state_vel());
+		SubordinateController::reset(m_ResourceFilter->get_filtered_state(), m_ResourceFilter->get_filtered_state_vel());
 	}
 
 	void PrimitiveController::reset(const FloatVector resource_value, const FloatVector resource_velocity)
@@ -161,20 +183,20 @@ namespace CBF {
 		SubordinateController::reset(resource_value, resource_velocity);
 	}
 
-  PrimitiveController::PrimitiveController(Float timestep,
-    std::vector<ConvergenceCriterionPtr> convergence_criteria,
-    ReferencePtr reference,
-    FilterPtr reference_filter,
-    PotentialPtr potential,
-    ErrorControlPtr error_control,
-    SensorTransformPtr sensor_transform,
-    EffectorTransformPtr effector_transform,
-    std::vector<SubordinateControllerPtr> subordinate_controllers,
-    CombinationStrategyPtr combination_strategy,
-    ResourcePtr resource,
-    FilterPtr resource_filter,
-    LimiterPtr limiter)	:
-		SubordinateController(
+	PrimitiveController::PrimitiveController(Float timestep,
+		std::vector<ConvergenceCriterionPtr> convergence_criteria,
+		ReferencePtr reference,
+		FilterPtr reference_filter,
+		PotentialPtr potential,
+		ErrorControlPtr error_control,
+		SensorTransformPtr sensor_transform,
+		EffectorTransformPtr effector_transform,
+		std::vector<SubordinateControllerPtr> subordinate_controllers,
+		CombinationStrategyPtr combination_strategy,
+		ResourcePtr resource,
+		FilterPtr resource_filter,
+		LimiterPtr limiter)	:
+			SubordinateController(
 			timestep,
 			convergence_criteria,
 			reference,
@@ -316,7 +338,16 @@ namespace CBF {
 			CBF_THROW_RUNTIME_ERROR(m_Name << ": controller update timestep (" << timestep << ") is too small to compare to the average time step (" << m_TimeStep << ")!!");
 		}
 
-    m_Resource->set(m_ResourceFilter->get_filtered_state()+m_CombinedResourceVlocity*timestep);
+		FloatVector lRes = FloatVector::Zero(m_CombinedResourceVlocity.size());
+		lRes = m_ResourceFilter->get_filtered_state()+m_CombinedResourceVlocity*timestep;
+
+		m_ResourceLimiter->limit(m_ResourceFilter->get_filtered_state(),
+		                         m_ResourceFilter->get_filtered_state_vel(),
+		                         lRes,
+		                         m_CombinedResourceVlocity);
+
+		m_Resource->update(lRes,
+		                   m_CombinedResourceVlocity);
 
 		m_Converged = check_convergence();
 	}
@@ -442,8 +473,9 @@ namespace CBF {
 
 			ResourcePtr res = XMLObjectFactory::instance()->create<Resource>(xml_instance.Resource(), object_namespace);
 			FilterPtr res_filter; // TODO
+			LimiterPtr res_limiter; // TODO
 
-      primitive_init(res, res_filter);
+			primitive_init(res, res_filter, res_limiter);
 		}
 
 

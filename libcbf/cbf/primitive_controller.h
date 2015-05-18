@@ -209,6 +209,8 @@ namespace CBF {
 
 			virtual void reset(const FloatVector resource_value, const FloatVector resource_velocity);
 
+      virtual void reset_sensor();
+
 			/**
 				@brief Returns the result of the calculationss done on update().
 
@@ -217,6 +219,10 @@ namespace CBF {
 				space gradient step) of these	calculations to the resource.
 			*/
 			virtual FloatVector &result_resource_velocity() { return m_CombinedResourceVlocity; }
+
+      virtual FloatVector &result_nullspace_resource_velocity() { return m_NullSpaceResourceVlocity; }
+
+      virtual FloatVector &result_taskspace_resource_velocity() { return m_ResourceVelocity; }
 
 			virtual ResourcePtr resource();
 

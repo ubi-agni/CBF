@@ -54,11 +54,11 @@ namespace CBF {
       const FloatVector &reference,
       const FloatVector &input)
   {
-    if( distance(reference, input) < CBF_DIRECTION_DIFFERENCE_THRESHOLD) {
+    if( fabs(distance(reference, input)) < CBF_DIRECTION_DIFFERENCE_THRESHOLD) {
       result.setZero();
     }
     else {
-      result = Eigen::Vector3d(input).cross(Eigen::Vector3d(reference)).cross(Eigen::Vector3d(input));
+      result = FloatVector(Eigen::Vector3d(input).cross(Eigen::Vector3d(reference)).cross(Eigen::Vector3d(input)));
       result = result/result.norm()*distance(reference, input);
     }
   }
@@ -75,7 +75,11 @@ namespace CBF {
 
   Float DirectionPotential::distance(const FloatVector &v1, const FloatVector &v2)
   {
-    return acos(v1.normalized().dot(v2.normalized()));
+    Float lDot = v1.normalized().dot(v2.normalized());
+    if(lDot >  1.0 ) lDot =  1.0;
+    if(lDot < -1.0 ) lDot = -1.0;
+
+    return acos(lDot);
   }
 
   Float DirectionPotential::norm(const FloatVector &v)

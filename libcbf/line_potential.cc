@@ -37,12 +37,11 @@
 
 namespace CBF {
 
-LinePotential::LinePotential()
+LinePotential::LinePotential(FloatVector &linedirection)
 {
-  m_LineDirection = FloatVector(3);
-  m_LineDirection(1) = 1.0;
-
-  m_CurrentReference = FloatVector::Zero(sensor_dim());
+  m_CurrentReference = FloatVector::Zero(3);
+  m_LineDirection = FloatVector::Zero(3);
+  m_LineDirection = linedirection;
 }
 
 Float LinePotential::norm(const FloatVector &v)
@@ -61,7 +60,7 @@ Float LinePotential::distance(const FloatVector &v1, const FloatVector &v2)
     x2(i) = v2(i)+m_LineDirection(i);
   }
 
-  return ((x0-x1).cross(x0-x2)).norm()/(x2-x1).norm();
+  return ((x0-x1).cross(x0-x2)).norm()/((x2-x1).norm());
 }
 
 FloatVector &LinePotential::select_reference(
@@ -97,7 +96,7 @@ void LinePotential::gradient (
   FloatVector lReference(3);
 
   lProjectionVec = input- reference;
-  lProjectionVec = m_LineDirection* m_LineDirection.dot(lProjectionVec);
+  lProjectionVec = m_LineDirection* (m_LineDirection.dot(lProjectionVec));
 
   lReference = reference + lProjectionVec;
 
@@ -116,13 +115,10 @@ void LinePotential::integration (
 
 void LinePotential::setLineDirection(const FloatVector &v)
 {
+  assert(v.norm() > 0.0);
+
   m_LineDirection = v;
   m_LineDirection.normalize();
-}
-
-void LinePotential::setInputVelocity(const FloatVector &Velocity)
-{
-
 }
 
 } // namespace

@@ -43,10 +43,9 @@
 namespace CBF {
 
 struct LinePotential : public Potential {
-  FloatVector m_LineDirection;
-
   LinePotential(const LinePotential &xml_instance, ObjectNamespacePtr object_namespace);
-  LinePotential();
+
+  LinePotential(FloatVector &linedirection);
 
   virtual Float norm(const FloatVector &v);
   virtual Float distance(const FloatVector &v1, const FloatVector &v2);
@@ -74,7 +73,10 @@ struct LinePotential : public Potential {
   );
 
   void setLineDirection(const FloatVector &v);
-  void setInputVelocity(const FloatVector &Velocity);
+
+  protected :
+    FloatVector m_LineDirection;
+
 };
 
 typedef boost::shared_ptr<LinePotential> LinePotentialPtr;

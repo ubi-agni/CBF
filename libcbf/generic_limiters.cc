@@ -36,8 +36,9 @@ namespace CBF {
   DampedResourceLimiter::DampedResourceLimiter(const Float timestep, const unsigned int dim) :
     Limiter(timestep, dim, dim) {
 
-    m_PosMargin = FloatVector::Zero(dim);
-    m_VelMargin = FloatVector::Zero(dim);
+    m_PosMargin = FloatVector::Ones(dim)*0.1;
+    m_VelMargin = FloatVector::Ones(dim)*0.1;
+
   }
 
   void DampedResourceLimiter::limit(
@@ -46,7 +47,7 @@ namespace CBF {
       FloatVector &next_pos,
       FloatVector &next_vel) {
 
-    for (unsigned int i=0; i<m_Dim; i++) {
+    for (unsigned int i=0; i<current_pos.size(); i++) {
 
       if (next_vel(i) > m_VelLimit(i)) {
         next_vel(i) = m_VelLimit(i);

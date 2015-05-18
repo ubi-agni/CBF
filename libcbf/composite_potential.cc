@@ -78,19 +78,18 @@ namespace CBF {
 	{
 		result.setZero();
 
-		unsigned int current_index = 0;
-		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-			m_ref_buffers[i] = reference.segment(current_index, m_Potentials[i]->sensor_dim());
-			m_in_buffers[i] = input.segment(current_index, m_Potentials[i]->sensor_dim());
+		unsigned int pos_index = 0;
+		unsigned int grad_index = 0;
 
-			std::vector<FloatVector > tmp_refs;
-			tmp_refs.push_back(m_ref_buffers[i]);
+		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
+			m_ref_buffers[i] = reference.segment(pos_index, m_Potentials[i]->sensor_dim());
+			m_in_buffers[i] = input.segment(pos_index, m_Potentials[i]->sensor_dim());
 
 			m_Potentials[i]->gradient(m_grad_buffers[i], m_ref_buffers[i], m_in_buffers[i]);
-			result.segment(current_index, m_grad_buffers[i].size())
-				= m_grad_buffers[i];
+			result.segment(grad_index, m_Potentials[i]->task_dim()) = m_grad_buffers[i];
 
-			current_index += m_Potentials[i]->sensor_dim();
+			pos_index  += m_Potentials[i]->sensor_dim();
+			grad_index += m_Potentials[i]->task_dim();
 		}
 	}
 
@@ -105,19 +104,17 @@ namespace CBF {
 
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
 
-		m_Potentials[i]->integration(m_pos_buffers[i],
-		                            currentpos.segment(pos_index , m_Potentials[i]->sensor_dim()),
-		                            currentvel.segment(grad_index, m_Potentials[i]->task_dim()),
-		                            timestep);
+			m_Potentials[i]->integration(m_pos_buffers[i],
+			                            currentpos.segment(pos_index , m_Potentials[i]->sensor_dim()),
+			                            currentvel.segment(grad_index, m_Potentials[i]->task_dim()),
+		    	                        timestep);
 
-      nextpos.segment(pos_index , m_Potentials[i]->sensor_dim()) = m_pos_buffers[i];
+			nextpos.segment(pos_index , m_Potentials[i]->sensor_dim()) = m_pos_buffers[i];
 
-      pos_index  += m_Potentials[i]->sensor_dim();
-      grad_index += m_Potentials[i]->task_dim();
-    }
-
-
-  }
+			pos_index  += m_Potentials[i]->sensor_dim();
+			grad_index += m_Potentials[i]->task_dim();
+		}
+	}
 
 #ifdef CBF_HAVE_XSD
 	CompositePotential::CompositePotential(const CBFSchema::CompositePotential &xml_instance, ObjectNamespacePtr object_namespace) :
