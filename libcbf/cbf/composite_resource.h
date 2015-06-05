@@ -65,6 +65,15 @@ struct CompositeResource : public Resource
 
     virtual const FloatVector &get();
 
+    // set and get the individual resource values
+    void set(const unsigned int resource_index, const FloatVector &pos);
+
+    void set(const unsigned int resource_index, const FloatVector &pos, const FloatVector &vel);
+
+    const FloatVector &get(const unsigned int resource_index);
+
+    const FloatVector &get_resource_vel(const unsigned int resource_index);
+
 };
 
 	typedef boost::shared_ptr<CompositeResource> CompositeResourcePtr;

@@ -43,6 +43,8 @@ class KDLChainDirectionSensorTransform : public BaseKDLChainSensorTransform
 
     void setLocalControlDirection(const KDL::Vector &control_dir);
 
+    void setLocalControlDirection(const double x, const double y, const double z);
+
   private:
     KDL::Vector mLocalControlDirection;
 

@@ -68,8 +68,10 @@ void CDDynFilter::update(
   //x(t+1) = x(t)+x_dot(t)*dt + 0.5*x_ddot(t)*dt*dt;
   //x_dot(t+1) = x_dot(t) + x_ddot(t)*dt;
 
-  integration(m_FilteredState, m_FilteredState, m_FilteredStateVel, timestep);
-  m_FilteredState += 0.5*m_StateAccel*timestep*timestep;
+  integration(m_FilteredState,
+              m_FilteredState,
+              m_FilteredStateVel + 0.5*m_StateAccel*timestep,
+              timestep);
 
   m_FilteredStateVel += m_StateAccel*timestep;
 }

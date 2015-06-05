@@ -14,6 +14,7 @@ set(CBF_SOURCES
   controller_sequence.cc
   identity_transform.cc 
   primitive_controller.cc 
+  controller_set.cc
   resource.cc 
   dummy_resource.cc 
   primitive_controller_resource.cc 
@@ -91,6 +92,7 @@ set(CBF_HEADERS
   cbf/pa10_joint_resource.h
   cbf/potential.h
   cbf/primitive_controller.h
+  cbf/controller_set.h
   cbf/primitive_controller_resource.h
   cbf/qt_reference.h
   cbf/qt_sensor_transform.h

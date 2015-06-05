@@ -52,7 +52,11 @@ namespace CBF {
           const unsigned int state_vel_dim,
           const Float wn=1.0);
 
+      using Filter::reset;
+
       void reset(const FloatVector &state, const FloatVector &state_vel);
+
+      using Filter::update;
 
       virtual void update(
           const FloatVector &state,

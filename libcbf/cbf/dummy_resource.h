@@ -36,38 +36,16 @@ namespace CBF {
   struct DummyResource : public Resource {
 		DummyResource(const CBFSchema::DummyResource &xml_instance, ObjectNamespacePtr object_namespace);
 
-    DummyResource(const FloatVector &values)
-    {
-      m_ResourceValue = FloatVector(values.size());
-      m_ResourceValueVelocity = FloatVector(values.size());
+    DummyResource(const FloatVector &values);
 
-      m_ResourceValue = values;
-		}
-
-		/**
-			The variance argument can be used to initialize the resource
-			with non zero values drawn from a distribution with range
-			-variance to variance..
-
-			TODO: implement variance. Right now a fixed range of [-1:1] is 
-			used when variance != 0
-		*/
-    DummyResource(unsigned int variables = 1, Float variance = 0)
-    {
-      m_ResourceValue = FloatVector(variables);
-      m_ResourceValueVelocity = FloatVector(variables);
-
-			if (variance != 0) {
-				for (unsigned int i = 0; i < variables; ++i)
-          m_ResourceValue[i] = 2 * M_PI * ((Float)rand()-(RAND_MAX/2.0))/(Float)RAND_MAX;
-			}
-		}
-	
+    DummyResource(unsigned int dim, Float variance=0.0);
 	
 		~DummyResource() {
 		}
 	
-    void update();
+    using Resource::update;
+
+    void update();    
 
     void add(const FloatVector &resource_velocity, const Float timestep);
 

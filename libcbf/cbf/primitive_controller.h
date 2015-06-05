@@ -301,7 +301,7 @@ namespace CBF {
 			LimiterPtr limiter
 		);
 	
-		void primitive_init(ResourcePtr resource, FilterPtr resource_filter);
+		void primitive_init(ResourcePtr resource, FilterPtr resource_filter, LimiterPtr limiter);
 
 		/**
 			The reset() function reset the controller so as to generate the velocity continous task-space trajectory
@@ -309,25 +309,7 @@ namespace CBF {
 		*/
     	void reset(void);
 
-    	void reset(const FloatVector resource_value, const FloatVector resource_velocity);
-	
-		protected:
-			/**
-				A controller can have subordinate controllers whose control signal
-				get projected into the nullspace of the task jacobian
-			*/
-			std::vector<PrimitiveControllerPtr> m_SubordinateControllers;
-	
-			/**
-				The resource this controller acts upon
-			*/
-			ResourcePtr m_Resource;
-			FilterPtr m_ResourceFilter;
-			LimiterPtr m_ResourceLimiter;
-
-			virtual void check_dimensions() const;
-
-		public:
+		void reset(const FloatVector resource_value, const FloatVector resource_velocity);
 
 		ResourcePtr resource() { return m_Resource; }
 
@@ -342,6 +324,22 @@ namespace CBF {
 		void update() {update(m_TimeStep);}
 
 		void action() {action(m_TimeStep);}
+
+	private:
+		/**
+			A controller can have subordinate controllers whose control signal
+			get projected into the nullspace of the task jacobian
+		*/
+		std::vector<PrimitiveControllerPtr> m_SubordinateControllers;
+
+		/**
+			The resource this controller acts upon
+		*/
+		ResourcePtr m_Resource;
+		FilterPtr m_ResourceFilter;
+		LimiterPtr m_ResourceLimiter;
+
+		virtual void check_dimensions();
 	};
 
 } // namespace

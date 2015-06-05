@@ -87,6 +87,13 @@ void KDLChainDirectionSensorTransform::setLocalControlDirection(const KDL::Vecto
   mLocalControlDirection = control_dir;
 }
 
+void KDLChainDirectionSensorTransform::setLocalControlDirection(const double x, const double y, const double z)
+{
+  mLocalControlDirection.data[0] = x;
+  mLocalControlDirection.data[1] = y;
+  mLocalControlDirection.data[2] = z;
+}
+
 
 // name space
 }

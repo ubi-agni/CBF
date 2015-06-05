@@ -30,14 +30,14 @@ namespace CBF {
     update();
 
     m_ResourceValueVelocity = (pos - m_ResourceValue)/timestep;
-    m_ResourceValue = pos;
+    set(pos);
   }
 
   void Resource::update(const FloatVector &pos, const FloatVector &vel) {
     update();
 
-    m_ResourceValue = pos;
     m_ResourceValueVelocity = vel;
+    set(pos);
   }
 
 

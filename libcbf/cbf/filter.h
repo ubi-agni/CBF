@@ -70,6 +70,16 @@ struct Filter : public Object {
 
   virtual void reset(const FloatVector &state, const FloatVector &state_vel) = 0;
 
+  virtual void reset(const FloatVector &state) { reset(state, FloatVector::Zero(state.size())); }
+
+  void set_observation(const FloatVector &state,
+                       const FloatVector &state_vel) {
+    m_TargetState = state;
+    m_TargetStateVel = state_vel;
+  }
+
+  void set_observation(const FloatVector &state) { m_TargetState = state; }
+
   virtual void update(
       const FloatVector &state,
       const FloatVector &state_vel,
@@ -78,6 +88,8 @@ struct Filter : public Object {
   virtual void update(
       const FloatVector &state,
       const FloatVector &state_vel) { update(state, state_vel, m_TimeStep); }
+
+  virtual void update(const FloatVector &state) { update(state, FloatVector::Zero(state.size()), m_TimeStep); }
 
   virtual void update() { update(m_TargetState, m_TargetStateVel, m_TimeStep); }
 

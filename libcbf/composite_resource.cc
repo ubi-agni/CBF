@@ -86,6 +86,30 @@ namespace CBF {
     return m_ResourceValue;
   }
 
+  void CompositeResource::set(const unsigned int resource_index, const FloatVector &pos)
+  {
+    assert(resource_index<m_Resources.size());
+    m_Resources[resource_index]->set(pos);
+  }
+
+  void CompositeResource::set(const unsigned int resource_index, const FloatVector &pos, const FloatVector &vel)
+  {
+    assert(resource_index<m_Resources.size());
+    m_Resources[resource_index]->update(pos, vel);
+  }
+
+  const FloatVector &CompositeResource::get(const unsigned int resource_index)
+  {
+    assert(resource_index<m_Resources.size());
+    return m_Resources[resource_index]->get();
+  }
+
+  const FloatVector &CompositeResource::get_resource_vel(const unsigned int resource_index)
+  {
+    assert(resource_index<m_Resources.size());
+    return m_Resources[resource_index]->get_resource_vel();
+  }
+
 
 
 #ifdef CBF_HAVE_XSD

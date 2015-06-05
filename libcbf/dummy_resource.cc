@@ -32,6 +32,14 @@
 
 namespace CBF {
 
+	DummyResource::DummyResource(const FloatVector &values) : Resource()
+	{
+		m_ResourceValue = FloatVector(values.size());
+		m_ResourceValueVelocity = FloatVector(values.size());
+
+		m_ResourceValue = values;
+	}
+
 	void DummyResource::update() {
 
 	}
