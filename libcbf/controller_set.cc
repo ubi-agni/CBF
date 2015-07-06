@@ -43,7 +43,7 @@ namespace CBF {
 
   void ControllerSet::reset()
   {
-    reset(m_Resource->get(), m_Resource->get_resource_vel());
+    reset(m_Resource->get_position(), m_Resource->get_velocity());
   }
 
   void ControllerSet::reset(const Eigen::VectorXd joint, const Eigen::VectorXd joint_vel)

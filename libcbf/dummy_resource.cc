@@ -40,27 +40,47 @@ namespace CBF {
 		m_ResourceValue = values;
 	}
 
-	void DummyResource::update() {
+	/**
+		The variance argument can be used to initialize the resource
+		with non zero values drawn from a distribution with range
+		-variance to variance.
+	*/
+	DummyResource::DummyResource(unsigned int dim, Float variance) : Resource()
+	{
+		m_ResourceValue = FloatVector(dim);
+		m_ResourceValueVelocity = FloatVector(dim);
+
+		if (variance != 0.0) {
+			double lfx = 1./sqrt(2.0*M_PI*variance*variance);
+			double lx_u;
+
+			for (unsigned int i = 0; i < dim; ++i) {
+				lx_u = ((Float)rand()-(RAND_MAX/2.0))/(Float)RAND_MAX;
+				m_ResourceValue[i] = lfx * exp(-lx_u/(2.0*variance*variance));
+			}
+		}
+	}
+
+	void DummyResource::read()
+	{
 
 	}
 
-	void DummyResource::add(const FloatVector &resource_velocity, const Float timestep) {
-		m_ResourceValueVelocity = resource_velocity;
-		m_ResourceValue += resource_velocity*timestep;
+	void DummyResource::write(const FloatVector &vel, const Float timestep)
+	{
+		integrate_Euler(m_ResourceValue, vel, timestep);
 	}
 
-	void DummyResource::set(const FloatVector &pos) {
+	void DummyResource::set(const FloatVector &pos)
+	{
 		m_ResourceValue = pos;
 	}
 
-	const FloatVector &DummyResource::get_resource_vel() {
-		return m_ResourceValueVelocity;
+	void DummyResource::set(const FloatVector &pos, const FloatVector &vel)
+	{
+		m_ResourceValue = pos;
+		m_ResourceValueVelocity = vel;
 	}
-
-	const FloatVector &DummyResource::get() {
-		return m_ResourceValue;
-	}
-
 
 	#ifdef CBF_HAVE_XSD
 		DummyResource::DummyResource(

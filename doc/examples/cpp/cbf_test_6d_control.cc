@@ -140,7 +140,7 @@ int main() {
   mController->reset(lJoint*0.2, lJoint*0.01);
 
   std::cout << "Initial resource" << std::endl;
-  std::cout << mController->resource()->get() << std::endl;
+  std::cout << mController->resource()->get_position() << std::endl;
 
   lRef = mController->sensor_transform()->result();
   std::cout << "Initial reference" << std::endl;

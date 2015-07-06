@@ -25,21 +25,20 @@
 
 namespace CBF {
 
-
-  void Resource::update(const FloatVector &pos, const Float timestep) {
-    update();
-
-    m_ResourceValueVelocity = (pos - m_ResourceValue)/timestep;
-    set(pos);
+  void Resource::integrate_Euler(FloatVector &pos,
+      const FloatVector &vel,
+      const Float timestep)
+  {
+    pos += vel*timestep;
   }
 
-  void Resource::update(const FloatVector &pos, const FloatVector &vel) {
-    update();
-
-    m_ResourceValueVelocity = vel;
-    set(pos);
+  void Resource::differenciate_Euler(
+      FloatVector &vel,
+      const FloatVector &pos,
+      const Float timestep)
+  {
+    vel = (pos - m_ResourceValue)/timestep;
   }
-
 
 #ifdef CBF_HAVE_XSD
 		Resource::Resource(const CBFSchema::Resource &xml_instance, ObjectNamespacePtr object_namespace) :

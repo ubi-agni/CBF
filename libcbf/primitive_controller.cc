@@ -165,7 +165,7 @@ namespace CBF {
 		m_ResourceFilter = resource_filter;
 		m_ResourceLimiter = limiter;
 
-		reset(m_Resource->get(), m_Resource->get_resource_vel());
+		reset(m_Resource->get_position(), m_Resource->get_velocity());
 
 		check_dimensions();
 	}
@@ -177,7 +177,6 @@ namespace CBF {
 
 	void PrimitiveController::reset(const FloatVector resource_value, const FloatVector resource_velocity)
 	{
-		m_Resource->update(resource_value, resource_velocity);
 		m_ResourceFilter->reset(resource_value, resource_velocity);
 
 		SubordinateController::reset(resource_value, resource_velocity);
@@ -237,8 +236,8 @@ namespace CBF {
 	}
 
 	void PrimitiveController::update(Float timestep) {
-		m_Resource->update();
-		m_ResourceFilter->update(m_Resource->get(), m_Resource->get_resource_vel(), timestep);
+		m_Resource->read();
+		m_ResourceFilter->update(m_Resource->get_position(), m_Resource->get_velocity(), timestep);
 
 		SubordinateController::update(timestep);
 	}	
@@ -346,8 +345,7 @@ namespace CBF {
 		                         lRes,
 		                         m_CombinedResourceVlocity);
 
-		m_Resource->update(lRes,
-		                   m_CombinedResourceVlocity);
+		m_Resource->write(m_CombinedResourceVlocity, timestep);
 
 		m_Converged = check_convergence();
 	}

@@ -24,15 +24,19 @@ struct MaskingResource : public Resource {
 
   MaskingResource(ResourcePtr resource, std::vector<unsigned int> indexes);
 
-  void update();
+  void read();
 
-  void add(const FloatVector &resource_step, const Float timestep);
+  void write(const FloatVector &vel, const Float timestep);
 
-  void set(const FloatVector &pos);
+//  void update();
 
-  const FloatVector &get_resource_vel();
+//  void add(const FloatVector &resource_step, const Float timestep);
 
-  const FloatVector &get();
+//  void set(const FloatVector &pos);
+
+//  const FloatVector &get_resource_vel();
+
+//  const FloatVector &get();
 
 	protected:
     ResourcePtr m_Resource;

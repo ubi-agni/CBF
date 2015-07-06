@@ -269,8 +269,8 @@ cbf_controller_get_resource(struct cbf_primitive_controller *c, double *resource
 		((CBF::PrimitiveControllerPtr*)c->controller_ptr);
 
 	std::copy(
-		(*p)->resource()->get().data(),
-		(*p)->resource()->get().data() + (*p)->resource()->get().size(),
+    (*p)->resource()->get_position().data(),
+    (*p)->resource()->get_position().data() + (*p)->resource()->get_position().size(),
 		resource_out
 	);
 

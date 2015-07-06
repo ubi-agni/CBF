@@ -97,6 +97,8 @@ struct Filter : public Object {
 
   FloatVector &get_filtered_state_vel() { return m_FilteredStateVel; }
 
+  FloatVector &get_state_accel() { return m_StateAccel; }
+
   unsigned int dim() { return m_FilteredState.size(); }
 
   void set_time_step(const Float timestep) { m_TimeStep = timestep; }

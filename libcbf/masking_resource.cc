@@ -44,51 +44,25 @@ void MaskingResource::set_resource_and_indexes(ResourcePtr resource, std::vector
   m_IndexResourceValueVelocity = FloatVector(m_Resource->dim());
 }
 
-
-void MaskingResource::update() {
-  m_Resource->update();
+void MaskingResource::read()
+{
+  m_Resource->read();
 
   for (unsigned int i = 0, len = m_Indexes.size(); i < len; ++i) {
-    m_ResourceValue[i] = m_Resource->get()[m_Indexes[i]];
-    m_ResourceValueVelocity[i] = m_Resource->get_resource_vel()[m_Indexes[i]];
+    m_ResourceValue[i] = m_Resource->get_position()[m_Indexes[i]];
+    m_ResourceValueVelocity[i] = m_Resource->get_velocity()[m_Indexes[i]];
   }
 }
 
-void MaskingResource::add(const FloatVector &resource_step, const Float timestep) {
-  m_ResourceValueVelocity = resource_step/timestep;
-  m_ResourceValue += resource_step;
-
-  m_IndexResourceValue.setZero();
-
+void MaskingResource::write(const FloatVector &vel, const Float timestep)
+{
+  m_IndexResourceValueVelocity.setZero();
   for (unsigned int i = 0, len = m_Indexes.size(); i < len; ++i) {
-    m_IndexResourceValue[m_Indexes[i]] = resource_step[i];
+    m_IndexResourceValueVelocity[m_Indexes[i]] = vel[i];
   }
 
-  m_Resource->add(m_IndexResourceValue, timestep);
+  m_Resource->write(m_IndexResourceValueVelocity, timestep);
 }
-
-void MaskingResource::set(const FloatVector &pos)
-{
-  m_ResourceValue = pos;
-
-  m_IndexResourceValue.setZero();
-
-  for (unsigned int i = 0, len = m_Indexes.size(); i < len; ++i) {
-    m_IndexResourceValue[m_Indexes[i]] = m_ResourceValue[i];
-  }
-  m_Resource->set(m_IndexResourceValue);
-}
-
-const FloatVector &MaskingResource::get_resource_vel()
-{
-  return m_ResourceValueVelocity;
-}
-
-const FloatVector &MaskingResource::get()
-{
-  return m_ResourceValue;
-}
-
 
 static XMLDerivedFactory<MaskingResource, CBFSchema::MaskingResource> x;
 

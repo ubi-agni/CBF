@@ -44,71 +44,54 @@ namespace CBF {
     return m_Resources;
   }
 
-  void CompositeResource::update() {
+
+  void CompositeResource::read() {
     unsigned int current_start_index = 0;
 
     for (unsigned int i = 0, len = m_Resources.size(); i < len; i++) {
-      m_Resources[i]->update();
+      m_Resources[i]->read();
 
-      m_ResourceValue.segment(current_start_index, m_Resources[i]->get().size()) = m_Resources[i]->get();
-      m_ResourceValueVelocity.segment(current_start_index, m_Resources[i]->get().size()) = m_Resources[i]->get_resource_vel();
+      m_ResourceValue.segment(current_start_index, m_Resources[i]->dim()) = m_Resources[i]->get_position();
+      m_ResourceValueVelocity.segment(current_start_index, m_Resources[i]->dim()) = m_Resources[i]->get_velocity();
 
       current_start_index += m_Resources[i]->dim();
     }
   }
 
-
-  void CompositeResource::add(const FloatVector &resource_velocity, const Float timestep) {
+  void CompositeResource::write(const FloatVector &vel, const Float timestep) {
     unsigned int current_start_index = 0;
 
-    for (unsigned int i = 0, len = m_Resources.size(); i < len; i++){
-      m_Resources[i]->add(resource_velocity.segment(current_start_index, m_Resources[i]->dim()), timestep);
+    for (unsigned int i = 0, len = m_Resources.size(); i < len; i++) {
+      m_Resources[i]->write(vel.segment(current_start_index, m_Resources[i]->dim()), timestep);
 
       current_start_index += m_Resources[i]->dim();
     }
   }
 
-  void CompositeResource::set(const FloatVector &pos) {
-    unsigned int current_start_index = 0;
 
-    for (unsigned int i = 0, len = m_Resources.size(); i < len; i++){
-      m_Resources[i]->set(pos.segment(current_start_index, m_Resources[i]->dim()));
+//  void CompositeResource::set(const unsigned int resource_index, const FloatVector &pos)
+//  {
+//    assert(resource_index<m_Resources.size());
+//    m_Resources[resource_index]->set(pos);
+//  }
 
-      current_start_index += m_Resources[i]->dim();
-    }
-  }
+//  void CompositeResource::set(const unsigned int resource_index, const FloatVector &pos, const FloatVector &vel)
+//  {
+//    assert(resource_index<m_Resources.size());
+//    m_Resources[resource_index]->update(pos, vel);
+//  }
 
-  const FloatVector &CompositeResource::get_resource_vel() {
-    return m_ResourceValueVelocity;
-  }
+//  const FloatVector &CompositeResource::get(const unsigned int resource_index)
+//  {
+//    assert(resource_index<m_Resources.size());
+//    return m_Resources[resource_index]->get();
+//  }
 
-  const FloatVector &CompositeResource::get() {
-    return m_ResourceValue;
-  }
-
-  void CompositeResource::set(const unsigned int resource_index, const FloatVector &pos)
-  {
-    assert(resource_index<m_Resources.size());
-    m_Resources[resource_index]->set(pos);
-  }
-
-  void CompositeResource::set(const unsigned int resource_index, const FloatVector &pos, const FloatVector &vel)
-  {
-    assert(resource_index<m_Resources.size());
-    m_Resources[resource_index]->update(pos, vel);
-  }
-
-  const FloatVector &CompositeResource::get(const unsigned int resource_index)
-  {
-    assert(resource_index<m_Resources.size());
-    return m_Resources[resource_index]->get();
-  }
-
-  const FloatVector &CompositeResource::get_resource_vel(const unsigned int resource_index)
-  {
-    assert(resource_index<m_Resources.size());
-    return m_Resources[resource_index]->get_resource_vel();
-  }
+//  const FloatVector &CompositeResource::get_resource_vel(const unsigned int resource_index)
+//  {
+//    assert(resource_index<m_Resources.size());
+//    return m_Resources[resource_index]->get_resource_vel();
+//  }
 
 
 

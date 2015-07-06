@@ -43,17 +43,14 @@ namespace CBF {
 		~DummyResource() {
 		}
 	
-    using Resource::update;
+    void read();
 
-    void update();    
-
-    void add(const FloatVector &resource_velocity, const Float timestep);
+    void write(const FloatVector &vel, const Float timestep);
 
     void set(const FloatVector &pos);
 
-    const FloatVector &get_resource_vel();
+    void set(const FloatVector &pos, const FloatVector &vel);
 
-    const FloatVector &get();
 	};
 	
 	typedef boost::shared_ptr<DummyResource> DummyResourcePtr;

@@ -22,7 +22,7 @@ int main() {
 		)
 	);
 
-	s->update(r->get());
+  s->update(r->get_position());
 
 	std::cout << "s1" << std::endl;
 	std::cout << "result   " << s->result() << std::endl;
@@ -37,7 +37,7 @@ int main() {
 		)
 	);
 
-	s2->update(r->get());
+  s2->update(r->get_position());
 
 	std::cout << "s2" << std::endl;
 	std::cout << "result   " << s2->result() << std::endl;
@@ -51,7 +51,7 @@ int main() {
 		)
 	);
 
-	s3->update(r->get());
+  s3->update(r->get_position());
 
 	std::cout << "s3" << std::endl;
 	std::cout << "result   " << s3->result() << std::endl;
@@ -76,7 +76,7 @@ int main() {
 		)
 	);
 
-	s4->update(r->get());
+  s4->update(r->get_position());
 
 	std::cout << "s4" << std::endl;
 	std::cout << "result   " << s4->result() << std::endl;
@@ -96,7 +96,7 @@ int main() {
 			3
 		)
 	);
-	s5->update(r->get());
+  s5->update(r->get_position());
 
 	std::cout << "s5" << std::endl;
 	std::cout << "result   " << s5->result() << std::endl;

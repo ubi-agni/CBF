@@ -55,24 +55,15 @@ struct CompositeResource : public Resource
       @brief Calls update() on the combined resources in the order that
       they are contained in the m_Resources vector
     */
-    virtual void update();
+    virtual void read();
 
-    virtual void add(const FloatVector &resource_velocity, const Float timestep);
-
-    virtual void set(const FloatVector &pos);
-
-    virtual const FloatVector &get_resource_vel();
-
-    virtual const FloatVector &get();
+    virtual void write(const FloatVector &vel, const Float timestep);
 
     // set and get the individual resource values
-    void set(const unsigned int resource_index, const FloatVector &pos);
-
-    void set(const unsigned int resource_index, const FloatVector &pos, const FloatVector &vel);
-
-    const FloatVector &get(const unsigned int resource_index);
-
-    const FloatVector &get_resource_vel(const unsigned int resource_index);
+//    void set(const unsigned int resource_index, const FloatVector &pos);
+//    void set(const unsigned int resource_index, const FloatVector &pos, const FloatVector &vel);
+//    const FloatVector &get(const unsigned int resource_index);
+//    const FloatVector &get_resource_vel(const unsigned int resource_index);
 
 };
 

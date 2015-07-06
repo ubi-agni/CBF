@@ -52,23 +52,38 @@ namespace CBF {
 	
 		}
 	
-		/**
-			This function needs to be called once per cycle. Especially before any
+    /**
+      This function needs to be called once per cycle. Especially before any
       SensorTransforms using this resource.
-		*/
-    virtual void update() = 0;
-	
-    void update(const FloatVector &pos, const Float timestep);
+      - It reads the state from the hardware.
+      - This function must update m_ResourceValue and m_ResourceValueVelocity
+    */
+    virtual void read() = 0;
 
-    void update(const FloatVector &pos, const FloatVector &vel);
+    /**
+      This function write resource velocity to the hardware.
+      Basically cbf output is only resource velocity.
+      Hence, each implementation may requires an integration function to compute position
+    */
+    virtual void write(const FloatVector &vel, const Float timestep) = 0;
 
-    virtual void add(const FloatVector &resource_velocity, const Float timestep) = 0;
+    /**
+      This function returns current resource postion that is read from the hardware.
+    */
+    virtual const FloatVector &get_position() {return m_ResourceValue; }
 
-    virtual void set(const FloatVector &pos) = 0;
+    /**
+      This function returns current resource velocity that is read from the hardware.
+    */
+    virtual const FloatVector &get_velocity() {return m_ResourceValueVelocity; }
 
-    virtual const FloatVector &get_resource_vel() = 0;
+    void integrate_Euler(FloatVector &pos,
+        const FloatVector &vel,
+        const Float timestep);
 
-    virtual const FloatVector &get() = 0;
+    void differenciate_Euler(FloatVector &vel,
+        const FloatVector &pos,
+        const Float timestep);
 
     unsigned int dim() {return m_ResourceValue.size(); }
 

@@ -50,6 +50,9 @@ namespace CBF {
 		resource to the visual servoing controller
 	
 	*/
+
+  enum ENUM_INTEGRATION_BASE {INTEGRATION_BASE_REFERENCE=0, INTEGRATION_BASE_SENSOR};
+
 	struct PrimitiveControllerResource : public Resource {
 #ifdef CBF_HAVE_XSD
 		PrimitiveControllerResource (
@@ -58,45 +61,49 @@ namespace CBF {
 #endif
 		PrimitiveControllerPtr m_PrimitiveController;
 	
-		PrimitiveControllerResource(PrimitiveControllerPtr controller) :
-			m_PrimitiveController(controller)
+    PrimitiveControllerResource(PrimitiveControllerPtr controller, ENUM_INTEGRATION_BASE integrationBase=INTEGRATION_BASE_SENSOR) :
+      m_PrimitiveController(controller),
+      m_IntegrationBase(integrationBase)
 		{
 		}
 	
 		public:
-			virtual void update() {
-				m_PrimitiveController->resource()->update();
-        m_PrimitiveController->sensor_transform()->update(m_PrimitiveController->resource()->get());
+      virtual void read()
+      {
+        m_PrimitiveController->resource()->read();
+        m_PrimitiveController->sensor_transform()->update(m_PrimitiveController->resource()->get_position());
 
         m_ResourceValue = m_PrimitiveController->sensor_transform()->result();
+        m_ResourceValueVelocity = m_PrimitiveController->sensor_transform()->get_task_velocity();
 			}
 
-      virtual const FloatVector &get_resource_vel() {
-        return m_ResourceValueVelocity;
-      }
+      virtual void write(const FloatVector &vel, const Float timestep)
+      {
+	
+        if(m_IntegrationBase == INTEGRATION_BASE_REFERENCE) {
+          //! Setup reference..
+          std::vector<FloatVector>& refs = m_PrimitiveController->reference()->get();
 
-      virtual const FloatVector &get() {
-        return m_ResourceValue;
+          integrate_Euler(refs[0], vel, timestep);
+          m_PrimitiveController->reference()->set_reference(refs[0]);
+        }
+        else {
+          FloatVector lRef = m_ResourceValue;
+          integrate_Euler(lRef, vel, timestep);
+          m_PrimitiveController->reference()->set_reference(lRef);
+        }
+
+        m_PrimitiveController->step();
+
+        ////! And run controller until convergence..
+        //do {
+        //	m_PrimitiveController->step();
+        //} while (!m_PrimitiveController->finished());
 			}
 	
-      virtual void add(const FloatVector &resource_velocity, const Float timestep) {
-        set(m_ResourceValue + resource_velocity*timestep);
-			}
-	
-      virtual void set(const FloatVector &pos) {
-				//! Setup reference..
-				std::vector<FloatVector>& refs = m_PrimitiveController->reference()->get();
-        refs.resize(1); refs[0] = pos;
-	
-				//! And run controller until convergence..
-				do {
-					m_PrimitiveController->step();
-				} while (!m_PrimitiveController->finished());
-			}
-	
-			virtual unsigned int dim() {
-				return m_PrimitiveController->sensor_transform()->task_dim();
-			}
+    private:
+      unsigned int m_IntegrationBase;
+
 	};
 	
 	class PrimitiveControllerResource;
