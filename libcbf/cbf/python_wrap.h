@@ -58,24 +58,24 @@ namespace CBF {
 		there exists a method to "sanitize" scripts which is useful when
 		used in XML files:
 	
-	<PRE>
-	<Controller xsi:type="PrimitiveControllerType">
-	  <Potential xsi:type="PythonPotentialType">
-	    <Dimension> 3 </Dimension>
-	    <ExecScript>
-	#---
-	import scipy as S
-	import scipy.linalg as L
-	ref = S.array(references[0])
-	inp = S.array(input)
-	res = 0.1 * (ref - inp)
-	result = list(res)
-	#---
-	    </ExecScript>
-	  </Potential>
-	  ...
-	</Controller>
-	</PRE>
+		<PRE>
+		&lt;Controller xsi:type="PrimitiveControllerType"&gt;
+		&lt;Potential xsi:type="PythonPotentialType"&gt;
+		&lt;Dimension&gt; 3 &lt;/Dimension&gt;
+		&lt;ExecScript&gt;
+		#---
+		import scipy as S
+		import scipy.linalg as L
+		ref = S.array(references[0])
+		inp = S.array(input)
+		res = 0.1 * (ref - inp)
+		result = list(res)
+		#---
+		&lt;/ExecScript&gt;
+		&lt;/Potential&gt;
+		...
+		&lt;/Controller&gt;
+		</PRE>
 	
 		As you can see, the script is wrapped into two comments of the form "#---".
 		All characters outside these two comments are stripped. There must not be any
