@@ -4,13 +4,10 @@ get_filename_component(CBF_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 # (from the point of view of the downstream project)
 include("${CBF_CMAKE_DIR}/CBFDepends.cmake")
 
-set(CBF_LIBRARY_DIRS "@CMAKE_INSTALL_PREFIX@/lib" "@KDL_LIBRARY_DIRS@")
-
 set(CBF_INCLUDE_DIRS
   "@CMAKE_INSTALL_PREFIX@/include/@CBF_PATH_PREFIX@"
   "@KDL_INCLUDE_DIRS@"
   "@EIGEN3_INCLUDE_DIRS@")
-set(CBF_RUNTIME_LIBRARY_DIRS "@CMAKE_INSTALL_PREFIX@/bin")
 
 set(CBF_VERSION "@CBF_VERSION@")
 set(CBF_DEFINITIONS "@CBF_DEFINITIONS@")
