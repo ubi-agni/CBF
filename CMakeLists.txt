@@ -285,13 +285,18 @@ install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc
         RENAME ${CBF_PKGCFG_FILE}
         )
 
-# --- cmake config file ---
+# --- cmake config files ---
+set(CONFIG_INSTALL_DIR "share/${CBF_PATH_PREFIX}")
+file(RELATIVE_PATH CBF_REL_INCLUDE_DIR
+  "${CMAKE_INSTALL_PREFIX}/${CONFIG_INSTALL_DIR}"
+  "${CMAKE_INSTALL_PREFIX}/include/${CBF_PATH_PREFIX}")
+
 configure_file(CBFConfig.cmake.in ${CMAKE_BINARY_DIR}/CBFConfig.cmake @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/CBFConfig.cmake 
-        DESTINATION share/${CBF_PATH_PREFIX})
+install(FILES ${CMAKE_BINARY_DIR}/CBFConfig.cmake
+        DESTINATION "${CONFIG_INSTALL_DIR}")
 configure_file(CBFConfigVersion.cmake.in ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake 
-        DESTINATION share/${CBF_PATH_PREFIX})
+install(FILES ${CMAKE_BINARY_DIR}/CBFConfigVersion.cmake
+        DESTINATION "${CONFIG_INSTALL_DIR}")
 
 set(CBF_EXPORTS ${CBF_LIBRARY_NAME})
 if(CBF_HAVE_XSD)
@@ -301,7 +306,7 @@ endif()
 EXPORT(TARGETS ${CBF_EXPORTS} 
        FILE "${CMAKE_BINARY_DIR}/CBFDepends.cmake")
 INSTALL(EXPORT CBFDepends
-        DESTINATION "share/${CBF_PATH_PREFIX}")
+        DESTINATION "${CONFIG_INSTALL_DIR}")
 
 # --- package ---
 set(CPACK_PACKAGE_VERSION_MAJOR ${CBF_VERSION_MAJOR})
