@@ -64,7 +64,6 @@ namespace CBF {
 
 			result.resize(3);
 			res.to_axis_angle3(result);
-			CBF_DEBUG("result: " << result);
 
 			if(norm(result) > m_MaxGradientStepNorm)
 				result *= m_MaxGradientStepNorm/norm(result);

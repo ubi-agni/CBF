@@ -135,7 +135,7 @@ struct Quaternion {
 		return *this;
 	}
 
-	inline Quaternion operator *(const Float scale)
+	inline Quaternion operator*(const Float scale) const
 	{
 		return Quaternion(w*scale, x*scale, y*scale, z*scale);
 	}
@@ -375,7 +375,7 @@ struct Quaternion {
 	}
 };
 
-Quaternion qslerp(Quaternion q, Quaternion r, Float t);
+Quaternion qslerp(const Quaternion &q, const Quaternion &r, Float t);
 
 /**
 	An operator to be able to print a quaternion into an ostream
