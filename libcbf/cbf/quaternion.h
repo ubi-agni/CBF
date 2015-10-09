@@ -101,14 +101,13 @@ struct Quaternion {
 		w = w_; x = x_; y = y_; z = z_;
 	}
 
-	Quaternion operator*(const Quaternion& q_rhs)
+	Quaternion operator*(const Quaternion& q_rhs) const
 	{
 		return Quaternion(
 			w * q_rhs.w - x * q_rhs.x - y * q_rhs.y - z * q_rhs.z,
 			w * q_rhs.x + x * q_rhs.w + y * q_rhs.z - z * q_rhs.y,
 			w * q_rhs.y + y * q_rhs.w + z * q_rhs.x - x * q_rhs.z,
-			w * q_rhs.z + z * q_rhs.w + x * q_rhs.y - y * q_rhs.x
-		).normalize();
+			w * q_rhs.z + z * q_rhs.w + x * q_rhs.y - y * q_rhs.x);
 	}
 
 	// operator functions
@@ -198,101 +197,19 @@ struct Quaternion {
 
 	/** Precondition: ret must have size() == 3 */
 	void to_axis_angle3(FloatVector &ret) {
-		// CBF_DEBUG("angle: " << angle)
 		ret.resize(3);
 		ret[0] = x;
 		ret[1] = y;
 		ret[2] = z;
 		Float norm = ret.norm();
 		Float angle = atan2(norm, w) * 2.0;
-		// CBF_DEBUG("norm " << norm)
-		if (norm > CBF_QUAT_AXIS_THRESH) {
-			ret *= 1.0 / norm;
-			ret *= angle;
-		}
+		if (norm > CBF_QUAT_AXIS_THRESH)
+			ret *= angle / norm;
 		else
-			ret *= 0.0;
-
-		// CBF_DEBUG("ret: " << ret)
+			ret << 0, 0, 0;
 	}
 
-	/**
-		Abuses the components to write the axis into x,y,z and the angle in w.
-	*/
-	Quaternion &axis_angle()
-	{
-#if 0
-		normalize();
-		Float cos_a = w;
-		Float angle = acos( cos_a ) * 2.0;
-		Float sin_a = sqrt( 1.0 - cos_a * cos_a );
-		if (fabs(sin_a) < 0.0001) sin_a = 1.0;
-		x = x / sin_a;
-		y = y / sin_a;
-		z = z / sin_a;
-		w = angle;
-#endif
 
-#if 0
-		normalize();
-		if (w < -1) w = -1;
-		if (w > 1) w = 1;
-		Float angle = acos(w) * 2.0;
-		w = angle;
-		if (angle == 0) { 
-			x = 0; y = 0; z = 1.0; 
-		}
-		else {
-			Float norm = sqrt(x*x + y*y + z*z);
-			x /= norm;
-			y /= norm;
-			z /= norm;
-		}
-#endif
-
-#if 0
-		else {
-			x *= 1.0 / sin(angle/2.0);
-			y *= 1.0 / sin(angle/2.0);
-			z *= 1.0 / sin(angle/2.0);
-		}
-#endif
-
-#if 0
-		Float scale = sqrt(x * x + y * y + z * z);
-
-		if (scale < 0.00000001) {
-			x = 1; y = z = 0;
-			w = 0;
-		} else {
-			x = x / scale;
-			y = y / scale;
-			z = z / scale;
-
-			//if (w < -1) w = -1;
-			//if (w > 1) w = 1;
-
-			w = acos(w) * 2.0;
-		}
-#endif
-		return *this;
-	}
-
-	/** Setup this quaternion from an unpacked axis angle representation */
-	void from_axis_angle4(Quaternion &q)
-	{
-		Float sinAngle;
-		Float half_angle = 0.5 * q.w;
-		sinAngle = sin(half_angle);
-
-		w = 0; x = q.x; y = q.y; z = q.z;
-		normalize();
-
-		x = (x * sinAngle);
-		y = (y * sinAngle);
-		z = (z * sinAngle);
-		w = cos(half_angle);
-	}
 
 	/** Assignment operator from matrix type (3x3)*/
 	Quaternion &operator=(const FloatMatrix &m) {
@@ -344,15 +261,6 @@ struct Quaternion {
 	Quaternion &conjugate() {
 		x = -x; y = -y; z = -z;
 		return *this;
-	}
-
-	/**
-		Convert Quaternion to FloatVector. This does not do any conversion. It just copies the values over.
-	*/
-	operator FloatVector () {
-		FloatVector v(4);
-		v << w, x,y,z;
-		return v;
 	}
 
 	/**
