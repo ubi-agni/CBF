@@ -191,18 +191,7 @@ FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step,
 
 #ifdef CBF_HAVE_KDL
 FloatMatrix &assign(FloatMatrix &m, const KDL::Jacobian &j) {
-	if (m.rows() != j.rows() || m.cols() != j.columns())
-		m.resize(j.rows(), j.columns());
-
-	unsigned int rows, columns;
-	rows = j.rows();
-	columns = j.columns();
-
-	for (unsigned int row = 0; row < rows; ++row) {
-		for (unsigned int column = 0; column < columns; ++column) {
-			m(row, column) = j(row, column);	
-		}
-	}
+	m = j.data;
 	return m;
 }
 
