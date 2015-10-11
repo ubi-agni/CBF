@@ -65,15 +65,12 @@ namespace CBF {
 	
 	void BaseKDLChainSensorTransform::update(const FloatVector &resource_value) {
 		KDL::JntArray jnt_array(resource_dim());
-	
-		for (unsigned int i = 0; i < resource_dim(); ++i) {
-			jnt_array(i) = resource_value[i];
-		}
-	
+		jnt_array.data = resource_value;
+
 		m_JacSolver->JntToJac(jnt_array, *m_Jacobian);
 		m_FKSolver->JntToCart(jnt_array, *m_Frame);
 	}
-	
+
 	unsigned int BaseKDLChainSensorTransform::resource_dim() const {
 		return m_Chain->getNrOfJoints();
 	}
@@ -85,25 +82,14 @@ namespace CBF {
 	{
 		m_TaskDim = 3;
 		m_ResourceDim = chain->getNrOfJoints();
-
-		m_Result = FloatVector(3);
+		m_Result = FloatVector(m_TaskDim);
 	}
 	
 	void KDLChainPositionSensorTransform::update(const FloatVector &resource_value) {
 		BaseKDLChainSensorTransform::update(resource_value);
 
-		//! Update the jacobian so we can hand it out...
-		m_TaskJacobian = FloatMatrix(3, resource_dim());
-		for (unsigned int i = 0; i < 3; ++i) {
-			for (unsigned int j = 0; j < resource_dim(); ++j) {
-				m_TaskJacobian(i,j) = (*m_Jacobian)(i,j);
-			}
-		}
-	
-		//! Buffer result, so we can return it when requested...
-		for (unsigned int i = 0; i < 3; ++i) {
-			m_Result[i] = m_Frame->p(i);
-		}
+		m_TaskJacobian = m_Jacobian->data.topRows<3>();
+		m_Result = Eigen::Map<Eigen::Vector3d>(m_Frame->p.data);
 	}
 	
 	
@@ -118,28 +104,9 @@ namespace CBF {
 	void KDLChainAxisAngleSensorTransform::update(const FloatVector &resource_value) {
 		BaseKDLChainSensorTransform::update(resource_value);
 	
-		//! Update the jacobian so we can hand it out...
-		m_TaskJacobian = FloatMatrix::Zero(3, resource_dim());
-	
-		for (unsigned int i = 0; i < 3; ++i) {
-			for (unsigned int j = 0; j < resource_dim(); ++j) {
-				m_TaskJacobian(i,j) = (*m_Jacobian)(i+3, j);
-				//CBF_DEBUG("la! " << m_ConcreteJacobian(i,j))
-			}
-		}
-	
-		//! Buffer result, so we can return it when requested...
-		KDL::Vector vec;
-		float angle;
-		angle = (m_Frame->M).GetRotAngle(vec, 0.0000000000001);
-	
-		// angle = fmod(angle + 2.0 * M_PI, 2.0 * M_PI);
-		if (angle > M_PI) angle -= 2.0 * M_PI;
-		if (angle <= -M_PI) angle += 2.0 * M_PI;
-	
-		for (unsigned int i = 0; i < 3; ++i) {
-			m_Result[i] = vec(i) * angle;
-		}
+		m_TaskJacobian = m_Jacobian->data.bottomRows<3>();
+		const KDL::Vector &axis = m_Frame->M.GetRot();
+		m_Result = Eigen::Map<const Eigen::Vector3d>(axis.data);
 	}
 
 
@@ -179,10 +146,7 @@ namespace CBF {
 		KDL::JntArray jnt_array(resource_dim());
 	
 		CBF_DEBUG(resource_value);
-	
-		for (unsigned int i = 0; i < resource_dim(); ++i) {
-			jnt_array(i) = resource_value[i];
-		}
+		jnt_array.data = resource_value;
 
 		for (unsigned int i = 0; i < m_SegmentNames.size(); ++i) {
 			m_JacSolver->JntToJac(jnt_array, *(m_Jacobians[i]), m_SegmentNames[i]);
@@ -202,10 +166,10 @@ namespace CBF {
 	) : 
 		BaseKDLTreeSensorTransform(tree, segment_names)
 	{
-		m_TaskDim = 3;
+		m_TaskDim = 3*segment_names.size();
 		m_ResourceDim = tree->getNrOfJoints();
-		m_Result = FloatVector(3 * segment_names.size());
-		m_TaskJacobian = FloatMatrix((int) 3 * segment_names.size(), (int) tree->getNrOfJoints());
+		m_Result = FloatVector(m_TaskDim);
+		m_TaskJacobian = FloatMatrix(m_TaskDim, m_ResourceDim);
 
 		CBF_DEBUG("# of segments: " << segment_names.size());
 		for (unsigned int i = 0; i < segment_names.size(); ++i) {
@@ -215,23 +179,16 @@ namespace CBF {
 
 
 
-
 	void KDLTreePositionSensorTransform::update(const FloatVector &resource_value) {
 		BaseKDLTreeSensorTransform::update(resource_value);
 
 		unsigned int total_row = 0;
-
-		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i) {
-			for (unsigned int row = 0; row < 3; ++row, ++total_row) {
-				for (unsigned int col = 0; col < resource_dim(); ++col) {
-					m_TaskJacobian(total_row, col) = (*m_Jacobians[i])(row,col);
-				}
-				m_Result[total_row] = m_Frames[i]->p(row);
-			}
+		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i, total_row+=3) {
+			m_TaskJacobian.block(total_row,0, 3,resource_dim()) = m_Jacobians[i]->data.topRows<3>();
+			m_Result.segment(total_row,3) = Eigen::Map<Eigen::Vector3d>(m_Frames[i]->p.data);
 		}
-		CBF_DEBUG("TaskJacobian " << m_TaskJacobian);
+		CBF_DEBUG("TaskJacobian " << std::endl << m_TaskJacobian);
 	}
-	
 
 
 
@@ -244,41 +201,25 @@ namespace CBF {
 	{
 		m_TaskDim = 3*segment_names.size();
 		m_ResourceDim = tree->getNrOfJoints();
-
-		m_Result = FloatVector(3 * segment_names.size());
-		m_TaskJacobian = FloatMatrix((int) 3 * segment_names.size(),(int)  tree->getNrOfJoints());
+		m_Result = FloatVector(m_TaskDim);
+		m_TaskJacobian = FloatMatrix(m_TaskDim, m_ResourceDim);
 	}
 
 
 	void KDLTreeAxisAngleSensorTransform::update(const FloatVector &resource_value) {
 		BaseKDLTreeSensorTransform::update(resource_value);
 
-		CBF_DEBUG("Updating Jacobian");
-	
 		unsigned int total_row = 0;
-		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i) {
-			//! Buffer forward kinematics, so we can return it when requested...
-			const KDL::Vector& axis = m_Frames[i]->M.GetRot();
-			for (unsigned int row = 0; row < 3; ++row) {
-				m_Result[total_row+row] = axis(row);
-			}
-			
-			//! Buffer task jacobian
-			for (unsigned int row = 0; row < 3; ++row, ++total_row) {
-				for (unsigned int col = 0; col < resource_dim(); ++col) {
-					m_TaskJacobian(total_row,col) = (*m_Jacobians[i])(row+3, col);
-				}
-			}
+		for (unsigned int i = 0, len = m_SegmentNames.size(); i < len; ++i, total_row+=3) {
+			m_TaskJacobian.block(total_row,0, 3,resource_dim()) = m_Jacobians[i]->data.bottomRows<3>();
+			const KDL::Vector &axis = m_Frames[i]->M.GetRot();
+			m_Result.segment(total_row,3) = Eigen::Map<const Eigen::Vector3d>(axis.data);
 		}
-
-		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian);
-	
+		CBF_DEBUG("TaskJacobian: " << std::endl << m_TaskJacobian);
 	}
 
 
 
-
-	
 	#ifdef CBF_HAVE_XSD
 		BaseKDLChainSensorTransform::BaseKDLChainSensorTransform(const CBFSchema::ChainBase &xml_instance, const CBFSchema::SensorTransform &xml_st_instance, ObjectNamespacePtr object_namespace) :
 			SensorTransform(xml_st_instance, object_namespace),
