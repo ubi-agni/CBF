@@ -51,7 +51,8 @@ namespace KDL {
 
 //! Forward declarations for XML instance types
 // CBF_PLUGIN_PREAMBLE EffectorTransformType;
-namespace CBFSchema { 
+namespace CBFSchema {
+	class KDLChainPoseSensorTransform;
 	class KDLChainPositionSensorTransform;
 	class KDLChainAxisAngleSensorTransform;
 	class KDLTreePositionSensorTransform;
@@ -79,49 +80,33 @@ namespace CBF {
 			boost::shared_ptr<KDL::ChainFkSolverPos_recursive> m_FKSolver;
 			boost::shared_ptr<KDL::ChainFkSolverVel_recursive> m_FKVelSolver;
 	
-			FloatMatrix m_Twists;
-	
 			//! Intermediate result
 			boost::shared_ptr<KDL::Frame> m_Frame;
 	
 			//! Intermediate result
 			boost::shared_ptr<KDL::Jacobian> m_Jacobian;
 
-			unsigned int m_TaskDim;
-			unsigned int m_ResourceDim;
-	
 		public:
-			/**
-				Do not use instances of this class unless the chain has been set with a valid chain
-				and init_solvers() was called. This should have been done by subclasses without
-				any user intervention.
-			*/
+			//! constructor, initializes all members
 			BaseKDLChainSensorTransform(
 				boost::shared_ptr<KDL::Chain> chain
 			);
 	
-			//! This constructor is only implemented when XSD support is enabled..
+			//! This constructor is only implemented when XSD support is enabled
 			BaseKDLChainSensorTransform(
 				const CBFSchema::ChainBase &xml_chain_instance, 
 				const CBFSchema::SensorTransform &xml_st_instance,
 				ObjectNamespacePtr object_namespace
 			);
 	
-			/**
-				For all derived types the resource dim is always the same: the number of joints
-				of the kinematic chain
-			*/
-			virtual unsigned int resource_dim() const ;
+			//! resource_dim is always the number of joints in the chain
+			virtual unsigned int resource_dim() const;
 
-			/**
-				Call this function once m_Chain is set to a valid chain..
-			*/
+			//! initialize all members
 			virtual void init_solvers();
 	
-			/**
-				This reads the current resource values and updates the KDL::Jacobian matrix..
-			*/
-			virtual void update(const FloatVector &resource_value);
+			//! compute m_Frame and m_Jacobian from current joint values
+			void compute(const FloatVector &resource_value);
 
 			boost::shared_ptr<KDL::Chain> chain() { return m_Chain; }
 	};
@@ -129,10 +114,27 @@ namespace CBF {
 	
 	
 	
-	/**
-		@brief This class implements the SensorTransform for an arbitrary KDL chain. The task space is
-		the position of the end effector of the chain.
-	*/
+	//! SensorTransform of a KDL chain, representing end-effector pose
+	struct KDLChainPoseSensorTransform : public BaseKDLChainSensorTransform
+	{
+		KDLChainPoseSensorTransform(
+			const CBFSchema::KDLChainPoseSensorTransform &xml_instance, ObjectNamespacePtr object_namespace
+		);
+
+		KDLChainPoseSensorTransform(
+			boost::shared_ptr<KDL::Chain> chain
+		);
+
+		virtual unsigned int task_dim() const { return 6u; }
+
+		virtual void update(const FloatVector &resource_value);
+	};
+	typedef boost::shared_ptr<KDLChainPoseSensorTransform> KDLChainPoseSensorTransformPtr;
+
+
+
+
+	//! SensorTransform of a KDL chain, representing end-effector position
 	struct KDLChainPositionSensorTransform : public BaseKDLChainSensorTransform
 	{
 		KDLChainPositionSensorTransform(
@@ -143,31 +145,15 @@ namespace CBF {
 			boost::shared_ptr<KDL::Chain> chain
 		);
 
-		virtual unsigned int task_dim() const { 
-			return 3u; 
-		}
+		virtual unsigned int task_dim() const { return 3u; }
 
 		virtual void update(const FloatVector &resource_value);
 	};
-	
-	typedef boost::shared_ptr<
-		KDLChainPositionSensorTransform
-	> KDLChainPositionSensorTransformPtr;
+	typedef boost::shared_ptr<KDLChainPositionSensorTransform> KDLChainPositionSensorTransformPtr;
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	/**
-		@brief This class implements the SensorTransform for an arbitrary KDL chain. The task space is
-		the orientation of the end effector of the chain specified in compact axis-angle representation
-		(compact meaning here that the angle is absorbed into the length of the axid vector resulting
-		in a 3D representation.
-	*/
+	//! SensorTransform of a KDL chain, representing end-effector orientation as angular velocity vector
 	struct KDLChainAxisAngleSensorTransform : public BaseKDLChainSensorTransform
 	{
 		KDLChainAxisAngleSensorTransform (const CBFSchema::KDLChainAxisAngleSensorTransform &xml_instance, ObjectNamespacePtr object_namespace);
