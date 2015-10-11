@@ -50,18 +50,14 @@ struct Potential : public Object {
 	Potential(const CBFSchema::Potential &xml_instance, ObjectNamespacePtr object_namespace);
 
 	Potential(
-		bool clamp_gradient_step_norm = false,
 		Float max_gradient_step_norm = 0.1
 	) :
 		Object("Potential"),
-		m_ClampGradientStepNorm(clamp_gradient_step_norm),
 		m_MaxGradientStepNorm(max_gradient_step_norm)
 	{
-
 	}
 
 	virtual ~Potential() {
-
 	}
 
 	virtual void set_max_gradient_step_norm(Float gradient_norm) {

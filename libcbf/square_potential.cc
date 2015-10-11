@@ -29,11 +29,9 @@ namespace CBF {
 		const std::vector<FloatVector > &references,
 		const FloatVector &input
 	) {
-		//! First we find the closest reference vector
+		// First we find the closest reference vector
 		Float min_dist = std::numeric_limits<Float>::max();
 		unsigned int min_index = 0;
-
-		//std::cout  << "[SquarePotential]: sizes: " << references[0].size() << " " << input.size() << std::endl;
 
 		for (unsigned int i = 0; i < references.size(); ++i) {
 			Float dist = distance(input, references[i]);
@@ -43,18 +41,13 @@ namespace CBF {
 			}
 		}
 
-		// CBF_DEBUG("min_index " << min_index)
-
-		//! The gradient of a square function is just negative of
-		//! input - reference..
+		// The gradient of a square function is just reference - input
 		result = m_Coefficient * (references[min_index] - input);
 		Float result_norm = norm(result);
-		// CBF_DEBUG("result_norm " << result_norm)
 
-		//! Normalize gradient step so it's not bigger than m_MaxGradientStep
+		// Normalize gradient step so it's not bigger than m_MaxGradientStep
 		if (result_norm >= m_MaxGradientStepNorm)
-			result = (m_MaxGradientStepNorm/result_norm) * result;
-		// std::cout << "[SquaredPotential]: result: " << result << std::endl;
+			result *= m_MaxGradientStepNorm/result_norm;
 	}
 
 

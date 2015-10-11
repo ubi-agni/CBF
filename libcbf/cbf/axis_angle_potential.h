@@ -45,10 +45,10 @@ namespace CBF {
 		//! @brief  This coefficient determines the rate of convergence. Choose between 0 and 1.
 		Float m_Coefficient;
 
-		AxisAnglePotential(Float coefficient = 0.1) :
+		AxisAnglePotential(Float coefficient = 1.) :
+		   Potential(5. / 180. * M_PI),
 			m_Coefficient(coefficient)
 		{
-	
 		}
 	
 		virtual void gradient (

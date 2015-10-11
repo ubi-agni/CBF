@@ -45,7 +45,7 @@ struct SquarePotential : public Potential {
 
 	unsigned int m_Dim;
 
-	SquarePotential(unsigned int dim = 1, Float coefficient = 1.0) :
+	SquarePotential(unsigned int dim = 1, Float coefficient = 1.) :
 		m_Coefficient(coefficient),
 		m_Dim(dim)
 	{
