@@ -29,10 +29,9 @@ namespace CBF {
 
 			Quaternion q1; q1.from_axis_angle3(v1);
 			Quaternion q2; q2.from_axis_angle3(v2);
+			if (q1.dot(q2) < 0) q2 *= -1.;
 
-			Quaternion q3 = q1.conjugate() * q2;
-
-			//q3.axis_angle();
+			Quaternion q3 = q2 * q1.conjugate();
 			Float angle = normalize_angle(acos(q3.w) * 2.0);
 			angle = fabs(angle);
 
@@ -48,30 +47,24 @@ namespace CBF {
 		) {
 			CBF_DEBUG("[AxisAnglePotential]: input: " << input.transpose());
 			CBF_DEBUG("[AxisAnglePotential]: ref: " << references[0].transpose());
-			Quaternion in;
-			in.from_axis_angle3(input);
-			CBF_DEBUG("q_in: " << in);
+			Quaternion in; in.from_axis_angle3(input);
+			Quaternion ref; ref.from_axis_angle3(references[0]);
+			if (in.dot(ref) < 0) ref *= -1.;
 
-			Quaternion ref;
-			ref.from_axis_angle3(references[0]);
-			CBF_DEBUG("q_ref: " << ref);
-
-			Quaternion next = qslerp(in, ref, m_Coefficient);
-			CBF_DEBUG("q_next: " << next);
-
-			Quaternion res = next * in.conjugate();
-			CBF_DEBUG("q_step: " << res);
+			Quaternion step = ref * in.conjugate();
+			CBF_DEBUG("q_step: " << step);
 
 			result.resize(3);
-			res.to_axis_angle3(result);
+			step.to_axis_angle3(result);
+			result *= m_Coefficient;
+			Float result_norm = result.norm();
 
-			if(norm(result) > m_MaxGradientStepNorm)
-				result *= m_MaxGradientStepNorm/norm(result);
+			// Normalize gradient step so it's not bigger than m_MaxGradientStep
+			if (result_norm >= m_MaxGradientStepNorm)
+				result *= m_MaxGradientStepNorm/result_norm;
 
 			CBF_DEBUG("result: " << result.transpose());
 		}
-
-
 
 
 
