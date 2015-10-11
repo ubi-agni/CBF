@@ -34,7 +34,7 @@
 		#define CBF_DEBUG(arg) \
 			std::cerr << \
 				std::fixed << \
-				std::setprecision(14) << \
+				std::setprecision(8) << \
 				"\033[22;32m[" << \
 				__FILE__ << \
 				":" << \
@@ -47,8 +47,6 @@
 	#else
 		#define CBF_DEBUG(arg) \
 			std::cerr << \
-				std::fixed << \
-				std::setprecision(14) << \
 				std::fixed << \
 				std::setprecision(8) << \
 				"""[" << \

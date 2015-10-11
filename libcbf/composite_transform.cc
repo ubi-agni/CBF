@@ -54,11 +54,6 @@ namespace CBF {
 					m_SensorTransforms[i] -> task_jacobian().rows(), resource_dim())
 					= m_SensorTransforms[i] -> task_jacobian();
 
-			CBF_DEBUG("m_Jacobian: " << m_TaskJacobian);
-	
-			CBF_DEBUG("current_task_pos " << current_task_pos
-					<< " task_dim " << m_SensorTransforms[i]->task_jacobian().rows());
-
 			m_Result.segment(current_task_pos,
 					m_SensorTransforms[i]->task_jacobian().rows()) = m_SensorTransforms[i]->result();
 	

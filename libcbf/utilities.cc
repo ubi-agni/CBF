@@ -217,14 +217,14 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 										  const CustomUnaryOp& inverter) {
 		Eigen::JacobiSVD<FloatMatrix> svd = M.jacobiSvd(Eigen::ComputeThinV | Eigen::ComputeThinU);
 		FloatVector tmp = svd.singularValues();
-		CBF_DEBUG("singularValues: " << tmp);
+		CBF_DEBUG("singularValues: " << tmp.transpose());
 	
 		//! Invert singular vectors
 		Float det = tmp.head(svd.nonzeroSingularValues()).prod();
 		FloatVector si = tmp.unaryExpr(inverter);
 
-		CBF_DEBUG("deter:" << det);
-		CBF_DEBUG("svd: "<< std::endl << si);
+		CBF_DEBUG("det: " << det);
+		CBF_DEBUG("svd: " << si.transpose());
 	
 		result = (svd.matrixV() * si.asDiagonal()) * svd.matrixU().transpose();
 		return det;

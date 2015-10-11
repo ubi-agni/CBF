@@ -33,23 +33,19 @@ namespace CBF {
 
 		unsigned int current_index = 0;
 		for (unsigned int i = 0; i < m_Potentials.size(); ++i) {
-			CBF_DEBUG("[CompositePotential]: ----");
 			m_ref_buffers[i] = references[0].segment(current_index, m_Potentials[i]->dim());
 			m_in_buffers[i] = input.segment(current_index, m_Potentials[i]->dim());
-			CBF_DEBUG("[CompositePotential]: in: " <<  m_in_buffers[i]);
 
 			std::vector<FloatVector > tmp_refs;
 			tmp_refs.push_back(m_ref_buffers[i]);
-			CBF_DEBUG("[CompositePotential]: tmp_refs: " <<  tmp_refs[0]);
-			CBF_DEBUG("[CompositePotential]: m_ref_buffers: " <<  m_ref_buffers[i]);
 
 			m_Potentials[i]->gradient(m_out_buffers[i], tmp_refs, m_in_buffers[i]);
-			CBF_DEBUG("[CompositePotential]: out: " <<  m_out_buffers[i]);
 			result.segment(current_index, m_out_buffers[i].size())
 					= m_out_buffers[i];
 
 			current_index += m_Potentials[i]->dim();
 		}
+		CBF_DEBUG("result " << result.transpose());
 	}
 
 #ifdef CBF_HAVE_XSD

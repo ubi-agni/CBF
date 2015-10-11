@@ -66,8 +66,6 @@ namespace CBF {
 	void BaseKDLChainSensorTransform::update(const FloatVector &resource_value) {
 		KDL::JntArray jnt_array(resource_dim());
 	
-		CBF_DEBUG(resource_value);
-	
 		for (unsigned int i = 0; i < resource_dim(); ++i) {
 			jnt_array(i) = resource_value[i];
 		}
@@ -120,12 +118,8 @@ namespace CBF {
 	void KDLChainAxisAngleSensorTransform::update(const FloatVector &resource_value) {
 		BaseKDLChainSensorTransform::update(resource_value);
 	
-		CBF_DEBUG("Updating Jacobian");
 		//! Update the jacobian so we can hand it out...
 		m_TaskJacobian = FloatMatrix::Zero(3, resource_dim());
-	
-		//CBF_DEBUG(m_ConcreteJacobian)
-		//CBF_DEBUG(get_resource_dim())
 	
 		for (unsigned int i = 0; i < 3; ++i) {
 			for (unsigned int j = 0; j < resource_dim(); ++j) {
@@ -133,8 +127,6 @@ namespace CBF {
 				//CBF_DEBUG("la! " << m_ConcreteJacobian(i,j))
 			}
 		}
-	
-		CBF_DEBUG("m_ConcreteJacobian: " << m_TaskJacobian);
 	
 		//! Buffer result, so we can return it when requested...
 		KDL::Vector vec;
@@ -149,10 +141,6 @@ namespace CBF {
 			m_Result[i] = vec(i) * angle;
 		}
 	}
-	
-
-
-
 
 
 	BaseKDLTreeSensorTransform::BaseKDLTreeSensorTransform(

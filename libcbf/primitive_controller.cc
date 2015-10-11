@@ -162,19 +162,19 @@ namespace CBF {
 
 		//! Fill vector with data from sensor transform
 		m_SensorTransform->update(resource()->get());
-		CBF_DEBUG("jacobian: " << m_SensorTransform->task_jacobian());
+		CBF_DEBUG("jacobian: " << std::endl << m_SensorTransform->task_jacobian());
 
 		m_EffectorTransform->update(resource()->get(), m_SensorTransform->task_jacobian());
-		CBF_DEBUG("inv. jacobian: " << m_EffectorTransform->inverse_task_jacobian());
+		CBF_DEBUG("inv. jacobian: " << std::endl << m_EffectorTransform->inverse_task_jacobian());
 	
 		m_CurrentTaskPosition = m_SensorTransform->result();
-		CBF_DEBUG("currentTaskPosition: " << m_CurrentTaskPosition);
+		CBF_DEBUG("currentTaskPosition: " << m_CurrentTaskPosition.transpose());
 	
 		if (m_References.size() != 0) {	
 			CBF_DEBUG("have reference!");
 			//! then we do the gradient step
 			m_Potential->gradient(m_GradientStep, m_References, m_CurrentTaskPosition);
-			CBF_DEBUG("gradientStep: " << m_GradientStep);
+			CBF_DEBUG("gradientStep: " << m_GradientStep.transpose());
  
 			//! Map gradient step into resource step via exec:
 			CBF_DEBUG("calling m_EffectorTransform->exec(): Type is: " << CBF_UNMANGLE(*m_EffectorTransform.get()));
@@ -183,7 +183,7 @@ namespace CBF {
 			m_ResourceStep = FloatVector::Zero(resource()->dim());
 		}
 	
-		CBF_DEBUG("resourceStep: " << m_ResourceStep);
+		CBF_DEBUG("resourceStep: " << m_ResourceStep.transpose());
 	
 		//! then we recursively call subordinate controllers.. and gather their 
 		//! effector transformed gradient steps.
@@ -209,7 +209,7 @@ namespace CBF {
 		//! which can be expressed as result -= ...
 		m_CombinedResults -= m_InvJacobianTimesJacobian
 			* m_CombinedResults;
-		CBF_DEBUG("combined_results * beta: " << m_CombinedResults);
+		CBF_DEBUG("combined_results * beta: " << m_CombinedResults.transpose());
 	
 		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
 	}
