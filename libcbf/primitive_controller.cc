@@ -214,6 +214,12 @@ namespace CBF {
 		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
 	}
 	
+	bool PrimitiveController::step() {
+		update();
+		action();
+		return finished();
+	}
+
 	void PrimitiveController::action() {
 		m_Resource->add(m_Result);
 		m_Converged = check_convergence();

@@ -87,6 +87,7 @@ namespace CBF {
 				This should only be used after the result has been calculated.
 			*/ 
 			virtual bool check_convergence();
+			virtual bool step() {}
 
 			std::vector<ConvergenceCriterionPtr> m_ConvergenceCriteria;
 	
@@ -178,62 +179,41 @@ namespace CBF {
 			Float coefficient();
 	
 		
-			/**
-				This reimplementation of the base class' method assumes that we are not a subordinate
-				controller, because subordinate controllers are always called via the do_step() method
+			/** Compute a resource update step.
+
+				Update references, sensor transforms, effector transforms,
+				compute a gradient step, and finally the resource step
 			*/
 			virtual void update();
 
-			virtual void action() { }
-
-			/**
-				@brief Returns the result of the calculationss done on update().
-
-				The update() function is supposed to update all sensor transforms, potentials
-				etc. The last step of a control cycle is applying the result (the resource
-				space gradient step) of these	calculations to the resource.
-			*/
+			/** Returns the resource update step computed by update() */
 			virtual FloatVector &result() { return m_Result; }
 
 			virtual ResourcePtr resource();
 
 			/**
-
 				Check if controller is converged. Call this function only
-				after calling step() at least once..
+				after calling step() at least once.
 			*/
 			virtual bool finished();
 
 			virtual void check_dimensions();
 
 		protected:
+			//! overall resource update, including those from subordinates
 			FloatVector m_Result;
 
-			/**	Member variable for efficiency reasons.. */
 			FloatMatrix m_TaskJacobian;
-	
-			/**	Member variable for efficiency reasons.. */
 			FloatMatrix m_InverseTaskJacobian;
-	
-			/**	Member variable for efficiency reasons.. */
 			FloatMatrix m_InvJacobianTimesJacobian;
 	
-			/**	Member variable for efficiency reasons.. */
 			FloatVector m_CurrentTaskPosition;
-	
-			/**	Member variable for efficiency reasons.. */
 			FloatVector m_GradientStep;
-	
-			/**	Member variable for efficiency reasons.. */
+			//! resource update from this controller
 			FloatVector m_ResourceStep;
 	
-			/**	Member variable for efficiency reasons.. */
 			FloatVector m_CombinedResults;
-	
-			/**	Member variable for efficiency reasons.. */
 			std::vector<FloatVector> m_SubordinateGradientSteps;
-	
-			/**	Member variable for efficiency reasons.. */
 			std::vector<FloatVector> m_References;
 	};
 
@@ -298,8 +278,8 @@ namespace CBF {
 			virtual ResourcePtr resource() { return m_Resource; }
 
 			virtual void update();
-
 			virtual void action();
+			virtual bool step();
 	};
 
 } // namespace

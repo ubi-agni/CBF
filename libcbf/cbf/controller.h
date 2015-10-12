@@ -62,52 +62,20 @@ namespace CBF {
 			works nicely
 		*/
 		virtual ~Controller() { }
-	
+
 		/**
-			Subclasses need to implement this. If this is 
-			a controller program, the semantics still
-			is to run a single step of "underlying" 
-			controllers and then return immediately..
-	
-			The controller is expected to return true 
-			when finished() would return true, too.
-	
-			Always run step() at least once before 
-			calling finished() for the first time.
+			Perform a single controller step.
 		*/
-		virtual bool step() {
-			update();
-			action();
-			return finished();
-		}
-	
+		virtual bool step() = 0;
+
 		/**
 			Has this controller reached its goal? 
 			E.g. convergence for primitive controllers..
 	
 			Always run step() at least once before 
 			calling finished() for the first time.
-
-			This base class implementation always
-			returns true, as there's nothing to do.
 		*/
-		virtual bool finished() { return true; }
-
-		/**
-			@brief This member updates the internal state
-			depending on whether it's a new cycle or not
-			(by calling do_update() if appropriate).
-		*/
-		virtual void update() { }
-
-		/**
-			@brief This member checks whether it's 
-			time to take action based on the cycle id.
-
-			If it is time, then it calls the do_action() method
-		*/
-		virtual void action() { }
-
+		virtual bool finished() = 0;
 
 		/**
 			@brief Returns a reference to the user given name of this controller..
