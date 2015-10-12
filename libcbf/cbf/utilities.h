@@ -69,25 +69,10 @@ const Float slerp_threshold = 0.001;
 */
 FloatVector &slerp(const FloatVector &start, const FloatVector &end, Float step, FloatVector &result);
 
-inline FloatVector unpack_axis_angle3(FloatVector &v) {
-	FloatVector ret(4);
-
-	ret[0] = v.norm();
-
-	ret[1] = v[0]/ret[0];
-	ret[2] = v[1]/ret[0];
-	ret[3] = v[2]/ret[0];
-
-	return ret;
-}
-
-/**
-	Calculates pseudo inverse of matrix m and writes it into result. m must have more columns
-	than rows.
-*/
-Float damped_pseudo_inverse(const FloatMatrix &m, FloatMatrix &result, Float damping_constant = 0.001);
-
+//! Calculate pseudo inverse of matrix m writing result. m must have more columns than rows.
 Float pseudo_inverse(const FloatMatrix &m, FloatMatrix &result);
+Float damped_pseudo_inverse(const FloatMatrix &m, FloatMatrix &result, Float damping_constant = 0.001);
+Float threshold_pseudo_inverse(const FloatMatrix &m, FloatMatrix &result, const Float threshold);
 
 /** 
 	A function to create a CBF::FloatMatrix from a KDL::Jacobian. The argument m is

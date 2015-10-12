@@ -375,23 +375,23 @@
 	</xsd:complexContent>
 </xsd:complexType>
 
-<xsd:complexType name="PaddedEffectorTransform">
-	<xsd:complexContent>
-		<xsd:extension base="CBF:EffectorTransform">
-			<xsd:sequence>
-				<xsd:element name="TaskDimension" type="xsd:nonNegativeInteger"/>
-				<xsd:element name="ResourceDimension" type="xsd:nonNegativeInteger"/>
-				<xsd:element name="Diagonal" type="CBF:Vector"/>
-			</xsd:sequence>
-		</xsd:extension>
-	</xsd:complexContent>
-</xsd:complexType>
-
 <xsd:complexType name="DampedGenericEffectorTransform">
 	<xsd:complexContent>
 		<xsd:extension base="CBF:EffectorTransform">
 			<xsd:sequence>
 				<xsd:element name="DampingConstant" type="xsd:float"/>
+				<xsd:element name="TaskDimension" type="xsd:nonNegativeInteger"/>
+				<xsd:element name="ResourceDimension" type="xsd:nonNegativeInteger"/>
+			</xsd:sequence>
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ThresholdGenericEffectorTransform">
+	<xsd:complexContent>
+		<xsd:extension base="CBF:EffectorTransform">
+			<xsd:sequence>
+				<xsd:element name="Threshold" type="xsd:float"/>
 				<xsd:element name="TaskDimension" type="xsd:nonNegativeInteger"/>
 				<xsd:element name="ResourceDimension" type="xsd:nonNegativeInteger"/>
 			</xsd:sequence>
@@ -407,6 +407,18 @@
 				<xsd:element name="Weights" type="CBF:Matrix"/>
 				<xsd:element name="TaskDimension" type="xsd:nonNegativeInteger"/>
 				<xsd:element name="ResourceDimension" type="xsd:nonNegativeInteger"/>
+			</xsd:sequence>
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="PaddedEffectorTransform">
+	<xsd:complexContent>
+		<xsd:extension base="CBF:EffectorTransform">
+			<xsd:sequence>
+				<xsd:element name="TaskDimension" type="xsd:nonNegativeInteger"/>
+				<xsd:element name="ResourceDimension" type="xsd:nonNegativeInteger"/>
+				<xsd:element name="Diagonal" type="CBF:Vector"/>
 			</xsd:sequence>
 		</xsd:extension>
 	</xsd:complexContent>

@@ -36,9 +36,9 @@
 
 namespace CBFSchema {
 	class GenericEffectorTransform;
-	class PaddedEffectorTransform;
 	class DampedGenericEffectorTransform;
-	class DampedWeightedGenericEffectorTransform;
+	class ThresholdGenericEffectorTransform;
+	class PaddedEffectorTransform;
 }
 
 namespace CBF {
@@ -105,49 +105,43 @@ namespace CBF {
 	
 	typedef boost::shared_ptr<DampedGenericEffectorTransform> DampedGenericEffectorTransformPtr;
 
-	
+
 	/**
-		@brief Pseudo inverse based generic effector transform (damped, weighted).
-
-		TODO: Implement!!!
+		@brief Pseudo inverse based generic effector transform (damped, non-weighted)
 	*/
-	struct DampedWeightedGenericEffectorTransform : public EffectorTransform {
-		DampedWeightedGenericEffectorTransform (const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace);
+	struct ThresholdGenericEffectorTransform : public EffectorTransform {
+		ThresholdGenericEffectorTransform (const CBFSchema::ThresholdGenericEffectorTransform &xml_instnace, ObjectNamespacePtr object_namespace);
 
-		protected:	
-	 		FloatMatrix m_Weights;
+		virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
 
-			/**
-				@brief This variable controls the amount of damping
+		ThresholdGenericEffectorTransform(unsigned int task_dim, unsigned int resource_dim,	Float threshold = 10)
+		{
+			init(task_dim, resource_dim, threshold);
+		}
 
-				Instead of 1/lambda where lambda is a singular value of the 
-				sensor transform this uses lambda/(m_DampingConstant + lambda^2)
-			*/
-			Float m_DampingConstant;
+		virtual void exec(const FloatVector &input, FloatVector &result) {
+			result = m_InverseTaskJacobian * input;
+		}
 
-		public:	
-			virtual void update(const FloatVector &resource_value, const FloatMatrix &task_jacobian);
-		
-			DampedWeightedGenericEffectorTransform(
-				unsigned int task_dim,
-				unsigned int resource_dim,
-				Float damping_constant
-			) 
-			{
-				init(task_dim, resource_dim, damping_constant);
-			}		
-		
-			virtual void exec(const FloatVector &input, FloatVector &result) {
-				result = m_InverseTaskJacobian * input;
-			}
 
-			void init(unsigned int task_dim, unsigned int resource_dim, Float damping_constant) {
-				m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
-				m_DampingConstant = damping_constant;
-			}		
+		void init(unsigned int task_dim, unsigned int resource_dim, Float threshold) {
+			m_InverseTaskJacobian = FloatMatrix((int) resource_dim, (int) task_dim);
+			m_Threshold = threshold;
+		}
+
+		void setThreshold (Float threshold) {
+			m_Threshold = threshold;
+		}
+
+		Float getThreshold () const {
+			return m_Threshold;
+		}
+
+		protected:
+			Float m_Threshold;
 	};
-	
-	typedef boost::shared_ptr<DampedWeightedGenericEffectorTransform> DampedWeightedGenericEffectorTransformPtr;
+
+	typedef boost::shared_ptr<ThresholdGenericEffectorTransform> ThresholdGenericEffectorTransformPtr;
 
 
 	/**

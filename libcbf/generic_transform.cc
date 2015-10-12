@@ -28,30 +28,16 @@ namespace CBF {
 
 
 void GenericEffectorTransform::update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
-	CBF_DEBUG("updating");
-
-	//m_SensorTransform->task_jacobian(m_Jacobian);
 	pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
 }
 
 void DampedGenericEffectorTransform::update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
-	CBF_DEBUG("updating");
-
-	//m_SensorTransform->task_jacobian(m_Jacobian);
 	damped_pseudo_inverse(task_jacobian, m_InverseTaskJacobian, m_DampingConstant);
 }
 
-
-void DampedWeightedGenericEffectorTransform::update(
-	const FloatVector &resource_value, 
-	const FloatMatrix &task_jacobian
-) {
-	CBF_DEBUG("updating");
-
-	//m_SensorTransform->task_jacobian(m_Jacobian);
-	damped_pseudo_inverse(task_jacobian, m_InverseTaskJacobian);
+void ThresholdGenericEffectorTransform::update(const FloatVector &resource_value, const FloatMatrix &task_jacobian) {
+	threshold_pseudo_inverse(task_jacobian, m_InverseTaskJacobian, m_Threshold);
 }
-
 
 #ifdef CBF_HAVE_XSD
 	GenericEffectorTransform::GenericEffectorTransform(
@@ -60,6 +46,30 @@ void DampedWeightedGenericEffectorTransform::update(
 		EffectorTransform(xml_instance, object_namespace)
 	{
 		init(xml_instance.TaskDimension(), xml_instance.ResourceDimension());
+	}
+
+	DampedGenericEffectorTransform::DampedGenericEffectorTransform(
+		const CBFSchema::DampedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
+	) :
+		EffectorTransform(xml_instance, object_namespace)
+	{
+		init(
+			xml_instance.TaskDimension(),
+			xml_instance.ResourceDimension(),
+			xml_instance.DampingConstant()
+		);
+	}
+
+	ThresholdGenericEffectorTransform::ThresholdGenericEffectorTransform(
+		const CBFSchema::ThresholdGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
+	) :
+		EffectorTransform(xml_instance, object_namespace)
+	{
+		init(
+			xml_instance.TaskDimension(),
+			xml_instance.ResourceDimension(),
+			xml_instance.Threshold()
+		);
 	}
 
 	PaddedEffectorTransform::PaddedEffectorTransform(
@@ -73,29 +83,7 @@ void DampedWeightedGenericEffectorTransform::update(
 			*XMLObjectFactory::instance()->create<ForeignObject<FloatVector> >(xml_instance.Diagonal(), object_namespace)->m_Object
 		);
 	}
-	
 
-	DampedGenericEffectorTransform::DampedGenericEffectorTransform(
-		const CBFSchema::DampedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace
-	) :
-		EffectorTransform(xml_instance, object_namespace)
-	{
-		init(
-			xml_instance.TaskDimension(), 
-			xml_instance.ResourceDimension(),
-			xml_instance.DampingConstant()
-		);
-	}
-
-	DampedWeightedGenericEffectorTransform::DampedWeightedGenericEffectorTransform(const CBFSchema::DampedWeightedGenericEffectorTransform &xml_instance, ObjectNamespacePtr object_namespace) :
-		EffectorTransform(xml_instance, object_namespace)
-	{
-		init(
-			xml_instance.TaskDimension(), 
-			xml_instance.ResourceDimension(),
-			xml_instance.DampingConstant()
-		);
-	}
 
 	static XMLDerivedFactory<
 		GenericEffectorTransform, 
@@ -108,8 +96,8 @@ void DampedWeightedGenericEffectorTransform::update(
 	> x2;
 
 	static XMLDerivedFactory<
-		DampedWeightedGenericEffectorTransform, 
-		CBFSchema::DampedWeightedGenericEffectorTransform
+		ThresholdGenericEffectorTransform,
+		CBFSchema::ThresholdGenericEffectorTransform
 	> x3;
 
 	static XMLDerivedFactory<
