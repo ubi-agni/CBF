@@ -197,7 +197,7 @@ namespace CBF {
 			virtual bool finished();
 			virtual bool stalled();
 
-			virtual void check_dimensions();
+			virtual void check_dimensions() const;
 
 		protected:
 			//! overall resource update, including those from subordinates
@@ -271,7 +271,7 @@ namespace CBF {
 			*/
 			ResourcePtr m_Resource;
 
-			virtual void check_dimensions();
+			virtual void check_dimensions() const;
 
 		public:
 

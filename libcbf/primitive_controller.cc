@@ -123,7 +123,7 @@ namespace CBF {
 	}
 	
 
-	void SubordinateController::check_dimensions() {
+	void SubordinateController::check_dimensions() const {
 		if (m_Reference->dim() != m_Potential->dim())
 			CBF_THROW_RUNTIME_ERROR(m_Name << ": Reference and Potential dimensions mismatch: " << m_Reference->dim() << " is not equal to " << m_Potential->dim());
 
@@ -135,6 +135,11 @@ namespace CBF {
 
 		if (m_SensorTransform->task_dim() != m_EffectorTransform->task_dim())
 			CBF_THROW_RUNTIME_ERROR(m_Name << ": Sensor Transform and Effector transform task dimension mismatch: " << m_SensorTransform->task_dim() << " is not equal to " << m_EffectorTransform->task_dim());
+
+		for(std::vector<SubordinateControllerPtr>::const_iterator it = m_SubordinateControllers.begin(),
+		    end = m_SubordinateControllers.end(); it != end; ++it) {
+			(*it)->check_dimensions();
+		}
 	}	
 
 	ResourcePtr SubordinateController::resource() { 
@@ -243,7 +248,7 @@ namespace CBF {
 		return m_Stalled;
 	}
 
-	void PrimitiveController::check_dimensions() {
+	void PrimitiveController::check_dimensions() const {
 		SubordinateController::check_dimensions();
 
 		if (m_SensorTransform->resource_dim() != m_Resource->dim())
