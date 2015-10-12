@@ -73,10 +73,11 @@ namespace CBF {
 			CombinationStrategyPtr combination_strategy
 		);
 	
-	
+
 		protected:
 			SubordinateController* m_Master;
-			bool m_Converged;
+			bool m_Converged, m_Stalled;
+			std::vector<ConvergenceCriterionPtr> m_ConvergenceCriteria;
 
 			/**
 				@brief: Check for convergence of the controller
@@ -89,8 +90,6 @@ namespace CBF {
 			virtual bool check_convergence();
 			virtual bool step() {}
 
-			std::vector<ConvergenceCriterionPtr> m_ConvergenceCriteria;
-	
 			/*** @brief Function for stuff common to all constructors */
 			void init(
 				Float coefficient,
@@ -196,6 +195,7 @@ namespace CBF {
 				after calling step() at least once.
 			*/
 			virtual bool finished();
+			virtual bool stalled();
 
 			virtual void check_dimensions();
 

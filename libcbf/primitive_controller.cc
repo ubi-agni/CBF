@@ -226,22 +226,23 @@ namespace CBF {
 	}
 	
 	bool SubordinateController::check_convergence() {
-		CBF_DEBUG("check_convergence");
 		m_Converged = false;
 
-		CBF_DEBUG("# of criteria: " << m_ConvergenceCriteria.size());
 		for (unsigned int i = 0, max = m_ConvergenceCriteria.size(); i < max; ++i) {
 			if (m_ConvergenceCriteria[i]->check_convergence(*this)) {
 				m_Converged = true;
-				return true;
+				break;
 			}
 		}
-		return false;
+		m_Stalled = !m_Converged && m_Result.norm() < 0.005 * m_GradientStep.norm();
+		return m_Converged;
 	}
 	
 	bool SubordinateController::finished() {
-		// check whether we have approached one of the references to within a small error
 		return m_Converged;
+	}
+	bool SubordinateController::stalled() {
+		return m_Stalled;
 	}
 
 	void PrimitiveController::check_dimensions() {
