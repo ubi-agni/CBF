@@ -184,20 +184,19 @@ namespace CBF {
 		}
 	
 		CBF_DEBUG("resourceStep: " << m_ResourceStep.transpose());
-	
-		//! then we recursively call subordinate controllers.. and gather their 
+
+		//! then we recursively call subordinate controllers.. and gather their
 		//! effector transformed gradient steps.
-		m_SubordinateGradientSteps.resize(m_SubordinateControllers.size());
+		m_SubordinateResourceSteps.resize(m_SubordinateControllers.size());
 	
 		for (unsigned int i = 0; i < m_SubordinateControllers.size(); ++i) {
 			m_SubordinateControllers[i]->update();
-			m_SubordinateGradientSteps[i] = m_SubordinateControllers[i]->result();
-			CBF_DEBUG("subordinate_gradient_step: " << m_SubordinateGradientSteps[i]);
+			m_SubordinateResourceSteps[i] = m_SubordinateControllers[i]->result();
 		}
 	
 		m_CombinedResults = FloatVector::Zero(resource()->dim());
 	
-		m_CombinationStrategy->exec(m_CombinedResults, m_SubordinateGradientSteps);
+		m_CombinationStrategy->exec(m_CombinedResults, m_SubordinateResourceSteps);
 	
 		//! finally the results of all subordinate controllers are projected
 		//! into our nullspace.For this we need the task jacobian and its inverse. 
@@ -207,9 +206,8 @@ namespace CBF {
 	
 		//! The projector is (1 - J# J), so this is result = result - (J# J result)
 		//! which can be expressed as result -= ...
-		m_CombinedResults -= m_InvJacobianTimesJacobian
-			* m_CombinedResults;
-		CBF_DEBUG("combined_results * beta: " << m_CombinedResults.transpose());
+		m_CombinedResults -= m_InvJacobianTimesJacobian * m_CombinedResults;
+		CBF_DEBUG("resourceStep(NS): " << m_CombinedResults.transpose());
 	
 		m_Result = (m_ResourceStep * m_Coefficient) + m_CombinedResults;
 	}

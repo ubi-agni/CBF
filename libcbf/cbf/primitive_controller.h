@@ -213,7 +213,7 @@ namespace CBF {
 			FloatVector m_ResourceStep;
 	
 			FloatVector m_CombinedResults;
-			std::vector<FloatVector> m_SubordinateGradientSteps;
+			std::vector<FloatVector> m_SubordinateResourceSteps;
 			std::vector<FloatVector> m_References;
 	};
 
