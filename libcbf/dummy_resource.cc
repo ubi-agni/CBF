@@ -69,6 +69,7 @@ namespace CBF {
 	void DummyResource::write(const FloatVector &vel, const Float timestep)
 	{
 		integrate_Euler(m_ResourceValue, vel, timestep);
+		m_ResourceValueVelocity = vel;
 	}
 
 	void DummyResource::set(const FloatVector &pos)

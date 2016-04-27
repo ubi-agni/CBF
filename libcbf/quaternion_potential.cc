@@ -38,9 +38,12 @@ namespace CBF {
   {
     Quaternion q3 = Quaternion(v1) * Quaternion(v2).conjugate();
 
-    Float angle = normalize_angle(acos(q3.w) * 2.0);
-
-    return fabs(angle);
+    if(q3.w<0) {
+      return fabs(-2.0* acos(-q3.w));
+    }
+    else {
+      return fabs(2.0* acos(q3.w));
+    }
   }
 
   FloatVector &QuaternionPotential::select_reference(
@@ -84,7 +87,12 @@ namespace CBF {
       result.setZero();
     }
     else {
-      result = 2.0* acos(res.w) * result/ result.norm();
+      if(res.w<0) {
+        result = -2.0* acos(-res.w) * result/ result.norm();
+      }
+      else {
+        result = 2.0* acos(res.w) * result/ result.norm();
+      }
     }
   }
 

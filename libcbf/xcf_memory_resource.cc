@@ -69,11 +69,11 @@ namespace CBF {
 
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ResourceMonitor);
 		//First call update on the wrapped resource.
-		m_Resource -> update();
+    m_Resource -> read();
 
 		//Publish the new state of the resource.
 		CBF_DEBUG("getting vector from the wraped resource");
-		FloatVector stateVector = m_Resource -> get();
+    FloatVector stateVector = m_Resource -> get_position();
 
 		CBF_DEBUG("writing vector into stream");
 		std::stringstream stateVector_string;
@@ -144,8 +144,8 @@ namespace CBF {
 			CBF_DEBUG("meeeh!!!");
 			CBF_DEBUG("Dimensions of xml vector not matching the dimension of this resource. not adding");
 		} else {
-			CBF_DEBUG("adding vector to resource");
-			m_Resource -> add(resourceVector);
+      CBF_DEBUG("adding vector to resource");
+      //m_Resource -> add(resourceVector);
 		}
 		CBF_DEBUG("out");
 	}

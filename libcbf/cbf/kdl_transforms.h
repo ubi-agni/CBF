@@ -116,6 +116,16 @@ namespace CBF {
 			//! It reads the current resource values and updates the KDL::Jacobian matrix..
 			virtual void update(const FloatVector &resource_value);
 
+      /**
+        This return the current position.
+      */
+      void get_position(FloatVector &result);
+
+      /**
+        This reads the current orientation.
+      */
+      void get_quaternion(FloatVector &result);
+
 			boost::shared_ptr<KDL::Chain> chain() { return m_Chain; }
 	};
 	

@@ -70,14 +70,14 @@ struct XCFMemoryResource : public Resource {
 		numeric representation of the resource as a XCFMemoryResourceState on
 		the Memory.
 	*/
-	virtual void update();
+  virtual void update();
 
 	/**
 		@brief Returns the numeric representation of the wrapped resource.
 	*/
-	virtual const FloatVector &get(){
+  virtual const FloatVector &get_position(){
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ResourceMonitor);
-		return m_Resource -> get();
+    return m_Resource -> get_position();
 	}
 
 	/**
@@ -87,7 +87,7 @@ struct XCFMemoryResource : public Resource {
 	*/
 	virtual void add(const FloatVector &arg){
 		IceUtil::Monitor<IceUtil::RecMutex>::Lock lock(m_ResourceMonitor);
-		m_Resource -> add(arg);
+    //m_Resource -> add(arg);
 	}
 
 	/**

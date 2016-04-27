@@ -36,9 +36,8 @@ namespace CBF {
   DampedResourceLimiter::DampedResourceLimiter(const Float timestep, const unsigned int dim) :
     Limiter(timestep, dim, dim) {
 
-    m_PosMargin = FloatVector::Ones(dim)*0.1;
-    m_VelMargin = FloatVector::Ones(dim)*0.1;
-
+    m_PosMargin = FloatVector::Ones(dim)*0.01;
+    m_VelMargin = FloatVector::Ones(dim)*0.01;
   }
 
   void DampedResourceLimiter::limit(
@@ -63,7 +62,7 @@ namespace CBF {
         next_pos(i) = m_PosUpperLimit(i);
         next_vel(i) = (next_pos(i)-current_pos(i))/m_TimeStep;
       }
-      else if (next_pos(i) > m_PosUpperLimit(i)-m_PosMargin(i)) {
+      else if (next_pos(i) > (m_PosUpperLimit(i)-m_PosMargin(i))) {
         next_vel(i) *= (m_PosUpperLimit(i)-next_pos(i))/m_PosMargin(i);
         next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
       }
@@ -73,7 +72,7 @@ namespace CBF {
         next_pos(i) = m_PosLowerLimit(i);
         next_vel(i) = (next_pos(i)-current_pos(i))/m_TimeStep;
       }
-      else if (next_pos(i) < m_PosLowerLimit(i)+m_PosMargin(i)) {
+      else if (next_pos(i) < (m_PosLowerLimit(i)+m_PosMargin(i))) {
         next_vel(i) *= (next_pos(i)-m_PosLowerLimit(i))/m_PosMargin(i);
         next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
       }

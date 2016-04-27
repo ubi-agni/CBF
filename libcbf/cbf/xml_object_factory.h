@@ -121,9 +121,13 @@ namespace CBF {
 					const TType* r = dynamic_cast<const TType*>(&xml_instance);
 					if (r) {
 						CBF_DEBUG("yes, i am the one");
-						ObjectPtr p(new T(*r, object_namespace));
-						object_namespace->register_object(p->name(), p);
-						return p;
+
+            /**
+              TODO: implement!!
+            */
+            //ObjectPtr p(new T(*r, object_namespace));
+            //object_namespace->register_object(p->name(), p);
+            //return p;
 					}
 					CBF_DEBUG("no i am not the one");
 					return boost::shared_ptr<Object>();

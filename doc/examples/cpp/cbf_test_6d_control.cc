@@ -36,6 +36,7 @@ using namespace CBF;
 #define N_DT (1./100.)
 
 CBF::DummyReferencePtr mTargetReference;
+CBF::DummyResourcePtr mVirtualResource;
 CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chain);
 boost::shared_ptr<KDL::Chain> createChain (int iNumJointTriples);
 
@@ -91,6 +92,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
     (CBF::PotentialPtr(new CBF::QuaternionPotential()));
   CBF::PotentialPtr potential (new CBF::CompositePotential(potentials));
 
+  mVirtualResource = CBF::DummyResourcePtr(new CBF::DummyResource(nJoints));
   mTargetReference = CBF::DummyReferencePtr(new CBF::DummyReference(1, N_REF));
 
   CBF::CDDynFilterPtr reference_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(N_DT, potential->sensor_dim(), potential->task_dim(), 1.0));
@@ -114,7 +116,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(potential->task_dim(), nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
         CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
-        CBF::DummyResourcePtr(new CBF::DummyResource(nJoints)),
+        mVirtualResource,
         CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, nJoints, nJoints)),
         CBF::NullLimiterPtr(new CBF::NullLimiter(N_DT, nJoints))
       )
@@ -136,8 +138,12 @@ int main() {
   FloatVector lJoint(mChain->getNrOfJoints());
   FloatVector lEndPosture(N_REF);
 
+  // initialize resource
   lJoint.setOnes();
-  mController->reset(lJoint*0.2, lJoint*0.01);
+  mVirtualResource->set(lJoint*0.2, lJoint*0.0);
+
+  // initialize controller
+  mController->reset(mVirtualResource->get_position(), mVirtualResource->get_velocity());
 
   std::cout << "Initial resource" << std::endl;
   std::cout << mController->resource()->get_position() << std::endl;
@@ -169,22 +175,10 @@ int main() {
 
   mTargetReference->set_reference(lRef);
 
-  // controller reset
-  mController->reset();
-
   int cnt=0;
   do {
-    // get resource from the real robot
-    // as this example does not include real robot,
-    // we assume that the resource_filter is same as the real robot's resource value
-    //mController->resource()->update(
-    //  mController->resource_filter()->get_filtered_state(),
-    //  mController->resource_filter()->get_filtered_state_vel());
-
     // control
     mController->step();
-
-    // send result resource to a real robot
 
     // display
     lEndPosture = mController->sensor_transform()->result();
@@ -196,10 +190,7 @@ int main() {
     }
     std::cout << std::endl;
 
-    //std::cout << "result_resource_velocity " << std::endl;
-    //std::cout << mController->result_resource_velocity() << std::endl;
-
-    usleep(10000);
+    usleep(N_DT*1000000);
   } while(mController->finished() == false);
 }
 

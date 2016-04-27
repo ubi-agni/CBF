@@ -49,6 +49,9 @@ namespace CBF {
 	}
 	
 	void BaseKDLChainSensorTransform::init_solvers() {
+	
+		m_Twists = FloatMatrix(6, m_Chain->getNrOfJoints());
+	
 		m_JacSolver.reset(new KDL::ChainJntToJacSolver(*m_Chain));
 		m_FKSolver.reset(new KDL::ChainFkSolverPos_recursive(*m_Chain));
 		m_Jacobian.reset(new KDL::Jacobian(resource_dim()));
@@ -60,6 +63,14 @@ namespace CBF {
 
 		m_JacSolver->JntToJac(jnt_array, *m_Jacobian);
 		m_FKSolver->JntToCart(jnt_array, *m_Frame);
+	}
+
+	void BaseKDLChainSensorTransform::get_position(FloatVector &result) {
+		m_Result = Eigen::Map<Eigen::Vector3d>(m_Frame->p.data);
+	}
+
+	void BaseKDLChainSensorTransform::get_quaternion(FloatVector &result) {
+		(m_Frame->M).GetQuaternion(result[1], result[2], result[3], result[0]);
 	}
 
 	unsigned int BaseKDLChainSensorTransform::resource_dim() const {
@@ -82,7 +93,6 @@ namespace CBF {
 		m_TaskJacobian = m_Jacobian->data.topRows<3>();
 		m_Result = Eigen::Map<Eigen::Vector3d>(m_Frame->p.data);
 	}
-
 
 
 	KDLChainAxisAngleSensorTransform::KDLChainAxisAngleSensorTransform(boost::shared_ptr<KDL::Chain> chain) :

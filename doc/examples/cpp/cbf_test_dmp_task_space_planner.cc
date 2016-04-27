@@ -32,6 +32,7 @@ using namespace CBF;
 #define N_DT (1./100.)
 
 CBF::DummyReferencePtr mTargetReference;
+CBF::DummyResourcePtr mVirtualResource;
 CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chain);
 boost::shared_ptr<KDL::Chain> createChain (int iNumJointTriples);
 
@@ -84,6 +85,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
 {
   unsigned int nJoints = chain->getNrOfJoints();
 
+  mVirtualResource = CBF::DummyResourcePtr(new CBF::DummyResource(nJoints));
   mTargetReference = CBF::DummyReferencePtr(new CBF::DummyReference(1,N_REF));
 
   CBF::SquarePotentialPtr potential = CBF::SquarePotentialPtr(new CBF::SquarePotential(3,3));
@@ -121,7 +123,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(potential->task_dim(), nJoints)),
         std::vector<CBF::SubordinateControllerPtr>(),
         CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
-        CBF::DummyResourcePtr(new CBF::DummyResource(nJoints)),
+        mVirtualResource,
         CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, nJoints, nJoints)),
         CBF::NullLimiterPtr(new CBF::NullLimiter(N_DT, nJoints))
       )
@@ -141,8 +143,12 @@ int main() {
   FloatVector lRef(mController->reference()->dim());
   FloatVector lJoint(mChain->getNrOfJoints());
 
+  // initialize resource
   lJoint.setOnes();
-  mController->reset(lJoint*0.2, lJoint*0.0);
+  mVirtualResource->set(lJoint*0.2, lJoint*0.0);
+
+  // initialize controller
+  mController->reset(mVirtualResource->get_position(), mVirtualResource->get_velocity());
 
   lRef = mController->sensor_transform()->result();
   std::cout << "Initial position" << std::endl;
@@ -162,6 +168,7 @@ int main() {
   int cnt=0;
   do {
     mController->step();
+
     lEndPosture = mController->sensor_transform()->result();
 
     //lEndPosture = mController->task_filter()->get_filtered_state();
