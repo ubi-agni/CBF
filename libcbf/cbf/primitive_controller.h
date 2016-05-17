@@ -207,6 +207,12 @@ namespace CBF {
 
 			void action() {action(m_TimeStep);}
 
+      virtual bool step() {
+        update();
+        action();
+        return finished();
+      }
+
 			virtual void reset(const FloatVector resource_value, const FloatVector resource_velocity);
 
       virtual void reset_sensor();
@@ -234,7 +240,7 @@ namespace CBF {
 			*/
 			virtual bool finished();
 
-			virtual bool stalled();
+      //virtual bool stalled();
 
 			virtual void check_dimensions() const;
 
@@ -247,8 +253,6 @@ namespace CBF {
 	
 			FloatVector m_CurrentTaskPosition;
 	
-			FloatVector m_TaskStateError;
-
 			FloatVector m_TaskStateError;
 			FloatVector m_TaskVelocity;
 			FloatVector m_ResourceVelocity;
@@ -325,6 +329,12 @@ namespace CBF {
 
 		void action() {action(m_TimeStep);}
 
+    virtual bool step() {
+      update();
+      action();
+      return finished();
+    }
+
 	private:
 		/**
 			A controller can have subordinate controllers whose control signal
@@ -339,7 +349,7 @@ namespace CBF {
 		FilterPtr m_ResourceFilter;
 		LimiterPtr m_ResourceLimiter;
 
-		virtual void check_dimensions();
+    virtual void check_dimensions() const;
 	};
 
 } // namespace

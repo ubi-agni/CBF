@@ -107,7 +107,8 @@ struct Quaternion {
 			w * q_rhs.w - x * q_rhs.x - y * q_rhs.y - z * q_rhs.z,
 			w * q_rhs.x + x * q_rhs.w + y * q_rhs.z - z * q_rhs.y,
 			w * q_rhs.y + y * q_rhs.w + z * q_rhs.x - x * q_rhs.z,
-			w * q_rhs.z + z * q_rhs.w + x * q_rhs.y - y * q_rhs.x);
+			w * q_rhs.z + z * q_rhs.w + x * q_rhs.y - y * q_rhs.x
+		).normalize();
 	}
 
 	// operator functions
@@ -261,6 +262,15 @@ struct Quaternion {
 	Quaternion &conjugate() {
 		x = -x; y = -y; z = -z;
 		return *this;
+	}
+
+	/**
+		Convert Quaternion to FloatVector. This does not do any conversion. It just copies the values over.
+	*/
+	operator FloatVector () {
+		FloatVector v(4);
+		v << w, x,y,z;
+		return v;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-
+#include <stdio.h>
 #include <cbf/primitive_controller.h>
 #include <cbf/quaternion_potential.h>
 #include <cbf/cddyn_filter.h>
@@ -89,7 +89,7 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
   mVirtualResource = CBF::DummyResourcePtr(new CBF::DummyResource(nJoints));
   mTargetReference = CBF::DummyReferencePtr(new CBF::DummyReference(1, N_REF));
 
-  CBF::QuaternionPotentialPtr potential = CBF::QuaternionPotentialPtr(new CBF::QuaternionPotential());
+  CBF::PotentialPtr potential = CBF::PotentialPtr(new CBF::QuaternionPotential());
 
   CBF::CDDynFilterPtr reference_filter = CBF::CDDynFilterPtr(new CBF::CDDynFilter(N_DT, potential->sensor_dim(), potential->task_dim(), 2.0));
 
@@ -102,10 +102,10 @@ CBF::PrimitiveControllerPtr createController (boost::shared_ptr<KDL::Chain> chai
         reference_filter,
         potential,
         PDPositionControlPtr(new PDPositionControl(N_DT, potential->task_dim())),
-        CBF::SensorTransformPtr(new CBF::KDLChainQuaternionSensorTransform(chain)),
-        CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(potential->task_dim(), nJoints)),
-        std::vector<CBF::SubordinateControllerPtr>(),
-        CBF::CombinationStrategyPtr(new CBF::AddingStrategy),
+        SensorTransformPtr(new KDLChainQuaternionSensorTransform(chain)),
+        EffectorTransformPtr(new DampedGenericEffectorTransform(potential->task_dim(), nJoints, 0.00001)),
+        std::vector<SubordinateControllerPtr>(),
+        CombinationStrategyPtr(new AddingStrategy),
         mVirtualResource,
         CBF::BypassFilterPtr(new CBF::BypassFilter(N_DT, nJoints, nJoints)),
         CBF::NullLimiterPtr(new CBF::NullLimiter(N_DT, nJoints))
@@ -129,7 +129,7 @@ int main() {
 
   // initialize resource
   lJoint.setOnes();
-  mVirtualResource->set(lJoint*0.2, lJoint*0.0);
+  mVirtualResource->set(lJoint*0.3, lJoint*0.0);
 
   // initialize controller
   mController->reset(mVirtualResource->get_position(), mVirtualResource->get_velocity());
@@ -162,17 +162,21 @@ int main() {
     lEndPosture = mController->sensor_transform()->result();
     lJointVel   = mController->result_resource_velocity();
 
-    std::cout << "step " << cnt++ << ": "
-               << lEndPosture[0] << " "
-               << lEndPosture[1] << " "
-               << lEndPosture[2] << " "
-               << lEndPosture[3] << ", ";
+    printf("%05d, quat: %07.5lf %07.5lf %07.5lf %07.5lf,",
+           cnt++,
+           lEndPosture[0],
+           lEndPosture[1],
+           lEndPosture[2],
+           lEndPosture[3]);
 
-    for(int i=0; i<mChain->getNrOfJoints(); i++)
-    {
-      std::cout << lJointVel(i) << " ";
-    }
-    std::cout << std::endl;
+    lEndPosture = mController->reference_filter()->get_filtered_state();
+    printf("target: %07.5lf %07.5lf %07.5lf %07.5lf ",
+           lEndPosture[0],
+           lEndPosture[1],
+           lEndPosture[2],
+           lEndPosture[3]);
+
+    printf("\n");
 
     usleep(N_DT*1000000);
   } while(mController->finished() == false);

@@ -213,7 +213,7 @@ namespace CBF {
 		CBF_DEBUG("init");
 	}
 
-	void SubordinateController::check_dimensions() {
+  void SubordinateController::check_dimensions() const {
 		if (m_Reference->dim() != m_Potential->sensor_dim())
 			CBF_THROW_RUNTIME_ERROR(m_Name << ": Reference and Potential dimensions mismatch: " << m_Reference->dim() << " is not equal to " << m_Potential->sensor_dim());
 
@@ -359,7 +359,7 @@ namespace CBF {
 				break;
 			}
 		}
-		m_Stalled = !m_Converged && m_Result.norm() < 0.005 * m_GradientStep.norm();
+    //m_Stalled = !m_Converged && m_Result.norm() < 0.005 * m_GradientStep.norm();
 		return m_Converged;
 	}
 	
@@ -453,7 +453,7 @@ namespace CBF {
 			}
 
 			init(
-        		timestep,
+        timestep,
 				convergence_criteria,
 				reference,
 				reference_filter,

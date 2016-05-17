@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <cbf/primitive_controller.h>
 #include <cbf/quaternion_potential.h>
 #include <cbf/cddyn_filter.h>
@@ -186,18 +187,18 @@ int main() {
 
   mTargetReference->set_reference(lRef);
 
-  FloatVector lEndPosture(4);
+  FloatVector lEndPosture(3);
   int cnt=0;
   do {
     mController->step();
 
     lEndPosture = mController->sensor_transform()->result();
 
-    std::cout << "step " << cnt++ << ": "
-               << lEndPosture[0] << " "
-               << lEndPosture[1] << " "
-               << lEndPosture[2] << " "
-               << std::endl;
+    printf("step: %04d, task-space error: %8.4lf, null-space error: %8.4lf \n",
+           cnt++,
+           (lRef-lEndPosture).norm(),
+           mController->result_nullspace_resource_velocity().norm()*N_DT );
+
 /*
     std::cout << "Task Reference velocity" << std::endl;
     std::cout << mController->reference_filter()->get_filtered_state_vel() << std::endl;

@@ -262,7 +262,7 @@ add_subdirectory(doc)
 
 # --- doxygen: process after schemas subdir, because DOXYGEN_XSD_INPUTS is set there ---
 message(STATUS "Looking for doxygen")
-find_package(Doxygen)
+#find_package(Doxygen)
 if(DOXYGEN_FOUND)
   configure_file(
     "${PROJECT_SOURCE_DIR}/Doxyfile.in"

@@ -126,7 +126,7 @@ namespace CBF {
 	void KDLChainQuaternionSensorTransform::update(const FloatVector &resource_value) {
 		BaseKDLChainSensorTransform::update(resource_value);
 
-		m_TaskJacobian = m_Jacobian->data.topRows<3>();
+    m_TaskJacobian = m_Jacobian->data.bottomRows<3>();
 
 		(m_Frame->M).GetQuaternion(m_Result[1], m_Result[2], m_Result[3], m_Result[0]);
   }

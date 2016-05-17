@@ -5,13 +5,13 @@
 namespace CBF {
 
 	bool TaskSpaceDistanceThreshold::check_convergence(const SubordinateController &p) {
-		return p.m_GradientStep.norm() < m_Threshold;
+    return p.m_TaskStateError.norm() < m_Threshold;
 	}
 	
 	bool ResourceStepNormThreshold::check_convergence(const SubordinateController &p) {
 		CBF_DEBUG("check convergence");
 
-		if ((p.m_ResourceStep).norm() < m_Threshold)
+    if ((p.m_ResourceVelocity).norm()*p.m_TimeStep < m_Threshold)
 			return true;
 
 		return false;

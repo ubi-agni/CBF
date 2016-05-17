@@ -41,23 +41,24 @@ using namespace CBF;
 int main() {
   unsigned int nJoints = 3;
 
-  DummyReferencePtr reference(new DummyReference(1, N_REF));
+  DummyReferencePtr reference = DummyReferencePtr(new DummyReference(1, N_REF));
   PotentialPtr potential(new SquarePotential(nJoints, nJoints));
+  DummyResourcePtr mVirtualResource = DummyResourcePtr(new CBF::DummyResource(nJoints));
 
 	//! Create a PrimitiveController...
- 	PrimitiveControllerPtr c(
-		new PrimitiveController(
+  PrimitiveControllerPtr controller (
+    new PrimitiveController(
       N_DT,
-			std::vector<ConvergenceCriterionPtr>(), 
+      std::vector<CBF::ConvergenceCriterionPtr>(),
 			reference,
       CDDynFilterPtr(new CDDynFilter(N_DT, potential->sensor_dim(), potential->task_dim(), 1.0)),
       potential,
       PDPositionControlPtr(new PDPositionControl(N_DT, potential->task_dim())),
       SensorTransformPtr(new IdentitySensorTransform(potential->sensor_dim())),
       EffectorTransformPtr(new GenericEffectorTransform(potential->task_dim(), nJoints)),
-			std::vector<SubordinateControllerPtr>(),
-			CombinationStrategyPtr(new AddingStrategy),
-      ResourcePtr(new DummyResource(nJoints)),
+      std::vector<SubordinateControllerPtr>(),
+      CombinationStrategyPtr(new AddingStrategy),
+      mVirtualResource,
       BypassFilterPtr(new BypassFilter(N_DT, nJoints, nJoints)),
       NullLimiterPtr(new NullLimiter(N_DT, nJoints))
 		)
@@ -71,5 +72,5 @@ int main() {
 		Run controller until convergence. Note that step() must be called
 		before finished() to initialize internal state...
 	*/
-	do { c->step(); std::cout << "step" << std::endl; } while (c->finished() == false);
+  do { controller->step(); std::cout << "step" << std::endl; } while (controller->finished() == false);
 }

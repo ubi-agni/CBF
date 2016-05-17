@@ -70,7 +70,7 @@ set(CBF_HEADERS
   cbf/controller.h
   cbf/controller_sequence.h
   cbf/convergence_criterion.h
-  cbf/cppad_sensor_transform.h
+#  cbf/cppad_sensor_transform.h
   cbf/debug_macros.h
   cbf/difference_sensor_transform.h
   cbf/dummy_reference.h
