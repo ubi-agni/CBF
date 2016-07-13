@@ -38,12 +38,6 @@ include(ParseArguments)
 enable_testing()
 include(CTest) 
 
-# redefine pkg-config macro to enforce re-evaluation of PKG_CONFIG_PATH
-macro(pkg_check_modules _prefix)
-  _pkgconfig_parse_options(_pkg_modules _pkg_is_required _pkg_is_silent ${ARGN})
-  _pkg_check_modules_internal("${_pkg_is_required}" "${_pkg_is_silent}" "${_prefix}" ${_pkg_modules})
-endmacro(pkg_check_modules)
-
 # define build type
 IF (NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
