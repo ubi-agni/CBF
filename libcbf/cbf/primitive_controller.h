@@ -88,7 +88,7 @@ namespace CBF {
 				This should only be used after the result has been calculated.
 			*/ 
 			virtual bool check_convergence();
-			virtual bool step() {}
+			virtual bool step() { return false; /* subordinate controllers don't finish */ }
 
 			/*** @brief Function for stuff common to all constructors */
 			void init(
