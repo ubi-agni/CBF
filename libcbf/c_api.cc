@@ -185,7 +185,7 @@ cbf_controller_step(struct cbf_primitive_controller *c, double *in, double *out)
     std::copy(in, in+res->dim(), lin.data());
     res->set(lin);
 
-    CBF_DEBUG(res->get());
+    CBF_DEBUG(res->get_position());
 
 		//! A place to store the result...
     CBF::FloatVector result_resource_velocity;
