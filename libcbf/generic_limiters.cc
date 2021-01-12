@@ -48,6 +48,7 @@ namespace CBF {
 
     for (unsigned int i=0; i<current_pos.size(); i++) {
 
+      // saturate velocity
       if (next_vel(i) > m_VelLimit(i)) {
         next_vel(i) = m_VelLimit(i);
         next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
@@ -63,7 +64,11 @@ namespace CBF {
         next_vel(i) = (next_pos(i)-current_pos(i))/m_TimeStep;
       }
       else if (next_pos(i) > (m_PosUpperLimit(i)-m_PosMargin(i))) {
-        next_vel(i) *= (m_PosUpperLimit(i)-next_pos(i))/m_PosMargin(i);
+        // if vel positive, reduce its absolute value, otherwise don't limit it further.
+        if (next_vel(i) > 0)
+        {
+          next_vel(i) *= (m_PosUpperLimit(i)-next_pos(i))/m_PosMargin(i);
+        }
         next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
       }
 
@@ -73,10 +78,13 @@ namespace CBF {
         next_vel(i) = (next_pos(i)-current_pos(i))/m_TimeStep;
       }
       else if (next_pos(i) < (m_PosLowerLimit(i)+m_PosMargin(i))) {
-        next_vel(i) *= (next_pos(i)-m_PosLowerLimit(i))/m_PosMargin(i);
+        // if vel negative, reduce its absolute value, otherwise don't limit it further.
+        if (next_vel(i) < 0)
+        {
+          next_vel(i) *= (next_pos(i)-m_PosLowerLimit(i))/m_PosMargin(i);
+        }
         next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
       }
-
     }
   }
 
