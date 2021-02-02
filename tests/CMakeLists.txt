@@ -103,3 +103,19 @@ else()
   message(STATUS "  not adding executable ${exe}")
   message(STATUS "  because kdl was not found")
 endif()
+
+set(exe cbf_test_7dof_pos_ctrl)
+if(CBF_HAVE_KDL)
+  message(STATUS "  adding executable: ${exe}")
+  include_directories(SYSTEM ${KDL_INCLUDE_DIRS})
+  add_executable(${exe} ${exe}.cpp)
+  target_link_libraries(${exe} 
+	${CBF_LIBRARY_NAME}
+    ${Boost_PROGRAM_OPTIONS_LIBRARIES}
+    ${KDL_LDFLAGS}
+	 )
+  add_dependencies(${exe} ${CBF_LIBRARY_NAME})
+else()
+  message(STATUS "  not adding executable ${exe}")
+  message(STATUS "  because kdl was not found")
+endif()
