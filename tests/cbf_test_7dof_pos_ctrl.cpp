@@ -130,7 +130,9 @@ int main() {
       CBF::ErrorControlPtr(
           new CBF::PDPositionControl(mTimeStep, potential->task_dim(), 1.0)),
       sensorTransfo,
-      CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(
+      //CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(
+      //    potential->task_dim(), nJoints)),
+      CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(
           potential->task_dim(), nJoints)),
       // CBF::EffectorTransformPtr(new
       // CBF::ThresholdGenericEffectorTransform(potential->task_dim(),
