@@ -97,15 +97,11 @@ int main() {
 
   // sensor transform for position + quaternion control
   CBF::KDLChainPositionSensorTransform *mPositionSenstorTransform;
-  CBF::KDLChainQuaternionSensorTransform *mQuaternionSensorTransform;
   mPositionSenstorTransform =
       new CBF::KDLChainPositionSensorTransform(lwrchain);
-  mQuaternionSensorTransform =
-      new CBF::KDLChainQuaternionSensorTransform(lwrchain);
 
   std::vector<CBF::SensorTransformPtr> sensorTrafos = boost::assign::list_of(
-      CBF::SensorTransformPtr(mPositionSenstorTransform))(
-      CBF::SensorTransformPtr(mQuaternionSensorTransform));
+      CBF::SensorTransformPtr(mPositionSenstorTransform));
 
   CBF::SensorTransformPtr sensorTransfo(
       new CBF::CompositeSensorTransform(sensorTrafos));
@@ -115,12 +111,11 @@ int main() {
 
   // potential
   std::vector<CBF::PotentialPtr> potentials =
-      boost::assign::list_of(CBF::PotentialPtr(new CBF::SquarePotential(3, 3)))(
-          CBF::PotentialPtr(new CBF::QuaternionPotential()));
+      boost::assign::list_of(CBF::PotentialPtr(new CBF::SquarePotential(3, 3)));
   CBF::PotentialPtr potential(new CBF::CompositePotential(potentials));
 
   // controller
-  int num_ref = 7;
+  int num_ref = 3;
   CBF::PrimitiveControllerPtr c(new CBF::PrimitiveController(
       mTimeStep, std::vector<ConvergenceCriterionPtr>(),
       CBF::DummyReferencePtr(new CBF::DummyReference(1, num_ref)),
@@ -130,12 +125,12 @@ int main() {
       CBF::ErrorControlPtr(
           new CBF::PDPositionControl(mTimeStep, potential->task_dim(), 1.0)),
       sensorTransfo,
-      //CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(
-      //    potential->task_dim(), nJoints)),
+      CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(
+          potential->task_dim(), nJoints)),
       //CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(
       //    potential->task_dim(), nJoints)),
-      CBF::EffectorTransformPtr(new CBF::ThresholdGenericEffectorTransform(
-          potential->task_dim(), nJoints)),
+      //CBF::EffectorTransformPtr(new CBF::ThresholdGenericEffectorTransform(
+      //    potential->task_dim(), nJoints)),
       std::vector<SubordinateControllerPtr>(), // No SubordinateController
       CBF::CombinationStrategyPtr(new CBF::AddingStrategy()), resource,
       CBF::BypassFilterPtr(new CBF::BypassFilter(mTimeStep, nJoints,
