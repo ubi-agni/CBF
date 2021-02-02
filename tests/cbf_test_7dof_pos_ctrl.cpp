@@ -132,11 +132,10 @@ int main() {
       sensorTransfo,
       //CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(
       //    potential->task_dim(), nJoints)),
-      CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(
+      //CBF::EffectorTransformPtr(new CBF::GenericEffectorTransform(
+      //    potential->task_dim(), nJoints)),
+      CBF::EffectorTransformPtr(new CBF::ThresholdGenericEffectorTransform(
           potential->task_dim(), nJoints)),
-      // CBF::EffectorTransformPtr(new
-      // CBF::ThresholdGenericEffectorTransform(potential->task_dim(),
-      // nJoints)),
       std::vector<SubordinateControllerPtr>(), // No SubordinateController
       CBF::CombinationStrategyPtr(new CBF::AddingStrategy()), resource,
       CBF::BypassFilterPtr(new CBF::BypassFilter(mTimeStep, nJoints,
