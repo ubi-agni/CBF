@@ -20,6 +20,9 @@ if(CBF_HAVE_MEMORY)
   include_directories(${MEMORY_INCLUDE_DIRS})
 endif()
 
+if(CBF_HAVE_MEMORY)
+  include_directories(SYSTEM ${KDL_INCLUDE_DIRS})
+endif()
 
 set(exe cbf_test_functional)
 message(STATUS "  adding executable: ${exe}")
@@ -75,13 +78,7 @@ if(CBF_HAVE_XSD AND CBF_HAVE_BOOST_PROGRAM_OPTIONS AND CBF_HAVE_MEMORY AND CBF_H
   message(STATUS "  adding executable: ${exe}")
   QT_WRAP_CPP(MOC_${exe} ${exe}.h)
   add_executable(${exe} ${exe}.cc ${MOC_${exe}})
-  target_link_libraries(${exe} 
-	 ${CBF_LIBRARY_NAME} 
-	 ${QT_LIBRARIES} 
-	 ${Boost_PROGRAM_OPTIONS_LIBRARIES}
-    ${QT_LIBRARIES}
-	 -lIceUtil
-	 )
+  target_link_libraries(${exe} ${CBF_LIBRARY_NAME} ${QT_LIBRARIES} ${Boost_PROGRAM_OPTIONS_LIBRARIES} ${QT_LIBRARIES} -lIceUtil)
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})
 else()
   message(STATUS "  not adding executable ${exe}")
@@ -91,13 +88,19 @@ endif()
 set(exe cbf_test_7dof_kdl_chain)
 if(CBF_HAVE_KDL)
   message(STATUS "  adding executable: ${exe}")
-  include_directories(SYSTEM ${KDL_INCLUDE_DIRS})
   add_executable(${exe} ${exe}.cpp)
-  target_link_libraries(${exe} 
-	${CBF_LIBRARY_NAME}
-    ${Boost_PROGRAM_OPTIONS_LIBRARIES}
-    ${KDL_LDFLAGS}
-	 )
+  target_link_libraries(${exe} ${CBF_LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARIES} ${KDL_LIBRARIES})
+  add_dependencies(${exe} ${CBF_LIBRARY_NAME})
+else()
+  message(STATUS "  not adding executable ${exe}")
+  message(STATUS "  because kdl was not found")
+endif()
+
+set(exe cbf_test_7dof_pos_ctrl)
+if(CBF_HAVE_KDL)
+  message(STATUS "  adding executable: ${exe}")
+  add_executable(${exe} ${exe}.cpp)
+  target_link_libraries(${exe} ${CBF_LIBRARY_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARIES} ${KDL_LIBRARIES})
   add_dependencies(${exe} ${CBF_LIBRARY_NAME})
 else()
   message(STATUS "  not adding executable ${exe}")
