@@ -115,8 +115,9 @@ int main() {
     reference,
     PotentialPtr(new SquarePotential(3,3)),
     sensorTransfo,
-    EffectorTransformPtr(new GenericEffectorTransform(3,nJoints)),
+    //EffectorTransformPtr(new GenericEffectorTransform(3,nJoints)),
     //EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(3, nJoints)),
+    EffectorTransformPtr(new CBF::ThresholdGenericEffectorTransform(3, nJoints)),
     std::vector<SubordinateControllerPtr>(),
     CombinationStrategyPtr(new AddingStrategy()),
     resource
