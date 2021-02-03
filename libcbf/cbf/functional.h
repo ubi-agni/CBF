@@ -477,11 +477,13 @@ struct GenericSensorTransform : public SensorTransform {
 	is of the first type..
 */
 template<typename T, typename U> 
-struct multiplies { 
+struct multiply { 
 	typedef T first_argument_type;
 	typedef U second_argument_type;
 	typedef T result_type;
-	T operator()(T const& t, U const& u) const { return t * u; } 
+	U u;
+	multiply(const U& factor) : u(factor) {}
+	T operator()(T const& t) const { return t * u; }
 };
 
 
@@ -500,8 +502,8 @@ typedef ApplySensorTransform<
 > NegateOperationSensorTransform;
 
 typedef ApplySensorTransform<
-	std::binder2nd<multiplies<FloatVector, double> >,
-	std::binder2nd<multiplies<FloatMatrix, double> >
+	multiply<FloatVector, double>,
+	multiply<FloatMatrix, double>
 > MultiplyOperationSensorTransform;
 
 #if 0
@@ -524,4 +526,3 @@ typedef BlockWiseAccumulateSensorTransform<
 } // namespace
 
 #endif
-

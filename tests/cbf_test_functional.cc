@@ -17,8 +17,8 @@ int main() {
 	CBF::SensorTransformPtr s(
 		CBF::make_ApplySensorTransform(
 			id,
-			std::bind2nd(CBF::multiplies<CBF::FloatVector, double>(), 1.3),
-			std::bind2nd(CBF::multiplies<CBF::FloatMatrix, double>(), 1.4)
+			CBF::multiply<CBF::FloatVector, double>(1.3),
+			CBF::multiply<CBF::FloatMatrix, double>(1.4)
 		)
 	);
 
@@ -31,8 +31,8 @@ int main() {
 	CBF::SensorTransformPtr s2(
 		CBF::make_BlockWiseApplySensorTransform(
 			id,
-			std::bind2nd(CBF::multiplies<CBF::FloatVector, double>(), 1.3),
-			std::bind2nd(CBF::multiplies<CBF::FloatMatrix, double>(), 1.4),
+			CBF::multiply<CBF::FloatVector, double>(1.3),
+			CBF::multiply<CBF::FloatMatrix, double>(1.4),
 			3
 		)
 	);
@@ -46,8 +46,8 @@ int main() {
 	CBF::SensorTransformPtr s3(
 		new CBF::MultiplyOperationSensorTransform(
 			id, 
-			std::bind2nd(CBF::multiplies<CBF::FloatVector, double>(), 1.3),
-			std::bind2nd(CBF::multiplies<CBF::FloatMatrix, double>(), 1.4)
+			CBF::multiply<CBF::FloatVector, double>(1.3),
+			CBF::multiply<CBF::FloatMatrix, double>(1.4)
 		)
 	);
 
@@ -70,8 +70,8 @@ int main() {
 	CBF::SensorTransformPtr s4(
 		CBF::make_BlockWiseApplySensorTransform(
 			id,
-			std::bind2nd(std::plus<CBF::FloatVector>(), v),
-			std::bind2nd(std::plus<CBF::FloatMatrix>(), m),
+			std::bind(std::plus<CBF::FloatVector>(), std::placeholders::_1, v),
+			std::bind(std::plus<CBF::FloatMatrix>(), std::placeholders::_1, m),
 			3
 		)
 	);
