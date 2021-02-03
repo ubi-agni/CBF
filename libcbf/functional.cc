@@ -6,23 +6,13 @@ namespace CBF {
 
 #ifdef CBF_HAVE_XSD
 	template<> template<> ApplySensorTransform<
-		std::binder2nd<multiplies<FloatVector, double> >,
-		std::binder2nd<multiplies<FloatMatrix, double> >
+		multiply<FloatVector, double>,
+		multiply<FloatMatrix, double>
 	>::ApplySensorTransform(
 			const CBFSchema::MultiplyOperationSensorTransform &xml_instance, ObjectNamespacePtr object_namespace
 	) :
-		m_VectorOperation(
-			std::bind2nd(
-				multiplies<FloatVector, double>(),
-				xml_instance.Factor()
-			)
-		),
-		m_MatrixOperation(
-			std::bind2nd(
-				multiplies<FloatMatrix, double>(),
-				xml_instance.Factor()
-			)
-		) 
+		m_VectorOperation(multiply<FloatVector, double>(xml_instance.Factor())),
+		m_MatrixOperation(multiply<FloatMatrix, double>(xml_instance.Factor()))
 	{ 
 		CBF_DEBUG("MultiplyOperationSensorTransform");
 		m_Operand = XMLObjectFactory::instance()->create<SensorTransform>(xml_instance.Operand(), object_namespace);
@@ -51,5 +41,3 @@ namespace CBF {
 #endif
 
 } // namespace
-
-

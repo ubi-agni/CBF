@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 	try
 	{
 		//! Try to create a ControllerType from the passed XML document
-		std::auto_ptr<ControlBasisType> controller (
+		std::unique_ptr<ControlBasisType> controller (
 			ControlBasis(
 				argv[1], 
 				xml_schema::flags::dont_validate
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
 
 #if 0
-		std::auto_ptr<ResourceType> resource(
+		std::unique_ptr<ResourceType> resource(
 			Resource(
 				argv[2], xml_schema::flags::dont_validate
 			)

@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
 
 	std::string document;
 	std::vector<int> dimensions;
-	std::auto_ptr<CBFSchema::XCFMemoryReferenceInfo> reference;
+	std::unique_ptr<CBFSchema::XCFMemoryReferenceInfo> reference;
 	while(results -> hasNext()){
 		results -> next(document);
 		try{

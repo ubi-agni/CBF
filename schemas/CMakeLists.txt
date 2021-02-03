@@ -1,44 +1,46 @@
 message(STATUS "In subdirectory schemas:")
 
 if(CBF_HAVE_XSD)
-  message(STATUS "  creating target for xcfschemas.hxx and xcfschemas.cxx")
-  add_custom_command(
-	 COMMAND ${XSD_BIN} cxx-tree --polymorphic-type-all --namespace-map 'http://xcf.sf.net=XCFSchema' --root-element-all --generate-serialization --generate-ostream --generate-doxygen --generate-polymorphic   --output-dir ${PROJECT_BINARY_DIR}/libcbf/cbf/ ${PROJECT_SOURCE_DIR}/schemas/xcfschemas.xsd
-	 OUTPUT ${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.hxx ${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.cxx
-	 DEPENDS ${PROJECT_SOURCE_DIR}/schemas/xcfschemas.xsd
-	 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
-	 )
+	set(XSD_ARGS --std c++11 --polymorphic-type-all --root-element-all --generate-serialization --generate-ostream --generate-doxygen --generate-polymorphic)
 
-  message(STATUS "  creating target for schemas.hxx and schemas.cxx")
-  add_custom_command(
-	 COMMAND ${XSD_BIN} cxx-tree --polymorphic-type-all --namespace-map 'http://www.cit-ec.uni-bielefeld.de/CBF=CBFSchema' --namespace-map 'http://xcf.sf.net=XCFSchema' --root-element-all --generate-serialization --generate-ostream --generate-doxygen --generate-polymorphic   --output-dir ${PROJECT_BINARY_DIR}/libcbf/cbf/ ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
-	 OUTPUT ${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.hxx ${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx
-	 DEPENDS ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
-	 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
-	 )
+	message(STATUS "  creating target for xcfschemas.hxx and xcfschemas.cxx")
+	add_custom_command(
+		COMMAND ${XSD_BIN} cxx-tree ${XSD_ARGS} --namespace-map 'http://xcf.sf.net=XCFSchema' --output-dir ${PROJECT_BINARY_DIR}/libcbf/cbf/ ${PROJECT_SOURCE_DIR}/schemas/xcfschemas.xsd
+		OUTPUT ${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.hxx ${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.cxx
+		DEPENDS ${PROJECT_SOURCE_DIR}/schemas/xcfschemas.xsd
+		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
+	)
 
-  include_directories("${XSD_INC}")
+	message(STATUS "  creating target for schemas.hxx and schemas.cxx")
+	add_custom_command(
+		COMMAND ${XSD_BIN} cxx-tree ${XSD_ARGS} --namespace-map 'http://www.cit-ec.uni-bielefeld.de/CBF=CBFSchema' --namespace-map 'http://xcf.sf.net=XCFSchema' --output-dir ${PROJECT_BINARY_DIR}/libcbf/cbf/ ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
+		OUTPUT ${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.hxx ${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx
+		DEPENDS ${PROJECT_SOURCE_DIR}/schemas/schemas.xsd
+		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
+	)
 
-  add_library(cbf_schemas SHARED
-	 "${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx"
-	 "${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.cxx"
-	 )
-  set_target_properties(cbf_schemas PROPERTIES 
-	 VERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
-	 )
-  target_link_libraries(cbf_schemas ${XERCESC_LIB})
+	include_directories("${XSD_INC}")
 
-  install(TARGETS cbf_schemas
-    EXPORT CBFDepends
-	 RUNTIME DESTINATION bin
-	 LIBRARY DESTINATION lib
-	 ARCHIVE DESTINATION lib/static
-	 PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
-	 )
+	add_library(cbf_schemas SHARED
+		"${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.cxx"
+		"${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.cxx"
+	)
+	set_target_properties(cbf_schemas PROPERTIES
+		VERSION ${CBF_VERSION_MAJOR}.${CBF_VERSION_MINOR}
+	)
+	target_link_libraries(cbf_schemas ${XERCESC_LIB})
 
-  set(DOXYGEN_XSD_INPUTS 
+	install(TARGETS cbf_schemas
+		EXPORT CBFDepends
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib/static
+		PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE
+	)
+
+	set(DOXYGEN_XSD_INPUTS
 		"${PROJECT_BINARY_DIR}/libcbf/cbf/schemas.hxx ${PROJECT_BINARY_DIR}/libcbf/cbf/xcfschemas.hxx"
 		PARENT_SCOPE)
 else()
-  message(STATUS "  schemas.hxx and schemas.cxx will not be created, because XSD was not found")
+	message(STATUS "  schemas.hxx and schemas.cxx will not be created, because XSD was not found")
 endif()

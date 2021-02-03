@@ -53,7 +53,7 @@ cbf_controller_create_from_file(
 
 		CBF_DEBUG("[create_controller_from_file]: Creating ControllerType instance");
 		//! Create ControllerType instance from xml file...
-		std::auto_ptr< CBFSchema::ControlBasis> xml_instance (
+		std::unique_ptr< CBFSchema::ControlBasis> xml_instance (
 			CBFSchema::ControlBasis_(
 				filename,
 				xml_schema::flags::dont_validate

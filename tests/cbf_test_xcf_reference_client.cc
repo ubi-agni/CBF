@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 
 	std::istringstream vv_stream(dim_string);
 
-	std::auto_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
+	std::unique_ptr<CBFSchema::Vector> dim_v = CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
 
 	CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
 
