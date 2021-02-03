@@ -295,7 +295,6 @@ namespace CBF {
 			m_TaskVelocity = m_ErrorControl->get();
 
 			// compute resource velocity from task space velocity
-			m_EffectorTransform->update(resource_filter()->get_filtered_state(), m_SensorTransform->task_jacobian());
 			m_EffectorTransform->exec(m_TaskVelocity, m_ResourceVelocity);
 		} else {
 			m_ResourceVelocity.setZero();
