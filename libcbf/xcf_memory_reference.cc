@@ -103,7 +103,7 @@ namespace CBF {
 		std::string documentText = event.getDocument().getRootLocation().getDocumentText();
 
 		std::istringstream s(documentText);
-		std::auto_ptr<CBFSchema::XCFMemoryReferenceVector> reference = 
+		std::unique_ptr<CBFSchema::XCFMemoryReferenceVector> reference = 
 				CBFSchema::XCFMemoryReferenceVector_(s, xml_schema::flags::dont_validate);
 
 		CBF_DEBUG("create vector");

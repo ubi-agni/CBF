@@ -126,7 +126,7 @@ namespace mi = memory::interface;
 
 			// parsing the XCFMemoryRunControllerAdd document.
 			std::istringstream s(documentText);
-			std::auto_ptr<CBFSchema::XCFMemoryRunControllerAdd> controllerAdd = 
+			std::unique_ptr<CBFSchema::XCFMemoryRunControllerAdd> controllerAdd = 
 				CBFSchema::XCFMemoryRunControllerAdd_(s, xml_schema::flags::dont_validate);
 
 			CBF_DEBUG("getting attachments and saving them");
@@ -186,7 +186,7 @@ namespace mi = memory::interface;
 		try {
 			// parsing the XCFMemoryRunControllerOptions document.
 			std::istringstream s(documentText);
-			std::auto_ptr<CBFSchema::XCFMemoryRunControllerOptions> controllerOpt = 
+			std::unique_ptr<CBFSchema::XCFMemoryRunControllerOptions> controllerOpt = 
 				CBFSchema::XCFMemoryRunControllerOptions_(s, xml_schema::flags::dont_validate);
 
 			// if the SleepTime element exists set the sleep_time of the RunController
@@ -244,7 +244,7 @@ namespace mi = memory::interface;
 		try {
 			// parsing the XCFMemoryRunControllerExecute document.
 			std::istringstream s(documentText);
-			std::auto_ptr<CBFSchema::XCFMemoryRunControllerExecute> controllerEx = 
+			std::unique_ptr<CBFSchema::XCFMemoryRunControllerExecute> controllerEx = 
 				CBFSchema::XCFMemoryRunControllerExecute_(s, xml_schema::flags::dont_validate);
 
 			CBF_DEBUG("parsing controller name");
@@ -304,7 +304,7 @@ namespace mi = memory::interface;
 		try {
 			// parsing the XCFMemoryRunControllerLoadNamespace document.
 			std::istringstream s(documentText);
-			std::auto_ptr<CBFSchema::XCFMemoryRunControllerLoadNamespace> loadNamespace =
+			std::unique_ptr<CBFSchema::XCFMemoryRunControllerLoadNamespace> loadNamespace =
 				CBFSchema::XCFMemoryRunControllerLoadNamespace_(s, xml_schema::flags::dont_validate);
 
 			CBF_DEBUG("parsing namespaces");
@@ -333,7 +333,7 @@ namespace mi = memory::interface;
 						//getting the document that was mapped to the AttachmentName
 						std::istringstream tmp(m_DocumentMap.find(*it) -> second);
 						// Create a cbfschema::object
-						std::auto_ptr<CBFSchema::Object> obj
+						std::unique_ptr<CBFSchema::Object> obj
 							(CBFSchema::Object_
 								(tmp, err_handler, xml_schema::flags::dont_validate));
 
@@ -542,7 +542,7 @@ namespace mi = memory::interface;
 			// Create a cbfschema::object
 			std::stringstream doc(document);
 			CBF_DEBUG("parse document for CBF::Object: " << document);
-			std::auto_ptr<CBFSchema::Object> obj
+			std::unique_ptr<CBFSchema::Object> obj
 				(CBFSchema::Object_
 					(doc, err_handler, xml_schema::flags::dont_validate));
 

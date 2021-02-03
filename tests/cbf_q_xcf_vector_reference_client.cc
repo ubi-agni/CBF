@@ -193,7 +193,7 @@ ConnectionManager::ConnectionManager(QWidget *parent, XCF::RemoteServerPtr _remo
 
 		std::istringstream vv_stream(dim_string);
 
-		std::auto_ptr<CBFSchema::Vector> dim_v = 
+		std::unique_ptr<CBFSchema::Vector> dim_v = 
 			CBFSchema::Vector_(vv_stream, xml_schema::flags::dont_validate);
 
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
@@ -521,7 +521,7 @@ CBF::ConnectionManager::FloatVectorPtr ConnectionManager::loadCurrentPositionVec
 		//Parsing XML for FloatVector
 		CBF_DEBUG("doc: " << xml_in);
 		std::istringstream s(xml_in);
-		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
+		std::unique_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 		CBF_DEBUG("create vector");
 		CBF::ObjectNamespacePtr object_namespace(new CBF::ObjectNamespace);
 		CBF::ConnectionManager::FloatVectorPtr currentPositionVector = 

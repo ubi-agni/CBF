@@ -177,7 +177,7 @@ void XcfMemoryRunControllerOperator::controllers_available(const memory::interfa
 	try {
 		// parsing the XCFMemoryRunControllerNotification document.
 		std::istringstream s(documentText);
-		std::auto_ptr<CBFSchema::XCFMemoryRunControllerNotification> note =
+		std::unique_ptr<CBFSchema::XCFMemoryRunControllerNotification> note =
 			CBFSchema::XCFMemoryRunControllerNotification_(s, xml_schema::flags::dont_validate);
 		std::set<std::string> controllers;
 		controllers.insert(note -> ControllerAvailable().begin(), note -> ControllerAvailable().end());

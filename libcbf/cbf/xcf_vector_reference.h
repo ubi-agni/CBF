@@ -158,7 +158,7 @@ struct XCFVectorReference : public Reference {
 		CBF_DEBUG("doc: " << xml_in);
 		std::istringstream s(xml_in);
 		CBF_DEBUG("before create vector");
-		std::auto_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
+		std::unique_ptr<CBFSchema::Vector> v = CBFSchema::Vector_(s, xml_schema::flags::dont_validate);
 
 		CBF_DEBUG("create vector");
 		m_TempReference = *XMLFactory<FloatVector>::instance()->create(

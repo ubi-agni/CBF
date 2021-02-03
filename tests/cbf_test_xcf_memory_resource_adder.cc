@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 
 	std::string document;
 	bool noDocumentFound = true;
-	std::auto_ptr<CBFSchema::XCFMemoryResourceState> resourceState;
+	std::unique_ptr<CBFSchema::XCFMemoryResourceState> resourceState;
 	while(noDocumentFound && (results -> hasNext())){ 
 		results -> next(document);
 		try{

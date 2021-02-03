@@ -148,7 +148,7 @@ int main(int argc, char *argv[]) {
 
 		for (unsigned int i = 0; i < object_names.size(); ++i) {
 			CBF_DEBUG("loading control basis: " << object_names[i]);
-			std::auto_ptr<CBFSchema::Object> cbt
+			std::unique_ptr<CBFSchema::Object> cbt
 				(CBFSchema::Object_
 					(object_names[i], err_handler, xml_schema::flags::dont_validate));
 
