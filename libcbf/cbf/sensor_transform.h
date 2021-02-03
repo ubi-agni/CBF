@@ -135,8 +135,7 @@ namespace CBF {
 
     virtual const FloatVector &get_task_velocity() const { return m_TaskVel; }
 
-    virtual const FloatVector &get_task_velocity(const FloatVector resource_velocity) const { return m_TaskJacobian*resource_velocity; }
-	
+
 		/**
 			@brief returns the current task jacobian
 
@@ -276,4 +275,3 @@ namespace CBF {
 } // namespace
 
 #endif
-
