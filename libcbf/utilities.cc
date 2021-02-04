@@ -244,7 +244,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 	template<typename Scalar>
 	struct dampedInverse {
 		dampedInverse(const Scalar damping_constant) : m_damping(damping_constant) {}
-		const Scalar operator()(const Scalar s) const { return s / (m_damping + s*s); }
+		Scalar operator()(const Scalar s) const { return s / (m_damping + s*s); }
 		Scalar m_damping;
 	};
 	Float damped_pseudo_inverse(const FloatMatrix &M, FloatMatrix &result, Float damping_constant) {
@@ -253,7 +253,7 @@ FloatMatrix &assign(FloatMatrix &m, const KDL::Frame &f) {
 
 	struct thesholdInverse {
 		thesholdInverse(const Float threshold) : m_threshold(threshold) {}
-		const Float operator()(const Float s) const {
+		Float operator()(const Float s) const {
 			if (s > m_threshold) return 1. / s;
 			if (m_threshold > 0) return s / (m_threshold*m_threshold);
 			return 0.;
