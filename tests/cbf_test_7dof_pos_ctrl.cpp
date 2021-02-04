@@ -7,6 +7,7 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <cbf/bypass_filter.h>
 #include <cbf/composite_potential.h>
 #include <cbf/composite_transform.h>
@@ -79,7 +80,7 @@ Chain createKDLChain() {
 
 int main() {
 
-  boost::shared_ptr<Chain> lwrchain(new Chain(createKDLChain()));
+  auto lwrchain = boost::make_shared<Chain>(createKDLChain());
   unsigned int nJoints = lwrchain->getNrOfJoints();
   double mTimeStep = 0.001;
 
@@ -93,55 +94,38 @@ int main() {
   // corresponding to
   // p [0.22916, -0.107325, 1.16779]
   // quat = [0.943308, 0.0558517, 0.25094, -0.209952]
-  CBF::ResourcePtr resource(new DummyResource(res));
+  auto resource = boost::make_shared<DummyResource>(res);
 
   // sensor transform for position + quaternion control
-  CBF::KDLChainPositionSensorTransform *mPositionSenstorTransform;
-  CBF::KDLChainQuaternionSensorTransform *mQuaternionSensorTransform;
-  mPositionSenstorTransform =
-      new CBF::KDLChainPositionSensorTransform(lwrchain);
-  mQuaternionSensorTransform =
-      new CBF::KDLChainQuaternionSensorTransform(lwrchain);
-
-  std::vector<CBF::SensorTransformPtr> sensorTrafos = boost::assign::list_of(
-      CBF::SensorTransformPtr(mPositionSenstorTransform))(
-      CBF::SensorTransformPtr(mQuaternionSensorTransform));
-
-  CBF::SensorTransformPtr sensorTransfo(
-      new CBF::CompositeSensorTransform(sensorTrafos));
+  std::vector<CBF::SensorTransformPtr> sensorTrafos
+          = {boost::make_shared<CBF::KDLChainPositionSensorTransform>(lwrchain),
+             boost::make_shared<CBF::KDLChainQuaternionSensorTransform>(lwrchain)};
+  auto sensorTransfo = boost::make_shared<CBF::CompositeSensorTransform>(sensorTrafos);
 
   // compute FK once
   sensorTransfo->update(resource->get_position());
 
   // potential
-  std::vector<CBF::PotentialPtr> potentials =
-      boost::assign::list_of(CBF::PotentialPtr(new CBF::SquarePotential(3, 3)))(
-          CBF::PotentialPtr(new CBF::QuaternionPotential()));
-  CBF::PotentialPtr potential(new CBF::CompositePotential(potentials));
+  std::vector<CBF::PotentialPtr> potentials = {boost::make_shared<CBF::SquarePotential>(3, 3),
+                                               boost::make_shared<CBF::QuaternionPotential>()};
+  auto potential = boost::make_shared<CBF::CompositePotential>(potentials);
 
   // controller
   int num_ref = 7;
-  CBF::PrimitiveControllerPtr c(new CBF::PrimitiveController(
-      mTimeStep, std::vector<ConvergenceCriterionPtr>(),
-      CBF::DummyReferencePtr(new CBF::DummyReference(1, num_ref)),
-      CBF::BypassFilterPtr(
-          new CBF::BypassFilter(mTimeStep, num_ref, num_ref)), // no refFilter
+  CBF::PrimitiveController c(mTimeStep, std::vector<ConvergenceCriterionPtr>(),
+      boost::make_shared<CBF::DummyReference>(1, num_ref),
+      boost::make_shared<CBF::BypassFilter>(mTimeStep, num_ref, num_ref), // no refFilter
       potential,
-      CBF::ErrorControlPtr(
-          new CBF::PDPositionControl(mTimeStep, potential->task_dim(), 1.0)),
+      boost::make_shared<CBF::PDPositionControl>(mTimeStep, potential->task_dim(), 1.0),
       sensorTransfo,
-      CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(
-          potential->task_dim(), nJoints, 1e-3)),
-      // CBF::EffectorTransformPtr(new
-      // CBF::ThresholdGenericEffectorTransform(potential->task_dim(),
-      // nJoints)),
+      // boost::make_shared<CBF::DampedGenericEffectorTransform>(potential->task_dim(), nJoints, 1e-3),
+      boost::make_shared<CBF::ThresholdGenericEffectorTransform>(potential->task_dim(), nJoints, 0.5),
       std::vector<SubordinateControllerPtr>(), // No SubordinateController
-      CBF::CombinationStrategyPtr(new CBF::AddingStrategy()), resource,
-      CBF::BypassFilterPtr(new CBF::BypassFilter(mTimeStep, nJoints,
-                                                 nJoints)), // no resourceFilter
-      CBF::NullLimiterPtr(
-          new CBF::NullLimiter(mTimeStep, nJoints)) // no Limiter
-      ));
+      boost::make_shared<CBF::AddingStrategy>(),
+      resource,
+      boost::make_shared<CBF::BypassFilter>(mTimeStep, nJoints, nJoints), // no resourceFilter
+      boost::make_shared<CBF::NullLimiter>(mTimeStep, nJoints) // no Limiter
+      );
 
   // prepare target
   Eigen::VectorXd target, reached;
@@ -152,15 +136,15 @@ int main() {
     // create a step on y of 10 cm
     if (n == 5) {
       target(1) += 0.1;
-      c->reference()->set_reference(target);
+      c.reference()->set_reference(target);
     }
-    c->update();
-    c->action();
+    c.update();
+    c.action();
 
     // compute FK of reached joint pos
     const auto& q = resource->get_position();
-    c->sensor_transform()->update(q);
-    reached = c->sensor_transform()->result();
+    c.sensor_transform()->update(q);
+    reached = c.sensor_transform()->result();
 
     std::cout << n * mTimeStep << " " << target(1) << " " << reached(1) << " " << q.transpose() << std::endl;
   }
