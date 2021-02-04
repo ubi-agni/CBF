@@ -131,7 +131,7 @@ int main() {
           new CBF::PDPositionControl(mTimeStep, potential->task_dim(), 1.0)),
       sensorTransfo,
       CBF::EffectorTransformPtr(new CBF::DampedGenericEffectorTransform(
-          potential->task_dim(), nJoints)),
+          potential->task_dim(), nJoints, 1e-3)),
       // CBF::EffectorTransformPtr(new
       // CBF::ThresholdGenericEffectorTransform(potential->task_dim(),
       // nJoints)),
@@ -144,30 +144,25 @@ int main() {
       ));
 
   // prepare target
-  Eigen::VectorXd target, next, current;
+  Eigen::VectorXd target, reached;
   target = sensorTransfo->result(); // x,y,z, qw, qx, qy, qz
 
-  std::cerr << "time, tartget_z, p_x,p_y,p_z,p'x,p'y,p'z" << std::endl;
-  for (unsigned int n = 0; n < 1000; ++n) {
-    // create a step on x of 10 cm
+  std::cerr << "time, targetY, Y, q_1, q_2, q_3, q_4, q_5, q_6, q_7" << std::endl;
+  for (unsigned int n = 0; n < 20; ++n) {
+    // create a step on y of 10 cm
     if (n == 5) {
-      target(0) += 0.1;
+      target(1) += 0.1;
       c->reference()->set_reference(target);
     }
     c->update();
     c->action();
-    
-    current = c->sensor_transform()->result();
-    // compute FK of desired new joint pos
-    c->sensor_transform()->update(resource->get_position());
-    next = c->sensor_transform()->result();
 
-    std::cout << n * mTimeStep << " " << target(0) << " " << current(0) << " "
-              << current(1) << " " << current(2) << " " << next(0) << " "
-              << next(1) << " " << next(2) << std::endl;
-    // std::cout <<  sensorTransfo->result()[3] << ", " <<
-    // sensorTransfo->result()[4] << ", " << sensorTransfo->result()[5] << ", "
-    // << sensorTransfo->result()[6] <<std::endl;
+    // compute FK of reached joint pos
+    const auto& q = resource->get_position();
+    c->sensor_transform()->update(q);
+    reached = c->sensor_transform()->result();
+
+    std::cout << n * mTimeStep << " " << target(1) << " " << reached(1) << " " << q.transpose() << std::endl;
   }
 
   return 0;
