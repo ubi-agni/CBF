@@ -9,6 +9,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <cbf/bypass_filter.h>
+#include <cbf/cddyn_filter.h>
 #include <cbf/composite_potential.h>
 #include <cbf/composite_transform.h>
 #include <cbf/dummy_reference.h>
@@ -110,6 +111,21 @@ int main() {
                                                boost::make_shared<CBF::QuaternionPotential>()};
   auto potential = boost::make_shared<CBF::CompositePotential>(potentials);
 
+  // null-space controller
+  auto nullspace_ctrl = boost::make_shared<CBF::SubordinateController>(
+        mTimeStep, std::vector<CBF::ConvergenceCriterionPtr>(),
+        boost::make_shared<CBF::DummyReference>(1, nJoints),
+        boost::make_shared<CBF::CDDynFilter>(mTimeStep, nJoints, nJoints, 100),
+        //boost::make_shared<CBF::BypassFilter>(mTimeStep, nJoints, nJoints), // no refFilter
+        boost::make_shared<CBF::SquarePotential>(nJoints, nJoints),
+        boost::make_shared<CBF::PDPositionControl>(mTimeStep, nJoints),
+        boost::make_shared<CBF::IdentitySensorTransform>(nJoints),
+        boost::make_shared<CBF::IdentityEffectorTransform>(nJoints),
+        std::vector<CBF::SubordinateControllerPtr>(),
+        boost::make_shared<CBF::AddingStrategy>()
+        );
+  nullspace_ctrl->reference()->set_reference(Eigen::VectorXd::Zero(nJoints));
+
   // controller
   int num_ref = 7;
   CBF::PrimitiveController c(mTimeStep, std::vector<ConvergenceCriterionPtr>(),
@@ -118,10 +134,9 @@ int main() {
       potential,
       boost::make_shared<CBF::PDPositionControl>(mTimeStep, potential->task_dim(), 1.0),
       sensorTransfo,
-      // boost::make_shared<CBF::DampedGenericEffectorTransform>(potential->task_dim(), nJoints, 1e-3),
-      boost::make_shared<CBF::ThresholdGenericEffectorTransform>(potential->task_dim(), nJoints, 0.5),
-      std::vector<SubordinateControllerPtr>(), // No SubordinateController
-      boost::make_shared<CBF::AddingStrategy>(),
+      // boost::make_shared<CBF::DampedGenericEffectorTransform>(potential->task_dim(), nJoints, 0.01),
+      boost::make_shared<CBF::ThresholdGenericEffectorTransform>(potential->task_dim(), nJoints, 0.1),
+      { nullspace_ctrl }, boost::make_shared<CBF::AddingStrategy>(),
       resource,
       boost::make_shared<CBF::BypassFilter>(mTimeStep, nJoints, nJoints), // no resourceFilter
       boost::make_shared<CBF::NullLimiter>(mTimeStep, nJoints) // no Limiter
@@ -137,6 +152,10 @@ int main() {
     if (n == 5) {
       target(1) += 0.1;
       c.reference()->set_reference(target);
+    }
+    if (n == 10) {
+        Eigen::VectorXd ref = c.resource()->get_position() + Eigen::VectorXd::Random(nJoints);
+        nullspace_ctrl->reference()->set_reference(ref);
     }
     c.update();
     c.action();
