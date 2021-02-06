@@ -34,10 +34,8 @@ namespace CBF {
 
 	DummyResource::DummyResource(const FloatVector &values) : Resource()
 	{
-		m_ResourceValue = FloatVector(values.size());
-		m_ResourceValueVelocity = FloatVector(values.size());
-
 		m_ResourceValue = values;
+		m_ResourceValueVelocity = FloatVector::Zero(values.size());
 	}
 
 	/**
@@ -47,8 +45,8 @@ namespace CBF {
 	*/
 	DummyResource::DummyResource(unsigned int dim, Float variance) : Resource()
 	{
-		m_ResourceValue = FloatVector(dim);
-		m_ResourceValueVelocity = FloatVector(dim);
+		m_ResourceValue = FloatVector::Zero(dim);
+		m_ResourceValueVelocity = FloatVector::Zero(dim);
 
 		if (variance != 0.0) {
 			double lfx = 1./sqrt(2.0*M_PI*variance*variance);
@@ -63,7 +61,6 @@ namespace CBF {
 
 	void DummyResource::read()
 	{
-
 	}
 
 	void DummyResource::write(const FloatVector &vel, const Float timestep)
@@ -95,9 +92,6 @@ namespace CBF {
 					xml_instance.Vector(), object_namespace
 				)
 			;
-
-      //CBF_DEBUG("current values: " << m_Variables);
-		
 		}
 
 		static XMLDerivedFactory<DummyResource, CBFSchema::DummyResource> x;
