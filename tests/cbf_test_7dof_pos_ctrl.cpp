@@ -86,14 +86,25 @@ int main() {
 
   FloatVector res(nJoints);
   res.setZero(nJoints);
-  // set non singular start pos
-  res[0] = -0.438;
-  res[1] = -0.423;
-  res[3] = -0.348;
-  res[5] = -0.445;
+  // set particular start pos
+  res[0] = -0.0737;
+  res[1] = 1.055;
+  res[2] = -1.91;
+  res[3] = 0.849;
+  res[4] = 0.337;
+  res[5] = -0.347;
+  res[6] = -0.3234;
   // corresponding to
-  // p [0.22916, -0.107325, 1.16779]
-  // quat = [0.943308, 0.0558517, 0.25094, -0.209952]
+  // p [0.34, 0.3, 0.95]
+  // quat = [0.5, 0.5, -0.5 0.5]
+
+  Eigen::VectorXd mJointUpperLimits(nJoints);
+  Eigen::VectorXd mJointLowerLimits(nJoints);
+  Eigen::VectorXd mJointVelocityLimits(nJoints);
+  mJointLowerLimits << -2.96 , -2.09, -2.96, -2.09, -2.96, -2.09, -2.96;
+  mJointUpperLimits << 2.96 , 2.09, 2.96, 2.09, 2.96, 2.09, 2.96;
+  mJointVelocityLimits << 1.745, 1.92, 2.27, 2.27, 2.27, 3.1416, 3.1416;
+
   auto resource = boost::make_shared<DummyResource>(res);
 
   // sensor transform for position + quaternion control
@@ -110,6 +121,10 @@ int main() {
                                                boost::make_shared<CBF::QuaternionPotential>()};
   auto potential = boost::make_shared<CBF::CompositePotential>(potentials);
 
+  auto limiter = boost::make_shared<CBF::DampedResourceLimiter>(mTimeStep, nJoints);
+  limiter->set_limit_pos(mJointUpperLimits, mJointLowerLimits);
+  limiter->set_limit_vel(mJointVelocityLimits);
+
   // controller
   int num_ref = 7;
   CBF::PrimitiveController c(mTimeStep, std::vector<ConvergenceCriterionPtr>(),
@@ -118,12 +133,13 @@ int main() {
       potential,
       boost::make_shared<CBF::PDPositionControl>(mTimeStep, potential->task_dim(), 1.0),
       sensorTransfo,
-      // boost::make_shared<CBF::DampedGenericEffectorTransform>(potential->task_dim(), nJoints, 1e-3),
-      boost::make_shared<CBF::ThresholdGenericEffectorTransform>(potential->task_dim(), nJoints, 0.5),
+      boost::make_shared<CBF::DampedGenericEffectorTransform>(potential->task_dim(), nJoints, 1e-2),
+      //boost::make_shared<CBF::ThresholdGenericEffectorTransform>(potential->task_dim(), nJoints, 0.5),
       std::vector<SubordinateControllerPtr>(), // No SubordinateController
       boost::make_shared<CBF::AddingStrategy>(),
       resource,
       boost::make_shared<CBF::BypassFilter>(mTimeStep, nJoints, nJoints), // no resourceFilter
+      //limiter
       boost::make_shared<CBF::NullLimiter>(mTimeStep, nJoints) // no Limiter
       );
 
@@ -132,10 +148,10 @@ int main() {
   target = sensorTransfo->result(); // x,y,z, qw, qx, qy, qz
 
   std::cerr << "time, targetY, Y, q_1, q_2, q_3, q_4, q_5, q_6, q_7" << std::endl;
-  for (unsigned int n = 0; n < 20; ++n) {
+  for (unsigned int n = 0; n < 1000; ++n) {
     // create a step on y of 10 cm
     if (n == 5) {
-      target(1) += 0.1;
+      target(2) -= 0.6;
       c.reference()->set_reference(target);
     }
     c.update();
@@ -146,7 +162,7 @@ int main() {
     c.sensor_transform()->update(q);
     reached = c.sensor_transform()->result();
 
-    std::cout << n * mTimeStep << " " << target(1) << " " << reached(1) << " " << q.transpose() << std::endl;
+    std::cout << n * mTimeStep << " " << target(2) << " " << reached(2) << " " << q.transpose() << std::endl;
   }
 
   return 0;
