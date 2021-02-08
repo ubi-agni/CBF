@@ -242,6 +242,10 @@ namespace CBF {
 		SubordinateController::update(timestep);
 	}	
 	
+	inline double interp(const double x, const double inLower, const double inUpper, const double outLower, const double outUpper) {
+		return outLower + (x-inLower) / (inUpper - inLower) * (outUpper - outLower);
+	}
+
 	void SubordinateController::update(Float timestep)
 	{
 		assert(m_Reference.get() != 0);
@@ -323,6 +327,10 @@ namespace CBF {
 			// which can be expressed as result -= ...
 			m_NullSpaceResourceVlocity -= m_InvJacobianTimesJacobian
 			                            * m_NullSpaceResourceVlocity;
+			const double similarity = m_ResourceVelocity.dot(m_NullSpaceResourceVlocity) / 
+					(m_ResourceVelocity.norm() * m_NullSpaceResourceVlocity.norm());
+			const double scale = std::min(1., std::max(0., interp(similarity, -1.0, 1.0, -0.1, 1.0)));
+			m_NullSpaceResourceVlocity *= scale;
 
 			CBF_DEBUG("combined_results * beta: " << m_NullSpaceResourceVlocity);
 		}
