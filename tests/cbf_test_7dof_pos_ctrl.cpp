@@ -139,8 +139,8 @@ int main() {
       boost::make_shared<CBF::AddingStrategy>(),
       resource,
       boost::make_shared<CBF::BypassFilter>(mTimeStep, nJoints, nJoints), // no resourceFilter
-      //limiter
-      boost::make_shared<CBF::NullLimiter>(mTimeStep, nJoints) // no Limiter
+      limiter
+      //boost::make_shared<CBF::NullLimiter>(mTimeStep, nJoints) // no Limiter
       );
 
   // prepare target
