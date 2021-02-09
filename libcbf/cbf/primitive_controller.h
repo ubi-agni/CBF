@@ -226,10 +226,6 @@ namespace CBF {
 			*/
 			virtual FloatVector &result_resource_velocity() { return m_CombinedResourceVlocity; }
 
-      virtual FloatVector &result_nullspace_resource_velocity() { return m_NullSpaceResourceVlocity; }
-
-      virtual FloatVector &result_taskspace_resource_velocity() { return m_ResourceVelocity; }
-
 			virtual ResourcePtr resource();
 
 			virtual FilterPtr resource_filter();

@@ -194,10 +194,7 @@ int main() {
 
     lEndPosture = mController->sensor_transform()->result();
 
-    printf("step: %04d, task-space error: %8.4lf, null-space error: %8.4lf \n",
-           cnt++,
-           (lRef-lEndPosture).norm(),
-           mController->result_nullspace_resource_velocity().norm()*N_DT );
+    printf("step: %04d, task-space error: %8.4lf\n", cnt++, (lRef-lEndPosture).norm());
 
 /*
     std::cout << "Task Reference velocity" << std::endl;
@@ -227,4 +224,3 @@ int main() {
     usleep(10000);
   } while(mController->finished() == false);
 }
-
