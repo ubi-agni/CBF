@@ -128,6 +128,10 @@ int main() {
 
   // controller
   int num_ref = 7;
+  auto limiter = boost::make_shared<CBF::UniformDampedResourceLimiter>(mTimeStep, nJoints);
+  FloatVector ones = FloatVector::Ones(7);
+  limiter->set_limit_pos(ones, -ones);
+  limiter->set_limit_vel(100.0 * ones);
   CBF::PrimitiveController c(mTimeStep, std::vector<ConvergenceCriterionPtr>(),
       boost::make_shared<CBF::DummyReference>(1, num_ref),
       boost::make_shared<CBF::BypassFilter>(mTimeStep, num_ref, num_ref), // no refFilter
@@ -139,7 +143,7 @@ int main() {
       { nullspace_ctrl }, boost::make_shared<CBF::AddingStrategy>(),
       resource,
       boost::make_shared<CBF::BypassFilter>(mTimeStep, nJoints, nJoints), // no resourceFilter
-      boost::make_shared<CBF::NullLimiter>(mTimeStep, nJoints) // no Limiter
+      limiter
       );
 
   // prepare target

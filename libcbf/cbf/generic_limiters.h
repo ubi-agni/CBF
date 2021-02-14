@@ -65,9 +65,15 @@ struct DampedResourceLimiter : public Limiter {
     FloatVector m_PosMargin;
 };
 
+struct UniformDampedResourceLimiter : public DampedResourceLimiter {
+  using DampedResourceLimiter::DampedResourceLimiter;
+  void limit(const FloatVector &current_pos, const FloatVector &current_vel,
+             FloatVector &next_pos, FloatVector &next_vel) override;
+};
+
 typedef boost::shared_ptr<NullLimiter> NullLimiterPtr;
 typedef boost::shared_ptr<DampedResourceLimiter> DampedResourceLimiterPtr;
-
+typedef boost::shared_ptr<UniformDampedResourceLimiter> UniformDampedResourceLimiterPtr;
 
 } // namespace
 

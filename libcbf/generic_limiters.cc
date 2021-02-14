@@ -38,51 +38,58 @@ namespace CBF {
     m_PosMargin = FloatVector::Ones(dim)*0.01;
   }
 
-  void DampedResourceLimiter::limit(const FloatVector &current_pos, const FloatVector &current_vel,
-                                    FloatVector &next_pos, FloatVector &next_vel) {
+  inline void limit(const double current_pos, double& next_pos, double& next_vel,
+                    const double lower_pos, const double upper_pos, const double margin,
+                    const double lower_vel, const double upper_vel, const double timestep) {
+    // move back into bounds if neccessary
+    if (current_pos > upper_pos) {
+      next_vel = std::max(lower_vel, (upper_pos-current_pos)/timestep);
+      goto UPDATE_POS;
+    } else if (current_pos < lower_pos) {
+      next_vel = std::min(upper_vel, (lower_pos-current_pos)/timestep);
+      goto UPDATE_POS;
+    }
 
-    for (unsigned int i=0; i<current_pos.size(); i++) {
-      // move back into bounds if neccessary
-      if (current_pos(i) > m_PosUpperLimit(i)) {
-        next_vel(i) = std::max(-m_VelLimit(i), (m_PosUpperLimit(i)-current_pos(i))/m_TimeStep);
-        goto UPDATE_POS;
-      } else if (current_pos(i) < m_PosLowerLimit(i)) {
-        next_vel(i) = std::min( m_VelLimit(i), (m_PosLowerLimit(i)-current_pos(i))/m_TimeStep);
-        goto UPDATE_POS;
-      }
+    /*** current_pos is within bounds ***/
+    // limit velocity
+    if (next_vel > upper_vel) {
+      next_vel = upper_vel;
+      next_pos = current_pos + next_vel*timestep;
+    } else if (next_vel < lower_vel) {
+      next_vel = lower_vel;
+      next_pos = current_pos + next_vel*timestep;
+    }
 
-      /*** current_pos is within bounds ***/
-      // limit velocity
-      if (next_vel(i) > m_VelLimit(i)) {
-        next_vel(i) = m_VelLimit(i);
-        next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
-      } else if (next_vel(i) < -m_VelLimit(i)) {
-        next_vel(i) = -m_VelLimit(i);
-        next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
-      }
+    // upper pos limit
+    if (next_pos > upper_pos) {
+      next_vel = (upper_pos-current_pos)/timestep;
+      goto UPDATE_POS;
+    } else if (next_pos > (upper_pos-margin) && next_vel > 0) {
+      next_vel *= (upper_pos-next_pos)/margin;
+      goto UPDATE_POS;
+    }
 
-      // upper pos limit
-      if (next_pos(i) > m_PosUpperLimit(i)) {
-        next_vel(i) = (m_PosUpperLimit(i)-current_pos(i))/m_TimeStep;
-        goto UPDATE_POS;
-      } else if (next_pos(i) > (m_PosUpperLimit(i)-m_PosMargin(i)) && next_vel(i) > 0) {
-        next_vel(i) *= (m_PosUpperLimit(i)-next_pos(i))/m_PosMargin(i);
-        goto UPDATE_POS;
-      }
+    // lower pos limit
+    if (next_pos < lower_pos) {
+      next_vel = (lower_pos-current_pos)/timestep;
+      goto UPDATE_POS;
+    } else if (next_pos < (lower_pos+margin) && next_vel < 0) {
+      next_vel *= (next_pos-lower_pos)/margin;
+      goto UPDATE_POS;
+    }
 
-      // lower pos limit
-      if (next_pos(i) < m_PosLowerLimit(i)) {
-        next_vel(i) = (m_PosLowerLimit(i)-current_pos(i))/m_TimeStep;
-        goto UPDATE_POS;
-      } else if (next_pos(i) < (m_PosLowerLimit(i)+m_PosMargin(i)) && next_vel(i) < 0) {
-        next_vel(i) *= (next_pos(i)-m_PosLowerLimit(i))/m_PosMargin(i);
-        goto UPDATE_POS;
-      }
-
-      continue;
+    return;
 
 UPDATE_POS:  // finally update next_pos
-      next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
+    next_pos = current_pos + next_vel*timestep;
+  }
+
+  void DampedResourceLimiter::limit(const FloatVector &current_pos, const FloatVector &current_vel,
+                                    FloatVector &next_pos, FloatVector &next_vel) {
+    for (unsigned int i=0; i<current_pos.size(); i++) {
+      CBF::limit(current_pos(i), next_pos(i), next_vel(i), 
+                 m_PosLowerLimit(i), m_PosUpperLimit(i), m_PosMargin(i),
+                 -m_VelLimit(i), m_VelLimit(i), m_TimeStep);
     }
   }
 
@@ -92,9 +99,30 @@ UPDATE_POS:  // finally update next_pos
     m_PosMargin = pos_margin;
   }
 
+  void UniformDampedResourceLimiter::limit(const FloatVector &current_pos, const FloatVector &current_vel,
+                                           FloatVector &next_pos, FloatVector &next_vel) {
+    double scale = 1.0;
+    for (unsigned int i=0; i<current_pos.size(); i++) {
+      double old = next_vel(i);
+      CBF::limit(current_pos(i), next_pos(i), next_vel(i), 
+                 m_PosLowerLimit(i), m_PosUpperLimit(i), m_PosMargin(i),
+                 -m_VelLimit(i), m_VelLimit(i), m_TimeStep);
+      next_pos(i) = old;  // store old velocity
+      
+      if (scale < 0.0);
+      else if (old != next_vel(i) && ((old >= 0 && next_vel(i) <= 0) || (old <= 0 && next_vel(i) >= 0)))
+        scale = -1.0;  // moving back into position bounds: cannot apply uniform scaling
+      else if (old > 1.e-6)  // robustness for small velocities
+        scale = std::min(scale, next_vel(i) / old);
+    }
+
+    if (scale > 0.0 && scale < 1.0)
+      next_vel = scale * next_pos;  // scale based on original velocity stored in next_pos above
+
+    next_pos = current_pos + m_TimeStep * next_vel;
+  }
 
 #ifdef CBF_HAVE_XSD
-
 #endif
 
 } // namespace
