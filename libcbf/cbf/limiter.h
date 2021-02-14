@@ -52,10 +52,10 @@ struct Limiter : public Object {
   virtual ~Limiter() { }
 
   void set_limit_pos(
-      const FloatVector pos_upper_limit,
-      const FloatVector pos_lower_limit);
+      const FloatVector& pos_upper_limit,
+      const FloatVector& pos_lower_limit);
 
-  void set_limit_vel(const FloatVector vel_limit);
+  void set_limit_vel(const FloatVector& vel_limit);
 
   virtual void limit(
       const FloatVector &current_pos,

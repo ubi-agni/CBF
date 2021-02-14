@@ -41,14 +41,16 @@ namespace CBF {
   }
 
   void Limiter::set_limit_pos(
-      const FloatVector pos_upper_limit,
-      const FloatVector pos_lower_limit) {
-
+      const FloatVector& pos_upper_limit,
+      const FloatVector& pos_lower_limit) {
+    assert(m_PosUpperLimit.size() == pos_upper_limit.size());
+    assert(m_PosLowerLimit.size() == pos_lower_limit.size());
     m_PosUpperLimit = pos_upper_limit;
     m_PosLowerLimit = pos_lower_limit;
   }
 
-  void Limiter::set_limit_vel(const FloatVector vel_limit) {
+  void Limiter::set_limit_vel(const FloatVector& vel_limit) {
+    assert(m_VelLimit.size() == vel_limit.size());
     m_VelLimit = vel_limit;
   }
 

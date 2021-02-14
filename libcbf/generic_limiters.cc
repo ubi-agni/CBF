@@ -35,63 +35,61 @@ namespace CBF {
 
   DampedResourceLimiter::DampedResourceLimiter(const Float timestep, const unsigned int dim) :
     Limiter(timestep, dim, dim) {
-
     m_PosMargin = FloatVector::Ones(dim)*0.01;
-    m_VelMargin = FloatVector::Ones(dim)*0.01;
   }
 
-  void DampedResourceLimiter::limit(
-      const FloatVector &current_pos,
-      const FloatVector &current_vel,
-      FloatVector &next_pos,
-      FloatVector &next_vel) {
+  void DampedResourceLimiter::limit(const FloatVector &current_pos, const FloatVector &current_vel,
+                                    FloatVector &next_pos, FloatVector &next_vel) {
 
     for (unsigned int i=0; i<current_pos.size(); i++) {
+      // move back into bounds if neccessary
+      if (current_pos(i) > m_PosUpperLimit(i)) {
+        next_vel(i) = std::max(-m_VelLimit(i), (m_PosUpperLimit(i)-current_pos(i))/m_TimeStep);
+        goto UPDATE_POS;
+      } else if (current_pos(i) < m_PosLowerLimit(i)) {
+        next_vel(i) = std::min( m_VelLimit(i), (m_PosLowerLimit(i)-current_pos(i))/m_TimeStep);
+        goto UPDATE_POS;
+      }
 
-      // saturate velocity
+      /*** current_pos is within bounds ***/
+      // limit velocity
       if (next_vel(i) > m_VelLimit(i)) {
         next_vel(i) = m_VelLimit(i);
         next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
-      }
-      else if (next_vel(i) < -m_VelLimit(i)) {
+      } else if (next_vel(i) < -m_VelLimit(i)) {
         next_vel(i) = -m_VelLimit(i);
         next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
       }
 
       // upper pos limit
       if (next_pos(i) > m_PosUpperLimit(i)) {
-        next_pos(i) = m_PosUpperLimit(i);
-        next_vel(i) = (next_pos(i)-current_pos(i))/m_TimeStep;
-      }
-      else if (next_pos(i) > (m_PosUpperLimit(i)-m_PosMargin(i))) {
-        // if vel positive, reduce its absolute value, otherwise don't limit it further.
-        if (next_vel(i) > 0)
-        {
-          next_vel(i) *= (m_PosUpperLimit(i)-next_pos(i))/m_PosMargin(i);
-        }
-        next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
+        next_vel(i) = (m_PosUpperLimit(i)-current_pos(i))/m_TimeStep;
+        goto UPDATE_POS;
+      } else if (next_pos(i) > (m_PosUpperLimit(i)-m_PosMargin(i)) && next_vel(i) > 0) {
+        next_vel(i) *= (m_PosUpperLimit(i)-next_pos(i))/m_PosMargin(i);
+        goto UPDATE_POS;
       }
 
       // lower pos limit
       if (next_pos(i) < m_PosLowerLimit(i)) {
-        next_pos(i) = m_PosLowerLimit(i);
-        next_vel(i) = (next_pos(i)-current_pos(i))/m_TimeStep;
+        next_vel(i) = (m_PosLowerLimit(i)-current_pos(i))/m_TimeStep;
+        goto UPDATE_POS;
+      } else if (next_pos(i) < (m_PosLowerLimit(i)+m_PosMargin(i)) && next_vel(i) < 0) {
+        next_vel(i) *= (next_pos(i)-m_PosLowerLimit(i))/m_PosMargin(i);
+        goto UPDATE_POS;
       }
-      else if (next_pos(i) < (m_PosLowerLimit(i)+m_PosMargin(i))) {
-        // if vel negative, reduce its absolute value, otherwise don't limit it further.
-        if (next_vel(i) < 0)
-        {
-          next_vel(i) *= (next_pos(i)-m_PosLowerLimit(i))/m_PosMargin(i);
-        }
-        next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
-      }
+
+      continue;
+
+UPDATE_POS:  // finally update next_pos
+      next_pos(i) = current_pos(i) + next_vel(i)*m_TimeStep;
     }
   }
 
-  void DampedResourceLimiter::setMargin(const FloatVector pos_margin, const FloatVector vel_margin)
+  void DampedResourceLimiter::setMargin(const FloatVector& pos_margin)
   {
+    assert(m_PosMargin.size() == pos_margin.size());
     m_PosMargin = pos_margin;
-    m_VelMargin = vel_margin;
   }
 
 

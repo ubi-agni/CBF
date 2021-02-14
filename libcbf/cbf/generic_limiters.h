@@ -48,28 +48,21 @@ struct NullLimiter : public Limiter {
 
   NullLimiter(const Float timestep, const unsigned int dim) : Limiter(timestep, dim, dim) { }
 
-  virtual void limit(
-      const FloatVector &current_pos,
-      const FloatVector &current_vel,
-      FloatVector &next_pos,
-      FloatVector &next_vel) { }
+  void limit(const FloatVector &current_pos, const FloatVector &current_vel,
+             FloatVector &next_pos, FloatVector &next_vel) override {}
 };
 
 struct DampedResourceLimiter : public Limiter {
 
   DampedResourceLimiter(const Float timestep, const unsigned int dim);
 
-  virtual void limit(
-      const FloatVector &current_pos,
-      const FloatVector &current_vel,
-      FloatVector &next_pos,
-      FloatVector &next_vel);
+  void limit(const FloatVector &current_pos, const FloatVector &current_vel,
+             FloatVector &next_pos, FloatVector &next_vel) override;
 
-  void setMargin(const FloatVector pos_margin, const FloatVector vel_margin);
+  void setMargin(const FloatVector& pos_margin);
 
   protected:
     FloatVector m_PosMargin;
-    FloatVector m_VelMargin;
 };
 
 typedef boost::shared_ptr<NullLimiter> NullLimiterPtr;
